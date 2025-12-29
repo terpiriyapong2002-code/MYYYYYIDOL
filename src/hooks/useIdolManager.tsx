@@ -1,8 +1,5 @@
 // @ts-nocheck
 import { useState, useEffect, useCallback } from 'react';
-import { getApps, initializeApp } from "firebase/app";
-import { getAuth, signInAnonymously } from 'firebase/auth';
-import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
 
 
 // PASTE THIS ENTIRE BLOCK BEFORE loadGame
@@ -289,73 +286,6 @@ export const getGraduationRisk = (member) => {
 
 // --- Custom Hook for Game Logic and State Management ---
 export const useIdolManager = () => {
-    // --- FIREBASE/STATE PERSISTENCE ---
-    const [db, setDb] = useState(null);
-    const [auth, setAuth] = useState(null);
-    const [userId, setUserId] = useState(null);
-    const [isAuthReady, setIsAuthReady] = useState(false);
-    
-    const SAVE_COLLECTION = "game_data";
-    const SAVE_DOC_ID = "save_slot";
-
-  useEffect(() => {
-    // You can uncomment the line below for more detailed logs in the console
-    // setLogLevel("debug");
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyByiOkhjMRmhg_Y5l2byzhnWKxdY0SXFUw",
-      authDomain: "newidolgame.firebaseapp.com",
-      projectId: "newidolgame",
-      storageBucket: "newidolgame.appspot.com",
-      messagingSenderId: "167024582833",
-      appId: "1:167024582833:web:3e37558077a853e7ba8290",
-      measurementId: "G-CDMTML8QW6"
-    };
-
-    const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-    const firestore = getFirestore(app);
-    const firebaseAuth = getAuth(app);
-
-    setDb(firestore);
-    setAuth(firebaseAuth);
-
-    // This new async function ensures we wait for authentication to complete
-    const authenticate = async () => {
-      try {
-        // This will either sign in a new anonymous user or get the existing one.
-        const userCredential = await signInAnonymously(firebaseAuth);
-        const user = userCredential.user;
-        
-        if (user) {
-          console.log("✅ Authentication successful. User ID:", user.uid);
-          setUserId(user.uid);
-        } else {
-          // This case is unlikely but good to handle
-          throw new Error("Firebase did not return a user after anonymous sign-in.");
-        }
-      } catch (e) {
-        console.error("❌ Firebase Authentication Failed:", e);
-        setMessage("Error: Could not connect to game servers. Saving/loading is disabled.");
-      } finally {
-        // This part now runs *after* the `await` is finished, solving the race condition.
-        setIsAuthReady(true);
-      }
-    };
-
-    // Call the function to start the authentication process.
-    authenticate();
-
-    // Return a cleanup function for when the component unmounts.
-    return () => { /* No specific cleanup needed for this auth logic */ };
-  }, []);
-
-  const getSavePath = useCallback((uid) => {
-      if (!uid || !db) return null;
-      // This is the corrected path to match the firestore.rules
-      return doc(db, 'savegames', uid);
-  }, [db]);
-
-
 
     // --- GAME STATE ---
     const [gameStarted, setGameStarted] = useState(false);
@@ -535,265 +465,261 @@ const [pendingMerch, setPendingMerch] = useState([]);
     const [draftProspects, setDraftProspects] = useState([]);
     const [draftKaigi, setDraftKaigi] = useState(null); // Will hold the live draft state
 
-
     // START/LOAD/SAVE FUNCTIONS
-const saveGame = async (gameUsername, uidParam) => {
-  // Use either passed UID or current logged-in UID
-  const currentUserId = uidParam || userId;
 
-  // Check if Firebase is initialized
-  if (!isAuthReady || !db || !currentUserId) {
-    setMessage("System not ready. Please wait for Firebase connection.");
-    console.warn("⏳ Save aborted — Firebase not ready yet.");
-    return;
-  }
-
-  const gameState = {
-    groupName,
-    money,
-    week,
-    electionVotePool,
-    isCampaignActive,
-    campaignEndWeek,
-    lastElectionResult: JSON.stringify(lastElectionResult),
-    lastJankenResult: JSON.stringify(lastJankenResult),
-    members: JSON.stringify(members),
-    totalFans,
-    songs: JSON.stringify(songs),
-    teams: JSON.stringify(teams),
-    allSetlists: JSON.stringify(allSetlists),
-    theaters: JSON.stringify(theaters),
-    buildings: JSON.stringify(buildings),
-    sisterGroups: JSON.stringify(sisterGroups),
-    rivalGroups: JSON.stringify(rivalGroups),
-    achievements: JSON.stringify(achievements),
-    hallOfFame: JSON.stringify(hallOfFame),
-    events: JSON.stringify(events),
-    sponsorships: JSON.stringify(sponsorships),
-    difficulty,
-    electionHistory: JSON.stringify(electionHistory),
-    jankenHistory: JSON.stringify(jankenHistory),
-    groupReputation,
-    kouhakuInvitationAccepted,
-    kouhakuHistory: JSON.stringify(kouhakuHistory),
-    kouhakuInvitationOffered,
-    kouhakuPrep: JSON.stringify(kouhakuPrep),
-    requestHourStatus: JSON.stringify(requestHourStatus),
-    votingTickets,
-    requestHourHistory: JSON.stringify(requestHourHistory),
-    lastRequestHourResult: JSON.stringify(lastRequestHourResult),
-    onlineStore: JSON.stringify(onlineStore),
-    staff: JSON.stringify(staff),
-    internationalMarkets: JSON.stringify(internationalMarkets),
-    warehouse: JSON.stringify(warehouse),
-    pendingMerch: JSON.stringify(pendingMerch),
-    outfits: JSON.stringify(outfits),
-    pushedMembers: JSON.stringify(pushedMembers),
-    tours: JSON.stringify(tours),
-    activeTour: JSON.stringify(activeTour),
-    musicVideos: JSON.stringify(musicVideos),
-    varietyShows: JSON.stringify(varietyShows),
-    photoBooks: JSON.stringify(photoBooks),
-    documentaries: JSON.stringify(documentaries),
-    collaborations: JSON.stringify(collaborations),
-    scandals: JSON.stringify(scandals),
-    statistics: JSON.stringify(statistics),
-    merchInventory: JSON.stringify(merchInventory),
-    activeTrainingCamp: JSON.stringify(activeTrainingCamp),
-    username: gameUsername,
-    venues: JSON.stringify(venues),
-    performanceHistory: JSON.stringify(performanceHistory),
-    scheduledSingles: JSON.stringify(scheduledSingles), // <-- FIX: This line is added
-    timestamp: Date.now(),
-  };
-
-  try {
-    const path = getSavePath(currentUserId);
-    if (!path) throw new Error("Could not determine save path.");
-
-    await setDoc(path, gameState);
-    setMessage(`💾 Game saved successfully for ${gameUsername}!`);
-    setShowModal(null);
-    setUsername(gameUsername);
-    console.log("✅ Game saved for user:", currentUserId);
-  } catch (e) {
-    console.error("❌ Error saving game:", e);
-    setMessage(`Error saving game: ${e.message}`);
-  }
-};
-
-useEffect(() => {
-    setFormattedDate(getFormattedDateForWeek(week));
-}, [week]); // This tells the code to run only when 'week' changes.
-
-const loadGame = async (gameUsername, uidParam, setStartUsername, setStartGroupName) => {
-  const currentUserId = uidParam || userId;
-
-  if (!isAuthReady || !db || !currentUserId) {
-    setMessage("System not ready. Please wait for Firebase connection.");
-    console.warn("⏳ Load aborted — Firebase not ready yet.");
-    return;
-  }
-
-  try {
-    const path = getSavePath(currentUserId);
-    if (!path) throw new Error("Could not determine load path.");
-
-    const docSnap = await getDoc(path);
-
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      // RESTORE EVERYTHING YOU SAVED
-      setGroupName(data.groupName || "");
-      setMoney(data.money || 0);
-      setWeek(data.week || 1);
-      const loadedMembers = JSON.parse(data.members || "[]").map(rawMember => {
-        const member = { ...rawMember, electionHype: rawMember.electionHype || 0, isCurrentCenter: rawMember.isCurrentCenter || false, relationships: rawMember.relationships || { friends: [], rivals: [] } };
-        // Migration: If fans is a number, convert to the new object structure
-        if (typeof member.fans === 'number' || !member.fans) {
-          const fanCount = typeof member.fans === 'number' ? member.fans : 0;
-          return {
-            ...member,
-            fans: {
-              hardcore: Math.floor(fanCount * 0.2),
-              casual: fanCount - Math.floor(fanCount * 0.2)
-            }
-          };
-        }
-        // If it's already an object, return as is
-        return member;
-      });
-      setMembers(loadedMembers);
-      setTotalFans(data.totalFans || 0);
-      setOnlineStore(JSON.parse(data.onlineStore || '{\"level\":0}'));
-      setStaff(JSON.parse(data.staff || '{\"merchManager\":0}'));
-      setWarehouse(JSON.parse(data.warehouse || '{\"level\":1}'));
-      setPendingMerch(JSON.parse(data.pendingMerch || '[]'));
-      setElectionVotePool(data.electionVotePool || 0);
-        setIsCampaignActive(data.isCampaignActive || false);
-        setCampaignEndWeek(data.campaignEndWeek || 0);
-        setLastElectionResult(JSON.parse(data.lastElectionResult || "null"));
-
-        const loadedSongs = JSON.parse(data.songs || "[]").map(song => ({
-            ...song,
-            baseSalesPotential: song.baseSalesPotential || 0,
-            weeklySales: song.weeklySales || [],
-            chartWeeksLeft: song.chartWeeksLeft ?? 0, // Handles old saves where this might not exist
-        }));
-        setSongs(loadedSongs);
-      setTeams(JSON.parse(data.teams || "[]"));
-        setTheaters(JSON.parse(data.theaters || "[]"));
-
-      // --- MIGRATION LOGIC FOR OLD SAVES ---
-      const loadedBuildings = JSON.parse(data.buildings || "{}");
-      if (loadedBuildings.hasOwnProperty('theater')) {
-          // This is an OLD save file.
-          if (loadedBuildings.theater === true) {
-              // If they had a theater, create a default one for the main group,
-              // but only if the new `theaters` array from the save is empty.
-              if (!data.theaters || JSON.parse(data.theaters).length === 0) {
-                  setTheaters([{
-                      owner: 'main',
-                      level: 1,
-                      capacity: 250,
-                      name: `${data.groupName || groupName} Theater`
-                  }]);
-              }
-          }
-                // Set the new buildings state, merging old data with new room types
-                setBuildings({ practiceRooms: {
-                    ...{ vocal: 0, dance: 0, variety: 0, visual: 0, charisma: 0, intelligence: 0 },
-                    ...(loadedBuildings.practiceRooms || {})
-                }});
-        } else {
-            // This is a NEW save file, or a fresh game.
-            // FIX: Ensure all room types are initialized, even when loading a save
-            const newPracticeRooms = {
-                vocal: 0, dance: 0, variety: 0, visual: 0, charisma: 0, intelligence: 0,
-                ...(loadedBuildings.practiceRooms || {})
-            };
-            setBuildings({ practiceRooms: newPracticeRooms });
-        }
-      const loadedSisterGroups = JSON.parse(data.sisterGroups || "[]").map(sg => {
-        let migratedMembers = sg.members || [];
-        if (sg.members) {
-            migratedMembers = sg.members.map(rawMember => {
-                const member = { ...rawMember, electionHype: rawMember.electionHype || 0, isCurrentCenter: rawMember.isCurrentCenter || false, relationships: rawMember.relationships || { friends: [], rivals: [] } };
-                if (typeof member.fans === 'number' || !member.fans) {
-                    const fanCount = typeof member.fans === 'number' ? member.fans : 0;
-                    return { ...member, fans: { hardcore: Math.floor(fanCount * 0.2), casual: fanCount - Math.floor(fanCount * 0.2) } };
+    const getSavedGames = () => {
+        const savedGames = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.startsWith('idol_game_save_')) {
+                try {
+                    const savedData = localStorage.getItem(key);
+                    const data = JSON.parse(savedData);
+                    if (data.username && data.groupName) { // Ensure the save is valid
+                        savedGames.push({
+                            username: data.username,
+                            groupName: data.groupName,
+                            week: data.week,
+                            money: data.money,
+                            timestamp: data.timestamp,
+                        });
+                    }
+                } catch (e) {
+                    console.error(`Error parsing saved game from local storage: ${key}`, e);
                 }
-                return member;
-            });
+            }
+        }
+        return savedGames.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+    };
+
+    const saveGame = (gameUsername) => {
+        if (!gameUsername || !gameUsername.trim()) {
+            setMessage("Please enter a valid username to save the game.");
+            return;
         }
 
-        // FIX STARTS HERE: Add song migration logic for each sister group
-        let migratedSongs = [];
-        if (sg.songs) {
-            // This handles both old saves (stringified) and new saves (object array)
-            const songsToParse = typeof sg.songs === 'string' ? JSON.parse(sg.songs) : (sg.songs || []);
-            migratedSongs = songsToParse.map(song => ({
-                ...song,
-                baseSalesPotential: song.baseSalesPotential || 0,
-                weeklySales: song.weeklySales || [],
-                chartWeeksLeft: song.chartWeeksLeft ?? 0,
-            }));
+        try {
+            const gameState = {
+                groupName,
+                money,
+                week,
+                electionVotePool,
+                isCampaignActive,
+                campaignEndWeek,
+                lastElectionResult: JSON.stringify(lastElectionResult),
+                lastJankenResult: JSON.stringify(lastJankenResult),
+                members: JSON.stringify(members),
+                totalFans,
+                songs: JSON.stringify(songs),
+                teams: JSON.stringify(teams),
+                allSetlists: JSON.stringify(allSetlists),
+                theaters: JSON.stringify(theaters),
+                buildings: JSON.stringify(buildings),
+                sisterGroups: JSON.stringify(sisterGroups),
+                rivalGroups: JSON.stringify(rivalGroups),
+                achievements: JSON.stringify(achievements),
+                hallOfFame: JSON.stringify(hallOfFame),
+                events: JSON.stringify(events),
+                sponsorships: JSON.stringify(sponsorships),
+                difficulty,
+                electionHistory: JSON.stringify(electionHistory),
+                jankenHistory: JSON.stringify(jankenHistory),
+                groupReputation,
+                kouhakuInvitationAccepted,
+                kouhakuHistory: JSON.stringify(kouhakuHistory),
+                kouhakuInvitationOffered,
+                kouhakuPrep: JSON.stringify(kouhakuPrep),
+                requestHourStatus: JSON.stringify(requestHourStatus),
+                votingTickets,
+                requestHourHistory: JSON.stringify(requestHourHistory),
+                lastRequestHourResult: JSON.stringify(lastRequestHourResult),
+                onlineStore: JSON.stringify(onlineStore),
+                staff: JSON.stringify(staff),
+                internationalMarkets: JSON.stringify(internationalMarkets),
+                warehouse: JSON.stringify(warehouse),
+                pendingMerch: JSON.stringify(pendingMerch),
+                outfits: JSON.stringify(outfits),
+                pushedMembers: JSON.stringify(pushedMembers),
+                tours: JSON.stringify(tours),
+                activeTour: JSON.stringify(activeTour),
+                musicVideos: JSON.stringify(musicVideos),
+                varietyShows: JSON.stringify(varietyShows),
+                photoBooks: JSON.stringify(photoBooks),
+                documentaries: JSON.stringify(documentaries),
+                collaborations: JSON.stringify(collaborations),
+                scandals: JSON.stringify(scandals),
+                statistics: JSON.stringify(statistics),
+                merchInventory: JSON.stringify(merchInventory),
+                activeTrainingCamp: JSON.stringify(activeTrainingCamp),
+                username: gameUsername,
+                venues: JSON.stringify(venues),
+                performanceHistory: JSON.stringify(performanceHistory),
+                scheduledSingles: JSON.stringify(scheduledSingles),
+                timestamp: Date.now(),
+            };
+
+            localStorage.setItem(`idol_game_save_${gameUsername}`, JSON.stringify(gameState));
+            setMessage(`💾 Game saved successfully for ${gameUsername}!`);
+            setShowModal(null);
+            setUsername(gameUsername);
+            console.log("✅ Game saved to local storage for user:", gameUsername);
+
+        } catch (e) {
+            console.error("❌ Error saving game to local storage:", e);
+            setMessage(`Error saving game: ${e.message}`);
         }
-        // FIX ENDS HERE
+    };
 
-        return { ...sg, members: migratedMembers, songs: migratedSongs };
-    });
-    setSisterGroups(loadedSisterGroups);
+    const loadGame = (gameUsername) => {
+        if (!gameUsername || !gameUsername.trim()) {
+            setMessage("Please enter a username to load a game.");
+            return;
+        }
+        try {
+            const savedData = localStorage.getItem(`idol_game_save_${gameUsername}`);
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                
+                setGroupName(data.groupName || "");
+                setMoney(data.money || 0);
+                setWeek(data.week || 1);
+                const loadedMembers = JSON.parse(data.members || "[]").map(rawMember => {
+                    const member = { ...rawMember, electionHype: rawMember.electionHype || 0, isCurrentCenter: rawMember.isCurrentCenter || false, relationships: rawMember.relationships || { friends: [], rivals: [] } };
+                    if (typeof member.fans === 'number' || !member.fans) {
+                    const fanCount = typeof member.fans === 'number' ? member.fans : 0;
+                    return {
+                        ...member,
+                        fans: {
+                        hardcore: Math.floor(fanCount * 0.2),
+                        casual: fanCount - Math.floor(fanCount * 0.2)
+                        }
+                    };
+                    }
+                    return member;
+                });
+                setMembers(loadedMembers);
+                setTotalFans(data.totalFans || 0);
+                setOnlineStore(JSON.parse(data.onlineStore || '{"level":0}'));
+                setStaff(JSON.parse(data.staff || '{"merchManager":0}'));
+                setWarehouse(JSON.parse(data.warehouse || '{"level":1}'));
+                setPendingMerch(JSON.parse(data.pendingMerch || '[]'));
+                setElectionVotePool(data.electionVotePool || 0);
+                setIsCampaignActive(data.isCampaignActive || false);
+                setCampaignEndWeek(data.campaignEndWeek || 0);
+                setLastElectionResult(JSON.parse(data.lastElectionResult || "null"));
 
-      setRivalGroups(JSON.parse(data.rivalGroups || "[]"));
-      setAchievements(JSON.parse(data.achievements || "[]"));
-      setHallOfFame(JSON.parse(data.hallOfFame || "[]"));
-      setJankenTournament(JSON.parse(data.jankenTournament || "null"));
-      setLastJankenResult(JSON.parse(data.lastJankenResult || "null"));
-      setLastElectionResult(JSON.parse(data.lastElectionResult || "null"));
-        setElectionHistory(JSON.parse(data.electionHistory || "[]"));
-        setJankenHistory(JSON.parse(data.jankenHistory || "[]"));
-    setGroupReputation(data.groupReputation || 0);
-      setKouhakuInvitationAccepted(data.kouhakuInvitationAccepted || false);
-      setKouhakuHistory(JSON.parse(data.kouhakuHistory || "[]"));
-    setKouhakuInvitationOffered(data.kouhakuInvitationOffered || false);
-    setKouhakuPrep(JSON.parse(data.kouhakuPrep || "null"));
-    setRequestHourStatus(JSON.parse(data.requestHourStatus || "null"));
-    setVotingTickets(data.votingTickets || 0);
-    setRequestHourHistory(JSON.parse(data.requestHourHistory || "[]"));
-    setLastRequestHourResult(JSON.parse(data.lastRequestHourResult || "null"));
+                const loadedSongs = JSON.parse(data.songs || "[]").map(song => ({
+                    ...song,
+                    baseSalesPotential: song.baseSalesPotential || 0,
+                    weeklySales: song.weeklySales || [],
+                    chartWeeksLeft: song.chartWeeksLeft ?? 0,
+                }));
+                setSongs(loadedSongs);
+                setTeams(JSON.parse(data.teams || "[]"));
+                setTheaters(JSON.parse(data.theaters || "[]"));
 
-      setEvents(JSON.parse(data.events || "[]"));
-      setSponsorships(JSON.parse(data.sponsorships || "[]"));
-      setDifficulty(data.difficulty || "normal");
-      setInternationalMarkets(JSON.parse(data.internationalMarkets || "{}"));
-      setOutfits(JSON.parse(data.outfits || "[]"));
-      setTours(JSON.parse(data.tours || "[]"));
-      setActiveTour(JSON.parse(data.activeTour || "null"));
-      setPushedMembers(JSON.parse(data.pushedMembers || "[]"));
-      setMusicVideos(JSON.parse(data.musicVideos || "[]"));
-      setVarietyShows(JSON.parse(data.varietyShows || "[]"));
-      setPhotoBooks(JSON.parse(data.photoBooks || "[]"));
-      setDocumentaries(JSON.parse(data.documentaries || "[]"));
-      setCollaborations(JSON.parse(data.collaborations || "[]"));
-      setScandals(JSON.parse(data.scandals || "[]"));
-      setStatistics(JSON.parse(data.statistics || "{}"));
-      setMerchInventory(JSON.parse(data.merchInventory || "{}"));
-      setActiveTrainingCamp(JSON.parse(data.activeTrainingCamp || "null"));
-      setPerformanceHistory(JSON.parse(data.performanceHistory || "[]"));
-      setScheduledSingles(JSON.parse(data.scheduledSingles || "[]")); // <-- FIX: This line is added
+                const loadedBuildings = JSON.parse(data.buildings || "{}");
+                if (loadedBuildings.hasOwnProperty('theater')) {
+                    if (loadedBuildings.theater === true) {
+                        if (!data.theaters || JSON.parse(data.theaters).length === 0) {
+                            setTheaters([{
+                                owner: 'main',
+                                level: 1,
+                                capacity: 250,
+                                name: `${data.groupName || groupName} Theater`
+                            }]);
+                        }
+                    }
+                    setBuildings({ practiceRooms: {
+                        ...{ vocal: 0, dance: 0, variety: 0, visual: 0, charisma: 0, intelligence: 0 },
+                        ...(loadedBuildings.practiceRooms || {})
+                    }});
+                } else {
+                    const newPracticeRooms = {
+                        vocal: 0, dance: 0, variety: 0, visual: 0, charisma: 0, intelligence: 0,
+                        ...(loadedBuildings.practiceRooms || {})
+                    };
+                    setBuildings({ practiceRooms: newPracticeRooms });
+                }
+                const loadedSisterGroups = JSON.parse(data.sisterGroups || "[]").map(sg => {
+                    let migratedMembers = sg.members || [];
+                    if (sg.members) {
+                        migratedMembers = sg.members.map(rawMember => {
+                            const member = { ...rawMember, electionHype: rawMember.electionHype || 0, isCurrentCenter: rawMember.isCurrentCenter || false, relationships: rawMember.relationships || { friends: [], rivals: [] } };
+                            if (typeof member.fans === 'number' || !member.fans) {
+                                const fanCount = typeof member.fans === 'number' ? member.fans : 0;
+                                return { ...member, fans: { hardcore: Math.floor(fanCount * 0.2), casual: fanCount - Math.floor(fanCount * 0.2) } };
+                            }
+                            return member;
+                        });
+                    }
 
-      setGameStarted(true);
-      setMessage(`🎮 Game loaded for ${data.username || gameUsername}!`);
-      setShowModal(null);
-    } else {
-      setMessage(`⚠️ No save file found for ${gameUsername}.`);
-    }
-  } catch (e) {
-    console.error("❌ Error loading game:", e);
-    setMessage(`Error loading game: ${e.message}`);
-  }
-};
+                    let migratedSongs = [];
+                    if (sg.songs) {
+                        const songsToParse = typeof sg.songs === 'string' ? JSON.parse(sg.songs) : (sg.songs || []);
+                        migratedSongs = songsToParse.map(song => ({
+                            ...song,
+                            baseSalesPotential: song.baseSalesPotential || 0,
+                            weeklySales: song.weeklySales || [],
+                            chartWeeksLeft: song.chartWeeksLeft ?? 0,
+                        }));
+                    }
+
+                    return { ...sg, members: migratedMembers, songs: migratedSongs };
+                });
+                setSisterGroups(loadedSisterGroups);
+
+                setRivalGroups(JSON.parse(data.rivalGroups || "[]"));
+                setAchievements(JSON.parse(data.achievements || "[]"));
+                setHallOfFame(JSON.parse(data.hallOfFame || "[]"));
+                setJankenTournament(JSON.parse(data.jankenTournament || "null"));
+                setLastJankenResult(JSON.parse(data.lastJankenResult || "null"));
+                setLastElectionResult(JSON.parse(data.lastElectionResult || "null"));
+                setElectionHistory(JSON.parse(data.electionHistory || "[]"));
+                setJankenHistory(JSON.parse(data.jankenHistory || "[]"));
+                setGroupReputation(data.groupReputation || 0);
+                setKouhakuInvitationAccepted(data.kouhakuInvitationAccepted || false);
+                setKouhakuHistory(JSON.parse(data.kouhakuHistory || "[]"));
+                setKouhakuInvitationOffered(data.kouhakuInvitationOffered || false);
+                setKouhakuPrep(JSON.parse(data.kouhakuPrep || "null"));
+                setRequestHourStatus(JSON.parse(data.requestHourStatus || "null"));
+                setVotingTickets(data.votingTickets || 0);
+                setRequestHourHistory(JSON.parse(data.requestHourHistory || "[]"));
+                setLastRequestHourResult(JSON.parse(data.lastRequestHourResult || "null"));
+
+                setEvents(JSON.parse(data.events || "[]"));
+                setSponsorships(JSON.parse(data.sponsorships || "[]"));
+                setDifficulty(data.difficulty || "normal");
+                setInternationalMarkets(JSON.parse(data.internationalMarkets || "{}"));
+                setOutfits(JSON.parse(data.outfits || "[]"));
+                setTours(JSON.parse(data.tours || "[]"));
+                setActiveTour(JSON.parse(data.activeTour || "null"));
+                setPushedMembers(JSON.parse(data.pushedMembers || "[]"));
+                setMusicVideos(JSON.parse(data.musicVideos || "[]"));
+                setVarietyShows(JSON.parse(data.varietyShows || "[]"));
+                setPhotoBooks(JSON.parse(data.photoBooks || "[]"));
+                setDocumentaries(JSON.parse(data.documentaries || "[]"));
+                setCollaborations(JSON.parse(data.collaborations || "[]"));
+                setScandals(JSON.parse(data.scandals || "[]"));
+                setStatistics(JSON.parse(data.statistics || "{}"));
+                setMerchInventory(JSON.parse(data.merchInventory || "{}"));
+                setActiveTrainingCamp(JSON.parse(data.activeTrainingCamp || "null"));
+                setPerformanceHistory(JSON.parse(data.performanceHistory || "[]"));
+                setScheduledSingles(JSON.parse(data.scheduledSingles || "[]"));
+
+                setGameStarted(true);
+                setMessage(`🎮 Game loaded for ${data.username || gameUsername}!`);
+                setShowModal(null);
+
+            } else {
+                setMessage(`⚠️ No save file found for ${gameUsername}.`);
+            }
+        } catch (e) {
+            console.error("❌ Error loading game from local storage:", e);
+            setMessage(`Error loading game: ${e.message}`);
+        }
+    };
+
 
     // --- MEMBER/GROUP UTILITIES ---
 
@@ -6157,7 +6083,7 @@ const simulateRivalActions = (currentRivals, currentWeek, addNotificationInLoop)
     // State
     draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
     // Firebase/Persistence
-    db, auth, userId, isAuthReady, saveGame, loadGame,
+    getSavedGames, saveGame, loadGame,
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic

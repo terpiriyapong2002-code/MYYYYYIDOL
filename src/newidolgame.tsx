@@ -20,10 +20,6 @@ import {
 } from 'lucide-react';
 
 
-import { getApps, initializeApp } from "firebase/app";;
-import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, doc, setDoc, getDoc, setLogLevel } from 'firebase/firestore';
-
 import { MerchTab } from './MerchTab';
 
 
@@ -35,7 +31,7 @@ const App = () => {
     // State
     draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory,  merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
     // Firebase/Persistence
-    db, auth, userId, isAuthReady, saveGame, loadGame,
+    getSavedGames, saveGame, loadGame,
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
@@ -46,6 +42,8 @@ const App = () => {
     // Local state for start screen inputs (not part of the main game state in the hook)
     const [startUsername, setStartUsername] = useState('');
     const [startGroupName, setStartGroupName] = useState('');
+    const [savedGames, setSavedGames] = useState([]);
+
     const [isDarkMode, setIsDarkMode] = useState(() => {
         // Initialize state based on the class on the <html> element
         return document.documentElement.classList.contains('dark');
@@ -63,6 +61,14 @@ const App = () => {
     const toggleDarkMode = () => {
         setIsDarkMode(!isDarkMode);
     };
+        useEffect(() => {
+        if (!gameStarted) {
+            const games = getSavedGames();
+            console.log("Saved games found on load:", games);
+            setSavedGames(games);
+        }
+    }, [gameStarted, showModal]);
+
 
     // --- NEW STATE FOR SORT/FILTER ---
     const [memberSort, setMemberSort] = useState({ key: 'rank', asc: true });
@@ -119,10 +125,6 @@ const generateRandomTheaterSongName = () => {
     // Pass local state to the hook's startGame function
     const handleStartGame = () => startGame(startUsername, startGroupName);
     
-    // Pass necessary data to the hook's save/load functions
-    const handleSaveGame = (gameUsername) => saveGame(gameUsername, userId);
-    const handleLoadGame = (gameUsername) => loadGame(gameUsername, userId, setStartUsername, setStartGroupName);
-
 
     // --- MODAL COMPONENTS (Remain in App for clean state access) ---
 
@@ -4484,7 +4486,7 @@ const ScandalDecisionModal = () => {
 
         const handleSave = () => {
             if (saveUsername.trim()) {
-                handleSaveGame(saveUsername.trim());
+                saveGame(saveUsername.trim());
             } else {
                 setMessage("Please enter a valid username to save.");
             }
@@ -4501,11 +4503,10 @@ const ScandalDecisionModal = () => {
                     className="w-full p-2 border rounded mb-4"
                     placeholder="Enter your unique save username"
                 />
-                <p className="text-xs text-gray-500 mb-4">Your current User ID (for debugging): {userId}</p>
                 
                 <div className="flex justify-end gap-2 mt-4">
                     <button onClick={() => setShowModal(null)} className="p-2 bg-gray-300 rounded">Cancel</button>
-                    <button onClick={handleSave} disabled={!saveUsername.trim() || !isAuthReady} className="p-2 bg-blue-500 text-white rounded disabled:bg-gray-400">
+                    <button onClick={handleSave} disabled={!saveUsername.trim()} className="p-2 bg-blue-500 text-white rounded disabled:bg-gray-400">
                         Confirm Save
                     </button>
                 </div>
@@ -4518,7 +4519,7 @@ const ScandalDecisionModal = () => {
 
         const handleLoad = () => {
             if (loadUsername.trim()) {
-                handleLoadGame(loadUsername.trim());
+                loadGame(loadUsername.trim());
             } else {
                 setMessage("Please enter the username of the save file to load.");
             }
@@ -4535,11 +4536,10 @@ const ScandalDecisionModal = () => {
                     className="w-full p-2 border rounded mb-4"
                     placeholder="Enter the save username"
                 />
-                <p className="text-xs text-gray-500 mb-4">Loading will overwrite your current session. You must use the user ID that was used to save the game: {userId}</p>
                 
                 <div className="flex justify-end gap-2 mt-4">
                     <button onClick={() => setShowModal(null)} className="p-2 bg-gray-300 rounded">Cancel</button>
-                    <button onClick={handleLoad} disabled={!loadUsername.trim() || !isAuthReady} className="p-2 bg-green-500 text-white rounded disabled:bg-gray-400">
+                    <button onClick={handleLoad} disabled={!loadUsername.trim()} className="p-2 bg-green-500 text-white rounded disabled:bg-gray-400">
                         Confirm Load
                     </button>
                 </div>
@@ -7331,58 +7331,74 @@ const TabButton = ({ id, label, icon: Icon }) => (
     // --- MAIN UI ---
 if (!gameStarted) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100 p-6">
-      <div className="rounded-2xl shadow-2xl p-10 w-full max-w-md text-center border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 transition-colors duration-300">
-        <Star className="mx-auto text-yellow-400 mb-6" size={64} />
-        <h1 className="text-4xl font-extrabold mb-4 text-gray-800 tracking-tight">Idol Management Sim</h1>
-        <p className="text-gray-600 mb-6">Enter your Producer Name and Group Name to begin.</p>
-
-        <input
-          type="text"
-          value={startUsername}
-          onChange={(e) => setStartUsername(e.target.value)}
-          className="w-full p-3 border border-gray-300 rounded-lg mb-4 text-center focus:ring-2 focus:ring-blue-400 focus:outline-none"
-          placeholder="Producer Name (e.g., Aki-P)"
-        />
-
-        <div className="flex w-full gap-2 mb-5">
-          <input
-            type="text"
-            value={startGroupName}
-            onChange={(e) => setStartGroupName(e.target.value)}
-            className="flex-1 p-3 border border-gray-300 rounded-lg text-center focus:ring-2 focus:ring-blue-400 focus:outline-none"
-            placeholder="Group Name (e.g., AKB48)"
-          />
-          <button
-            onClick={generateRandomGroupName}
-            className="p-3 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition-colors flex items-center justify-center"
-            title="Generate Random Name"
-          >
-            <Shuffle size={20} />
-          </button>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 p-4 sm:p-6 lg:p-8">
+      <div className="w-full max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Saved Games Column */}
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700">
+          <h2 className="text-2xl font-bold mb-4 text-center text-gray-800 dark:text-gray-200">Load Production</h2>
+          <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
+            {savedGames.length > 0 ? (
+              savedGames.map((game) => (
+                <button
+                  key={game.username}
+                  onClick={() => loadGame(game.username)}
+                  className="w-full text-left p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-blue-100 dark:hover:bg-gray-700 hover:shadow-md transition-all border dark:border-gray-600"
+                >
+                  <p className="font-bold text-lg text-blue-600 dark:text-blue-400">{game.groupName}</p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300">Producer: {game.username}</p>
+                  <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    <span>Week: {game.week}</span>
+                    <span>Money: ¥{game.money.toLocaleString()}</span>
+                  </div>
+                </button>
+              ))
+            ) : (
+              <div className="text-center p-8 text-gray-500">
+                <p>No saved games found.</p>
+                <p className="text-xs mt-1">Start a new production to create a save file!</p>
+              </div>
+            )}
+          </div>
         </div>
 
-        <button
-          onClick={handleStartGame}
-          disabled={!startUsername.trim() || !startGroupName.trim()}
-          className="w-full p-3 bg-blue-500 text-white rounded-lg font-bold text-lg hover:bg-blue-600 transition-colors disabled:bg-gray-400"
-        >
-          Start New Production
-        </button>
-
-        <button
-          onClick={() => setShowModal('loadGame')}
-          disabled={!isAuthReady}
-          className="w-full p-3 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition-colors mt-4 disabled:bg-gray-300 disabled:text-gray-600 flex items-center justify-center gap-2"
-        >
-          {isAuthReady ? 'Load Game (via Username)' : (
-            <>
-              <LogIn size={16} /> Authenticating...
-            </>
-          )}
-        </button>
-
-        {showModal === 'loadGame' && <LoadGameModal />}
+        {/* New Game Column */}
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-xl border-2 border-blue-500">
+          <h2 className="text-2xl font-bold mb-4 text-center text-gray-800 dark:text-gray-200 flex items-center justify-center gap-2">
+            <Plus size={24} />
+            Start New Production
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400 text-center mb-6">Enter your Producer Name and Group Name to begin.</p>
+          <input
+            type="text"
+            value={startUsername}
+            onChange={(e) => setStartUsername(e.target.value)}
+            className="w-full p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg mb-4 text-center focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            placeholder="Producer Name (e.g., Aki-P)"
+          />
+          <div className="flex w-full gap-2 mb-5">
+            <input
+              type="text"
+              value={startGroupName}
+              onChange={(e) => setStartGroupName(e.target.value)}
+              className="flex-1 p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg text-center focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              placeholder="Group Name (e.g., AKB48)"
+            />
+            <button
+              onClick={generateRandomGroupName}
+              className="p-3 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition-colors flex items-center justify-center"
+              title="Generate Random Name"
+            >
+              <Shuffle size={20} />
+            </button>
+          </div>
+          <button
+            onClick={handleStartGame}
+            disabled={!startUsername.trim() || !startGroupName.trim()}
+            className="w-full p-3 bg-blue-500 text-white rounded-lg font-bold text-lg hover:bg-blue-600 transition-colors disabled:bg-gray-400"
+          >
+            Begin
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -7396,11 +7412,10 @@ if (!gameStarted) {
           <header className="shadow-md p-2 lg:p-4 flex justify-between items-center bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border-b border-gray-200 dark:border-gray-700 transition-colors duration-300">
             <div>
 <h1 className="text-lg lg:text-2xl font-bold text-gray-800">{groupName}</h1>
-<p className="text-xs text-gray-500">Producer ID: {userId}</p>
             </div>
             <div className="flex items-center gap-4">
-              <button onClick={() => setShowModal('saveGame')} disabled={!isAuthReady} className="p-2 bg-blue-100 text-blue-600 rounded-full hover:bg-blue-200 disabled:bg-gray-300 disabled:text-gray-500" title="Save Game (via Username)"><Save size={20} /></button>
-              <button onClick={() => setShowModal('loadGame')} disabled={!isAuthReady} className="p-2 bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200 disabled:bg-gray-300 disabled:text-gray-500" title="Load Game"><Upload size={20} /></button>
+              <button onClick={() => setShowModal('saveGame')} d className="p-2 bg-blue-100 text-blue-600 rounded-full hover:bg-blue-200 disabled:bg-gray-300 disabled:text-gray-500" title="Save Game (via Username)"><Save size={20} /></button>
+              <button onClick={() => setShowModal('loadGame')} d className="p-2 bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200 disabled:bg-gray-300 disabled:text-gray-500" title="Load Game"><Upload size={20} /></button>
               <button onClick={() => setShowNotifications(!showNotifications)} className="relative p-2 bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200" title="Notifications">
                 <Bell size={20} />
                 {notifications.length > 0 && !showNotifications && <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>}
@@ -8813,7 +8828,6 @@ if (!gameStarted) {
     <User size={48} className="mx-auto mb-4" />
     <p>Select a member or navigate the tabs above.</p>
     <p className="text-xs mt-4 text-gray-400">
-      Producer ID: {userId || 'Authenticating...'}
     </p>
   </div>
 </div>
