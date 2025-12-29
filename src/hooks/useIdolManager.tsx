@@ -128,46 +128,109 @@ export const productionTiers = {
   
 
   export const songTitles = {
-        Graduation: [
-            "10:00 PM Graduation", "Cherry Blossom Graduation", "Sayonara Yesterday", 
-            "Station Platform Goodbye", "The Last Bus Home", "Sayonara no Imi", 
-            "Saigo no Seifuku", "Dreamy-Bye-Bye", "Owari", "Second Button Souvenir",
-            "Namida no Ato"
-        ],
-        Kawaii: [
-            "Candy Pulse Panic", "Doki-Doki Discovery", "Marshmallow Moonlight", 
-            "Strawberry Sky-High", "Melon Soda Memories", "Glitter Step Connection", 
-            "Sparkle-Pop Princess", "Cotton Candy Countdown", "Magical Ribbon Magic", 
-            "Pastel Parade Dreams", "Sugar-Coated Secret", "Wink-Wink Wonderland", 
-            "Cherry Blossom Chime", "Bubblegum Bestie", "Neon Heart Highway", 
-            "Puffy Cloud Picnic", "Jellybean Jubilee", "Star-Dust Sunday", "Zutto", "Motto",
-            "Rainbow Rollercoaster", "Sweetie Pie Signal", "Labyrinth of Love-Letters", 
-            "Twinkle-Toe Tango", "Macaron Melodies", "Honey-Bunny Hop", "Kira", "Pika",
-            "Cosmic Cupid Kiss", "Zutto Motto", "Future-Flavour Fantasy", "Doki", "Fuwa",
-            "Gimme-Gimme Gummies", "Electric Emotion Echo", "Peach Tea Promises", 
-            "Kira-Kira Kingdom", "Vanilla Velvet Voyage", "Dizzy Dreamer Disco", 
-            "Mochi-Mochi Morning", "Hyper-Happy Holiday", "Pocket-Sized Paradise", "Mochi",
-            "Ribbon Tied Regret", "Pop-Rock Lollipop", "Shining Star Station", 
-            "Diamond Dust Dance", "Puppy-Love Protocol", "Milky Way Milkshake", 
-            "Giddy-Up Galaxy", "Fizzy Feeling Forever", "Choco-Late Celebration", 
-            "Miracle Mint Message", "Sunny-Side Soul", "Panda-monium Party", "Infinite Idol Glow",
-        ],
-        CityPop: [
-            "Midnight Driver", "Plastic Skyline", "Neon Weekend", "Telephone Line Love", "Sunset Terrace",
-            "Cassette Tape Memories", "Driving in the Rain", "Midnight Blue", "Stay With Me Tonight", "City Light Serenade",
-            "Highway Mirage", "Crystal Night", "Pacific Breeze", "Luxury Liner", "Urban Silhouette",
-            "Aerobic Heart", "Starlight Resort", "Tokyo Tower Glow", "Retro Romance", "Digital Dancing",
-            "Palm Tree Avenue", "Saturday Night Fever", "Cocktail Hour", "Metallic Moon", "Velvet Boulevard",
-            "After Hours", "Sparkling Sea", "Summer Illusion", "Metropolitan Waltz", "Last Train Home",
-        ],
+    Graduation: [
+        "10:00 PM Graduation", "Cherry Blossom Graduation", "Sayonara Yesterday", "Station Platform Goodbye", 
+        "The Last Bus Home", "Sayonara no Imi", "Saigo no Seifuku", "Dreamy-Bye-Bye", "Owari", "Second Button",
+        "Namida no Ato", "Last Stage", "Graduation Blue", "Sakura Michi", "Tōku e", "Starting Over",
+        "Memory Notebook", "Yume no Owari", "Haru no Kaze", "Last Handshake", "Blue Uniform", "Sotsugyo March",
+        "Stage Light", "Arigato Love", "Mirai Map", "Kousha no Kage", "Next Chapter", "Sayonara Bell",
+        "Final Curtain", "Tokubetsu na Hi", "Tabidachi no Uta", "Classroom Ghost", "Kyōshitsu No Kaori", "Seishun Archive",
+        "Diploma Heart", "Namida Station", "Last Chime", "Sakura Namiki", "Yesterday Once More", "Omoide No",
+        "Tegami No Naka", "Graduation Smile", "Saigo No Mic", "Stage No Kioku", "Harukaze No Ato", "Ano Hi No Yume",
+        "Sakamichi No Saki", "Blue Spring End", "Final Solo", "Dress Graduation", "Kiseki No Route", "Sayonara No Sora",
+        "Gasshō No Uta", "Pocket No Button", "Mirai E No Door", "Last Dance Again", "Eien No Sotsugyo", "Sakura No Hanabira",
+        "Haru No Tabidachi", "Kizuna No Imi", "Saigo No Kisu", "Morning Train Home", "Sotsugyo No Aki", "Graduation Night",
+        "Namida No Rainbow", "Owari No Hajimari", "Memories Of Stage", "Stage No Akari", "Last Concert Blue", "Arigato No Kotoba",
+        "Shiroi Sotsugyoshō", "Yozora Graduation", "Hana No Namida", "Gakkō Sayonara", "Sotsugyo No Hi", "Last Train Blue",
+        "Haru No Milestone", "Kimi E No Yell", "Sotsugyosei", "Final Greeting", "Dress Code Blue", "Stage Exit",
+        "Yume No Tsubasa", "Kaze No Graduation", "Saigo No Smile", "Arigato My Fans", "Sakura Drop", "Haru No Canvas",
+        "Sotsugyo No Kaze", "Memory Mirror", "Diploma Dream", "Classroom Blue", "Last Summer Day", "Stage No Shizuku",
+        "Yume No Departure", "Sayonara No Kado", "Final Lesson", "Sakura No Yakusoku", "Sotsugyo No Melody", "The Last Mic"
+    ],        
+    Kawaii: [
+        "Ame-chan Panic", "Doki-Doki Hakken", "Marshmallow Tsuki", "Ichigo Sky", 
+        "Melon Soda", "Kira-Kira Step", "Sparkle Hime", "Wata-ame Count", 
+        "Magical Ribbon", "Pastel Parade", "Satō Secret", "Wink Wonderland", 
+        "Sakura Chime", "Bubblegum Bestie", "Neon Heart", "Fuwa-Fuwa Cloud", 
+        "Jellybean Jubilee", "Star-Dust Nichiyo", "Zutto", "Motto",
+        "Niji Rollercoaster", "Sweetie Signal", "Love-Letter Meiro", "Twinkle Tango", 
+        "Macaron Melody", "Usagi Hop", "Kira", "Pika",
+        "Cupid Kiss", "Zutto Motto", "Mirai Flavor", "Doki", 
+        "Fuwa", "Gimme Gummies", "Dengeki Echo", "Momo Tea", 
+        "Kira-Kira Oukoku", "Vanilla Voyage", "Dizzy Disco", "Mochi-Mochi Asa", 
+        "Hyper Holiday", "Pocket Rakuen", "Mochi", "Ribbon Koukai", 
+        "Pop-Rock Lolly", "Hoshi Station", "Diamond Dust", "Puppy Love", 
+        "Milky Way", "Giddy Galaxy", "Fizzy Feeling", "Choco Celebration", 
+        "Hakka Message", "Sunny Soul", "Panda Party", "Idol Glow",
+        "Gohan Motto", "Peko-Peko Heart", "Oyasumi Kiss", "Ohayou Sunshine",
+        "Gyu-tto Shite", "Meringue Dream", "Kurukuru Dance", "Nya-nya Night",
+        "Popcorn Jump", "Soda-iro Sky", "Kuma-san Hug", "Shortcake Love",
+        "Suika Summer", "Pudding Shake", "Parfait Memory", "Chu-Chu Love"
+    ],        
+    Innocent: [
+        "Hatsukoi Breeze", "Shiroi Shirt", "Komorebi Step", "Pure Note", "Asa no Hikari",
+        "First Sketch", "Soda Sui", "Bokura no", "Yume no Tubasa", "Kaze no Oto",
+        "Seishun Diary", "Kimi no Scent", "Mabushii Asa", "Aruku Michi", "Hana Kotoba",
+        "Blue Seed", "Komorebi Lane", "Clear Sky", "Futari no", "Shiroi Kumo",
+        "Mirai Palette", "Haru no Melody", "Fresh Start", "Kizuna Note", "Suihei-sen",
+        "Yasashii Ame", "Little Star", "Kimi ni Todo-ke", "Hajimari no", "Canvas Love",
+        "Hoshizora no", "Orange Sunset", "Soft Wind", "Meguriai", "Tegami no",
+        "Purest Wish", "Shiroi Yakusoku", "Sora no Iro", "Natsuzora", "Kimi no Smile",
+        "Aozora Note", "First Dream", "Kaze no Yell", "Motto Shiritai", "Pocket no Yume",
+        "Hajimete no Michi", "Sunny Memory", "Ano Hi no", "Arigato no Hana", "Innocent Days"
+    ],
+    Heartbreak: [
+        "Sayonara no Rain", "Cold Bench", "Delete Memory", "Blue Friday", "Namida no Reason",
+        "Missing Piece", "Last Message", "Glass Heart", "Ame no Stop", "Hitori no Yoru",
+        "Broken Rhythm", "Kimi no Inai", "Suna no Shiro", "Silent Tears", "Winter Trace",
+        "Wasurerannai", "Bitter Sweet", "Empty Room", "Namida Station", "Koukai no",
+        "Ghost Melody", "Ato-sukoshi", "Distance Love", "Maboroshi no", "Blue Rain",
+        "Setsunai Kiss", "Owari no Hi", "Kizutsuite", "Frozen Time", "Fake Smile",
+        "Lost Season", "Yume no Ato", "Sayonara Bell", "Kimi no Kage", "Ame no Bus-stop",
+        "Hakanai Yoru", "Namida iro", "Memory Box", "Last Contact", "Slow Motion",
+        "Sayonara Yesterday", "Kimi e no", "Lonely Night", "Tears Echo", "Shadow of Love",
+        "Hitori-kiri", "Sora no Namida", "Broken Wing", "Ame no Asphalt", "First Goodbye"
+    ],
+    Tropical: [
+        "Aloha Summer", "Coconut Shore", "Vitamin Splash", "Blue Lagoon", "Pineapple Heart",
+        "Sunlight Party", "Hibiscus Love", "Salty Breeze", "Mango Shake", "Emerald Sea",
+        "Marinelight", "Paradise Jump", "Coral Reef", "Summer Goddess", "Shining Beach",
+        "Soda Wave", "Crescent Island", "Tropical Night", "Palmtree Swing", "Sunscreen Kiss",
+        "Citrus High", "Sunset BBQ", "Surfin' Star", "Golden Sand", "Aqua Blue",
+        "Melon Splash", "Rainbow Fin", "Deep Dive", "Bikini Lane", "Summer Carnival",
+        "Island Hop", "Papaya Dance", "Ocean Drive", "Sunkissed", "Water Slider",
+        "Guava Juice", "Shell Memory", "Summer Dreamer", "Poolside Love", "Sparkling Wave",
+        "Seaside Grill", "Passion Fruit", "Blue Hawaii", "Summer Shout", "Cooling Down",
+        "Floatie Race", "Mermaid Step", "Surfboard Love", "Horizon Blue", "Natsu-matsuri"
+    ],
+    Cool46: [
+        "Black Sheep Pride", "Glass Sky Barrier", "Silent Resistance", "Broken Logic", "Paradox City",
+        "Iron Curtain Love", "Ecliptic Shadow", "No War Heart", "Concrete Jungle", "Ambivalent Night",
+        "Monochrome Sekai", "Rebel Silhouette", "Zero Distance", "Garasu no Heart", "Underground Road",
+        "Borderline Blue", "System Error", "Anti-Heroine", "Dead End Street", "Kuroi Hitsuji",
+        "Philosophy of", "Silent Majority", "Kado o Magaru", "Futari no Season", "Eccentric Mind",
+        "Tokyo Tower Maze", "Double Standard", "Signal Red", "Outsider Voice", "Kago no Naka",
+        "Reason to Live", "Mirror Reflection", "Darkness Bright", "Unfinished Wall", "Voice of Soul",
+        "Shadow Dance", "Gray Scale", "Limitless Sky", "Protocol of", "Deep Monochrome",
+        "Hiteiteki No", "Structure Love", "Mienai Teikou", "Shinjitsu no", "Kizu-darake",
+        "Rational Gate", "Alternative Way", "Kuroi Yozora", "Under Dog", "Last Rebellion"
+    ],
+    CityPop: [
+            "Shinya Driver", "Plastic Machi", "Neon Shumatsu", "Denwa Love", "Yuhi Terrace",
+            "Cassette Tape", "Ame Driving", "Midnight Blue", "Mayonaka Stay", "City Light",
+            "Kosoku Mirage", "Crystal Night", "Pacific Breeze", "Luxury Liner", "Urban Kage",
+            "Heart Aerobic", "Starlight Resort", "Tokyo Glow", "Retro Romance", "Digital Dance",
+            "Palm Avenue", "Doyobi Fever", "Cocktail Hour", "Metallic Tsuki", "Velvet Michi",
+            "After Hours", "Kirakira Sea", "Natsu Illusion", "Machi Waltz", "Saishū Ressha",
+        ],        
         AnimeRock: [
-            "Ignite My Soul", "Crimson Horizon", "Brave Progression", "Resonance Phase", "Skyward Bound",
-            "Blazing Heartbeat", "Beyond the Limit", "Absolute Zero", "Genesis Strike", "Iron Will",
-            "Overdrive Kingdom", "Eternal Frontier", "Shattered Silence", "Dragon's Breath", "Light Speed Hero",
-            "Final Flashback", "Sword of Truth", "Justice Anthem", "Rebel Destiny", "Rising Sun",
-            "Celestial War", "Spirit Link", "Cybernetic Dream", "Gravity Break", "Thunder Clap",
-            "Endless Journey", "Vanguard Force", "Titan's Roar", "Phantom Edge", "Omega Theory",
-        ],
+            "Tamashii Ignite", "Akai Chihei", "Brave Shinka", "Resonance Phase", "Sora e",
+            "Kodō Bakuretsu", "Genkai Toppa", "Zettai Reido", "Genesis Strike", "Tetsu no",
+            "Overdrive Oukoku", "Eien Kyokuchi", "Silent Shizuku", "Ryuu no", "Hikari Speed",
+            "Saigo Flash", "Shinjitsu Ken", "Justice Sanka", "Hangyaku Unmei", "Asahi Rising",
+            "Tenku Senso", "Spirit Kizuna", "Cyber Dream", "Gravity Break", "Kaminari Clap",
+            "Owari naki", "Vanguard Force", "Kyojin Roar", "Maboroshi Edge", "Omega Riron",
+        ],        
         Theater: [
             "Seifuku Resistance", "Riverbank Rendezvous", "Bicycle Bell Blues", 
             "Summer Salt Memory", "Theater Light Tears", "Heavy Rotation Heart", 
@@ -179,17 +242,39 @@ export const productionTiers = {
             "Blue Sky Canvas", "Curtain Call Courage", "Train Window Reflection", 
             "Starlight Senbatsu", "Infinite Encore", "Idol", "Story", "Stage", "Theater", "Spotlight", "Encore", "Senbatsu", "Center",
         ],
+        Heisei: [
+            "Automatic Love", "First Kiss", "Midnight Distance", "Flavor of", "Automatic Blue",
+            "Groovy Night", "Flavor Groove", "Saigo no", "Sweet Escape", "Distant Echo",
+            "Private Beach", "Urban Soul", "Kimi no", "Rhythm Emotion", "Body Feels",
+            "Can You", "Don’t Stop", "Kiseki no", "Summer Groove", "Crystal Snow",
+            "Innocent World", "Candy Girl", "Motion Blue", "Destiny Road", "Sweet Soul",
+            "Feel the", "Keep Tryin'", "Hitori no", "Winter Ballad", "Soul Drive",
+            "Automatic Rain", "Ame no", "Moonlight Groove", "Be Together", "Ever After",
+            "Love Story", "Koi no", "Secret Place", "Step into", "Brand New",
+            "One More", "Time After", "Heart Station", "Hajimete no", "Sweet Darling",
+            "Honey Honey", "Dreamin' Girl", "Pocket no", "Shining Ray", "Future World",
+            "Automatic Heart", "Deep River", "Aozora no", "Melody Line", "Urban Dream",
+            "Night Flight", "Sunset Glow", "Moshi mo", "Stay with", "Everlasting",
+            "Pure Soul", "I’m Proud", "Steady Love", "Face the", "Garasu no",
+            "Rainbow Drive", "Sky High", "Taiyou no", "Windy Summer", "Natural High",
+            "Automatic Girl", "Kizuite", "Open Your", "Magic Time", "Sweetest Love",
+            "Perfect Crime", "Fragile Heart", "Zutto Mae", "Missing You", "Love Again",
+            "Moon & Sunrise", "Shiny Day", "Umi no", "First Impression", "True Blue",
+            "Aishiteru", "Never End", "Heart of", "Kimi ni", "Last Message",
+            "White Love", "Winter Song", "Ano Koro", "Dreamer’s High", "Soul Sister",
+            "Automatic Dream", "Final Distance", "Wait & See", "First Step", "Heisei Love"
+        ],
+
         Cinematic: [
-            "Slope of the Blue Sky", "Glass Window Silence", "The Wind's Alibi", 
-            "Monologue in the Rain", "Synchronized Solitude", "Indigo Uniforms", 
-            "Invisible Barricade", "Sunlight Refraction", "Quiet Rebellion", 
-            "Parallel World Line", "Echo of the Clock Tower", "Memory of the Ferris Wheel", 
-            "White Flowers in the Wind", "Distant Thunder", "The 46th Promise", "Route of Sincerity", 
-            "Unfinished Map", "Library Labyrinth", "Tears of the Fountain", "Clockwork Youth", 
-            "Shadow of the Wings", "Azure Horizon", "Velvet Night Sky", "Silent Majority Heart", 
-            "Prism of Regret", "Seaside Philosophy", "Mirrored Reality", "Fragile Courage",
-        ]
-        // I've omitted the rest of your categories for brevity, but you would continue this pattern
+            "Aozora Saka", "Garasu no", "Kaze no", 
+            "Ame Monologue", "Kodoku Sync", "Ai-iro Seifuku", 
+            "Mienai Barricade", "Hikari Kussetsu", "Shizuka Rebellion", 
+            "Sekai-sen", "Tokeidai Echo", "Kanransha Kioku", 
+            "Shiroi Hana", "Enrai Distant", "46-ban Yakusoku", "Magokoro Route", 
+            "Mikan Map", "Tosho Labyrinth", "Izumi Namida", "Tokei Seishun", 
+            "Tsubasa Kage", "Azure Suihei", "Velvet Yozora", "Majority Heart", 
+            "Koukai Prism", "Umibe Tetsugaku", "Kagami Genjitsu", "Hakanai Yuki",
+        ],    
     };
 
     export const generateSongTitle = (theme) => {
@@ -223,28 +308,63 @@ export const electionSpeechTemplates = {
     center: [
         "I can't believe it... To be standing here, as #1... This isn't my victory. It's ours. Thank you!",
         "Is this a dream? All I can say is thank you to the fans who believed in me. I will lead this group with all my heart!",
-        "From the bottom of my heart, thank you! I promise to become a center that everyone can be proud of. We'll aim for the top together!"
-    ],
+        "From the bottom of my heart, thank you! I promise to become a center that everyone can be proud of. We'll aim for the top together!",
+        "There were so many times I wanted to give up, but you never let go of my hand. This trophy belongs to every single one of you!",
+        "I've always watched someone else's back from the second row. To finally see this view from the center... it's more beautiful than I ever imagined.",
+        "I know I’m not the most talented or the most beautiful, but you made me #1. I will spend every day from now on proving I’m worthy of this spot!",
+        "To those who said I couldn't do it—thank you for the motivation. And to my fans—thank you for the miracle. Let's start a new era for the group!",
+        "I've felt so much pressure as the 'ace,' but tonight, that weight has turned into wings. I'm ready to fly higher than ever with all of you!",
+        "The scenery from this podium is overwhelming. I promise not to let this be the peak. I’ll work harder than anyone else to take us even further!",
+        "I was just an ordinary girl until I met you. Thank you for giving me this crown. I'll protect this group and our bond with everything I have!"
+    ],    
     rankUp: [
         "My rank went up! Thank you so much for your support! Next year, I'm aiming even higher!",
         "I'm so happy you've given me this rank. I'll work hard to live up to it and show you an even better version of myself.",
-        "Wow... thank you! Seeing my name climb higher is the best feeling. I won't let you down!"
-    ],
+        "Wow... thank you! Seeing my name climb higher is the best feeling. I won't let you down!",
+        "Last year I was so frustrated, but tonight those tears have turned into smiles. Thank you for pushing me forward!",
+        "I can really feel our bond getting stronger. This rank is proof that we’re moving in the right direction together!",
+        "To be honest, I was scared I might drop in rank. Thank you for giving me the confidence to keep dreaming big.",
+        "I've worked so hard this year, and seeing it pay off like this makes me want to work ten times harder tomorrow!",
+        "I finally reached the Senbatsu! I've been looking at this wall for so long... thank you for helping me break through it!",
+        "Every single vote was a message of 'keep going.' I heard you loud and clear! I'll keep climbing until I reach the top!",
+        "This isn't just a number to me; it's the strength you've given me to stand tall. Let's aim for the single digits next time!"
+    ],   
     rankDown: [
         "I'm a little disappointed with this rank, but this feeling will only motivate me to work harder. Please continue to watch over me.",
         "This result is frustrating, but it's a sign that I still have room to grow. I'll come back stronger next year.",
-        "To everyone who supported me, I'm sorry I couldn't meet your expectations. I will use this to fuel my comeback."
-    ],
+        "To everyone who supported me, I'm sorry I couldn't meet your expectations. I will use this to fuel my comeback.",
+        "I'm not going to cry. This rank is a message from the fans that I need to find a new version of myself. I'll search for it starting tomorrow.",
+        "It's painful to see my rank drop, but I won't let it break my spirit. I want to show you that I can rise again from here.",
+        "I feel like I let you all down. But seeing your faces in the crowd reminds me that I'm not alone. Let’s start over together.",
+        "This year was tough, and this rank reflects that. But I’m going to take this frustration and turn it into the best performance of my life.",
+        "I realized today that I may have been too comfortable. Thank you for this 'wake-up call.' I’m going to work like a rookie all over again!",
+        "Even though the number went down, the love I felt from you this year was bigger than ever. I'll work hard so we can smile together next time.",
+        "I’ve hit a wall, but I won’t stop here. Please don’t give up on me yet—I promise to make you proud that you supported me."
+    ],    
     newRank: [
         "My name was called! I didn't think I would rank... thank you! This is the happiest day of my life!",
         "To be given a rank in this amazing group... I'm speechless. Thank you for finding me!",
-        "I can't stop shaking. Thank you for giving me this wonderful stage to stand on. I'll do my best!"
-    ],
+        "I can't stop shaking. Thank you for giving me this wonderful stage to stand on. I'll do my best!",
+        "I've always watched this from the seats in the back. To finally be the one walking toward the microphone... it feels like a dream.",
+        "I was so scared that no one noticed me. Thank you for proving me wrong and for giving me this beautiful rank!",
+        "I’m just a kenkyuusei (trainee), so I never imagined I’d be standing here tonight. I will carry this pride with me forever!",
+        "To my parents who supported my dream, and to the fans who voted for me—look! I finally made it into the rankings!",
+        "I didn't have any confidence in myself, but this rank is the greatest gift you could ever give me. I’ll work hard to become a real idol now!",
+        "I practiced my speech just in case, but now that I'm here, my mind is completely blank. I just... I love you all so much! Thank you!",
+        "This is the start of my story. Thank you for giving me the courage to keep going. I won't stop until I reach the very top!"
+    ],    
     holdRank: [
         "Thank you for allowing me to keep this spot. It's an honor, and I'll continue to cherish it and work hard.",
         "Maintaining your position is a battle in itself. Thank you for your unwavering support. I love you all!",
-        "This rank feels just as special as the first time. Thank you for believing in me again this year."
-    ]
+        "This rank feels just as special as the first time. Thank you for believing in me again this year.",
+        "They say staying at the top is harder than getting there. Thank you for protecting my place in this group.",
+        "I was worried that I had reached my limit, but seeing this result tells me that you still believe in my potential. I won't stop here!",
+        "Even if the number hasn't changed, our bond has grown so much deeper over the past year. This is our shared pride.",
+        "To be able to stand on this stage two years in a row at the same rank... it makes me realize how loyal and kind my fans are.",
+        "I'll admit, I wanted to climb higher. But keeping this rank in such a competitive year is a miracle in itself. Thank you!",
+        "This rank is a sign that I need to work even harder to break through my current self. Next year, let's move forward together!",
+        "I'm so relieved... I was so afraid of falling. Thank you for holding onto my hand and keeping me right here where I belong."
+    ],    
 };
 
 export const scandalResponseOptions = {
@@ -282,6 +402,52 @@ export const getGraduationRisk = (member) => {
     return { text: '', color: '' }; // No need to show for low urgency
 };
 
+export const ambitions = {
+    'Pursue a Solo Dream': {
+        description: 'Wants to become a successful solo artist, actress, or model. Success and being center are very important to them.',
+        baseUrgency: 1.0,
+    },
+    'Reaching the Goal': {
+        description: 'Has a specific, lofty goal for the group (e.g., "Perform at the Dome"). Once achieved, their graduation risk will skyrocket.',
+        baseUrgency: 0.8,
+    },
+    'Prove My Worth': {
+        description: 'Feels overlooked and is desperate to prove their talent. Will work harder, but becomes a high graduation risk if ignored.',
+        baseUrgency: 1.5,
+    },
+    'Find Normal Happiness': {
+        description: 'Values a low-stress life. Overworking them or putting them under intense pressure will quickly lead to burnout.',
+        baseUrgency: 2.0,
+    },
+    'Space for Juniors': {
+        description: 'A veteran mindset. They want to see the group succeed and will stay longer to mentor younger members.',
+        baseUrgency: 0.5,
+    },
+    'Academic Focus': {
+        description: 'Prioritizes their education. Has a shorter expected career span from the start.',
+        baseUrgency: 1.8,
+    },
+    'The Rival': {
+        description: 'Fueled by a friendly (or not-so-friendly) competition with another idol, pushing them to constantly improve. Their motivation soars when they can compete, but they might become disruptive if they feel they are losing.',
+        baseUrgency: 1.2,
+    },
+    'The Producer': {
+        description: 'Has a passion for the creative process and wants to be involved in songwriting, choreography, or concert planning. They are more loyal when given creative input, but get frustrated if their ideas are ignored.',
+        baseUrgency: 0.7,
+    },
+    'The Unwilling Idol': {
+        description: 'Pushed into the industry by family or circumstance, they may have hidden talents but lack the initial drive. They are a high graduation risk from the start, but a major success could ignite their passion.',
+        baseUrgency: 2.5,
+    },
+    'Heal from a Scandal': {
+        description: 'Trying to overcome a past scandal, this idol is extremely dedicated and cautious, but also vulnerable to public opinion. Their graduation risk is high, especially if another scandal occurs.',
+        baseUrgency: 1.7,
+    },
+    'Family Matters': {
+        description: 'As the primary breadwinner for their family, they are motivated by financial success but also under immense pressure. They might stay longer if the pay is good, but could burn out from the stress.',
+        baseUrgency: 1.3,
+    },
+};
 
 
 // --- Custom Hook for Game Logic and State Management ---
@@ -302,6 +468,10 @@ export const useIdolManager = () => {
     const [scheduledEvents, setScheduledEvents] = useState([]);
     const [pastReleases, setPastReleases] = useState([]); // To store all created singles
     const [formattedDate, setFormattedDate] = useState('');
+    useEffect(() => {
+    setFormattedDate(getFormattedDateForWeek(week));
+}, [week]);
+
     const [songs, setSongs] = useState([]);
     const [hasPerformedThisWeek, setHasPerformedThisWeek] = useState(false);
     const [teams, setTeams] = useState([]);
@@ -463,7 +633,11 @@ const [pendingMerch, setPendingMerch] = useState([]);
     const [requestHourHistory, setRequestHourHistory] = useState([]);
     const [lastRequestHourResult, setLastRequestHourResult] = useState(null);
     const [draftProspects, setDraftProspects] = useState([]);
-    const [draftKaigi, setDraftKaigi] = useState(null); // Will hold the live draft state
+    const [draftKaigi, setDraftKaigi] = useState(null); 
+    const [groupRoles, setGroupRoles] = useState({});
+    const [annualAwardsHistory, setAnnualAwardsHistory] = useState([]);
+
+
 
     // START/LOAD/SAVE FUNCTIONS
 
@@ -555,6 +729,7 @@ const [pendingMerch, setPendingMerch] = useState([]);
                 venues: JSON.stringify(venues),
                 performanceHistory: JSON.stringify(performanceHistory),
                 scheduledSingles: JSON.stringify(scheduledSingles),
+                groupRoles: JSON.stringify(groupRoles),
                 timestamp: Date.now(),
             };
 
@@ -584,7 +759,18 @@ const [pendingMerch, setPendingMerch] = useState([]);
                 setMoney(data.money || 0);
                 setWeek(data.week || 1);
                 const loadedMembers = JSON.parse(data.members || "[]").map(rawMember => {
-                    const member = { ...rawMember, electionHype: rawMember.electionHype || 0, isCurrentCenter: rawMember.isCurrentCenter || false, relationships: rawMember.relationships || { friends: [], rivals: [] } };
+                    const member = { ...rawMember };
+if (member.relationships && !member.chemistry) {
+    member.chemistry = {};
+    (member.relationships.friends || []).forEach(friendId => {
+        member.chemistry[friendId] = 25; // Good starting chemistry
+    });
+    (member.relationships.rivals || []).forEach(rivalId => {
+        member.chemistry[rivalId] = -25; // Negative starting chemistry
+    });
+}
+delete member.relationships; // Remove old data
+member.chemistry = member.chemistry || {};
                     if (typeof member.fans === 'number' || !member.fans) {
                     const fanCount = typeof member.fans === 'number' ? member.fans : 0;
                     return {
@@ -643,16 +829,32 @@ const [pendingMerch, setPendingMerch] = useState([]);
                 }
                 const loadedSisterGroups = JSON.parse(data.sisterGroups || "[]").map(sg => {
                     let migratedMembers = sg.members || [];
-                    if (sg.members) {
-                        migratedMembers = sg.members.map(rawMember => {
-                            const member = { ...rawMember, electionHype: rawMember.electionHype || 0, isCurrentCenter: rawMember.isCurrentCenter || false, relationships: rawMember.relationships || { friends: [], rivals: [] } };
-                            if (typeof member.fans === 'number' || !member.fans) {
-                                const fanCount = typeof member.fans === 'number' ? member.fans : 0;
-                                return { ...member, fans: { hardcore: Math.floor(fanCount * 0.2), casual: fanCount - Math.floor(fanCount * 0.2) } };
-                            }
-                            return member;
-                        });
-                    }
+if (sg.members) {
+    migratedMembers = sg.members.map(rawMember => {
+        const member = { ...rawMember };
+        // --- NEW MIGRATION ---
+        if (member.relationships && !member.chemistry) {
+            member.chemistry = {};
+            (member.relationships.friends || []).forEach(friendId => {
+                member.chemistry[friendId] = 25;
+            });
+            (member.relationships.rivals || []).forEach(rivalId => {
+                member.chemistry[rivalId] = -25;
+            });
+        }
+        delete member.relationships;
+        member.chemistry = member.chemistry || {};
+        // --- END MIGRATION ---
+
+        // Existing fan migration
+        if (typeof member.fans === 'number' || !member.fans) {
+            const fanCount = typeof member.fans === 'number' ? member.fans : 0;
+            return { ...member, fans: { hardcore: Math.floor(fanCount * 0.2), casual: fanCount - Math.floor(fanCount * 0.2) } };
+        }
+
+        return member;
+    });
+}
 
                     let migratedSongs = [];
                     if (sg.songs) {
@@ -706,6 +908,12 @@ const [pendingMerch, setPendingMerch] = useState([]);
                 setActiveTrainingCamp(JSON.parse(data.activeTrainingCamp || "null"));
                 setPerformanceHistory(JSON.parse(data.performanceHistory || "[]"));
                 setScheduledSingles(JSON.parse(data.scheduledSingles || "[]"));
+                let loadedRoles = JSON.parse(data.groupRoles || '{}');
+// Compatibility for old saves
+if (loadedRoles && loadedRoles.hasOwnProperty('captain')) {
+    loadedRoles = { 'main': loadedRoles.captain };
+}
+setGroupRoles(loadedRoles);
 
                 setGameStarted(true);
                 setMessage(`🎮 Game loaded for ${data.username || gameUsername}!`);
@@ -799,12 +1007,20 @@ const [pendingMerch, setPendingMerch] = useState([]);
         setMembers([]); // Start with 0 members
         setGroupName(startGroupName);
         setUsername(startUsername);
-            const rivalNames = [
-                'Lunar Princesses', 'Project Nova', 'Sapphire Kiss', 'Onyx7', 
-                'Solstice', 'Equinox', 'Galaxy Girls', 'Cosmic Charm', 'Nebula Stars',
-                'Pixel Pop', 'Melty Kiss', 'Cherry Chu'
-            ];
-            const shuffledNames = [...rivalNames].sort(() => 0.5 - Math.random());
+        const rivalNames = [
+            'Lunar Princesses', 'Project Nova', 'Sapphire Kiss', 'Onyx7', 
+            'Solstice', 'Equinox', 'Galaxy Girls', 'Cosmic Charm', 'Nebula Stars',
+            'Pixel Pop', 'Melty Kiss', 'Cherry Chu', 'Violet Theory', 'Zero Gravity',
+            'Saka46-X', 'Midnight Bloom', 'Neo-Genesis', 'Velvet Riot', 'Aero-Step',
+            'Diamond Dust', 'Pure Rhythm', 'Kira-Kira 5', 'Digital Hearts', 'Urban Muse',
+            'Crimson Edge', 'Starry Palette', 'Glass Wings', 'Next-Gen Idols', 'Prism 9',
+            'Secret Garden', 'Nova-Ray', 'Luminous', 'Bitter-Sweet', 'Infinity Girl',
+            'Code:Pink', 'Vivid Soul', 'Aozora Sisters', 'Techno-Tale', 'Goth-Loli Punk',
+            'Sugar Rush', 'Metal Maidens', 'Silent Siren', 'Aura-Blast', 'Future-Mix',
+            'Starlight 7', 'Honey-BEE', 'Lunar Eclipse', 'Paradox-G', 'Miracle-Step', 'Last-Piece'
+        ];            
+        
+        const shuffledNames = [...rivalNames].sort(() => 0.5 - Math.random());
 
             const initialRivals = shuffledNames.slice(0, 2).map((name, index) => ({
                 id: index + 1,
@@ -1135,7 +1351,7 @@ const buildTheater = () => {
     const upgradePracticeRoom = (type) => {
       const roomType = type === 'vocal' ? 'vocal' : type;
       const currentLevel = buildings.practiceRooms[type];
-      const cost = 25000 + currentLevel * 15000;
+      const cost = 100000 * Math.pow(2, currentLevel);      
       if (money < cost) return setMessage(`Need ¥${cost.toLocaleString()} to upgrade the ${type} room (Lvl ${currentLevel + 1})!`);
       if (currentLevel >= 5) return setMessage('Maximum room level (5) reached.');
 
@@ -1616,23 +1832,45 @@ const deleteTeam = (teamId) => {
                 const responses = [
                     `Me? Graduate? I haven't even thought about it! I want to do my best for the group right now.`,
                     `I'm not planning on leaving anytime soon! There's still so much I want to achieve with everyone.`,
-                    `Not for a long, long time! My journey as an idol has just begun.`
+                    `Not for a long, long time! My journey as an idol has just begun.`,
+                    `As long as the fans keep calling my name, I'll stay on this stage forever! I'm not going anywhere.`,
+                    `I want to see this group reach the top of the charts before I even consider my own future. We're in this together!`,
+                    `Graduation? Why would you ask that? I'm having way too much fun performing with the girls right now!`,
+                    `I still have so many things I want to show you all. Please keep watching me—I’m staying right here.`,
+                    `I've only just started to find my own style. I want to polish my dancing and singing here for many more years!`,
+                    `The thought hasn't even crossed my mind. My heart is 100% focused on our next concert tour!`,
+                    `I promised my juniors I'd be here to support them. I'm not leaving until I know the group's future is secure.`
                 ];
-                response = responses[Math.floor(Math.random() * responses.length)];
-            } else if (urgency < 60) {
+            response = responses[Math.floor(Math.random() * responses.length)];
+            } 
+            else if (urgency < 60) {
                 const remainingYears = Math.max(1, gradWindow.min - yearsActive);
                 const responses = [
                     `Hmm, I don't know... Maybe in about ${remainingYears} year(s)? For now, I'm focused on our next single.`,
                     `I've been thinking about what comes next, but I'm not ready to leave just yet.`,
-                    `It's on my mind, but not for a while. I still feel like I have more to give.`
-                ];
-                response = responses[Math.floor(Math.random() * responses.length)];
-            } else if (urgency < 85) {
+                    `It's on my mind, but not for a while. I still feel like I have more to give.`,
+                    `I’ve started to think about my life after this, but my heart still beats for the stage every time the lights go up.`,
+                    `Sometimes I look at the new members and think about passing the torch, but I want to make a few more memories first.`,
+                    `Graduation is a word that feels more real lately, but I'm not in any hurry to say it out loud.`,
+                    `I want to stay until I feel I’ve truly mastered my craft. I think I need a little more time here.`,
+                    `People are starting to ask me that more often. I suppose I'll know when the time is right, but it's not today.`,
+                    `I’ve been an idol for a while now. I’ve started wondering about the 'outside world,' but I still love this view too much.`,
+                    `I want to leave a legacy behind. Until I'm sure I've done that, I'll keep wearing this uniform with pride.`
+                ];                response = responses[Math.floor(Math.random() * responses.length)];
+            } 
+            else if (urgency < 85) {
                 const responses = [
                     `To be honest, I've been thinking about it a lot lately. Maybe within the next year or so...`,
                     `I think my time as an idol might be coming to a close soon. I'm thinking about graduating sometime in the next 6 to 12 months.`,
-                    `It feels like it's getting to be that time. I'll probably make a decision within the year.`
-                ];
+                    `It feels like it's getting to be that time. I'll probably make a decision within the year.`,
+                    `I’ve given my all to this group, but I can feel my heart starting to look toward a new dream. It might be soon.`,
+                    `I want my final performance to be perfect. I’ve started talking to the staff about when the right time might be.`,
+                    `The time when I have to say goodbye is getting closer. I want to treasure every handshake and every stage until then.`,
+                    `I’ve realized that I’ve accomplished what I set out to do here. I think I’ll be ready to move on before the year ends.`,
+                    `It’s getting harder to say 'see you next time' because I know the 'last time' is coming up. I’m preparing myself.`,
+                    `I want to pass my position to the juniors while I’m still at my best. I’m seriously considering a date for next year.`,
+                    `I’ve spent half my life in this costume. I think it’s almost time to hang it up and see who I am without it.`
+                ];                
                 response = responses[Math.floor(Math.random() * responses.length)];
             } else { // 85+
                 const responses = [
@@ -1647,13 +1885,23 @@ const deleteTeam = (teamId) => {
             setShowModal('graduationTalk');
         };
        
-        const handleScandalResponse = (responseType) => {
+                const handleScandalResponse = (responseType) => {
             if (!activeScandal) return;
     
             const { member, scandal } = activeScandal;
             const responseOption = scandalResponseOptions[responseType];
             let fanLossMultiplier = 1;
             let moraleHitMultiplier = 1;
+            let urgencyMultiplier = 1;
+
+            // Check if the member is especially vulnerable to scandals
+            if (member.ambition === 'Heal from a Scandal') {
+                fanLossMultiplier = 2.0; // Double the fan loss
+                moraleHitMultiplier = 2.0; // Double the morale hit
+                urgencyMultiplier = 2.5; // Drastically increase the graduation urgency impact
+                addNotification({ type: 'Alert', message: `Because ${member.name} is still recovering from a past issue, this new scandal is doubly damaging!` });
+            }
+    
             let stressChange = 0;
             let message = '';
             let reputationLoss = 0;
@@ -1668,37 +1916,37 @@ const deleteTeam = (teamId) => {
                 case 'deny':
                     const successChance = scandal.severity === 'High' ? 0.2 : (scandal.severity === 'Mid' ? 0.5 : 0.8);
                     if (Math.random() < successChance) {
-                        fanLossMultiplier = 0.2;
-                        moraleHitMultiplier = 0.5;
+                        fanLossMultiplier *= 0.2;
+                        moraleHitMultiplier *= 0.5;
                         stressChange = 10;
-                        reputationLoss = -1; // Minor rep loss even on success
+                        reputationLoss = -1;
                         message = `The denial was successful! The damage was minimal.`;
                     } else {
-                        fanLossMultiplier = 2.5;
-                        moraleHitMultiplier = 2.0;
+                        fanLossMultiplier *= 2.5;
+                        moraleHitMultiplier *= 2.0;
                         stressChange = 40;
-                        reputationLoss = -8; // Major rep loss for a failed cover-up
+                        reputationLoss = -8;
                         message = `The denial backfired horribly! The scandal has gotten much worse.`;
                     }
                     break;
                 case 'apologize':
-                    fanLossMultiplier = 1.0;
-                    moraleHitMultiplier = 1.2;
+                    fanLossMultiplier *= 1.0;
+                    moraleHitMultiplier *= 1.2;
                     stressChange = 20;
                     reputationLoss = scandal.severity === 'High' ? -4 : (scandal.severity === 'Mid' ? -2 : -1);
                     message = `A formal apology was issued. Many appreciate the honesty.`;
                     break;
                 case 'suspend':
-                    fanLossMultiplier = 0.8;
-                    moraleHitMultiplier = 2.5;
+                    fanLossMultiplier *= 0.8;
+                    moraleHitMultiplier *= 2.5;
                     stressChange = 10;
                     reputationLoss = scandal.severity === 'High' ? -3 : (scandal.severity === 'Mid' ? -1 : 0);
                     updateMemberState(member.id, m => ({ ...m, isAvailable: false, returningWeek: week + 4 }));
                     message = `${member.name} has been suspended for 4 weeks. The public sees that you are taking action.`;
                     break;
                 case 'ignore':
-                    fanLossMultiplier = Math.random() * 2 + 0.5;
-                    moraleHitMultiplier = 1.0;
+                    fanLossMultiplier *= (Math.random() * 2 + 0.5);
+                    moraleHitMultiplier *= 1.0;
                     stressChange = 5;
                     reputationLoss = scandal.severity === 'High' ? -5 : (scandal.severity === 'Mid' ? -3 : -2);
                     message = `You chose to ignore the scandal. The story fizzled out... for now. The impact was unpredictable.`;
@@ -1712,6 +1960,7 @@ const deleteTeam = (teamId) => {
     
             const fanLoss = Math.floor( ((member.fans.hardcore || 0) + (member.fans.casual || 0)) * scandal.baseFanLoss * fanLossMultiplier );
             const moraleHit = Math.floor(scandal.baseMoraleHit * moraleHitMultiplier);
+            const urgencyIncrease = scandal.baseUrgency * urgencyMultiplier;
             
             updateMemberState(member.id, m => {
                 const newHardcore = Math.max(0, (m.fans.hardcore || 0) - Math.floor(fanLoss * 0.7));
@@ -1721,15 +1970,26 @@ const deleteTeam = (teamId) => {
                     fans: { hardcore: newHardcore, casual: newCasual },
                     morale: Math.max(0, m.morale - moraleHit),
                     stress: Math.min(100, m.stress + stressChange),
-                    graduationUrgency: Math.min(100, (m.graduationUrgency || 0) + scandal.baseUrgency)
+                    graduationUrgency: Math.min(100, (m.graduationUrgency || 0) + urgencyIncrease)
                 }
             });
     
             addNotification({ type: 'Scandal', message: `${member.name}'s Scandal: ${message}` });
-            setMessage(`Handled ${member.name}'s scandal. Result: ${fanLoss.toLocaleString()} fans lost.`);
+            setMessage(`Handled ${member.name}'s scandal. See results.`);
+
+            setModalData({
+                member,
+                scandal,
+                action: responseType,
+                resultMessage: message,
+                fanLoss,
+                moraleHit,
+                reputationLoss,
+                urgencyIncrease
+            });
             
             setActiveScandal(null);
-            setShowModal(null);
+            setShowModal('scandalResult');
         };
 
 
@@ -1775,6 +2035,19 @@ const deleteTeam = (teamId) => {
         const avgDancing = performingMembers.reduce((s, m) => s + (m.dancing || 0), 0) / memberCount;
         const avgVisual = performingMembers.reduce((s, m) => s + (m.visual || 0), 0) / memberCount;
         const avgCharisma = performingMembers.reduce((s, m) => s + (m.charisma || 0), 0) / memberCount;
+let totalChemistry = 0;
+let pairs = 0;
+for (let i = 0; i < performingMembers.length; i++) {
+    for (let j = i + 1; j < performingMembers.length; j++) {
+        const memberA = performingMembers[i];
+        const memberB = performingMembers[j];
+        const chemistryScore = (memberA.chemistry && memberA.chemistry[memberB.rosterId]) || 0;
+        totalChemistry += chemistryScore;
+        pairs++;
+    }
+}
+const avgChemistry = pairs > 0 ? totalChemistry / pairs : 0;
+const chemistryBonus = 1 + (avgChemistry / 500); // e.g., avg chemistry of 50 gives a +10% bonus
 
         const performance = performingMembers.reduce((sum, m) => {
             const memberScore = ((m.singing || 0) * 0.3 + 
@@ -1783,7 +2056,7 @@ const deleteTeam = (teamId) => {
                                  (m.charisma || 0) * 0.1);
             const staminaModifier = (m.stamina || 100) / 100;
             return sum + (memberScore * staminaModifier);
-        }, 0) * themeBonus;
+        }, 0) * themeBonus * chemistryBonus;
 
         let salesData = {};
         let merchRevenue = 0;
@@ -2124,7 +2397,7 @@ const runElectionLogic = (participants) => {
         const hypeMultiplier = 1 + ((member.electionHype || 0) / 100.0);
         const randomFactor = 0.8 + (Math.random() * 0.4);
         const finalVotes = Math.floor(baseVotes * hypeMultiplier * randomFactor);
-        return { ...member, votes: finalVotes };
+        return { ...member, votes: finalVotes, chemistry: member.chemistry || {} }; // Ensure chemistry object exists
     }).sort((a, b) => b.votes - a.votes)
     .map((member, index) => {
         const newRank = index + 1;
@@ -2140,8 +2413,7 @@ const runElectionLogic = (participants) => {
         const speeches = electionSpeechTemplates[speechType];
         const speech = speeches[Math.floor(Math.random() * speeches.length)];
 
-        // This line has been made safer to prevent crashes
-        return { ...member, rank: newRank, previousRank: oldRank, speech: speech, relationships: { friends: member.relationships?.friends || [], rivals: member.relationships?.rivals || [] } };
+        return { ...member, rank: newRank, previousRank: oldRank, speech: speech };
     });
 
     const getUnitNameFromRank = (rank) => {
@@ -2155,40 +2427,35 @@ const runElectionLogic = (participants) => {
         return "Unranked";
     };
 
-    const memberMapForRelationships = new Map(universallySortedMembers.map(m => [String(m.rosterId || m.id), m]));
     const relationshipNotifications = [];
 
-    universallySortedMembers.forEach((memberA_info, i) => {
-        const memberA_id = String(memberA_info.rosterId || memberA_info.id);
-        const memberA = memberMapForRelationships.get(memberA_id);
-
-        if (i + 1 < universallySortedMembers.length) {
-            const memberB_info = universallySortedMembers[i + 1];
-            const memberB_id = String(memberB_info.rosterId || memberB_info.id);
-            const memberB = memberMapForRelationships.get(memberB_id);
-
-            if (Math.random() < 0.15 && !memberA.relationships.rivals.includes(memberB_id) && !memberA.relationships.friends.includes(memberB_id)) {
-                memberA.relationships.rivals.push(memberB_id);
-                memberB.relationships.rivals.push(memberA_id);
-                relationshipNotifications.push(`A new rivalry has formed between ${memberA.name} and ${memberB.name} over the election results!`);
-            }
-        }
-
+    universallySortedMembers.forEach((memberA, i) => {
+        const memberA_id = String(memberA.rosterId || memberA.id);
+    
         for (let j = i + 1; j < universallySortedMembers.length; j++) {
-            const memberC_info = universallySortedMembers[j];
+            const memberB = universallySortedMembers[j];
+            const memberB_id = String(memberB.rosterId || memberB.id);
+    
+            if (memberA.chemistry[memberB_id] === undefined) memberA.chemistry[memberB_id] = 0;
+            if (memberB.chemistry[memberA_id] === undefined) memberB.chemistry[memberA_id] = 0;
+    
             const unitA = getUnitNameFromRank(i + 1);
-            const unitC = getUnitNameFromRank(j + 1);
-
-            if (unitA !== 'Unranked' && unitA === unitC) {
-                const memberC_id = String(memberC_info.rosterId || memberC_info.id);
-                const memberC = memberMapForRelationships.get(memberC_id);
-
-                if (Math.random() < 0.10 && !memberA.relationships.friends.includes(memberC_id) && !memberA.relationships.rivals.includes(memberC_id)) {
-                    memberA.relationships.friends.push(memberC_id);
-                    memberC.relationships.friends.push(memberA_id);
-                    relationshipNotifications.push(`${memberA.name} and ${memberC.name} have formed a new friendship after sharing success in the election.`);
-                }
+            const unitB = getUnitNameFromRank(j + 1);
+            let chemistryChange = 0;
+    
+            if (unitA !== 'Unranked' && unitA === unitB) {
+                chemistryChange += 2;
             }
+    
+            if (Math.abs(memberA.rank - memberB.rank) <= 2) {
+                 if (Math.random() < 0.15 && memberA.chemistry[memberB_id] > -50) { // Don't worsen already terrible relationships
+                    chemistryChange -= 5;
+                    relationshipNotifications.push(`A new rivalry has formed between ${memberA.name} and ${memberB.name} over the election results!`);
+                 }
+            }
+    
+            memberA.chemistry[memberB_id] = Math.max(-100, Math.min(100, memberA.chemistry[memberB_id] + chemistryChange));
+            memberB.chemistry[memberA_id] = Math.max(-100, Math.min(100, memberB.chemistry[memberA_id] + chemistryChange));
         }
     });
 
@@ -2207,8 +2474,7 @@ const runElectionLogic = (participants) => {
 
         if (newRank === 1) { stressChange += 25; moraleChange += 15; }
 
-        const updatedMember = memberMapForRelationships.get(id);
-        return [id, { newRank, moraleChange, stressChange, newRelationships: updatedMember.relationships }];
+        return [id, { newRank, moraleChange, stressChange, newChemistry: member.chemistry }];
     }));
 
     const updateMemberWithResults = (member, isSister = false, sgId = null) => {
@@ -2216,7 +2482,7 @@ const runElectionLogic = (participants) => {
         const result = resultMap.get(memberId);
 
         if (result) {
-            const { newRank, moraleChange, stressChange, newRelationships } = result;
+            const { newRank, moraleChange, stressChange, newChemistry } = result;
             const unitName = getUnitNameFromRank(newRank);
             const newHistoryEntry = { week: week, rank: newRank, unit: unitName, year: Math.floor(week / 52) + 1 };
             
@@ -2231,10 +2497,9 @@ const runElectionLogic = (participants) => {
                 morale: Math.max(0, Math.min(100, (member.morale || 80) + moraleChange)),
                 stress: Math.max(0, Math.min(100, (member.stress || 0) + stressChange)),
                 isCurrentCenter: newRank === 1,
-                relationships: newRelationships,
+                chemistry: newChemistry,
             };
         } else {
-            // This member did not participate. Reset their rank and position.
             return { 
                 ...member, 
                 rank: 999, 
@@ -2264,8 +2529,6 @@ const runElectionLogic = (participants) => {
     setElectionVotePool(0);
     setLastElectionResult(universallySortedMembers);
     setElectionHistory(prev => [...prev, { week: week, results: universallySortedMembers }]);
-
-
 };
 
 const createSong = () => {
@@ -2397,10 +2660,14 @@ const createSong = () => {
     const unselectedMembers = potentialParticipants.filter(m => !allParticipatingIds.has(String(m.rosterId || m.id)));
 
     unselectedMembers.forEach(member => {
-        // Increase urgency by a small amount for being left out
+        // Increase urgency for being left out, with a larger penalty for certain ambitions
+        let urgencyIncrease = 3;
+        if (member.ambition === 'Prove My Worth') {
+            urgencyIncrease = 10; // Much higher penalty for being ignored
+        }
         updateMemberState(member.rosterId || member.id, m => ({
             ...m,
-            graduationUrgency: Math.min(100, (m.graduationUrgency || 0) + 3)
+            graduationUrgency: Math.min(100, (m.graduationUrgency || 0) + urgencyIncrease)
         }));
     });
     // ---
@@ -2602,12 +2869,21 @@ const createSong = () => {
                     type: track.type
                 }));
 
-            localUpdateMemberState(memberId, m => ({
-                ...m,
-                singlesParticipation: [...(m.singlesParticipation || []), { singleId: newSong.id, singleName: songData.name, tracks: participatedTracks.map(t => t.name), week: week, isCenter: isTitleCenter, isTitleTrackSenbatsu: isTitleSenbatsu, group: releasingGroupName }],
-                songsParticipation: [...(m.songsParticipation || []), ...participatedTracks.map(t => ({ songName: t.name, singleName: songData.name, week: week, type: t.type, isCenter: (t.center || []).includes(memberId), group: releasingGroupName, row: t.lineup[memberId] }))],
-                centerHistory: [...(m.centerHistory || []), ...newCenterEntries]
-            }));
+            localUpdateMemberState(memberId, m => {
+                let newAmbition = m.ambition;
+                if (isTitleCenter && m.ambition === 'The Unwilling Idol') {
+                    newAmbition = 'Pursue a Solo Dream';
+                    addNotification({ type: 'Group', message: `After being pushed to Center for \\"${songData.name}\\", a fire has been lit in ${m.name}! Their ambition has changed.` });
+                }
+
+                return {
+                    ...m,
+                    singlesParticipation: [...(m.singlesParticipation || []), { singleId: newSong.id, singleName: songData.name, tracks: participatedTracks.map(t => t.name), week: week, isCenter: isTitleCenter, isTitleTrackSenbatsu: isTitleSenbatsu, group: releasingGroupName }],
+                    songsParticipation: [...(m.songsParticipation || []), ...participatedTracks.map(t => ({ songName: t.name, singleName: songData.name, week: week, type: t.type, isCenter: (t.center || []).includes(memberId), group: releasingGroupName, row: t.lineup[memberId] }))],
+                    centerHistory: [...(m.centerHistory || []), ...newCenterEntries],
+                    ambition: newAmbition,
+                };
+            });
         });
         
         const sgIndex = updatedSisterGroups.findIndex(sg => sg.name === newSong.targetGroup);
@@ -2767,6 +3043,20 @@ const createSong = () => {
             }));
         });
 
+        // Check for "Reaching the Goal" ambition fulfillment
+        if (/Dome/i.test(venue.name)) { // Check if the venue is a Dome
+            performingMemberIds.forEach(memberId => {
+                const member = getMemberById(memberId);
+                if (member && member.ambition === 'Reaching the Goal') {
+                    updateMemberState(memberId, m => ({
+                        ...m,
+                        graduationUrgency: 95 // Skyrocket the urgency
+                    }));
+                    addNotification({ type: 'Group', message: `${member.name} has achieved their dream of performing at the Dome! Their focus may now shift towards graduation.` });
+                }
+            });
+        }
+
         const newEntry = {
             id: Date.now(),
             name: details.name || `${venue.name} Concert`,
@@ -2866,7 +3156,7 @@ const createSong = () => {
         const newEntry = {
             id: Date.now(),
             name: performanceName || typeData.label,
-            category: typeData.category,
+            category: typeData.label,
             week,
             cost: typeData.cost,
             revenue: totalRevenue,
@@ -2980,7 +3270,10 @@ const createSong = () => {
           kenninGroups: (m.kenninGroups || []).filter(gName => gName !== sg.name)
       })));
 
-      setSisterGroups(prev => prev.filter(g => g.id !== sgId));
+      setGroupRoles(prev => {
+    const { [sgId]: _, ...newRoles } = prev;
+    return newRoles;
+});
 
       if (independent) {
           setGroupReputation(prev => prev + 5); // Reputation GAIN
@@ -3801,10 +4094,18 @@ let updatedSisterGroups = initialSisterGroups;
                         group: albumData.artist,
                         type: 'album'
                     }));
+
+                let newAmbition = m.ambition;
+                if (newCenterEntries.length > 0 && m.ambition === 'The Unwilling Idol') {
+                    newAmbition = 'Pursue a Solo Dream';
+                    addNotification({ type: 'Group', message: `After being made center for a song in the album \\"${albumData.name}\\", a fire has been lit in ${m.name}! Their ambition has changed.` });
+                }
+
                 return {
                     ...m,
                     songsParticipation: [...(m.songsParticipation || []), ...newSongEntries],
                     centerHistory: [...(m.centerHistory || []), ...newCenterEntries],
+                    ambition: newAmbition,
                 };
             });
         });
@@ -4058,6 +4359,118 @@ let updatedSisterGroups = initialSisterGroups;
         setDraftKaigi(updatedKaigi);
     };
 
+const runAnnualAwards = () => {
+    const currentYear = Math.floor((week - 1) / 52) + 2025;
+    const startOfWeekYear = (currentYear - 2025) * 52 + 1;
+
+    // --- Data Collection ---
+    const allMembers = getMainGroupRoster();
+    const allSongs = [...songs, ...sisterGroups.flatMap(sg => sg.songs || [])];
+
+    // --- Award 1: Rookie of the Year ---
+    const MIN_FANS_FOR_ROOKIE = 1000;
+    // THIS IS THE FIX: We now explicitly check the fan counts here, not relying on the helper function.
+    const rookies = allMembers.filter(m => {
+        const joinEvent = (m.teamHistory || []).find(e => e.event.includes('Joined'));
+        const totalFans = (m.fans?.casual || 0) + (m.fans?.hardcore || 0);
+        return joinEvent && joinEvent.week >= startOfWeekYear && totalFans >= MIN_FANS_FOR_ROOKIE;
+    });
+
+    const rookieOfTheYear = rookies.length > 0
+        ? [...rookies].sort((a, b) => getTotalFansForMember(b) - getTotalFansForMember(a))[0]
+        : null;
+
+    let rookieWinner;
+    if (rookieOfTheYear) {
+        rookieWinner = { 
+            name: rookieOfTheYear.name, 
+            id: rookieOfTheYear.rosterId || rookieOfTheYear.id, 
+            group: getMemberGroupStatus(rookieOfTheYear).split(' | ')[0],
+            isRival: false,
+            fans: getTotalFansForMember(rookieOfTheYear)
+        };
+        setMoney(prev => prev + 250000);
+        updateMemberState(rookieOfTheYear.rosterId || rookieOfTheYear.id, m => ({ ...m, morale: 100 }));
+        addNotification({ type: 'Awards', message: `Rookie of the Year: ${rookieOfTheYear.name}! (+¥250,000)` });
+    } else {
+        const topRival = rivalGroups.sort((a,b) => b.fans - a.fans)[0];
+        rookieWinner = { name: `A rising star from ${topRival.name}`, group: topRival.name, isRival: true };
+        addNotification({ type: 'Awards', message: `The group didn't have a strong enough rookie to win this year.` });
+    }
+
+    // --- Award 2: Song of the Year ---
+    const MIN_SALES_FOR_SONG = 50000;
+    const songsThisYear = allSongs.filter(s => s.releaseWeek >= startOfWeekYear && s.type === 'single' && (s.totalSales || 0) >= MIN_SALES_FOR_SONG);
+    
+    const songOfTheYear = songsThisYear.length > 0
+        ? [...songsThisYear].sort((a, b) => (b.totalSales || 0) - (a.totalSales || 0))[0]
+        : null;
+
+    let songWinner;
+    if (songOfTheYear) {
+        const ownerGroup = songOfTheYear.targetGroup === 'main' ? groupName : sisterGroups.find(sg => String(sg.id) === String(songOfTheYear.targetGroup))?.name;
+        songWinner = { 
+            name: songOfTheYear.name, 
+            sales: songOfTheYear.totalSales,
+            group: ownerGroup,
+            isRival: false
+        };
+        setMoney(prev => prev + 500000);
+        setGroupReputation(prev => prev + 2);
+        addNotification({ type: 'Awards', message: `Song of the Year: "${songOfTheYear.name}"! (+¥500,000, +2 Rep)` });
+    } else {
+        const topRival = rivalGroups.sort((a,b) => b.fans - a.fans)[0];
+        songWinner = { name: `A viral hit from ${topRival.name}`, sales: Math.floor(Math.random() * (200000 - 60000) + 60000), group: topRival.name, isRival: true };
+        addNotification({ type: 'Awards', message: `No song was popular enough to win Song of the Year.` });
+    }
+
+    // --- Award 3: Idol of the Year ---
+    const MIN_FANS_FOR_IDOL = 10000;
+    // THIS IS THE FIX: We also explicitly check the fan counts here.
+    const eligibleIdols = allMembers.filter(m => {
+        const totalFans = (m.fans?.casual || 0) + (m.fans?.hardcore || 0);
+        return totalFans >= MIN_FANS_FOR_IDOL;
+    });
+
+    const idolOfTheYear = eligibleIdols.length > 0
+        ? [...eligibleIdols].sort((a, b) => getTotalFansForMember(b) - getTotalFansForMember(a))[0]
+        : null;
+
+    let idolWinner;
+    if (idolOfTheYear) {
+        idolWinner = {
+            name: idolOfTheYear.name,
+            id: idolOfTheYear.rosterId || idolOfTheYear.id,
+            fans: getTotalFansForMember(idolOfTheYear),
+            group: getMemberGroupStatus(idolOfTheYear).split(' | ')[0],
+            isRival: false
+        };
+        setMoney(prev => prev + 1000000);
+        setGroupReputation(prev => prev + 3);
+        updateMemberState(idolOfTheYear.rosterId || idolOfTheYear.id, m => ({ ...m, morale: 100 }));
+        addNotification({ type: 'Awards', message: `Idol of the Year: ${idolOfTheYear.name}! (+¥1,000,000, +3 Rep)` });
+    } else {
+        const topRival = rivalGroups.sort((a,b) => b.fans - a.fans)[0];
+        const rivalFans = Math.floor(topRival.fans / (topRival.membersCount * 0.8));
+        idolWinner = { name: `The star member of ${topRival.name}`, fans: rivalFans, group: topRival.name, isRival: true };
+        addNotification({ type: 'Awards', message: `${topRival.name} took home the Idol of the Year award this time.` });
+    }
+
+    // --- Store History & Show Modal ---
+    const historyEntry = {
+        week,
+        year: currentYear,
+        rookieOfTheYear: rookieWinner,
+        songOfTheYear: songWinner,
+        idolOfTheYear: idolWinner,
+    };
+
+    setAnnualAwardsHistory(prev => [historyEntry, ...prev]);
+
+    setModalData(historyEntry);
+    setShowModal('annualAwardsResult');
+    return false; // Let the week advance while the modal is shown
+};
 
 
     const nextWeek = () => {
@@ -4127,7 +4540,11 @@ setPerformanceHistory(prev => [kouhakuPerformanceForHistory, ...prev]);
         // The newWeek number is calculated once.
         const newWeek = week + 1;
 
-                
+// --- ANNUAL AWARDS EVENT ---
+if ((newWeek - 1) % 52 === 49) { // Trigger at the end of Week 49
+    runAnnualAwards(); // This will show the modal on Week 50
+    }
+                    
         // This is the correct placement for the yearly checks.
         if (newWeek > 1 && (newWeek - 1) % 52 === 0) { // On the first week of a new year
             setKouhakuInvitationOffered(false);
@@ -4778,8 +5195,19 @@ if (requestHourStatus && requestHourStatus.isActive && newWeek > requestHourStat
                 return sum + baseSalary + skillBonus + fanBonus;
             }, 0);
 
-            const practiceRoomUpkeep = Object.values(buildings.practiceRooms || {}).reduce((sum, level) => sum + level, 0) * 1000;
-            const theaterUpkeep = (theaters || []).reduce((sum, t) => sum + (5000 * t.level), 0);
+            const practiceRoomUpkeep = Object.values(buildings.practiceRooms || {}).reduce((sum, level) => sum + level, 0) * 25000;
+            const theaterUpkeep = (theaters || []).reduce((sum, t) => {
+                let levelCost = 0;
+                switch (t.level) {
+                    case 1: levelCost = 10000; break;
+                    case 2: levelCost = 50000; break;
+                    case 3: levelCost = 200000; break;
+                    case 4: levelCost = 500000; break;
+                    case 5: levelCost = 1000000; break;
+                    default: levelCost = 0;
+                }
+                return sum + levelCost;
+            }, 0);
             const monthlyExpenses = totalSalaries + practiceRoomUpkeep + theaterUpkeep;
             
             // Subtract from our draft money variable
@@ -4832,6 +5260,17 @@ if (requestHourStatus && requestHourStatus.isActive && newWeek > requestHourStat
         
         const allMembersForWeeklyUpdate = [...membersForUpdate.map(m => ({ ...m, rosterId: String(m.id) })), ...sisterGroupsForUpdate.flatMap(sg => (sg.members || []).map(m => ({ ...m, rosterId: `sg-${sg.id}-${m.id}` })))];
         
+const groupBonuses = {};
+for (const [groupId, captainId] of Object.entries(groupRoles)) {
+    if (captainId) {
+        const captain = getMemberById(captainId);
+        if (captain) {
+            const leadershipBonus = Math.floor(((captain.charisma || 0) + (captain.intelligence || 0)) / 40); // Max bonus of 5
+            groupBonuses[groupId] = { bonus: leadershipBonus, captainId: captainId };
+        }
+    }
+}
+
         allMembersForWeeklyUpdate.forEach(member => {
             if (!member.rosterId) return;
 
@@ -4876,13 +5315,30 @@ if (requestHourStatus && requestHourStatus.isActive && newWeek > requestHourStat
             let newStamina = member.stamina || 100;
             let newStress = member.stress || 0;
             let newMorale = member.morale || 80;
-            const numFriends = member.relationships?.friends?.length || 0;
-            const numRivals = member.relationships?.rivals?.length || 0;
 
             // Passive Recovery & Relationship Effects
             newStamina = Math.min(100, newStamina + 20);
-            newStress = Math.max(0, newStress - (15 + (numFriends * 2)) + numRivals);
-            newMorale = Math.min(100, newMorale + numFriends);
+            
+// Captain's passive bonus
+const memberGroupId = member.isSisterMember ? String(member.groupId) : 'main';
+const groupBonus = groupBonuses[memberGroupId];
+if (groupBonus && member.rosterId !== groupBonus.captainId) {
+    newMorale = Math.min(100, newMorale + groupBonus.bonus);
+    newStress = Math.max(0, newStress - groupBonus.bonus);
+}
+
+// NEW: Team Captain's passive bonus
+if (member.teamId) {
+    const teamCaptainId = groupRoles[member.teamId];
+    if (teamCaptainId && member.rosterId !== teamCaptainId) {
+        const teamCaptain = getMemberById(teamCaptainId);
+        if (teamCaptain) {
+            const teamLeadershipBonus = Math.floor(((teamCaptain.charisma || 0) + (teamCaptain.intelligence || 0)) / 50); // Max bonus of 4
+            newMorale = Math.min(100, newMorale + teamLeadershipBonus);
+            newStress = Math.max(0, newStress - teamLeadershipBonus);
+        }
+    }
+}
 
             // Center Pressure
             if (member.isCurrentCenter) {
@@ -4906,6 +5362,7 @@ if (requestHourStatus && requestHourStatus.isActive && newWeek > requestHourStat
                 const skill = member.trainingFocus;
                 const roomType = getRoomType(skill);
                 const roomLevel = roomType ? (buildings.practiceRooms[roomType] || 0) : 0;
+                const numRivals = member.chemistry ? Object.values(member.chemistry).filter(score => score < -50).length : 0;
                 const rivalryBonus = numRivals * 0.05;
                 const focusedGain = (0.2 + Math.random() * 0.3) + (roomLevel * 0.1) + rivalryBonus;
                 localUpdateMemberState(member.rosterId, m => ({ ...m, [skill]: Math.min(100, (m[skill] || 0) + focusedGain) }));
@@ -4924,8 +5381,146 @@ if (requestHourStatus && requestHourStatus.isActive && newWeek > requestHourStat
                 }
             }
             const newUrgency = Math.min(100, (member.graduationUrgency || 0) + gradUrgencyIncrease);
+            // --- Ambition Dynamics ---
+            // --- Ambition Dynamics ---
+            let newAmbition = member.ambition; // Start with the current ambition
+            if (newWeek % 12 === 0 && Math.random() < 0.2) { // 20% chance to check for an ambition change every 12 weeks
+                let potentialNewAmbition = null;
+                const oldAmbition = member.ambition;
 
-            localUpdateMemberState(member.rosterId, m => ({...m, stamina: newStamina, stress: newStress, morale: newMorale, yearsActive: yearsActive, graduationUrgency: newUrgency }));
+                // Trigger: High potential but never been center
+                if (member.potential > 85 && (member.centerHistory || []).length === 0 && oldAmbition !== 'Prove My Worth') {
+                    potentialNewAmbition = 'Prove My Worth';
+                }
+                // Trigger: Low morale and high stress
+                else if (newMorale < 25 && newStress > 75 && oldAmbition !== 'Find Normal Happiness') {
+                    potentialNewAmbition = 'Find Normal Happiness';
+                }
+                // Trigger: Veteran who has been successful
+                else if (yearsActive > 5 && (member.centerHistory || []).length > 2 && oldAmbition !== 'Space for Juniors') {
+                    potentialNewAmbition = 'Space for Juniors';
+                }
+
+                if (potentialNewAmbition && potentialNewAmbition !== oldAmbition) {
+                    newAmbition = potentialNewAmbition;
+                    addNotificationInLoop({
+                        type: 'Group',
+                        message: `${member.name}'s ambition has changed to: "${newAmbition}"!`
+                    });
+                }
+            }
+
+            // --- Ambition Effects ---
+            switch(member.ambition) {
+                case 'The Rival': {
+                    // This member thrives on competition with established rivals.
+                    const rivalMember = allMembersForWeeklyUpdate.find(m => {
+                        // Construct the unique ID for the potential rival (m)
+                        const rivalRosterId = m.groupId ? `sg-${m.groupId}-${m.id}` : String(m.id);
+                        // Construct the unique ID for the member being checked (member)
+                        const memberRosterId = member.groupId ? `sg-${member.groupId}-${member.id}` : String(member.id);
+                        
+                        // Don't compare a member to themselves
+                        if (rivalRosterId === memberRosterId) return false;
+
+                        // Check the chemistry map using the correct unique ID
+                        return member.chemistry && member.chemistry[rivalRosterId] < -50;
+                    });
+
+                    if (rivalMember) {
+                        // If the rival has more fans, increase stress from the pressure
+                        if (getTotalFansForMember(rivalMember) > getTotalFansForMember(member)) {
+                            newStress = Math.min(100, newStress + 5);
+                        } else {
+                            // If they are ahead of their rival, boost morale
+                            newMorale = Math.min(100, newMorale + 5);
+                        }
+                    }
+                    break;
+                }
+                case 'The Producer': {
+                    // This member gets frustrated if they aren't included in creative work.
+                    const latestSingle = songsForUpdate.sort((a, b) => b.releaseWeek - a.releaseWeek)[0];
+                    if (latestSingle) {
+                        // Construct the unique ID for the member being checked
+                        const memberRosterId = member.groupId ? `sg-${member.groupId}-${member.id}` : String(member.id);
+
+                        const isIncluded = latestSingle.tracks.some(track => 
+                            (track.members || []).map(m => String(m.id)).includes(memberRosterId)
+                        );
+                        if (!isIncluded) {
+                            newMorale = Math.max(0, newMorale - 5);
+                        }
+                    }
+                    break;
+                }
+                case 'The Unwilling Idol':
+                    // This member has a constant desire to leave, until their passion is ignited.
+                    gradUrgencyIncrease += 1;
+                    break;
+                case 'Family Matters':
+                    // This member is motivated by financial success for their family.
+                    if (moneyForUpdate < 100000) {
+                        newStress = Math.min(100, newStress + 5); // Stress when group funds are low
+                    } else if (moneyForUpdate > 1000000) {
+                        newStress = Math.max(0, newStress - 5); // Feels secure when funds are high
+                        gradUrgencyIncrease -= 1; // More likely to stay
+                    }
+                    break;
+            }
+
+            // --- Chemistry Evolution & Effects ---
+let chemistryMoraleEffect = 0;
+let chemistryStressEffect = 0;
+
+const otherMemberIds = allMembersForWeeklyUpdate.map(m => m.rosterId).filter(id => id !== member.rosterId);
+// Initialize chemistry if it doesn't exist for the current member
+if (!member.chemistry) {
+    member.chemistry = {};
+}
+
+otherMemberIds.forEach(otherId => {
+    // Initialize chemistry if it doesn't exist
+    if (member.chemistry[otherId] === undefined) {
+        member.chemistry[otherId] = (Math.random() * 20) - 10; // -10 to +10
+    }
+
+    const otherMember = allMembersForWeeklyUpdate.find(m => m.rosterId === otherId);
+    if (!otherMember) return;
+
+    let change = 0;
+    // Personalities clash or match
+    if (member.personality === otherMember.personality) change += 0.5;
+    if ( (member.personality === 'Ambitious' && otherMember.personality === 'Easygoing') || (member.personality === 'Rebellious' && otherMember.personality === 'Natural Leader') ) {
+        change -= 0.5;
+    }
+
+    // Shared experiences
+    if (member.teamId && member.teamId === otherMember.teamId) change += 0.5;
+    if (member.generation === otherMember.generation) change += 0.2;
+    
+    member.chemistry[otherId] = Math.max(-100, Math.min(100, member.chemistry[otherId] + change));
+
+    // Apply passive effects
+    const chemScore = member.chemistry[otherId];
+    if (chemScore > 50) chemistryMoraleEffect += 1; // Good friends boost morale
+    if (chemScore < -50) chemistryStressEffect += 1; // Strong rivals increase stress
+});
+
+newMorale += chemistryMoraleEffect;
+newStress += chemistryStressEffect;
+// --- End Chemistry ---
+
+            localUpdateMemberState(member.rosterId, m => ({
+                ...m,
+                stamina: newStamina,
+                stress: newStress,
+                morale: newMorale,
+                yearsActive: yearsActive,
+                graduationUrgency: newUrgency,
+                ambition: newAmbition,
+                chemistry: member.chemistry
+            }));
         });
 
         rivalsForUpdate = simulateRivalActions(rivalsForUpdate, newWeek, addNotificationInLoop);
@@ -5167,7 +5762,7 @@ const executeRequestHourConcert = () => {
       setMoney(prev => prev - cost);
       setMessage(`Successfully established ${groupData.groupName} in ${groupData.location}! Hold an audition to recruit members for them.`);
       setShowModal(null);
-      setSelectedSisterGroup(newId);
+      setGroupRoles(prev => ({ ...prev, [newId]: null }));
     };
 
       const startAudition = (targetGroup, tier, generationName) => {
@@ -5297,16 +5892,12 @@ const executeRequestHourConcert = () => {
                 kenninGroups: [],
                 electionHype: 0,
                 isCurrentCenter: false,
-                relationships: { friends: [], rivals: [] },
+                chemistry: {},
 
             };
             
-            const ambitions = [
-                'Pursue a Solo Dream', 'Space for Juniors', 'Study Abroad', 
-                'Physical Health / Injury', 'Academic Focus', 'Reaching the Goal',
-                'Find Normal Happiness'
-            ];
-            baseMember.ambition = ambitions[Math.floor(Math.random() * ambitions.length)];
+            const ambitionKeys = Object.keys(ambitions);
+            baseMember.ambition = ambitionKeys[Math.floor(Math.random() * ambitionKeys.length)];
             let window = { min: 4, max: 8 }; // Default window
             switch (baseMember.ambition) {
                 case 'Study Abroad':
@@ -5318,12 +5909,16 @@ const executeRequestHourConcert = () => {
                     // These members aren't aiming for a long career, just the experience.
                     window = { min: 2, max: 5 };
                     break;
+                case 'The Unwilling Idol':
+                    // Pushed into the industry, they have a very short expected career span.
+                    window = { min: 1, max: 3 };
+                    break;
                 case 'Space for Juniors':
-                    // Veterans who plan to stay for a long time to lead the group.
+                case 'The Producer':
+                    // Veterans or creatively-invested members who plan to stay longer.
                     window = { min: 6, max: 12 };
                     break;
-                // Ambitions like 'Pursue a Solo Dream' or 'Reaching the Goal' can use the default
-                // window, as their graduation depends more on success than a time limit.
+                // Other ambitions use the default window as their graduation is more event-driven.
             }
             baseMember.graduationWindow = window;
             baseMember.graduationUrgency = 0;
@@ -5427,7 +6022,47 @@ const executeRequestHourConcert = () => {
       }
     };
 
-const checkForKouhakuInvitation = () => {
+const appointCaptain = (groupId, memberId) => {
+    const oldCaptainId = groupRoles[groupId];
+
+    // If the user selects the "Appoint" placeholder or the same captain again
+    if (!memberId || oldCaptainId === memberId) {
+        // If there was a captain and now we are removing them
+        if (oldCaptainId && !memberId) {
+            updateMemberState(oldCaptainId, m => ({
+                ...m,
+                teamHistory: [...(m.teamHistory || []), { week, event: 'Stepped down as Captain' }]
+            }));
+            setGroupRoles(prev => ({ ...prev, [groupId]: null }));
+            setMessage("Captain position is now vacant for this group.");
+        }
+        return;
+    }
+
+    // Update the new captain
+    updateMemberState(memberId, m => ({
+        ...m,
+        morale: Math.min(100, m.morale + 15),
+        teamHistory: [...(m.teamHistory || []), { week, event: 'Appointed Captain' }]
+    }));
+
+    // Update the old captain, if there was one
+    if (oldCaptainId) {
+        updateMemberState(oldCaptainId, m => ({
+            ...m,
+            morale: Math.max(0, m.morale - 5),
+            teamHistory: [...(m.teamHistory || []), { week, event: 'Stepped down as Captain' }]
+        }));
+    }
+
+    setGroupRoles(prev => ({ ...prev, [groupId]: memberId }));
+    const newCaptain = getMemberById(memberId);
+    setMessage(`${newCaptain.name} is the new Captain!`);
+    addNotification({ type: 'Management', message: `${newCaptain.name} has been appointed Captain.` });
+};
+
+
+    const checkForKouhakuInvitation = () => {
     // Already have an invite or accepted one for this year.
     if (kouhakuInvitationOffered || kouhakuInvitationAccepted) return;
 
@@ -6087,6 +6722,6 @@ const simulateRivalActions = (currentRivals, currentWeek, addNotificationInLoop)
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
-    handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, startHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, holdBsideFanMeeting, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining
+    runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, startHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, holdBsideFanMeeting, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining
     };
     };

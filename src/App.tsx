@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import NewIdolGame from './newidolgame';
+import NewIdolGame from './THE-IDOL-SIMULATOR';
 
 function App() {
   // Load saved theme on first render

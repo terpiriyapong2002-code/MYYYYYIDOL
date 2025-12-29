@@ -7,13 +7,13 @@ import { DndContext, useDraggable, useDroppable, closestCenter, PointerSensor, T
 import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-import { useIdolManager, getTotalFansForMember, getFormattedDateForWeek, productionTiers, getGraduationRisk, songTitles, generateSongTitle, electionSpeechTemplates, performanceTypes, scandalResponseOptions, tiers, getTheaterCapacity, getTicketPrice, hometowns, generateRandomHometown,  warehouseTiers, staffTiers } from "./hooks/useIdolManager";
+import { useIdolManager, getTotalFansForMember, getFormattedDateForWeek, productionTiers, getGraduationRisk, songTitles, generateSongTitle, electionSpeechTemplates, performanceTypes, scandalResponseOptions, tiers, getTheaterCapacity, getTicketPrice, hometowns, generateRandomHometown,  warehouseTiers, staffTiers, ambitions } from "./hooks/useIdolManager";
 
 import React, { useState, useEffect, useCallback, useRef, memo } from 'react';
 import { 
   Star, Briefcase, Paintbrush, Music, Heart, Library, TrendingUp, Users, Award, Calendar, DollarSign, Save, 
   Upload, Building, Tv, GripVertical, Gift, Goal, Trophy, Sparkles, AlertCircle, Zap, Globe, 
-  Film, Plane, GraduationCap, Shirt, Camera, BarChart3, Bell, X, Edit, Plus, Shuffle, 
+  Film, Plane, GraduationCap, Shirt, Shield, Camera, BarChart3, Bell, X, Edit, Plus, Shuffle, 
   User, Check, ChevronDown, ChevronUp, ShoppingBag, Mic, Hand, Brain, Package,
   Minimize2, Maximize2, Trash2, MapPin, Smile, LogIn, CalendarCheck, Home, 
   ClipboardCheck, Clock, Moon, BarChart2, FileText, Scissors, Wrench, Layers, Clipboard
@@ -35,7 +35,7 @@ const App = () => {
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
-    handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, startHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference,  completedBsidePromos, setCompletedBsidePromos, holdBsideFanMeeting, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining
+    runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, startHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference,  completedBsidePromos, setCompletedBsidePromos, holdBsideFanMeeting, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining
 
     } = useIdolManager();
 
@@ -114,8 +114,30 @@ const App = () => {
     };
 
 const generateRandomTheaterSongName = () => {
-    const prefixes = ['Miracle', 'Dream', 'Future', 'Shining', 'Eternal', 'Crystal', 'Starlight', 'Lovely', 'Happy', 'Galaxy', 'Cosmic', 'Rainbow', 'Diamond', 'Angelic', 'First'];
-    const suffixes = ['Melody', 'Harmony', 'Rhythm', 'Wave', 'Dreamer', 'Note', 'Symphony', 'Kiss', 'Love', 'Heart', 'Stage', 'Smile', 'Glitter', 'Beat', 'Step'];
+    const prefixes = [
+        'Miracle', 'Dream', 'Future', 'Shining', 'Eternal', 'Crystal', 'Starlight', 'Lovely', 'Happy', 'Galaxy',
+        'Cosmic', 'Rainbow', 'Diamond', 'Angelic', 'First', 'Sekai', 'Kiseki', 'Mugen', 'Hikari', 'Aozora',
+        'Pure', 'Sweet', 'Zutto', 'Motto', 'Kira', 'Neon', 'Urban', 'Midnight', 'Shinya', 'Hajimari',
+        'Secret', 'Silent', 'Brave', 'Global', 'Cyber', 'Digital', 'Retro', 'Classic', 'Sora', 'Umi',
+        'Hoshi', 'Tsuki', 'Taiyou', 'Kaze', 'Ame', 'Yume', 'Ai', 'Kizuna', 'Kokoro', 'Tamashii',
+        'Golden', 'Silver', 'Platinum', 'Ruby', 'Sapphire', 'Emerald', 'Velvet', 'Silk', 'Glass', 'Plastic',
+        'Mabushii', 'Setsunai', 'Hakanai', 'Tsuyoi', 'Yasashii', 'Amai', 'Nigai', 'Akai', 'Aoi', 'Shiroi',
+        'Kuroi', 'Guren', 'Shinku', 'Azure', 'Indigo', 'Prism', 'Sparkle', 'Twinkle', 'Glitter', 'Fancy',
+        'Infinity', 'Omega', 'Alpha', 'Delta', 'Zero', 'Final', 'Last', 'Next', 'Neo', 'Ultra',
+        'Kibou', 'Zettai', 'Genkai', 'Unmei', 'Innocent', 'Legend', 'Myth', 'Mystic', 'Fancy', 'Kawaii'
+    ];    
+    const suffixes = [
+        'Melody', 'Harmony', 'Rhythm', 'Wave', 'Dreamer', 'Note', 'Symphony', 'Kiss', 'Love', 'Heart',
+        'Stage', 'Smile', 'Glitter', 'Beat', 'Step', 'Uta', 'Koe', 'Hibiki', 'Oto', 'Dance',
+        'Kaze', 'Nami', 'Sora', 'Hoshi', 'Hikari', 'Yume', 'Michi', 'Saka', 'Tobira', 'Kagi',
+        'Ring', 'Bell', 'Chime', 'Ticket', 'Pass', 'Route', 'Map', 'Line', 'Gate', 'Zone',
+        'Signal', 'Echo', 'Resonance', 'Phase', 'Mode', 'Style', 'Flow', 'Glow', 'Flash', 'Beam',
+        'Kizuna', 'Omoide', 'Kioku', 'Yakusoku', 'Negai', 'Inori', 'Sanka', 'Hana', 'Tsubasa', 'Hane',
+        'World', 'Planet', 'Star', 'Moon', 'Sun', 'Sky', 'Sea', 'Ocean', 'Island', 'Garden',
+        'Hero', 'Idol', 'Hime', 'Angel', 'Fairy', 'Spirit', 'Ghost', 'Shadow', 'Light', 'Dark',
+        'Chronicle', 'Story', 'Tale', 'Legend', 'Episode', 'Scene', 'Act', 'Show', 'Live', 'Encore',
+        'Namida', 'Smile', 'Peace', 'Vibe', 'Magic', 'Power', 'Energy', 'Burst', 'Impact', 'Spark'
+    ];    
     const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
     const suffix = suffixes[Math.floor(Math.random() * suffixes.length)];
     return `${prefix} ${suffix}`;
@@ -850,6 +872,112 @@ const ElectionResultModal = () => {
         </div>
     );
 };
+
+
+const AnnualAwardsResultModal = () => {
+    if (!modalData) return null;
+    const [revealStep, setRevealStep] = useState(0); // 0: Start, 1: Rookie, 2: Song, 3: Idol
+
+    const revealNext = () => setRevealStep(prev => prev + 1);
+
+    const AwardCard = ({ title, icon: Icon, color, winnerData, metricField, unit, delayClass, isRevealed, isMainEvent }) => {
+        if (!isRevealed) return (
+            <div className="h-[105px] bg-black/20 rounded-lg flex items-center justify-center">
+                 <p className="text-gray-600 animate-pulse">Waiting for announcement...</p>
+            </div>
+        );
+
+        return (
+            <div className={`opacity-0 ${delayClass} bg-black bg-opacity-20 p-4 rounded-lg border ${isMainEvent ? 'border-2 border-yellow-400 shadow-lg shadow-yellow-500/20' : 'border-yellow-500/30'}`}>
+                <h3 className={`text-xl font-bold ${color} flex items-center mb-2`}>
+                    <Icon className="mr-3 h-6 w-6" /> {title}
+                </h3>
+                {winnerData ? (
+                    <div className="text-center py-2">
+                        <p className={`text-2xl font-light ${winnerData.isRival ? 'text-gray-400 italic' : 'text-white'}`}>{winnerData.name}</p>
+                        <p className="text-sm text-gray-400">
+                            {winnerData.isRival 
+                                ? `(${winnerData.group})` 
+                                : `from ${winnerData.group}`
+                            }
+                            {metricField && !winnerData.isRival &&
+                                <span className="ml-2 font-mono">({(winnerData[metricField] || 0).toLocaleString()}{unit})</span>
+                            }
+                        </p>
+                    </div>
+                ) : (
+                    <p className="text-lg text-center py-2 text-gray-500">No eligible winner this year.</p>
+                )}
+            </div>
+        );
+    };
+
+    return (
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-95 flex justify-center items-center z-50 p-4">
+          <div 
+            className="bg-gradient-to-b from-red-900 via-gray-900 to-gray-900 border-4 border-yellow-500 rounded-lg shadow-2xl w-full max-w-2xl text-white overflow-hidden"
+            style={{boxShadow: '0 0 30px rgba(255, 215, 0, 0.5)'}}
+          >
+            {/* Header */}
+            <div className="p-6 text-center bg-black bg-opacity-20 border-b-4 border-yellow-600">
+              <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-yellow-400 to-yellow-500 tracking-wider">
+                🏆 {modalData.year} Annual Idol Grand Prix 🏆
+              </h2>
+              <p className="text-yellow-200 opacity-80 mt-1">And the winners are...</p>
+            </div>
+
+            {/* Awards Presentation */}
+            <div className="px-8 py-6 space-y-5 min-h-[360px]">
+              <AwardCard 
+                title="Rookie of the Year"
+                icon={Sparkles}
+                color="text-pink-400"
+                winnerData={modalData.rookieOfTheYear}
+                metricField="fans"
+                unit=" fans"
+                isRevealed={revealStep >= 1}
+                delayClass="animate-fade-in-delay-1"
+              />
+              <AwardCard 
+                title="Song of the Year"
+                icon={FileText}
+                color="text-blue-400"
+                winnerData={modalData.songOfTheYear}
+                metricField="sales"
+                unit=" copies"
+                isRevealed={revealStep >= 2}
+                delayClass="animate-fade-in-delay-1"
+              />
+              <AwardCard 
+                title="Idol of the Year"
+                icon={Trophy}
+                color="text-yellow-300"
+                winnerData={modalData.idolOfTheYear}
+                metricField="fans"
+                unit=" fans"
+                isRevealed={revealStep >= 3}
+                delayClass="animate-fade-in-delay-1"
+                isMainEvent={true}
+              />
+            </div>
+            
+            {/* Footer Button */}
+            <div className="p-4 bg-black bg-opacity-20 mt-4 border-t border-yellow-600/50 flex justify-center h-[68px]">
+              <button
+                onClick={revealStep < 3 ? revealNext : () => setShowModal(null)}
+                className="bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 text-black font-bold py-3 px-12 rounded-lg shadow-lg transform hover:scale-105 transition-all"
+              >
+                {revealStep === 0 && 'Reveal Rookie of the Year'}
+                {revealStep === 1 && 'Reveal Song of the Year'}
+                {revealStep === 2 && 'And the Idol of the Year is...'}
+                {revealStep >= 3 && 'Finish'}
+              </button>
+            </div>
+          </div>
+        </div>
+    );
+};
+
 
     const CreateSongModal = () => {
     
@@ -2576,7 +2704,8 @@ return (
       return (
 <ModalWrapper title={performance.name || 'Performance Details'} maxWidth="max-w-full md:max-w-3xl">
               <div className="text-sm text-gray-600 dark:text-gray-300 mb-3 space-y-1">
-                  <p>Category: <span className="font-semibold">{performance.category}</span> | Week: <span className="font-semibold">{performance.week}</span></p>
+                  <p>Category: <span className="font-semibold">{performance.category}</span> | Date: <span className="font-semibold">{getFormattedDateForWeek(performance.week)}</span></p>
+
                   
                   {performance.targetGroup && <p>Group: <span className="font-semibold">{performance.targetGroup === 'main' ? groupName : performance.targetGroup}</span></p>}
                   
@@ -2759,7 +2888,8 @@ const memberGroups = memberObjects.reduce((acc, member) => {
                     const sgName = member.displayGroupName || 'Sister Group';
                     groupKey = member.isKenkyuusei ? `${sgName} Kenkyuusei` : `${sgName} Team ${member.teamName}`;
                 } else {
-                    groupKey = member.isKenkyuusei ? `${mainGroupName} Kenkyuusei` : `Team ${member.teamName}`;
+                    groupKey = member.isKenkyuusei ? `${mainGroupName} Kenkyuusei` : `${mainGroupName} Team ${member.teamName}`;
+
                 }
                 
                 if (!acc[groupKey]) {
@@ -2775,23 +2905,30 @@ const memberGroups = memberObjects.reduce((acc, member) => {
                 <div className="mt-3 pt-3 border-t border-dashed dark:border-gray-600">
                     {Object.keys(memberGroups)
 
-                .sort((a, b) => {
-                    const mainGroupName = groupName || 'Hoshimi01';
-                    const getScore = (key) => {
-                        if (key.includes('Kennin')) return 5;
-                        if (key.startsWith('Team')) return 1; // Main Group Team
-                        if (key.startsWith(mainGroupName)) return 2; // Main Group KKS
-                        if (key.includes('Team')) return 3; // Sister Group Team
-                        if (key.includes('Kenkyuusei')) return 4; // Sister Group KKS
-                        return 6; // Fallback
-                    };
-                    const scoreA = getScore(a);
-                    const scoreB = getScore(b);
-                    if (scoreA !== scoreB) {
-                        return scoreA - scoreB;
-                    }
-                    return a.localeCompare(b); // Alphabetical for ties
-                })
+.sort((a, b) => {
+    const mainGroupName = groupName || 'Hoshimi01'; // A safe fallback
+
+    const getScore = (key) => {
+        const isMain = key.startsWith(mainGroupName);
+        const isKKS = key.includes('Kenkyuusei');
+
+        if (isMain && !isKKS) return 1;  // Main Group Team
+        if (isMain && isKKS) return 2;   // Main Group KKS
+        if (!isMain && !isKKS) return 3; // Sister Group Team
+        if (!isMain && isKKS) return 4;  // Sister Group KKS
+        return 5; // Fallback for any other cases
+    };
+
+    const scoreA = getScore(a);
+    const scoreB = getScore(b);
+
+    if (scoreA !== scoreB) {
+        return scoreA - scoreB;
+    }
+
+    // If groups have the same score (e.g., two sister group teams), sort them alphabetically
+    return a.localeCompare(b);
+})
                         .map(groupKeyName => (
                         <div key={groupKeyName} className="mt-1 text-sm">
                             <p className="font-semibold text-pink-600 dark:text-pink-400">
@@ -4481,7 +4618,74 @@ const ScandalDecisionModal = () => {
     );
 };
 
-    const SaveGameModal = () => {
+const ScandalResultModal = () => {
+    if (!modalData) return null;
+
+    const { member, scandal, action, resultMessage, fanLoss, moraleHit, reputationLoss, urgencyIncrease } = modalData;
+
+    const getActionText = (actionKey) => {
+        const options = {
+            deny: 'Deny Publicly',
+            apologize: 'Apologize',
+            suspend: 'Suspend Member',
+            ignore: 'Ignore'
+        };
+        return options[actionKey] || 'Unknown Action';
+    };
+
+    return (
+        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in fade-in">
+            <div className="w-full max-w-xl rounded-2xl bg-gradient-to-br from-gray-800 to-black border-2 border-red-500/50 shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-5 text-white">
+                <div className="p-4 flex justify-between items-center bg-red-900/50">
+                    <div className="flex items-center gap-3">
+                        <AlertCircle size={24} className="text-red-400"/>
+                        <h3 className="font-bold text-2xl text-white">Scandal Fallout</h3>
+                    </div>
+                </div>
+
+                <div className="p-6">
+                    <div className="text-center mb-6">
+                        <h3 className="text-xl font-bold">{member.name}</h3>
+                        <p className="text-sm text-gray-400">Scandal: {scandal.type}</p>
+                    </div>
+
+                    <div className="bg-black/30 p-4 rounded-lg">
+                        <p className="text-sm">You chose to: <strong className="text-yellow-300">{getActionText(action)}</strong></p>
+                        <p className="text-md italic mt-2">"{resultMessage}"</p>
+                    </div>
+
+                    <h4 className="font-bold text-center mt-6 mb-3">Consequences:</h4>
+                    <div className="grid grid-cols-2 gap-3 text-center">
+                        <div className="p-3 bg-red-500/20 rounded-lg">
+                            <p className="text-2xl font-bold text-red-300">-{fanLoss.toLocaleString()}</p>
+                            <p className="text-xs font-semibold text-gray-300">Fans Lost</p>
+                        </div>
+                        <div className="p-3 bg-red-500/20 rounded-lg">
+                            <p className="text-2xl font-bold text-red-300">-{moraleHit}</p>
+                            <p className="text-xs font-semibold text-gray-300">Member Morale</p>
+                        </div>
+                        <div className="p-3 bg-yellow-500/20 rounded-lg">
+                            <p className="text-2xl font-bold text-yellow-300">{reputationLoss}</p>
+                            <p className="text-xs font-semibold text-gray-300">Reputation</p>
+                        </div>
+                        <div className="p-3 bg-yellow-500/20 rounded-lg">
+                            <p className="text-2xl font-bold text-yellow-300">+{urgencyIncrease.toFixed(0)}</p>
+                            <p className="text-xs font-semibold text-gray-300">Graduation Urgency</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="p-4 bg-black/20 mt-4">
+                    <button onClick={() => setShowModal(null)} className="w-full p-3 bg-red-600 text-white rounded-lg font-bold text-base hover:bg-red-700 transition-colors">
+                        Continue
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const SaveGameModal = () => {
         const [saveUsername, setSaveUsername] = useState(username);
 
         const handleSave = () => {
@@ -4552,14 +4756,85 @@ const ScandalDecisionModal = () => {
             if (!member) return null;
     
             const reasons = {
-                'Pursue a Solo Dream': "I've spent a long time thinking about my future, and I’ve decided I want to challenge myself as an actress. To take that next step, I will be graduating.",
-                'Space for Juniors': "Seeing how much the younger members have grown lately makes me so happy. I feel like I can finally entrust the future of the group to them and move on to my own next chapter.",
-                'Study Abroad': "There is a world outside of this theater that I still don't know. I've decided to go study abroad to find a version of myself that isn't an idol.",
-                'Physical Health / Injury': "As much as I love being on this stage, my body can no longer keep up with the performances. For the sake of my health, I have decided to step down.",
-                'Academic Focus': "I've tried my best to balance school and my activities here, but I’ve reached a point where I need to focus 100% on my exams and my future education.",
-                'Reaching the Goal': "When I joined, I promised myself I would stay until we reached this stage. Now that we've done it together, I feel I can leave with no regrets.",
-                'Find Normal Happiness': "Being an idol has been a dream come true, but I’ve realized I want to experience life as a normal girl again, away from the bright lights."
-            };
+                'Pursue a Solo Dream': [
+                    "I've spent a long time thinking about my future, and I’ve decided I want to challenge myself as an actress. To take that next step, I will be graduating.",
+                    "While performing on stage has been a joy, I’ve discovered a deep passion for songwriting. I want to see if my own voice can stand alone as a solo artist.",
+                    "My dream since childhood was to be on the silver screen. I've learned everything I can here, and now I must dive headfirst into the world of acting.",
+                    "I want to explore the world of fashion and design. To build my own brand and see my visions come to life, I need to dedicate all my time to this new path.",
+                    "Performing as an idol has given me confidence, but now I want to study musical theater seriously and stand on a different kind of stage."
+                ],
+                'Reaching the Goal': [
+                    "When I joined, I promised myself I would stay until we reached this stage. Now that we've done it together, I feel I can leave with no regrets.",
+                    "Performing at the Nippon Budokan was our ultimate dream. Now that the lights have dimmed on that performance, I feel my mission here is complete.",
+                    "We finally hit #1 on the charts. I’ve seen this group reach the summit, and I want to leave while my heart is full of this specific happiness.",
+                    "I promised to stay until our 10th anniversary. We made it. I’m so proud of what we built, and I can now smile as I say goodbye.",
+                    "Looking at the sea of light sticks tonight, I know we’ve succeeded in becoming a household name. I’m ready for what's next."
+                ],
+                'Prove My Worth': [
+                    "I joined this group to show everyone what I could do. I've given it my all, but I feel like my journey here has reached its limit. I'm going to find a new place where I can shine.",
+                    "I’ve spent years in the back row. While I love my teammates, I have a hunger to be center. I’m graduating to find a stage where I am the protagonist.",
+                    "I want to test my skills in a more competitive environment overseas. I don't want to wonder 'what if' for the rest of my life.",
+                    "I have poured my soul into every dance. If I stay here, I fear I’ll become complacent. I need a new, harder challenge to keep growing.",
+                    "I’ve realized that my vision for my artistry no longer aligns with the group's direction. To stay true to my creative spark, I must walk alone."
+                ],
+                'Find Normal Happiness': [
+                    "Being an idol has been a dream come true, but I’ve realized I want to experience life as a normal girl again, away from the bright lights.",
+                    "I want to walk down the street without a mask, go to a cafe with friends, and enjoy the simple things I’ve missed since I was a teenager.",
+                    "I’ve given my youth to the fans, and I don’t regret a second. But now, I want to find a different kind of love and build a quiet, ordinary life.",
+                    "The 'Idol' version of me is just one part of who I am. I want to rediscover the 'me' that existed before the makeup and the costumes.",
+                    "I’ve decided to retire from the industry entirely. I want my next chapter to be private, peaceful, and entirely my own."
+                ],
+                'Space for Juniors': [
+                    "Seeing how much the younger members have grown lately makes me so happy. I feel like I can finally entrust the future of the group to them.",
+                    "I’ve been the pillar of this group for a long time. It’s time for me to step aside so a new ace can emerge and lead us into the next era.",
+                    "The juniors are ready. If I stay, I’m taking up a spot that belongs to the future. I want to watch them thrive from the audience.",
+                    "I’ve taught them everything I know. Now, the greatest gift I can give the group is the room to grow without my shadow hanging over them.",
+                    "My role as a mentor is finished. Seeing their glittering eyes makes me realize the group is in safe hands. It’s my time to fly."
+                ],
+                'Academic Focus': [
+                    "I've tried my best to balance school and my activities here, but I’ve reached a point where I need to focus 100% on my exams and my future education.",
+                    "I’ve been accepted into a university abroad. This is a once-in-a-lifetime opportunity to study the subjects I love, and I have to take it.",
+                    "My dream of becoming a doctor requires all my focus now. I want to save people in a different way than I did as an idol.",
+                    "Entering my final year of school has made me realize how much I’ve fallen behind. I need to catch up to ensure my future outside of the stage.",
+                    "I want to study art and history. To truly immerse myself in my studies, I’ve decided to put down the microphone and pick up the books."
+                ],
+                'The Rival': [
+                    "To my greatest rival... thank you. You pushed me to be better every single day. But I've found a new mountain to climb. I hope we'll meet again at the top.",
+                    "Watching you grow made me realize I can’t stay in this comfortable place anymore. I’m leaving to become someone who can truly stand equal to you.",
+                    "We’ve fought for center for years. Now that you’ve finally taken it, I feel I can leave knowing the group has the best leader possible.",
+                    "Our rivalry was the fire that kept me going. Without it, I feel my story here is finished. I’m off to find a new spark.",
+                    "You were the wall I could never climb. Thank you for being my motivation. I’m graduating to find a path where I don’t have to follow you."
+                ],
+                'The Producer': [
+                    "I've always loved creating things for this group, from the songs to the stage. Now, I want to step behind the curtain and help create dreams for others.",
+                    "I’ve spent more time in the editing room than the dance studio lately. I’ve realized my true calling is producing the next generation of stars.",
+                    "I want to use my experience to protect and guide new idols. I’m graduating to start my own agency and build a healthier industry.",
+                    "Choreographing our last single made me realize where my heart lies. I want to be a professional creator, not just a performer.",
+                    "I want to build the stages, not just stand on them. I’m moving into stage production to create the magic that I felt every night from the other side."
+                ],
+                'The Unwilling Idol': [
+                    "This world of bright lights was more than I ever expected. Thank you for finding me, even when I couldn't find myself. But now... I'm ready to walk my own path.",
+                    "I joined on a whim, but your love made me stay. However, I’ve realized I’m a person who prefers the quiet shadows to the center spotlight.",
+                    "I’ve worn the 'Idol' mask for so long I almost forgot who was underneath. I’m graduating to find the person I was meant to be.",
+                    "I never thought I could be a star. You proved me wrong, and for that, I’m grateful. But now I want to live a life that feels more like 'me'.",
+                    "The applause is wonderful, but the pressure is heavy. I’m choosing my mental health and my own truth over the expectations of the stage."
+                ],
+                'Heal from a Scandal': [
+                    "The past has been difficult, and your support meant the world to me. However, I've decided that for my own peace of mind, I need to step away from the public eye.",
+                    "I’ve caused a lot of trouble for the members and the fans. To take responsibility and allow the group to move forward, I am graduating.",
+                    "I need time to reflect on my actions and grow as a person. I don’t think I can do that while remaining in the spotlight.",
+                    "I want to apologize for the disappointment I caused. I’m leaving so that I can one day stand before you again as someone you can be proud of.",
+                    "The scars from recent events haven't healed. I’m graduating to find a quiet place to breathe and start my life over from zero."
+                ],
+                'Family Matters': [
+                    "Because of my activities in this group, I've been able to support my family. Now, it's time for me to be there for them in a different way.",
+                    "My family's business needs me. I’ve decided to move back to my hometown and take over the responsibilities my parents have carried for so long.",
+                    "A family member is facing a health struggle, and I want to spend every possible moment by their side. My place is at home right now.",
+                    "I’m the eldest daughter, and it’s time for me to support my siblings' dreams just as my family supported mine. I’m heading home to help.",
+                    "I’ve spent too many years away from my parents. I want to go back to the countryside and live a life where I can see them every day."
+                ]
+            };            const speechOptions = reasons[member.ambition] || ["I have decided to graduate."];
+            const speech = speechOptions[Math.floor(Math.random() * speechOptions.length)];
     
             const handleConfirm = () => {
                 // The member data is already in modalData, so we just need to switch the modal view.
@@ -4576,7 +4851,7 @@ const ScandalDecisionModal = () => {
                         <p className="text-sm text-pink-300 mb-4">From {member.homeGroup === 'main' ? groupName : member.homeGroup}</p>
     
                         <div className="p-4 bg-white/50 dark:bg-pink-900/30 backdrop-blur-md border border-white/20 rounded-lg text-left">
-                            <p className="text-lg italic">"{reasons[member.ambition] || 'I have decided to graduate.'}"</p>
+                            <p className="text-lg italic">"{speech}"</p>
                         </div>
     
                         <p className="text-sm text-gray-600 dark:text-gray-400 mt-4">You must now decide how to proceed with her graduation path.</p>
@@ -4924,6 +5199,8 @@ const TeamManagementModal = ({ isEditing = false, team = null }) => {
     const [teamName, setTeamName] = useState(isEditing ? team.name : '');
     const [groupId, setGroupId] = useState(isEditing ? (team.groupId || 'main') : 'main');
     const [selectedSetlist, setSelectedSetlist] = useState(isEditing && team ? team.currentSetlistId : '');
+    
+    // NEW state for the filter
     const [filterKey, setFilterKey] = useState('All');
     
     const [selectedMembers, setSelectedMembers] = useState(isEditing ? team.members.map(id => ({ id, type: 'existing' })) : []);
@@ -4931,21 +5208,26 @@ const TeamManagementModal = ({ isEditing = false, team = null }) => {
 
     const fullRoster = getMainGroupRoster();
 
-        const handleAddMemberClick = (member) => {
-            if (selectedMembers.some(m => m.id === member.id)) return;
-            
-            const memberHomeGroupId = member.isSisterMember ? String(member.groupId) : 'main';
-            const isCrossGroupAssignment = String(memberHomeGroupId) !== String(groupId);
-            const isAlreadyInAnotherTeam = !!member.teamId;
+    // --- NEW: Generate structured data for the new filter ---
+    const mainGroupGenerations = [...new Set(fullRoster.filter(m => !m.isSisterMember).map(m => m.generation).filter(Boolean))];
+    const sisterGroupDetails = sisterGroups.map(sg => ({
+        ...sg,
+        generations: [...new Set(fullRoster.filter(m => String(m.groupId) === String(sg.id)).map(m => m.generation).filter(Boolean))]
+    }));
 
-            // Trigger the decision modal if the member is not "free"
-            if (isCrossGroupAssignment || isAlreadyInAnotherTeam) {
-                setPendingDecision({ ...member, isCrossGroupAssignment }); // Pass context to the modal
-            } else {
-                // Member is free, just add them directly
-                setSelectedMembers(prev => [...prev, { id: member.id, type: 'add' }]);
-            }
-        };
+    const handleAddMemberClick = (member) => {
+        if (selectedMembers.some(m => m.id === member.id)) return;
+        
+        const memberHomeGroupId = member.isSisterMember ? String(member.groupId) : 'main';
+        const isCrossGroupAssignment = String(memberHomeGroupId) !== String(groupId);
+        const isAlreadyInAnotherTeam = !!member.teamId;
+
+        if (isCrossGroupAssignment || isAlreadyInAnotherTeam) {
+            setPendingDecision({ ...member, isCrossGroupAssignment });
+        } else {
+            setSelectedMembers(prev => [...prev, { id: member.id, type: 'add' }]);
+        }
+    };
     
     const resolveDecision = (decisionType) => {
         if (decisionType && pendingDecision) {
@@ -4958,10 +5240,29 @@ const TeamManagementModal = ({ isEditing = false, team = null }) => {
         setSelectedMembers(prev => prev.filter(m => m.id !== memberId));
     };
     
+    // --- NEW: Updated filtering logic ---
     const filteredRoster = fullRoster.filter(member => {
         if (filterKey === 'All') return true;
+        
+        // Main group filters
         if (filterKey === 'main') return !member.isSisterMember;
-        return member.isSisterMember && member.displayGroupName === filterKey;
+        if (filterKey.startsWith('main-gen-')) {
+            const gen = filterKey.replace('main-gen-', '');
+            return !member.isSisterMember && member.generation === gen;
+        }
+
+        // Sister group filters
+        if (filterKey.startsWith('sg-')) {
+            if (filterKey.includes('-gen-')) {
+                const [sgIdStr, gen] = filterKey.replace('sg-', '').split('-gen-');
+                return String(member.groupId) === sgIdStr && member.generation === gen;
+            } else {
+                const sgId = filterKey.replace('sg-', '');
+                return String(member.groupId) === sgId;
+            }
+        }
+        
+        return false;
     });
 
     const handleSelectAllFiltered = () => {
@@ -5001,7 +5302,8 @@ const TeamManagementModal = ({ isEditing = false, team = null }) => {
 
     return (
         <ModalWrapper title={isEditing ? `Edit Team: ${team.name}` : "Create New Team"}>
-                {pendingDecision && <AssignmentDecisionModal member={pendingDecision} onResolve={resolveDecision} />}            <div className="space-y-3 text-sm">
+                {pendingDecision && <AssignmentDecisionModal member={pendingDecision} onResolve={resolveDecision} />}
+            <div className="space-y-3 text-sm">
                 <input type="text" placeholder="Team Name" value={teamName} onChange={e => setTeamName(e.target.value)} className="w-full p-2 border rounded bg-gray-50 dark:bg-gray-700" />
                 
                 <select value={groupId} onChange={e => setGroupId(e.target.value)} className="w-full p-2 border rounded bg-gray-50 dark:bg-gray-700" disabled={isEditing}>
@@ -5016,19 +5318,47 @@ const TeamManagementModal = ({ isEditing = false, team = null }) => {
 
                 <div>
                     <h3 className="font-semibold mb-2">Select Members ({selectedMembers.length})</h3>
-                    <div className="flex flex-wrap items-center gap-2 mb-2">
-                        <button onClick={() => setFilterKey('All')} className={`px-3 py-1 text-xs rounded ${filterKey === 'All' ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-600'}`}>All</button>
-                        <button onClick={() => setFilterKey('main')} className={`px-3 py-1 text-xs rounded ${filterKey === 'main' ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-600'}`}>{groupName}</button>
-                        {sisterGroups.map(sg => (
-                            <button key={sg.id} onClick={() => setFilterKey(sg.name)} className={`px-3 py-1 text-xs rounded ${filterKey === sg.name ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-600'}`}>{sg.name}</button>
-                        ))}
-                    </div>
                     
+                    {/* --- NEW: Filter Dropdown --- */}
+                    <div className="flex justify-between items-center mb-2">
+                        <h4 className="font-medium text-xs">Filter Roster</h4>
+                        <select 
+                            value={filterKey} 
+                            onChange={e => setFilterKey(e.target.value)} 
+                            className="w-1/2 p-2 text-xs rounded border-gray-300 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200"
+                        >
+                            <option value="All">All</option>
+                            <optgroup label="Groups">
+                                <option value="main">{groupName}</option>
+                                {sisterGroups.map(sg => (
+                                    <option key={`sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>
+                                ))}
+                            </optgroup>
+                            {mainGroupGenerations.length > 0 && (
+                                <optgroup label={`${groupName} Generations`}>
+                                    {mainGroupGenerations.map(gen => (
+                                        <option key={`main-gen-${gen}`} value={`main-gen-${gen}`}>{gen}</option>
+                                    ))}
+                                </optgroup>
+                            )}
+                            {sisterGroupDetails.map(sg => (
+                                sg.generations.length > 0 && (
+                                    <optgroup key={`sg-gen-group-${sg.id}`} label={`${sg.name} Generations`}>
+                                        {sg.generations.map(gen => (
+                                            <option key={`sg-${sg.id}-gen-${gen}`} value={`sg-${sg.id}-gen-${gen}`}>{gen}</option>
+                                        ))}
+                                    </optgroup>
+                                )
+                            ))}
+                        </select>
+                    </div>
+
                     <div className="flex items-center gap-2 mb-2">
                         <button onClick={handleSelectAllFiltered} className="px-3 py-1 text-xs bg-gray-500 text-white rounded hover:bg-gray-600">Toggle Select All (Filtered)</button>
                     </div>
 
                     <div className="border rounded p-2 h-64 overflow-y-auto bg-gray-50 dark:bg-gray-900">
+                        {/* --- MODIFIED: Use filteredRoster --- */}
                         {filteredRoster.map(member => {
                             const isSelected = selectedMembers.some(m => m.id === member.id);
                             return (
@@ -5046,7 +5376,7 @@ const TeamManagementModal = ({ isEditing = false, team = null }) => {
                                 </div>
                             )
                         })}
-                        {filteredRoster.length === 0 && <p className="text-center text-gray-500 italic py-4">No members in this group.</p>}
+                        {filteredRoster.length === 0 && <p className="text-center text-gray-500 italic py-4">No members match the current filter.</p>}
                     </div>
                 </div>
             </div>
@@ -5119,6 +5449,27 @@ const TeamDetailsModal = ({ team }) => {
                         })}
                     </div>
                 </div>
+
+<div>
+    <h4 className="font-semibold text-lg mb-2 border-b pb-1">Team Captain</h4>
+    <p className="text-xs text-gray-500 mb-1">Appoint a captain for Team {team.name}. They will provide a passive bonus to their teammates.</p>
+    <select
+        value={groupRoles[team.id] || ''}
+        onChange={(e) => appointCaptain(team.id, e.target.value)}
+        className="w-full p-1.5 text-sm border rounded bg-white dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
+    >
+        <option value="">-- Appoint a Team Captain --</option>
+        {team.members.map(memberId => {
+            const member = fullRoster.find(m => m.id === memberId);
+            if (!member) return null;
+            return (
+                <option key={member.id} value={member.id}>{member.name}</option>
+            )
+        })}
+    </select>
+</div>
+
+
                 <div>
                     <h4 className="font-semibold text-lg mb-2 border-b pb-1">Team History</h4>
                     <div className="space-y-3">
@@ -6728,11 +7079,14 @@ const RequestHourResultModal = () => {
                             Finish
                         </button>
                     )}
+                    
                 </div>
             </div>
         </div>
     );
 };
+
+
 
 
 const TrainingCampModal = () => {
@@ -7167,7 +7521,8 @@ const DraftKaigiModal = () => {
                      {titleTrackHistory.reverse().map((entry, index) => (
                          <div key={index} className="p-1.5 rounded bg-red-100 dark:bg-gray-700 border border-red-200 dark:border-red-600">
                              <p className="font-bold text-red-800 dark:text-red-200">{entry.songName}</p>
-                             <p className="text-gray-600 dark:text-gray-400">Single: {entry.singleName} ({entry.group})</p> 
+                             <p className="text-gray-600 dark:text-gray-400">Single: {entry.singleName} ({entry.group}) • {getFormattedDateForWeek(entry.week)}</p>
+ 
                              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Position: <span className="font-semibold text-red-700 dark:text-red-300">{entry.row || 'N/A'}</span></p>
                          </div>
                      ))}
@@ -7180,7 +7535,7 @@ const DraftKaigiModal = () => {
                      {bSideTrackHistory.reverse().map((entry, index) => (
                          <div key={index} className="p-1.5 rounded bg-green-100 dark:bg-gray-700 border border-green-200 dark:border-green-600">
                              <p className="font-bold text-green-800 dark:text-green-200">{entry.songName}</p>
-                             <p className="text-gray-600 dark:text-gray-400">Single: {entry.singleName} ({entry.group})</p>
+                             <p className="text-gray-600 dark:text-gray-400">Single: {entry.singleName} ({entry.group}) • {getFormattedDateForWeek(entry.week)}</p>
                              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Position: <span className="font-semibold text-green-700 dark:text-green-300">{entry.row || 'N/A'}</span></p>
                          </div>
                      ))}
@@ -7193,7 +7548,7 @@ const DraftKaigiModal = () => {
                      {albumTrackHistory.reverse().map((entry, index) => (
                          <div key={index} className="p-1.5 rounded bg-purple-100 dark:bg-gray-700 border border-purple-200 dark:border-purple-600">
                              <p className="font-bold text-purple-800 dark:text-purple-200">{entry.songName}</p>
-                             <p className="text-gray-600 dark:text-gray-400">Album: {entry.singleName} ({entry.group})</p>
+                             <p className="text-gray-600 dark:text-gray-400">Album: {entry.singleName} ({entry.group}) • {getFormattedDateForWeek(entry.week)}</p>
                              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Position: <span className="font-semibold text-purple-700 dark:text-purple-300">{entry.row || 'N/A'}</span></p>
                          </div>
                      ))}
@@ -7216,7 +7571,7 @@ const DraftKaigiModal = () => {
                      {majorConcertHistory.reverse().map((entry, index) => (
                          <div key={index} className="p-1 rounded bg-purple-100 dark:bg-gray-700 border border-purple-300 dark:border-purple-600">
                              <p className="font-bold text-purple-800 dark:text-purple-200">{entry.name}</p>
-                             <p className="text-gray-600 dark:text-gray-400">Week: {entry.week}</p> 
+                             <p className="text-gray-600 dark:text-gray-400">Date: {getFormattedDateForWeek(entry.week)}</p>
                          </div>
                      ))}
                  </div>
@@ -7227,7 +7582,8 @@ const DraftKaigiModal = () => {
                      {otherPerformanceHistory.reverse().map((entry, index) => (
                          <div key={index} className="p-1 rounded bg-indigo-100 dark:bg-gray-700 border border-indigo-300 dark:border-indigo-600">
                              <p className="font-bold text-indigo-800 dark:text-indigo-200">{entry.name}</p>
-                             <p className="text-gray-600 dark:text-gray-400">Week: {entry.week} | Category: {entry.category}</p> 
+                             <p className="text-gray-600 dark:text-gray-400">{getFormattedDateForWeek(entry.week)} | {entry.category}</p>
+ 
                          </div>
                      ))}
                  </div>
@@ -7580,10 +7936,11 @@ if (!gameStarted) {
                                                                     }
 
                                                                 <div className="flex justify-between items-start mb-1">
-                                                                <h3 className="text-base font-bold flex items-center">
-                                                                    {m.name}
-                                                                    {m.isCurrentCenter && <Trophy size={16} className="ml-2 text-yellow-500" title="Current Center" />}
-                                                                </h3>
+                                                    <h3 className="text-base font-bold flex items-center">
+                                                        {m.name}
+                                                        {m.isCurrentCenter && <Trophy size={16} className="ml-2 text-yellow-500" title="Current Center" />}
+                                                        {(Object.values(groupRoles).includes(m.id) || (m.teamId && groupRoles[m.teamId] === m.id)) && <Shield size={16} className="ml-2 text-purple-500" title="Captain" />}
+                                                    </h3>
                                                                     <span className={`text-xs font-semibold px-1.5 py-0.5 rounded-full ${m.position === 'center' ? 'bg-yellow-200 text-yellow-800' : 'bg-gray-200 text-gray-700'}`}>
                                                                         #{allMembers.findIndex(r => (r.rosterId || r.id) === (m.rosterId || m.id)) + 1}
                                                                     </span>
@@ -7624,10 +7981,11 @@ if (!gameStarted) {
                                     onClick={() => setSelectedMember({ ...m, isAvailable: false })}>
                                     <div className="p-2">
                                         <div className="flex justify-between items-start mb-1">
-                                                                <h3 className="text-base font-bold flex items-center">
-                                                                    {m.name}
-                                                                    {m.isCurrentCenter && <Trophy size={16} className="ml-2 text-yellow-500" title="Current Center" />}
-                                                                </h3>
+                <h3 className="text-xl font-bold flex items-center">
+                    {selectedMember.name}
+                    {selectedMember.isCurrentCenter && <Trophy size={16} className="ml-2 text-yellow-500" title="Current Center" />}
+                    {(Object.values(groupRoles).includes(selectedMember.id) || (selectedMember.teamId && groupRoles[selectedMember.teamId] === selectedMember.id)) && <Shield size={18} className="ml-2 text-purple-500" title="Captain" />}
+                </h3>
                                             <span className={`text-xs font-semibold px-1.5 py-0.5 rounded-full bg-gray-500 text-white`}>
                                                 Graduated
                                             </span>
@@ -7726,6 +8084,51 @@ if (!gameStarted) {
 
           </div>
         </div>
+
+{/* Leadership */}
+<div className="p-2 rounded-lg shadow-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+    <h3 className="text-base font-bold mb-2 flex items-center"><Shield size={18} className="mr-2"/> Leadership</h3>
+    
+    {/* Main Group Section */}
+    <div className="flex flex-col gap-1.5 border-b pb-2 mb-2 dark:border-gray-700">
+        <h4 className='font-semibold text-sm'>{groupName} Captain</h4>
+        <p className="text-xs text-gray-500">Provides a passive bonus to all main group members.</p>
+        <select 
+            value={groupRoles['main'] || ''}
+            onChange={(e) => appointCaptain('main', e.target.value)}
+            className="w-full p-1.5 text-sm border rounded bg-white dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
+        >
+            <option value="">-- Appoint a Captain --</option>
+            {members.filter(m => m.isAvailable && !m.isSisterMember).sort((a,b) => (b.charisma + b.intelligence) - (a.charisma + a.intelligence)).map(member => (
+                <option key={member.id} value={member.id}>{member.name}</option>
+            ))}
+        </select>
+    </div>
+
+    {/* Sister Groups Section */}
+    {(sisterGroups || []).map(sg => (
+        <div key={`captain-${sg.id}`} className="flex flex-col gap-1.5 mt-2">
+            <h4 className='font-semibold text-sm'>{sg.name} Captain</h4>
+            <select 
+                value={groupRoles[sg.id] || ''}
+                onChange={(e) => appointCaptain(sg.id, e.target.value)}
+                className="w-full p-1.5 text-sm border rounded bg-white dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
+            >
+                <option value="">-- Appoint a Captain --</option>
+                {(sg.members || [])
+                    .filter(m => m.isAvailable)
+                    .sort((a,b) => (b.charisma + b.intelligence) - (a.charisma + a.intelligence))
+                    .map(member => (
+                        <option key={member.id} value={`sg-${sg.id}-${member.id}`}>{member.name}</option>
+                    ))
+                }
+            </select>
+        </div>
+    ))}
+
+</div>
+
+
                       {/* Performance & Elections */}
             <div className="p-2 rounded-lg shadow-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
               <h3 className="text-base font-bold mb-2 flex items-center"><Star size={18} className="mr-2"/> Performance & Elections</h3>
@@ -8109,9 +8512,9 @@ if (!gameStarted) {
                 <div key={p.id} className="p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 flex justify-between items-center">
                   <div>
                     <h3 className="font-bold">{p.name}</h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Week {p.week} | {p.category}
-                    </p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                        {getFormattedDateForWeek(p.week)} | {p.category}
+                        </p>
                   </div>
                   <button 
                     onClick={() => { setModalData(p); setShowModal('performanceDetails'); }}
@@ -8749,35 +9152,62 @@ if (!gameStarted) {
       </button>
     </div>
 
-    {/* Relationships */}
-    <div className="mt-3 text-sm border-t pt-3">
-        <h4 className="font-semibold mb-2 flex items-center"><Users size={16} className="mr-2"/>Relationships</h4>
-        <div className="space-y-1">
-            <div className="flex justify-between items-center p-2 bg-green-50 dark:bg-green-900/30 rounded-lg">
-                <span className="font-bold text-green-600 dark:text-green-400">Friends</span>
-                <span className="text-sm text-right text-green-800 dark:text-green-300">
-                    {(selectedMember.relationships?.friends?.map(id => getMemberById(id)?.name).filter(Boolean).join(', ')) || 'None'}
-                </span>
+{/* Chemistry */}
+<div className="mt-3 text-sm border-t pt-3">
+    <h4 className="font-semibold mb-2 flex items-center"><Users size={16} className="mr-2"/>Chemistry</h4>
+    {(() => {
+        const chemistry = selectedMember.chemistry || {};
+        const relationships = Object.entries(chemistry)
+            .map(([id, score]) => ({ id, score, member: getMemberById(id) }))
+            .filter(r => r.member) // Ensure member exists
+            .sort((a, b) => b.score - a.score);
+
+        const goodRelations = relationships.filter(r => r.score > 10).slice(0, 3);
+        const badRelations = relationships.filter(r => r.score < -10).reverse().slice(0, 3);
+
+        if (goodRelations.length === 0 && badRelations.length === 0) {
+            return <p className="text-xs text-gray-500 italic">No significant relationships yet.</p>
+        }
+
+        return (
+            <div className="space-y-1">
+                {goodRelations.length > 0 && (
+                    <div className="p-2 bg-green-50 dark:bg-green-900/30 rounded-lg">
+                        <p className="font-bold text-green-600 dark:text-green-400 text-xs mb-1">Good Chemistry</p>
+                        {goodRelations.map(rel => (
+                            <div key={rel.id} className="flex justify-between items-center text-xs">
+                                <span>{rel.member.name}</span>
+                                <span className="font-mono font-bold text-green-700 dark:text-green-300">+{Math.round(rel.score)}</span>
+                            </div>
+                        ))}
+                    </div>
+                )}
+                {badRelations.length > 0 && (
+                     <div className="p-2 bg-red-50 dark:bg-red-900/30 rounded-lg mt-1">
+                        <p className="font-bold text-red-600 dark:text-red-400 text-xs mb-1">Bad Chemistry</p>
+                        {badRelations.map(rel => (
+                            <div key={rel.id} className="flex justify-between items-center text-xs">
+                                <span>{rel.member.name}</span>
+                                <span className="font-mono font-bold text-red-700 dark:text-red-300">{Math.round(rel.score)}</span>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
-            <div className="flex justify-between items-center p-2 bg-orange-50 dark:bg-orange-900/30 rounded-lg">
-                <span className="font-bold text-orange-600 dark:text-orange-400">Rivals</span>
-                <span className="text-sm text-right text-orange-800 dark:text-orange-300">
-                    {(selectedMember.relationships?.rivals?.map(id => getMemberById(id)?.name).filter(Boolean).join(', ')) || 'None'}
-                </span>
-            </div>
-        </div>
-    </div>
+        )
+    })()}
+</div>
 
 {/* Goals & Ambition */}
 <div className="mt-3 text-sm border-t pt-3">
     <h4 className="font-semibold mb-2 flex items-center"><Goal size={16} className="mr-2"/>Goals & Ambition</h4>
     <div className="space-y-1">
-        <div className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-900/30 rounded-lg">
-            <span className="font-bold text-gray-600 dark:text-gray-400">Ambition</span>
-            <span className="text-sm text-right text-gray-800 dark:text-gray-300">
-                {selectedMember.ambition}
-            </span>
-        </div>
+            <div className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-900/30 rounded-lg" title={ambitions[selectedMember.ambition]?.description || ''}>
+                <span className="font-bold text-gray-600 dark:text-gray-400">Ambition</span>
+                <span className="text-sm text-right text-gray-800 dark:text-gray-300">
+                    {selectedMember.ambition}
+                </span>
+            </div>
         <div className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-900/30 rounded-lg">
             <span className="font-bold text-gray-600 dark:text-gray-400">Graduation Window</span>
             <span className="text-sm text-right text-gray-800 dark:text-gray-300">
@@ -8904,7 +9334,9 @@ if (!gameStarted) {
         {showModal === 'graduationTalk' && <GraduationTalkModal />}
         {showModal === 'electionSummary' && <ElectionSummaryModal />}
         {showModal === 'electionResult' && <ElectionResultModal />}
+        {showModal === 'annualAwardsResult' && <AnnualAwardsResultModal />}
         {showModal === 'scandalDecision' && <ScandalDecisionModal />}
+        {showModal === 'scandalResult' && <ScandalResultModal />}
         {showModal === 'senbatsuPromotion' && <SenbatsuPromotionModal />}
         {showModal === 'bsidePromotion' && <BsidePromotionModal />}
         {showModal === 'jankenTournament' && <JankenTournamentModal />}
