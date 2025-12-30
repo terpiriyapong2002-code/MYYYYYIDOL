@@ -1321,10 +1321,28 @@ const distributeFans = (amount, memberIds, conversionRate = 0.1) => {
     };
 
     const restAllTired = () => {
-      setMembers(prev => prev.map(m => (m.stamina < 50 && m.isAvailable) ? { ...m, stamina: Math.min(100, m.stamina + 30) } : m));
-      setMessage('All tired, available main group members rested!');
-    };
-
+        const restLogic = m => ({
+          ...m,
+          stamina: Math.min(100, (m.stamina || 0) + 40),
+          stress: Math.max(0, (m.stress || 0) - 30),
+          morale: Math.min(100, (m.morale || 0) + 10)
+        });
+      
+        setMembers(prev => prev.map(m => 
+          (m.stamina < 50 && m.isAvailable) ? restLogic(m) : m
+        ));
+        
+        setSisterGroups(prev => prev.map(sg => ({
+          ...sg,
+          members: (sg.members || []).map(m => 
+            (m.stamina < 50 && m.isAvailable) ? restLogic(m) : m
+          )
+        })));
+      
+        setMessage('All tired, available members have been rested.');
+      };
+      
+      
 const buildTheater = () => {
     // Check if the main group already has a theater
     if (theaters.some(t => t.owner === 'main')) {
@@ -6505,6 +6523,7 @@ const executeKouhakuPerformance = (membersForUpdate, sisterGroupsForUpdate) => {
                 
                 setModalData(finalResults);
                 setShowModal('jankenResult');
+                setLastJankenResult
     
             } else {
                 const nextRound = round + 1;
