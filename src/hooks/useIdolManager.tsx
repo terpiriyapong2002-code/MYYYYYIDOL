@@ -1807,7 +1807,7 @@ const deleteTeam = (teamId) => {
           graduatedMember = mainMember;
       } else {
           for (const sg of sisterGroups) {
-              const foundMember = sg.members.find(m => String(m.id) === String(memberId));
+              const foundMember = (sg.members || []).find(m => String(m.id) === String(memberId));
               if (foundMember) {
                   homeGroupName = sg.name;
                   graduatedMember = foundMember;
@@ -1826,8 +1826,22 @@ const deleteTeam = (teamId) => {
           setMembers(prev => prev.filter(m => String(m.id) !== String(memberId)));
           setSisterGroups(prev => prev.map(sg => ({
               ...sg,
-              members: sg.members.filter(m => String(m.id) !== String(memberId))
+              members: (sg.members || []).filter(m => String(m.id) !== String(memberId))
           })));
+
+          // --- THIS IS THE FIX ---
+          // It finds any team the member is in and removes them.
+          setTeams(prevTeams => prevTeams.map(team => {
+              if ((team.members || []).map(String).includes(String(memberId))) {
+                  return {
+                      ...team,
+                      members: team.members.filter(id => String(id) !== String(memberId)),
+                      history: [...(team.history || []), { week: week, event: `Member Graduated: ${memberName}` }]
+                  };
+              }
+              return team;
+          }));
+          // --- END OF FIX ---
 
           const gradMessage = `${memberName} has graduated from ${homeGroupName}.`;
           addNotification({ type: 'Graduation', message: gradMessage });
