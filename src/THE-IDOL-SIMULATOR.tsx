@@ -35,7 +35,7 @@ const App = () => {
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
-    runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, startHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference,  completedBsidePromos, setCompletedBsidePromos, holdBsideFanMeeting, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining
+    completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, startHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference,  completedBsidePromos, setCompletedBsidePromos, holdBsideFanMeeting, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining
 
     } = useIdolManager();
 
@@ -1133,7 +1133,7 @@ const AnnualAwardsResultModal = () => {
             const allTracks = releaseType === 'album' ? albumTracks : tracks;
             
             const allChosenMemberIds = new Set(allTracks.flatMap(t => t.members.map(String)));
-            const unchosenPool = selectableMembers.filter(m => !allChosenMemberIds.has(String(m.id)));
+            const unchosenPool = visibleRoster.filter(m => !allChosenMemberIds.has(String(m.id)));
 
             if (unchosenPool.length === 0) return;
 
@@ -2963,24 +2963,23 @@ const memberGroups = memberObjects.reduce((acc, member) => {
         // --- FALLBACK: Original logic for older save files without pre-generated trivia ---
         const triviaItems = [];
 
-// --- NEW: Graduation Single Trivia ---
-if (release.isGraduationSingle) {
-    const titleTrack = release.tracks.find(t => t.type === 'title');
-    if (titleTrack && titleTrack.center && titleTrack.center.length > 0) {
-        const centerId = String(titleTrack.center[0]);
-        // Find the member's name from the track data itself, as it's more reliable here
-        const centerMemberObject = (titleTrack.members || []).find(m => String(m.id) === centerId);
+        // --- NEW: Graduation Single Trivia ---
+        if (release.isGraduationSingle) {
+            const titleTrack = release.tracks.find(t => t.type === 'title');
+            if (titleTrack && titleTrack.center && titleTrack.center.length > 0) {
+                const centerId = String(titleTrack.center[0]);
+                // Find the member's name from the track data itself, as it's more reliable here
+                const centerMemberObject = (titleTrack.members || []).find(m => String(m.id) === centerId);
 
-        if (centerMemberObject) {
-            const gradMemberName = centerMemberObject.name;
-            triviaItems.push(`Final Single Participation of ${gradMemberName}.`);
-            triviaItems.push(`Last Senbatsu of ${gradMemberName}.`);
-            triviaItems.push(`Final A-Side Center of ${gradMemberName}.`);
+                if (centerMemberObject) {
+                    const gradMemberName = centerMemberObject.name;
+                    triviaItems.push(`Final Single Participation of ${gradMemberName}.`);
+                    triviaItems.push(`Last Senbatsu of ${gradMemberName}.`);
+                    triviaItems.push(`Final A-Side Center of ${gradMemberName}.`);
+                }
+            }
         }
-    }
-}
-// --- END NEW ---
-
+        // --- END NEW ---
 
         const formatNames = (nameArray) => {
             if (nameArray.length === 0) return '';
@@ -3012,7 +3011,32 @@ if (release.isGraduationSingle) {
                     triviaItems.push(`First A-Side Single Center of ${formatNames(firstTimeACenters.map(m => m.name))}.`);
                 }
             }
-        }            
+
+            // --- ADDED: Dropped from Senbatsu Logic for Fallback ---
+            const songListOfGroup = release.targetGroup === 'main' ? songs : (sisterGroups.find(sg => sg.name === release.targetGroup)?.songs || []);
+            const previousSingle = songListOfGroup.filter(s => s.type === 'single' && s.releaseWeek < release.releaseWeek).sort((a,b) => b.releaseWeek - a.releaseWeek)[0];
+
+            if (previousSingle) {
+                const prevTitleTrack = previousSingle.tracks.find(t => t.type === 'title');
+                if (prevTitleTrack) {
+                    const prevSenbatsuIds = (prevTitleTrack.members || []).map(m => String(m.id));
+                    const currentSenbatsuIds = (titleTrack.members || []).map(m => String(m.id));
+                    const droppedMemberIds = prevSenbatsuIds.filter(id => !currentSenbatsuIds.includes(id));
+                    
+                    if (droppedMemberIds.length > 0) {
+                        const droppedMemberNames = droppedMemberIds.map(id => {
+                            const member = getMemberById(id);
+                            return member ? member.name : '';
+                        }).filter(Boolean);
+                        
+                        if (droppedMemberNames.length > 0) {
+                            triviaItems.push(`Dropped from Senbatsu: ${formatNames(droppedMemberNames)}.`);
+                        }
+                    }
+                }
+            }
+        }
+        
         const allParticipatingIds = [...new Set(release.tracks.flatMap(t => (t.members || []).map(m => m.id)))];
         const firstTimeParticipation = allParticipatingIds.map(id => memberMap[String(id)]).filter(member =>
             member && (member.singlesParticipation || []).filter(p => p.singleId === release.id).length > 0 && (member.singlesParticipation || []).length === 1
@@ -6090,53 +6114,48 @@ const deselectAll = () => {
         };
 
         const promotions = [
-            { 
-                id: 'magazineCover', 
-                name: 'Magazine Cover Shoot (Kami 7)', 
-                cost: 75000, 
-                description: 'Features the top 7 members on a major magazine cover. Massive boost to Visual and individual fan counts.',
-                requirement: () => senbatsuMembers.filter(m => kami7Ids.includes(String(m.rosterId || m.id))).length >= 7,
-                reqText: 'Requires at least 7 members in the top three rows.'
-            },            
-            { 
-                id: 'tvSpecial', 
-                name: 'TV Music Show Special', 
-                cost: 150000, 
-                description: 'A dedicated 30-minute TV special focusing on the Senbatsu. Drains stamina but provides a huge fan gain and boosts single sales.',
-                requirement: () => senbatsuMembers.length >= 12,
-                reqText: 'Requires at least 12 Senbatsu members.'
-            },
-            { 
-                id: 'radioUnit', 
-                name: 'Unit Radio Guesting (4 Members)', 
-                cost: 20000, 
-                description: 'Send a 4-member unit to a popular radio show. Boosts fans based on Variety and Charisma.',
-                requirement: () => senbatsuMembers.length >= 4,
-                reqText: 'Requires at least 4 Senbatsu members.'
-            }
-        ];
+            { id: 'magazineCover', name: 'Magazine Cover (Kami 7)', cost: 75000, description: 'Feature the top 7 members on a famous magazine cover. Greatly boosts their individual popularity.', requirement: () => kami7Ids.length >= 7, reqText: 'Requires at least 7 members in the top three rows.' },
+            { id: 'musicShow', name: 'Weekly Music Show', cost: 100000, description: 'Perform on a popular TV music show. High stamina cost, but boosts sales and gains fans based on performance.', requirement: () => senbatsuMembers.length > 0, reqText: 'Requires at least 1 Senbatsu member.' },
+            { id: 'handshakeEvent', name: 'National Handshake Event', cost: 200000, description: 'Hold a huge event to convert casual fans into hardcore fans. Very high stamina and stress cost.', requirement: () => senbatsuMembers.length >= 12, reqText: 'Requires at least 12 Senbatsu members.' },
+            { id: 'tvSpecial', name: 'Senbatsu TV Special', cost: 150000, description: 'A 30-minute TV special focusing on the members. Drains stamina but provides a good fan gain and boosts sales.', requirement: () => senbatsuMembers.length >= 8, reqText: 'Requires at least 8 Senbatsu members.' },
+            { id: 'radioUnit', name: 'Radio Guesting Unit', cost: 20000, description: 'Send the 4 most charismatic members to a popular radio show. A cheap way to gain some fans.', requirement: () => senbatsuMembers.length >= 4, reqText: 'Requires at least 4 Senbatsu members.' },
+            { id: 'productCM', name: 'Product Commercial (CM)', cost: -500000, description: 'The top 5 visual members star in a TV commercial. Earns a large amount of money and boosts their fame.', requirement: () => senbatsuMembers.filter(m => m.visual >= 75).length >= 5, reqText: 'Requires at least 5 Senbatsu members with 75+ Visual.' },
+            { id: 'animeTieIn', name: 'Anime Theme Song Tie-in', cost: 1000000, description: 'Secure a deal for the song to be an anime opening. Extremely expensive, but provides massive, widespread exposure.', requirement: () => true, reqText: '' },
+            { id: 'guerillaLive', name: 'Guerilla Live Concert', cost: 120000, description: 'Stage a surprise mini-concert in a public square. High risk, high reward.', requirement: () => senbatsuMembers.length >= 5, reqText: 'Requires at least 5 Senbatsu members.' },
+            { id: 'cdShopTour', name: 'CD Shop Greeting Tour', cost: 60000, description: 'Visit major CD shops to boost physical sales potential. Medium stamina cost.', requirement: () => senbatsuMembers.length >= 4, reqText: 'Requires at least 4 Senbatsu members.' },
+            { id: 'varietyShow', name: 'Variety Game Show', cost: 250000, description: 'Senbatsu competes on a game show. Success is based on their Variety skill and can even provide a small skill boost.', requirement: () => senbatsuMembers.length >= 6, reqText: 'Requires at least 6 Senbatsu members.' },
+            { id: 'photobook', name: 'Official Photobook Release', cost: 300000, description: 'Produce a high-quality photobook. High initial cost, but generates income and boosts fans based on Visuals.', requirement: () => senbatsuMembers.length >= 7, reqText: 'Requires at least 7 Senbatsu members.' },
+            { id: 'karaoke', name: 'Karaoke Bar Tie-in', cost: 15000, description: 'Feature the single\'s MV in karaoke booths nationwide. A cheap and easy way to gain passive exposure.', requirement: () => true, reqText: '' },
+        ].sort((a, b) => a.cost - b.cost);
 
         return (
-            <ModalWrapper title={`Senbatsu Promotion: ${single.name}`} maxWidth="max-w-2xl">
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Choose a high-impact promotional activity. These can only be performed once per single.</p>
-                <div className="space-y-3">
+            <ModalWrapper title={`Senbatsu Promotion: ${single.name}`} maxWidth="max-w-3xl">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Choose a high-impact promotional activity for the Senbatsu members. Each can only be performed once per single.</p>
+                <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2">
                     {promotions.map(promo => {
                         const meetsReq = promo.requirement();
+                        const alreadyDone = (completedPromotions[single.id] || []).includes(promo.id);
                         return (
-                            <div key={promo.id} className={`p-4 border rounded-lg ${meetsReq ? 'bg-white dark:bg-gray-800' : 'bg-gray-200 dark:bg-gray-700 opacity-60'}`}>
-                                <h4 className="font-bold text-lg">{promo.name}</h4>
+                            <div key={promo.id} className={`p-4 border rounded-lg ${meetsReq && !alreadyDone ? 'bg-white dark:bg-gray-800' : 'bg-gray-200 dark:bg-gray-700 opacity-60'}`}>
+                                <div className="flex justify-between items-start">
+                                    <h4 className="font-bold text-lg">{promo.name}</h4>
+                                    <span className={`font-bold ${promo.cost > 0 ? 'text-red-500' : 'text-green-500'}`}>
+                                        {promo.cost > 0 ? `Cost: ¥${promo.cost.toLocaleString()}` : `Income: ¥${(-promo.cost).toLocaleString()}`}
+                                    </span>
+                                </div>
+
                                 <p className="text-sm text-gray-600 dark:text-gray-400 my-1">{promo.description}</p>
-                                <div className="flex justify-between items-center mt-2">
-                                    <span className="font-bold text-red-500">Cost: ¥{promo.cost.toLocaleString()}</span>
-                                    <button
+                                <div className="flex justify-end items-center mt-2">
+                                     <button
                                         onClick={() => handleStartPromotion(promo.id)}
-                                        disabled={!meetsReq || money < promo.cost}
-                                        className="px-4 py-2 bg-blue-600 text-white rounded font-bold disabled:bg-gray-400"
-                                    >
-                                        Start Activity
+                                        disabled={!meetsReq || money < promo.cost || alreadyDone}
+                                        className="px-4 py-2 bg-blue-600 text-white rounded font-bold disabled:bg-gray-400 disabled:cursor-not-allowed"
+                                        title={alreadyDone ? 'This promotion has already been completed for this single.' : (!meetsReq ? promo.reqText : (money < promo.cost ? 'Not enough money.' : 'Start Promotion'))}
+                                     >
+                                        {alreadyDone ? 'Completed' : 'Start Activity'}
                                     </button>
                                 </div>
-                                {!meetsReq && <p className="text-xs text-red-500 mt-1 text-center">{promo.reqText}</p>}
+                                {!meetsReq && !alreadyDone && <p className="text-xs text-red-500 mt-1 font-semibold text-center">{promo.reqText}</p>}
                             </div>
                         );
                     })}
@@ -6148,110 +6167,107 @@ const deselectAll = () => {
         );
     };
 
-const SenbatsuPromotionResultModal = () => {
-    if (!modalData) return null;
+    const SenbatsuPromotionResultModal = () => {
+        if (!modalData) return null;
 
-    const { promoType, singleName, members, totalFanGain, salesBoost, message } = modalData;
+        const { promoType, singleName, members, totalFanGain, salesBoost, income, fansConverted, message } = modalData;
 
-    const containerRef = useRef(null);
+        const containerRef = useRef(null);
 
-    // Effect for sparkles
-    useEffect(() => {
-        const container = containerRef.current;
-        if (!container) return;
-        const sparkleInterval = setInterval(() => {
-            const sparkle = document.createElement('div');
-            sparkle.innerHTML = '✨';
-            sparkle.className = 'sparkle-float text-xl';
-            sparkle.style.left = `${Math.random() * 95 + 5}%`;
-            sparkle.style.animationDuration = `${Math.random() * 2 + 1}s`;
-            container.appendChild(sparkle);
-            setTimeout(() => sparkle.remove(), 3000);
-        }, 300);
+        // Kawaii particle effect
+        useEffect(() => {
+            const container = containerRef.current;
+            if (!container) return;
+            const createParticle = (emoji, className) => {
+                const particle = document.createElement('div');
+                particle.innerHTML = emoji;
+                particle.className = `particle-float ${className}`;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.transform = `scale(${Math.random() + 0.5})`;
+                particle.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                container.appendChild(particle);
+                setTimeout(() => particle.remove(), 5000);
+            };
+            const particleInterval = setInterval(() => {
+                createParticle(Math.random() > 0.5 ? '✨' : '💖', 'text-xl');
+            }, 150);
+            return () => clearInterval(particleInterval);
+        }, []);
+        
+        const promoDetails = {
+            magazineCover:  { icon: '📸', color: 'pink', title: 'Magazine Cover Success!' },
+            tvSpecial:      { icon: '📺', color: 'blue', title: 'TV Special Aired!' },
+            radioUnit:      { icon: '📻', color: 'purple', title: 'On The Air!' },
+            musicShow:      { icon: '🎤', color: 'teal', title: 'Amazing Performance!' },
+            handshakeEvent: { icon: '🤝', color: 'rose', title: 'Handshake Event Success!' },
+            productCM:      { icon: '🎬', color: 'amber', title: 'Commercial Deal!' },
+            animeTieIn:     { icon: '🎌', color: 'indigo', title: 'Anime Tie-In!' },
+            guerillaLive:   { icon: '🎸', color: 'red', title: 'Guerilla Live!' },
+            cdShopTour:     { icon: '💿', color: 'cyan', title: 'CD Shop Tour!' },
+            varietyShow:    { icon: '😂', color: 'lime', title: 'Variety Show Appearance!' },
+            photobook:      { icon: '📖', color: 'violet', title: 'Photobook Released!' },
+            karaoke:        { icon: '🎶', color: 'orange', title: 'Karaoke Takeover!' },
+        };
 
-        return () => clearInterval(sparkleInterval);
-    }, []);
+        const currentPromo = promoDetails[promoType] || { icon: '🎉', color: 'gray', title: 'Promotion Complete!' };
+        
+        const colorClasses = {
+            bg: `bg-${currentPromo.color}-100`,
+            text: `text-${currentPromo.color}-800`,
+            border: `border-${currentPromo.color}-300`,
+            accent: `text-${currentPromo.color}-500`,
+        };
 
-    const renderContent = () => {
-        switch (promoType) {
-            case 'magazineCover':
-                return (
-                    <>
-                        <h3 className="text-2xl font-bold text-pink-500 mb-2">Magazine Cover Success!</h3>
-                        <p className="text-gray-500 mb-4">The Kami 7 graced the cover of a top idol magazine!</p>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 my-6">
-                            {(members || []).map(member => (
-                                <div key={member.id} className="text-center">
-                                    <div className="w-16 h-16 bg-gray-300 rounded-full mx-auto mb-2 border-4 border-pink-200"></div>
-                                    <p className="font-bold text-sm text-pink-800">{member.name}</p>
-                                </div>
-                            ))}
-                        </div>
-                        <p className="bg-white/80 p-3 rounded-lg text-pink-700 font-semibold">{message}</p>
-                    </>
-                );
-            case 'tvSpecial':
-                return (
-                     <>
-                        <h3 className="text-2xl font-bold text-blue-500 mb-2">TV Special Aired!</h3>
-                        <p className="text-gray-500 mb-4">The group's special performance reached a huge audience.</p>
-                        <div className="flex justify-around items-center my-8 text-center">
-                            <div>
-                                <p className="text-4xl font-bold text-blue-500">+{totalFanGain.toLocaleString()}</p>
-                                <p className="font-semibold text-blue-800">New Fans</p>
-                            </div>
-                            <div>
-                                <p className="text-4xl font-bold text-green-500">+{salesBoost}%</p>
-                                <p className="font-semibold text-green-800">Sales Boost</p>
-                            </div>
-                        </div>
-                        <p className="bg-white/80 p-3 rounded-lg text-blue-700 font-semibold">{message}</p>
-                    </>
-                );
-            case 'radioUnit':
-                 return (
-                    <>
-                        <h3 className="text-2xl font-bold text-purple-500 mb-2">On The Air!</h3>
-                        <p className="text-gray-500 mb-4">The radio unit charmed listeners nationwide!</p>
-                        <div className="my-6">
-                            <p className="text-center text-3xl font-bold text-purple-500 mb-3">+{totalFanGain.toLocaleString()} New Fans!</p>
-                            <div className="flex justify-center gap-4">
-                                {(members || []).map(member => (
-                                    <div key={member.id} className="text-center">
-                                        <div className="w-16 h-16 bg-gray-300 rounded-full mx-auto mb-2 border-4 border-purple-200"></div>
-                                        <p className="font-bold text-sm text-purple-800">{member.name}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                        <p className="bg-white/80 p-3 rounded-lg text-purple-700 font-semibold">{message}</p>
-                    </>
-                );
-            default:
-                return <p>{message}</p>;
-        }
-    };
-
-    return (
-        <ModalWrapper title="" maxWidth="max-w-2xl">
-            <div ref={containerRef} className="relative bg-pink-50 rounded-2xl overflow-hidden p-6 text-center border-4 border-pink-200">
-                {renderContent()}
-                <div className="flex justify-center mt-8">
-                    <button onClick={() => setShowModal(null)} className="bg-pink-500 hover:bg-pink-600 active:scale-95 text-white px-10 py-3 rounded-full font-bold shadow-lg transition-transform text-lg">
-                        Awesome!
-                    </button>
-                </div>
+        const StatDisplay = ({ icon, label, value, valueColor = 'text-gray-800 dark:text-white' }) => (
+            <div className="flex justify-between items-center bg-white/50 dark:bg-gray-900/50 p-3 rounded-lg">
+                <span className="font-semibold flex items-center text-sm"><span className="mr-2 text-lg">{icon}</span>{label}:</span>
+                <span className={`font-bold text-lg ${valueColor}`}>{value}</span>
             </div>
-            <style jsx>{`
-                .sparkle-float { position: absolute; top: 100%; pointer-events: none; animation: floatUpAndFade 3s linear forwards; }
-                @keyframes floatUpAndFade { 
-                    0% { transform: translateY(0); opacity: 1; }
-                    100% { transform: translateY(-300px) rotate(360deg); opacity: 0; } 
-                }
-            `}</style>
-        </ModalWrapper>
-    );
-};
+        );
+
+        return (
+            <ModalWrapper title="" maxWidth="max-w-md">
+                <div ref={containerRef} className="relative w-full bg-gradient-to-br from-white/70 to-white/40 dark:from-gray-800/70 dark:to-gray-900/40 backdrop-blur-xl rounded-3xl overflow-hidden p-6 text-center border-2 border-white/50 dark:border-gray-700/50 shadow-2xl">
+                    
+                    <div className="absolute top-4 right-4 text-4xl animate-bounce">{currentPromo.icon}</div>
+
+                    <h3 className={`text-3xl font-bold ${colorClasses.accent} mb-3 font-['Mochiy_Pop_One']`}>{currentPromo.title}</h3>
+                    <p className="text-gray-600 dark:text-gray-300 mb-6 text-sm px-4">{message}</p>
+                    
+                    <div className="space-y-3 my-6">
+                        {totalFanGain > 0 && <StatDisplay icon="👥" label="New Fans" value={`+${totalFanGain.toLocaleString()}`} valueColor={`text-green-500`} />}
+                        {income > 0 && <StatDisplay icon="💰" label="Income" value={`+¥${income.toLocaleString()}`} valueColor={`text-green-500`} />}
+                        {fansConverted > 0 && <StatDisplay icon="💖" label="Fans Converted" value={`${fansConverted.toLocaleString()}`} valueColor={`text-pink-500`} />}
+                        {salesBoost > 0 && <StatDisplay icon="📈" label="Sales Boost" value={`+${salesBoost}%`} valueColor={`text-blue-500`} />}
+                    </div>
+
+                    {members && members.length > 0 && (
+                        <div className="mt-6">
+                            <h4 className={`font-bold text-sm uppercase ${colorClasses.text} mb-3`}>Featured Members</h4>
+                            <div className="flex justify-center flex-wrap gap-2">
+                                {members.map(m => <span key={m.id} className={`text-xs ${colorClasses.bg} ${colorClasses.text} font-semibold px-3 py-1 rounded-full`}>{m.name}</span>)}
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="flex justify-center mt-8">
+                        <button onClick={() => setShowModal(null)} className={`bg-gradient-to-br from-${currentPromo.color}-400 to-${currentPromo.color}-600 hover:from-${currentPromo.color}-500 hover:to-${currentPromo.color}-700 active:scale-95 text-white px-10 py-3 rounded-full font-bold shadow-lg shadow-${currentPromo.color}-500/20 transition-all text-lg`}>
+                            SUGOI!
+                        </button>
+                    </div>
+                </div>
+                <style jsx>{`
+                    .particle-float { position: absolute; bottom: -20px; pointer-events: none; animation: floatUpAndFade 5s linear forwards; }
+                    @keyframes floatUpAndFade { 
+                        0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+                        100% { transform: translateY(-400px) rotate(720deg); opacity: 0; } 
+                    }
+                    @import url('https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&display=swap');
+                    .font-\['Mochiy_Pop_One'\] { font-family: 'Mochiy Pop One', sans-serif; }
+                `}</style>
+            </ModalWrapper>
+        );
+    };
 
 
     const BsidePromotionModal = () => {
@@ -7975,16 +7991,16 @@ if (!gameStarted) {
                             <h2 className="text-xl font-bold mb-4 flex items-center"><GraduationCap size={22} className="mr-2"/> Hall of Fame ({hallOfFame.length})</h2>
                             {hallOfFame.length > 0 ? (
                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                {hallOfFame.map(m => (
+{hallOfFame.map(m => (
                                   <div key={m.id}
                                     className={`bg-white dark:bg-gray-900 rounded-lg shadow-md overflow-hidden cursor-pointer focus:outline-none transition-all duration-300 opacity-70 ${selectedMember && selectedMember.id === m.id ? 'border-2 border-blue-500 ring-2 ring-blue-200' : 'hover:shadow-lg'}`}
                                     onClick={() => setSelectedMember({ ...m, isAvailable: false })}>
                                     <div className="p-2">
                                         <div className="flex justify-between items-start mb-1">
                 <h3 className="text-xl font-bold flex items-center">
-                    {selectedMember.name}
-                    {selectedMember.isCurrentCenter && <Trophy size={16} className="ml-2 text-yellow-500" title="Current Center" />}
-                    {(Object.values(groupRoles).includes(selectedMember.id) || (selectedMember.teamId && groupRoles[selectedMember.teamId] === selectedMember.id)) && <Shield size={18} className="ml-2 text-purple-500" title="Captain" />}
+                    {m.name}
+                    {m.isCurrentCenter && <Trophy size={16} className="ml-2 text-yellow-500" title="Current Center" />}
+                    {(Object.values(groupRoles).includes(m.id) || (m.teamId && groupRoles[m.teamId] === m.id)) && <Shield size={18} className="ml-2 text-purple-500" title="Captain" />}
                 </h3>
                                             <span className={`text-xs font-semibold px-1.5 py-0.5 rounded-full bg-gray-500 text-white`}>
                                                 Graduated
@@ -9069,6 +9085,18 @@ if (!gameStarted) {
 
     {/* Manage */}
     <h4 className="font-semibold mb-2">Manage</h4>
+
+    {/* --- NEW: Force Graduation Button --- */}
+    {selectedMember.isGraduating && selectedMember.graduationWeek < week && (
+        <button
+            onClick={() => graduateMember(selectedMember.rosterId || selectedMember.id)}
+            className="w-full p-2 bg-red-600 text-white rounded text-sm font-bold my-2 flex items-center justify-center gap-2"
+        >
+            <AlertCircle size={16} />
+            Force Immediate Graduation (Fix)
+        </button>
+    )}
+    {/* --- END NEW --- */}
 
     <button
                             onClick={() => beginActivity(selectedMember.id, 'design_merch')}
