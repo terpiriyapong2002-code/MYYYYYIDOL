@@ -35,7 +35,7 @@ const App = () => {
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
-    completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, startHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference,  completedBsidePromos, setCompletedBsidePromos, holdBsideFanMeeting, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining
+    completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, startHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference,  completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining
 
     } = useIdolManager();
 
@@ -6271,58 +6271,131 @@ const deselectAll = () => {
 
 
     const BsidePromotionModal = () => {
-        if (!modalData || !modalData.single) return null;
+        if (!modalData || !modalData.single || !modalData.track) return null;
 
-        const { single } = modalData;
-        const bSideTracks = single.tracks.filter(t => t.type === 'b-side');
+        const { single, track } = modalData;
+
+        const bsidePromotions = [
+            { id: 'fullMV', name: 'Full-Budget Music Video', cost: 400000, description: 'Fund a high-quality music video. A massive statement that provides a huge fan gain for the unit.' },
+            { id: 'miniTour', name: 'Unit Mini-Tour', cost: 750000, description: 'The unit headlines their own small tour. Extremely expensive, but provides legendary hardcore fan conversion, skill boosts, and new fans.' },
+            { id: 'performanceVideo', name: 'Special Performance Video', cost: 75000, description: 'Fund a well-shot performance video. Provides a significant fan gain based on unit skill.' },
+            { id: 'varietySkit', name: 'Unit Variety Skit', cost: 15000, description: 'A short, funny online skit. Gains fans based on Variety skill and can even improve the skill.' },
+            { id: 'fanMeeting', name: 'Unit Fan Meeting', cost: 25000, description: 'A classic fan meeting to convert casual fans to hardcore supporters. Effectiveness is based on Charisma.' },
+            { id: 'gravurePhotoshoot', name: 'Gravure Photoshoot (Top 3)', cost: 20000, description: 'Features the top 3 visual members of the unit in a magazine. Provides a targeted fan gain.' },
+            { id: 'acousticVideo', name: 'Acoustic Performance Video', cost: 4000, description: 'A stripped-down vocal performance. Great for converting fans if the unit has high singing skill.' },
+            { id: 'selfieMV', name: 'Selfie MV / TikTok Challenge', cost: 5000, description: 'A fun, low-fi video for social media. Cheap, with a very small chance to go viral.' },
+            { id: 'dancePractice', name: 'Dance Practice Video', cost: 2000, description: 'Release a dance practice video. A very cheap way to impress and convert fans based on Dance skill.' },
+            { id: 'socialMediaTakeover', name: 'Social Media Takeover', cost: 0, description: 'The unit takes over the group\'s social media for a day. Free, and converts a small number of fans.' },
+            { id: 'gamingStream', name: 'Sponsored Gaming Stream', cost: -10000, description: 'The unit plays a sponsored game on a livestream. Earns a small income and gains fans.' },
+            { id: 'unitMerch', name: 'Limited Edition Unit Merch', cost: -20000, description: 'Sell limited-run merchandise for the unit. Generates income based on the unit\'s popularity.' },
+        ].sort((a,b) => a.cost - b.cost);
 
         return (
-            <ModalWrapper title={`Promote B-Sides for: ${single.name}`} maxWidth="max-w-3xl">
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                    Promote your B-side tracks to give their specific units more exposure and grow their individual fanbases.
-                </p>
-                <div className="space-y-4">
-                    {bSideTracks.map(track => {
-                        const unitMembers = (track.members || []).map(m => getMemberById(String(m.id))).filter(Boolean);
-                        const fanMeetingCost = 25000;
-                        const isPromoDone = (completedBsidePromos[single.id] || []).includes(track.name);
-
+            <ModalWrapper title={`Promote B-Side Unit: ${track.unitName}`} maxWidth="max-w-3xl">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Choose a promotional activity for the '{track.name}' unit. Some promotions can be done only once.</p>
+                <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2">
+                    {bsidePromotions.map(promo => {
+                        const alreadyDone = (completedBsidePromos[single.id]?.[track.name] || []).includes(promo.id);
                         return (
-                            <div key={track.name} className="p-4 border rounded-lg bg-white dark:bg-gray-800">
-                                <h4 className="font-bold text-lg">{track.name}</h4>
-                                <p className="text-sm italic text-gray-500 dark:text-gray-400 mb-2">Unit: {track.unitName} ({unitMembers.length} members)</p>
-                                
-                                <div className="p-3 border-t dark:border-gray-700 mt-2">
-                                    <h5 className="font-semibold">Unit-Specific Fan Meeting</h5>
-                                    <p className="text-xs text-gray-600 dark:text-gray-400 my-1">
-                                        A smaller fan meeting for just this unit. Great for converting their casual fans to hardcore fans.
-                                    </p>
-                                    <div className="flex justify-between items-center mt-2">
-                                        <span className="font-bold text-red-500">Cost: ¥{fanMeetingCost.toLocaleString()}</span>
-                                        <button
-                                            onClick={() => holdBsideFanMeeting(single.id, track.name)}
-                                            disabled={isPromoDone || money < fanMeetingCost}
-                                            className="px-4 py-2 bg-green-600 text-white rounded font-bold disabled:bg-gray-400"
-                                        >
-                                            {isPromoDone ? 'Completed' : 'Hold Event'}
-                                        </button>
-                                    </div>
+                            <div key={promo.id} className={`p-4 border rounded-lg ${!alreadyDone ? 'bg-white dark:bg-gray-800' : 'bg-gray-200 dark:bg-gray-700 opacity-60'}`}>
+                                <div className="flex justify-between items-start">
+                                    <h4 className="font-bold text-lg">{promo.name}</h4>
+                                    <span className={`font-bold ${promo.cost > 0 ? 'text-red-500' : 'text-green-500'}`}>
+                                        {promo.cost > 0 ? `Cost: ¥${promo.cost.toLocaleString()}` : `Income: ¥${(-promo.cost).toLocaleString()}`}
+                                    </span>
+                                </div>
+                                <p className="text-sm text-gray-600 dark:text-gray-400 my-1">{promo.description}</p>
+                                <div className="flex justify-end items-center mt-2">
+                                    <button
+                                        onClick={() => startBsidePromotion(promo.id, single.id, track.name)}
+                                        disabled={money < promo.cost || alreadyDone}
+                                        className="px-4 py-2 bg-purple-600 text-white rounded font-bold disabled:bg-gray-400 disabled:cursor-not-allowed"
+                                        title={alreadyDone ? 'This promotion is already complete for this unit.' : (money < promo.cost ? 'Not enough money.' : 'Start Promotion')}
+                                    >
+                                        {alreadyDone ? 'Completed' : 'Start'}
+                                    </button>
                                 </div>
                             </div>
                         );
                     })}
-                     {bSideTracks.length === 0 && (
-                        <p className="text-center text-gray-500 p-4">This single has no B-Side tracks to promote.</p>
-                    )}
-                </div>
-                <div className="flex justify-end mt-6">
-                    <button onClick={() => setShowModal(null)} className="p-2 bg-gray-300 dark:bg-gray-600 rounded">Close</button>
                 </div>
             </ModalWrapper>
         );
     };
 
-const JankenTournamentModal = () => {
+    const BsidePromotionResultModal = () => {
+        if (!modalData) return null;
+
+        const { promoType, unitName, trackName, fanGain, convertedFans, income, message } = modalData;
+
+        const containerRef = useRef(null);
+
+        // Kawaii particle effect
+        useEffect(() => {
+            const container = containerRef.current;
+            if (!container) return;
+            const createParticle = (emoji, className) => {
+                const particle = document.createElement('div');
+                particle.innerHTML = emoji;
+                particle.className = `particle-float ${className}`;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.transform = `scale(${Math.random() + 0.5})`;
+                particle.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                container.appendChild(particle);
+                setTimeout(() => particle.remove(), 5000);
+            };
+            const particleInterval = setInterval(() => {
+                createParticle(Math.random() > 0.5 ? '✨' : '💖', 'text-xl');
+            }, 150);
+            return () => clearInterval(particleInterval);
+        }, []);
+
+        const StatDisplay = ({ icon, label, value, valueColor = 'text-white' }) => (
+            <div className="flex justify-between items-center bg-black/10 p-3 rounded-lg">
+                <span className="font-semibold flex items-center text-sm"><span className="mr-2 text-lg">{icon}</span>{label}:</span>
+                <span className={`font-bold text-lg ${valueColor}`}>{value}</span>
+            </div>
+        );
+
+        return (
+            <ModalWrapper title="" maxWidth="max-w-md">
+                <div ref={containerRef} className="relative w-full bg-gradient-to-br from-pink-400/70 to-purple-500/50 backdrop-blur-xl rounded-3xl overflow-hidden p-6 text-center border-2 border-white/50 shadow-2xl text-white">
+                    
+                    <div className="absolute top-4 right-4 text-4xl animate-bounce">🎶</div>
+
+                    <h3 className="text-3xl font-bold text-white mb-3 font-['Mochiy_Pop_One']" style={{ textShadow: '2px 2px 8px rgba(0, 0, 0, 0.4)' }}>
+                        {unitName || 'Unit'} Promotion!
+                    </h3>
+                    <p className="text-white/80 mb-6 text-sm px-4">{message}</p>
+                    
+                    <div className="space-y-3 my-6">
+                        {fanGain > 0 && <StatDisplay icon="👥" label="New Fans" value={`+${fanGain.toLocaleString()}`} valueColor={`text-cyan-300`} />}
+                        {income > 0 && <StatDisplay icon="💰" label="Income" value={`+¥${income.toLocaleString()}`} valueColor={`text-lime-300`} />}
+                        {convertedFans > 0 && <StatDisplay icon="💖" label="Hardcore Fans" value={`+${convertedFans.toLocaleString()}`} valueColor={`text-red-300`} />}
+                    </div>
+
+                    <div className="flex justify-center mt-8">
+                        <button onClick={() => setShowModal(null)} className="bg-gradient-to-br from-pink-500 to-fuchsia-500 hover:from-pink-600 hover:to-fuchsia-600 active:scale-95 text-white px-10 py-3 rounded-full font-bold shadow-lg shadow-pink-500/30 transition-all text-lg border-2 border-white/50">
+                            GANBATTA!
+                        </button>
+                    </div>
+                </div>
+                {/* Same style as Senbatsu Result Modal for particles */}
+                <style jsx>{`
+                    .particle-float { position: absolute; bottom: -20px; pointer-events: none; animation: floatUpAndFade 5s linear forwards; }
+                    @keyframes floatUpAndFade { 
+                        0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+                        100% { transform: translateY(-400px) rotate(720deg); opacity: 0; } 
+                    }
+                    @import url('https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&display=swap');
+                    .font-\['Mochiy_Pop_One'\] { font-family: 'Mochiy Pop One', sans-serif; }
+                `}</style>
+            </ModalWrapper>
+        );
+    };
+
+
+    const JankenTournamentModal = () => {
     if (!jankenTournament) return null;
 
     const { stage, blocks, finalBracket, round, blockWinners, isFinished, roundResults } = jankenTournament;
@@ -8431,44 +8504,60 @@ if (!gameStarted) {
 {currentTab === 'discography' && (() => {
     // A reusable component to display any release
     const ReleaseCard = ({ release }) => {
-        const totalSales = (release.weeklySales || []).reduce((a, b) => a + b, 0);
+        const totalSales = (release.salesHistory || []).reduce((sum, entry) => sum + entry.sales, 0);
         const isAlbum = release.type === 'album';
 
+        // Find all promotable B-sides
+        const bSideTracks = !isAlbum ? (release.tracks || []).filter(t => t.type === 'b-side') : [];
+
         return (
-            <div className={`p-2 rounded-md shadow-sm flex justify-between items-start bg-white dark:bg-gray-800 border ${isAlbum ? 'border-purple-300 dark:border-purple-700' : 'border-gray-200 dark:border-gray-700'}`}>
-                <div className="flex items-center">
-                    {isAlbum 
-                        ? <Library size={24} className="text-purple-500 mr-3 flex-shrink-0" /> 
-                        : <Music size={24} className="text-blue-500 mr-3 flex-shrink-0" />}
-                    <div>
-                        <h3 className="font-bold text-sm flex items-center">
-                            {release.name} (Wk {release.releaseWeek})
-                            {release.chartWeeksLeft > 0 && <span className="ml-2 text-xs font-normal text-green-500 bg-green-100 dark:bg-green-900 dark:text-green-300 px-1.5 py-0.5 rounded-full">Charting</span>}
-                        </h3>
-                        <p className="text-xs text-gray-700 dark:text-gray-300">
-                            {isAlbum ? 'Album' : 'Single'} | Total Sales: {totalSales.toLocaleString()} | Tracks: {release.tracks.length}
-                        </p>
+            <div className={`p-3 rounded-lg shadow-sm flex flex-col bg-white dark:bg-gray-800 border ${isAlbum ? 'border-purple-300 dark:border-purple-700' : 'border-gray-200 dark:border-gray-700'}`}>
+                <div className="flex justify-between items-start mb-3">
+                    <div className="flex items-center">
+                        {isAlbum 
+                            ? <Library size={24} className="text-purple-500 mr-3 flex-shrink-0" /> 
+                            : <Music size={24} className="text-blue-500 mr-3 flex-shrink-0" />}
+                        <div>
+                            <h3 className="font-bold text-base flex items-center">
+                                {release.name} (Wk {release.releaseWeek})
+                                {release.chartWeeksLeft > 0 && <span className="ml-2 text-xs font-normal text-green-500 bg-green-100 dark:bg-green-900 dark:text-green-300 px-1.5 py-0.5 rounded-full">Charting</span>}
+                            </h3>
+                            <p className="text-xs text-gray-700 dark:text-gray-300">
+                                {isAlbum ? 'Album' : 'Single'} | Total Sales: {totalSales.toLocaleString()} | Tracks: {release.tracks.length}
+                            </p>
+                        </div>
                     </div>
-                </div>
-                <div className="flex flex-col items-end gap-1">
                     <button
                         onClick={() => { setModalData(release); setShowModal('releaseDetails'); }}
-                        className="px-4 py-1.5 text-sm font-semibold text-white bg-gray-600 rounded-md hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600"
+                        className="px-4 py-2 text-sm font-semibold text-white bg-gray-600 rounded-md hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 flex-shrink-0"
                     >
                         Details
                     </button>
-                    {!isAlbum && release.chartWeeksLeft > 0 && release.tracks.some(t => t.type === 'b-side') && (
-                        <button 
-                            onClick={() => {
-                                setModalData({ single: release });
-                                setShowModal('bsidePromotion');
-                            }}
-                            className="px-2 py-1 text-xs bg-purple-500 text-white rounded hover:bg-purple-600"
-                        >
-                            Promote B-Side
-                        </button>
-                    )}
                 </div>
+
+                {/* --- NEW B-SIDE PROMOTION SECTION --- */}
+                {bSideTracks.length > 0 && release.chartWeeksLeft > 0 && (
+                    <div className="border-t dark:border-gray-700 mt-2 pt-2 space-y-2">
+                        <h4 className="font-semibold text-xs text-gray-500 dark:text-gray-400">B-SIDE PROMOTIONS:</h4>
+                        {bSideTracks.map(track => (
+                            <div key={track.name} className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-700/50 rounded-md">
+                                <div>
+                                    <p className="font-bold text-sm">{track.name}</p>
+                                    <p className="text-xs text-purple-600 dark:text-purple-400">{track.unitName}</p>
+                                </div>
+                                <button 
+                                    onClick={() => {
+                                        setModalData({ single: release, track: track });
+                                        setShowModal('bsidePromotion');
+                                    }}
+                                    className="px-3 py-1 bg-purple-600 text-white text-xs rounded font-semibold hover:bg-purple-700"
+                                >
+                                    Promote Unit
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
         );
     };
@@ -9367,6 +9456,7 @@ if (!gameStarted) {
         {showModal === 'scandalResult' && <ScandalResultModal />}
         {showModal === 'senbatsuPromotion' && <SenbatsuPromotionModal />}
         {showModal === 'bsidePromotion' && <BsidePromotionModal />}
+        {showModal === 'bsidePromotionResult' && <BsidePromotionResultModal />}
         {showModal === 'jankenTournament' && <JankenTournamentModal />}
         {showModal === 'historyDetail' && <HistoryDetailModal />}
         {showModal === 'jankenResult' && <JankenResultModal />}

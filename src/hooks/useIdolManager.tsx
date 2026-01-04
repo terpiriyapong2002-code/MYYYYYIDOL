@@ -4014,61 +4014,185 @@ const startHandshakeEvent = (selectedMemberIds) => {
         }
     };
 
-    const holdBsideFanMeeting = (singleId, trackName) => {
-        const cost = 25000;
-        if (money < cost) {
-            return setMessage("Not enough money for a unit fan meeting.");
-        }
-
+    const startBsidePromotion = (promoType, singleId, trackName) => {
         const allReleases = [...songs, ...sisterGroups.flatMap(sg => sg.songs || [])];
         const single = allReleases.find(s => s.id === singleId);
-
-        if (!single) return;
+        if (!single) return setMessage("Single not found.");
 
         const track = single.tracks.find(t => t.name === trackName && t.type === 'b-side');
-        if (!track) return;
-        
-        if ((completedBsidePromos[singleId] || []).includes(trackName)) {
-            return setMessage("This unit fan meeting has already been held for this single.");
+        if (!track) return setMessage("B-side track not found.");
+
+        if ((completedBsidePromos[singleId]?.[trackName] || []).includes(promoType)) {
+            return setMessage("This promotion has already been done for this unit.");
         }
 
         const unitMemberIds = (track.members || []).map(m => String(m.id));
         const unitMembers = unitMemberIds.map(id => getMemberById(id)).filter(Boolean);
+        if (unitMembers.length === 0) return setMessage("No members in this unit.");
 
-        let totalConverted = 0;
-        const memberUpdates = unitMembers.map(member => {
-            const charismaBoost = (member.charisma || 0) / 500; // max 20% boost
-            const conversionRate = 0.15 + charismaBoost;
-            const fansToConvert = Math.floor((member.fans?.casual || 0) * conversionRate);
-            totalConverted += fansToConvert;
-            return { memberId: member.id, fansToConvert };
-        });
+        let cost = 0;
+        let modalPayload = { promoType, unitName: track.unitName, trackName: track.name };
 
-        memberUpdates.forEach(({ memberId, fansToConvert }) => {
-            updateMemberState(memberId, m => ({
-                ...m,
-                fans: {
-                    hardcore: (m.fans?.hardcore || 0) + fansToConvert,
-                    casual: Math.max(0, (m.fans?.casual || 0) - fansToConvert)
-                },
-                morale: Math.min(100, m.morale + 15)
-            }));
-        });
+        switch (promoType) {
+            case 'fanMeeting':
+                cost = 25000;
+                if (money < cost) return setMessage("Not enough money for a unit fan meeting.");
+                
+                let totalConverted = 0;
+                unitMembers.forEach(member => {
+                    const charismaBoost = (member.charisma || 0) / 500;
+                    const conversionRate = 0.15 + charismaBoost;
+                    const fansToConvert = Math.floor((member.fans?.casual || 0) * conversionRate);
+                    totalConverted += fansToConvert;
+                    updateMemberState(member.id, m => ({
+                        ...m,
+                        fans: { hardcore: (m.fans?.hardcore || 0) + fansToConvert, casual: Math.max(0, (m.fans?.casual || 0) - fansToConvert) },
+                        morale: Math.min(100, m.morale + 15)
+                    }));
+                });
+                modalPayload = { ...modalPayload, convertedFans: totalConverted, message: `The fan meeting was a great success, converting ${totalConverted.toLocaleString()} fans to hardcore supporters!` };
+                break;
+
+            case 'performanceVideo':
+                cost = 75000;
+                if (money < cost) return setMessage("Not enough money for a performance video.");
+                const avgSkill = unitMembers.reduce((sum, m) => sum + (m.singing || 0) + (m.dancing || 0), 0) / (unitMembers.length * 2);
+                const fanGain = Math.floor(20000 + (avgSkill * 250));
+                distributeFans(fanGain, unitMemberIds);
+                modalPayload = { ...modalPayload, fanGain, message: `The special performance video for '${track.unitName}' gained the unit ${fanGain.toLocaleString()} new fans!` };
+                break;
+
+            case 'selfieMV':
+                cost = 5000;
+                if (money < cost) return setMessage("Not enough money for a selfie MV.");
+                let selfieFanGain = 5000;
+                if (Math.random() < 0.01) { // 1% viral chance
+                    selfieFanGain = 100000;
+                    modalPayload = { ...modalPayload, fanGain: selfieFanGain, message: `The selfie MV for '${track.unitName}' went viral! The unit gained an incredible ${selfieFanGain.toLocaleString()} new fans!` };
+                } else {
+                    modalPayload = { ...modalPayload, fanGain: selfieFanGain, message: `The cute selfie MV from '${track.unitName}' gained them ${selfieFanGain.toLocaleString()} new fans.` };
+                }
+                distributeFans(selfieFanGain, unitMemberIds);
+                unitMemberIds.forEach(id => updateMemberState(id, m => ({ ...m, morale: Math.min(100, m.morale + 10) })));
+                break;
+
+            case 'dancePractice':
+                cost = 2000;
+                if (money < cost) return setMessage("Not enough money for a dance practice video.");
+                const avgDance = unitMembers.reduce((sum, m) => sum + (m.dancing || 0), 0) / unitMembers.length;
+                let danceConverted = 0;
+                unitMembers.forEach(member => {
+                    const conversionRate = 0.05 + (avgDance / 1000);
+                    const fansToConvert = Math.floor((member.fans?.casual || 0) * conversionRate);
+                    danceConverted += fansToConvert;
+                    updateMemberState(member.id, m => ({ ...m, fans: { hardcore: (m.fans?.hardcore || 0) + fansToConvert, casual: Math.max(0, (m.fans?.casual || 0) - fansToConvert) } }));
+                });
+                modalPayload = { ...modalPayload, convertedFans: danceConverted, message: `The sharp dance practice video impressed fans, converting ${danceConverted.toLocaleString()} of them to hardcore supporters.` };
+                break;
+            
+            case 'acousticVideo':
+                cost = 4000;
+                if (money < cost) return setMessage("Not enough money for an acoustic video.");
+                const avgSinging = unitMembers.reduce((sum, m) => sum + (m.singing || 0), 0) / unitMembers.length;
+                let singingConverted = 0;
+                unitMembers.forEach(member => {
+                    const conversionRate = 0.05 + (avgSinging / 800);
+                    const fansToConvert = Math.floor((member.fans?.casual || 0) * conversionRate);
+                    singingConverted += fansToConvert;
+                    updateMemberState(member.id, m => ({ ...m, fans: { hardcore: (m.fans?.hardcore || 0) + fansToConvert, casual: Math.max(0, (m.fans?.casual || 0) - fansToConvert) }, morale: Math.min(100, m.morale + 5) }));
+                });
+                modalPayload = { ...modalPayload, convertedFans: singingConverted, message: `The beautiful acoustic performance by '${track.unitName}' converted ${singingConverted.toLocaleString()} fans.` };
+                break;
+
+            case 'varietySkit':
+                cost = 15000;
+                if (money < cost) return setMessage("Not enough money for a variety skit.");
+                const avgVariety = unitMembers.reduce((sum, m) => sum + (m.variety || 0), 0) / unitMembers.length;
+                const varietyFanGain = 10000 + (avgVariety * 100);
+                distributeFans(varietyFanGain, unitMemberIds);
+                let varietyMessage = `The hilarious variety skit from '${track.unitName}' showed off their personalities, gaining them ${varietyFanGain.toLocaleString()} new fans!`;
+                if (avgVariety > 60) {
+                    unitMemberIds.forEach(id => updateMemberState(id, m => ({ ...m, variety: Math.min(100, m.variety + 1) })));
+                    varietyMessage += " Their variety skill has improved!";
+                }
+                modalPayload = { ...modalPayload, fanGain: varietyFanGain, message: varietyMessage };
+                break;
+
+            case 'socialMediaTakeover':
+                cost = 0;
+                let socialConverted = 0;
+                unitMembers.forEach(member => {
+                    const fansToConvert = Math.floor((member.fans?.casual || 0) * 0.05);
+                    socialConverted += fansToConvert;
+                    updateMemberState(member.id, m => ({ ...m, fans: { hardcore: (m.fans?.hardcore || 0) + fansToConvert, casual: Math.max(0, (m.fans?.casual || 0) - fansToConvert) }, morale: Math.min(100, m.morale + 10) }));
+                });
+                modalPayload = { ...modalPayload, convertedFans: socialConverted, message: `'${track.unitName}' took over social media for a day, converting ${socialConverted.toLocaleString()} fans!` };
+                break;
+
+            case 'gravurePhotoshoot':
+                cost = 20000;
+                if (money < cost) return setMessage("Not enough money for a gravure shoot.");
+                const gravureUnit = unitMembers.sort((a, b) => b.visual - a.visual).slice(0, 3);
+                distributeFans(15000, gravureUnit.map(m => m.id));
+                modalPayload = { ...modalPayload, fanGain: 15000, message: `A gravure shoot featuring ${gravureUnit.map(m=>m.name).join(', ')} gained them 15,000 new fans.` };
+                break;
+            
+            case 'gamingStream':
+                cost = -10000;
+                const streamFanGain = 12000;
+                distributeFans(streamFanGain, unitMemberIds);
+                modalPayload = { ...modalPayload, fanGain: streamFanGain, income: -cost, message: `The sponsored gaming stream by '${track.unitName}' was a success, earning ¥${(-cost).toLocaleString()} and gaining ${streamFanGain.toLocaleString()} fans!` };
+                break;
+
+            case 'unitMerch':
+                cost = -20000;
+                const totalUnitFans = unitMembers.reduce((sum, m) => sum + getTotalFansForMember(m), 0);
+                const income = -cost + Math.floor(totalUnitFans / 10);
+                cost = -income; // Invert for final calculation
+                modalPayload = { ...modalPayload, income, message: `Limited edition merchandise for '${track.unitName}' sold out, earning a total of ¥${income.toLocaleString()}!` };
+                break;
+
+            case 'fullMV':
+                cost = 400000;
+                if (money < cost) return setMessage("Not enough money for a full music video.");
+                distributeFans(150000, unitMemberIds);
+                unitMemberIds.forEach(id => updateMemberState(id, m => ({ ...m, morale: Math.min(100, m.morale + 25) })));
+                modalPayload = { ...modalPayload, fanGain: 150000, message: `The full-budget Music Video for '${track.unitName}' was a massive success, gaining the unit 150,000 new fans!` };
+                break;
+
+            case 'miniTour':
+                cost = 750000;
+                if (money < cost) return setMessage("Not enough money for a mini-tour.");
+                let tourConverted = 0;
+                unitMembers.forEach(member => {
+                    const fansToConvert = Math.floor((member.fans?.casual || 0) * 0.5);
+                    tourConverted += fansToConvert;
+                    updateMemberState(member.id, m => ({ ...m, fans: { hardcore: (m.fans?.hardcore || 0) + fansToConvert, casual: Math.max(0, (m.fans?.casual || 0) - fansToConvert) }, morale: Math.min(100, m.morale + 50), stamina: Math.max(0, m.stamina - 70), stress: Math.min(100, m.stress + 40), singing: Math.min(100, m.singing + 1), dancing: Math.min(100, m.dancing + 1), charisma: Math.min(100, m.charisma + 1) }));
+                });
+                distributeFans(100000, unitMemberIds);
+                modalPayload = { ...modalPayload, fanGain: 100000, convertedFans: tourConverted, message: `The '${track.unitName}' mini-tour was a legendary success! It gained 100,000 new fans, converted ${tourConverted.toLocaleString()} hardcore fans, and improved member skills!` };
+                break;
+
+            default:
+                return setMessage("Unknown B-side promotion type.");
+        }
 
         setMoney(prev => prev - cost);
         
         setCompletedBsidePromos(prev => ({
             ...prev,
-            [singleId]: [...(prev[singleId] || []), trackName]
+            [singleId]: {
+                ...(prev[singleId] || {}),
+                [trackName]: [...(prev[singleId]?.[trackName] || []), promoType]
+            }
         }));
 
-        const fanMeetingMessage = `The fan meeting for '${track.unitName}' was a great success, converting ${totalConverted.toLocaleString()} fans to hardcore supporters!`;
-        setMessage(fanMeetingMessage);
-        addNotification({ type: 'Fans', message: fanMeetingMessage });
-        setShowModal(null);
+        addNotification({ type: 'Promotion', message: modalPayload.message });
+        setModalData(modalPayload);
+        setShowModal('bsidePromotionResult');
     };
-
-    const holdPressConference = (memberId) => {
+    
+        const holdPressConference = (memberId) => {
         const cost = 50000;
         if (money < cost) {
             return setMessage("Not enough money to hold a press conference.");
@@ -6892,6 +7016,6 @@ const simulateRivalActions = (currentRivals, currentWeek, addNotificationInLoop)
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
-    completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, startHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, holdBsideFanMeeting, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining
+    completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, startHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining
     };
     };
