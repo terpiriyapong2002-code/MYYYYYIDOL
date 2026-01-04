@@ -1328,18 +1328,20 @@ const distributeFans = (amount, memberIds, conversionRate = 0.1) => {
           morale: Math.min(100, (m.morale || 0) + 10)
         });
       
+        const shouldRest = m => ((m.stamina || 100) < 50 || (m.stress || 0) > 69) && m.isAvailable;
+
         setMembers(prev => prev.map(m => 
-          (m.stamina < 50 && m.isAvailable) ? restLogic(m) : m
+          shouldRest(m) ? restLogic(m) : m
         ));
         
         setSisterGroups(prev => prev.map(sg => ({
           ...sg,
           members: (sg.members || []).map(m => 
-            (m.stamina < 50 && m.isAvailable) ? restLogic(m) : m
+            shouldRest(m) ? restLogic(m) : m
           )
         })));
       
-        setMessage('All tired, available members have been rested.');
+        setMessage('All tired or stressed members have been rested.');
       };
       
       
