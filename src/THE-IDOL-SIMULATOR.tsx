@@ -12,9 +12,9 @@ import { useIdolManager, getTotalFansForMember, getFormattedDateForWeek, product
 import React, { useState, useEffect, useCallback, useRef, memo } from 'react';
 import { 
   Star, Briefcase, Paintbrush, Music, Heart, Library, TrendingUp, Users, Award, Calendar, DollarSign, Save, 
-  Upload, Building, Tv, GripVertical, Gift, Goal, Trophy, Sparkles, AlertCircle, Zap, Globe, 
+  Upload, Building, Tv, GripVertical, Gift, Goal, Trophy, Sparkles, AlertCircle, AlertTriangle, Zap, Globe, 
   Film, Plane, GraduationCap, Shirt, Shield, Camera, BarChart3, Bell, X, Edit, Plus, Shuffle, 
-  User, Check, ChevronDown, ChevronUp, ShoppingBag, Mic, Hand, Brain, Package,
+  User, Check, ChevronDown, ChevronUp, ShoppingBag, Mic, Hand, Lock, Brain, Package,
   Minimize2, Maximize2, Trash2, MapPin, Smile, LogIn, CalendarCheck, Home, 
   ClipboardCheck, Clock, Moon, BarChart2, FileText, Scissors, Wrench, Layers, Clipboard
 } from 'lucide-react';
@@ -35,7 +35,7 @@ const App = () => {
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
-    completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, startHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference,  completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining
+    executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, startHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference,  completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining
 
     } = useIdolManager();
 
@@ -778,7 +778,7 @@ const ElectionResultModal = () => {
                     <div className="w-full flex-shrink-0 h-40 md:h-auto border-b md:border-b-0 md:border-r border-gray-200 bg-gray-100/80 overflow-y-auto">
                         <div className="grid grid-cols-2 md:grid-cols-1 gap-2 p-2">
                             {revealedRanks.slice().map(member => (
-                                <div key={member.id} className={`p-2 bg-white shadow-sm flex justify-between items-center border-l-4 ${member.rank === 1 ? 'border-red-600' : member.rank <= 7 ? 'border-blue-500' : 'border-yellow-500'}`}>
+                                 <div key={member.rosterId} className={`p-2 bg-white shadow-sm flex justify-between items-center border-l-4 ${member.rank === 1 ? 'border-red-600' : member.rank <= 7 ? 'border-blue-500' : 'border-yellow-500'}`}>
                                     <div>
                                         <p className="font-black text-yellow-600 text-sm">#{member.rank} <span className="text-xs font-normal">({(getMemberGroupStatus(member) || '').split(' | ')[0]})</span></p>
                                         <p className="font-semibold text-xs truncate">{member.name}</p>
@@ -4056,181 +4056,476 @@ const MajorConcertModal = () => {
             </ModalWrapper>
         );
     };
-const PerformanceResultModal = () => {
-    const crowdRef = useRef(null);
+    const PerformanceResultModal = () => {
+        const crowdRef = useRef(null);
+        const containerRef = useRef(null); // For particles
 
-    useEffect(() => {
-        if (!modalData) return;
+        useEffect(() => {
+            if (!modalData) return;
 
-        const COLORS = [
-            '#7C3AED', '#22C55E', '#06B6D4', '#3B82F6',
-            '#F97316', '#EF4444', '#EC4899', '#FACC15',
-            '#A3E635', '#FFFFFF'
-        ];
+            // Particle effect logic
+            const container = containerRef.current;
+            if (!container) return;
 
-        const rand = (min, max) => Math.random() * (max - min) + min;
+            const createParticle = (emoji) => {
+                const particle = document.createElement('div');
+                particle.innerHTML = emoji;
+                particle.className = 'particle-float';
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.transform = `scale(${Math.random() * 0.5 + 0.8})`;
+                particle.style.animationDuration = `${Math.random() * 3 + 2.5}s`;
+                particle.style.opacity = Math.random() * 0.7 + 0.3;
+                container.appendChild(particle);
+                setTimeout(() => particle.remove(), 5500);
+            };
 
-        const buildPenlights = (count = 22) => {
-            const crowd = crowdRef.current;
-            if (!crowd) return;
+            const particleInterval = setInterval(() => {
+                createParticle(Math.random() > 0.3 ? '✨' : '💖');
+            }, 150);
 
-            // Clear existing penlights before rebuilding
-            while (crowd.firstChild) {
-                crowd.removeChild(crowd.firstChild);
-            }
+            // Penlight logic
+            const COLORS = ['#FFC0CB', '#FFB6C1', '#FFDDDE', '#F8C8DC', '#E0BBE4', '#FFFFFF'];
+            const rand = (min, max) => Math.random() * (max - min) + min;
 
-            const w = crowd.clientWidth;
-            for (let i = 0; i < count; i++) {
-                const pl = document.createElement('div');
-                pl.className = 'penlight';
-                pl.style.setProperty('--c', COLORS[Math.floor(Math.random() * COLORS.length)]);
-                pl.style.left = `${(i / (count - 1)) * (w - 40) + rand(-10, 10) + 20}px`;
-                pl.style.height = `${rand(70, 115)}px`;
-                pl.style.animationDelay = `${rand(-1.2, 0.6)}s`;
-                pl.style.animationDuration = `${rand(1.3, 2.4)}s`;
+            const buildPenlights = (count = 22) => {
+                const crowd = crowdRef.current;
+                if (!crowd) return;
+                while (crowd.firstChild) crowd.removeChild(crowd.firstChild);
                 
-                const glow = document.createElement('div');
-                glow.className = 'glow';
-                
-                const handle = document.createElement('div');
-                handle.className = 'handle';
+                const w = crowd.clientWidth;
+                for (let i = 0; i < count; i++) {
+                    const pl = document.createElement('div');
+                    pl.className = 'penlight';
+                    pl.style.setProperty('--c', COLORS[Math.floor(Math.random() * COLORS.length)]);
+                    pl.style.left = `${(i / (count - 1)) * (w - 40) + rand(-10, 10) + 20}px`;
+                    pl.style.height = `${rand(70, 115)}px`;
+                    pl.style.animationDelay = `${rand(-1.2, 0.6)}s`;
+                    pl.style.animationDuration = `${rand(1.3, 2.4)}s`;
+                    
+                    const glow = document.createElement('div');
+                    glow.className = 'glow';
+                    const handle = document.createElement('div');
+                    handle.className = 'handle';
 
-                pl.appendChild(glow);
-                pl.appendChild(handle);
-                crowd.appendChild(pl);
-            }
-            const sil = document.createElement('div');
-            sil.className = 'sil';
-            crowd.appendChild(sil);
-        };
+                    pl.appendChild(glow);
+                    pl.appendChild(handle);
+                    crowd.appendChild(pl);
+                }
+                const sil = document.createElement('div');
+                sil.className = 'sil';
+                crowd.appendChild(sil);
+            };
 
-        buildPenlights(24);
-        const handleResize = () => buildPenlights(24);
-        window.addEventListener('resize', handleResize);
+            buildPenlights(24);
+            const handleResize = () => buildPenlights(24);
+            window.addEventListener('resize', handleResize);
 
-        return () => window.removeEventListener('resize', handleResize);
-    }, [modalData]); // Re-run when modal shows
+            return () => {
+                clearInterval(particleInterval);
+                window.removeEventListener('resize', handleResize);
+            };
+        }, [modalData]);
 
-    if (!modalData) return null;
+        if (!modalData) return null;
 
-    return (
-        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in fade-in">
-            <div className="w-full max-w-2xl rounded-2xl bg-gray-800 bg-opacity-70 border border-gray-700 shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-5">
-                <div className="p-4 flex justify-between items-center bg-white bg-opacity-10">
-                    <div className="flex items-center gap-3">
-                        <span className="text-xs font-bold uppercase tracking-wider bg-white bg-opacity-20 text-white py-1 px-3 rounded-full">Performance</span>
-                        <h3 className="font-bold text-lg text-white">{modalData.title}</h3>
+        // --- FINAL: All new event messages are available ---
+        const { title, revenue, fansGained, performanceStats, totalMerchRevenue, bestSellerName, isBirthdayStage, isShonichi, isSenshuuraku, malfunctionMessage, legendaryPerformanceMessage } = modalData;
+
+        const StatDisplay = ({ icon, label, value, valueColor }) => (
+            <div className="flex justify-between items-center bg-white/20 p-3 rounded-lg backdrop-blur-sm border border-white/30">
+                <span className="font-semibold flex items-center text-sm text-pink-800/80"><span className="mr-2 text-lg">{icon}</span>{label}:</span>
+                <span className={`font-bold text-lg ${valueColor}`}>{value}</span>
+            </div>
+        );
+
+        return (
+            <div ref={containerRef} className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in overflow-hidden">
+                <div className="relative w-full max-w-xl rounded-3xl bg-gradient-to-br from-pink-200/80 to-pink-300/70 backdrop-blur-xl border-2 border-white/70 shadow-2xl p-6 text-center text-pink-900 animate-in fade-in slide-in-from-bottom-5">
+                    
+                    <div className="absolute top-4 right-4 text-4xl animate-bounce text-rose-400">
+                        {isBirthdayStage ? '🎂' : '🎤'}
                     </div>
-                    <button onClick={() => setShowModal(null)} className="w-9 h-9 rounded-full bg-white bg-opacity-10 text-white flex items-center justify-center hover:bg-opacity-20 transition-colors">
-                        <X size={20} />
-                    </button>
-                </div>
-                <div className="p-5 grid gap-4">
-                    <div className="grid grid-cols-2 gap-4 text-center p-4 rounded-lg bg-white bg-opacity-5">
-                        <div>
-                            <p className="text-3xl font-bold text-green-400">¥{modalData.revenue.toLocaleString()}</p>
-                            <p className="text-sm text-gray-400 font-semibold">Revenue</p>
+
+                    <h3 className="text-3xl font-serif font-bold text-pink-800 mb-2" style={{ textShadow: '1px 1px 3px rgba(255, 255, 255, 0.5)' }}>
+                        {title}
+                    </h3>
+                    
+                    {/* --- THIS IS THE NEW UI SECTION FOR SHONICHI/SENSHUURAKU --- */}
+                    {isShonichi && (
+                        <p className="font-bold text-lg text-blue-600 mb-4 animate-pulse" style={{ textShadow: '1px 1px 4px rgba(255, 255, 255, 0.8)' }}>
+                           A nervous but exciting first day! (+1 Reputation)
+                        </p>
+                    )}
+                    {isSenshuuraku && (
+                        <p className="font-bold text-lg text-purple-600 mb-4 animate-pulse" style={{ textShadow: '1px 1px 4px rgba(255, 255, 255, 0.8)' }}>
+                           An emotional final performance! (Morale and Hardcore fans increased)
+                        </p>
+                    )}
+
+                    {isBirthdayStage && (
+                         <p className="font-bold text-lg text-rose-500 mb-4 animate-pulse" style={{ textShadow: '1px 1px 4px rgba(255, 255, 255, 0.8)' }}>
+                           A Special Birthday Celebration!
+                         </p>
+                    )}
+                    
+                    {legendaryPerformanceMessage && (
+                        <div className="my-4 p-3 rounded-lg border-2 border-yellow-300 bg-gradient-to-r from-yellow-100/50 to-amber-100/50 text-sm font-semibold text-amber-800 flex items-center justify-center gap-2 shadow-inner">
+                            <Trophy size={18} />
+                            {legendaryPerformanceMessage}
                         </div>
-                        <div>
-                            <p className="text-3xl font-bold text-blue-400">+{modalData.fansGained.toLocaleString()}</p>
-                            <p className="text-sm text-gray-400 font-semibold">New Fans</p>
+                    )}
+
+                    {malfunctionMessage && (
+                        <div className={`my-4 p-3 rounded-lg border text-sm font-semibold flex items-center justify-center gap-2 ${malfunctionMessage.includes('charmed') ? 'bg-green-100/50 border-green-400/50 text-green-800' : 'bg-red-100/50 border-red-400/50 text-red-800'}`}>
+                            <AlertTriangle size={18} />
+                            {malfunctionMessage}
                         </div>
+                    )}
+
+                    <div className="space-y-3 my-4">
+                        <StatDisplay icon="💰" label="Total Revenue" value={`¥${revenue.toLocaleString()}`} valueColor="text-green-700" />
+                        <StatDisplay icon="👥" label="New Fans" value={`+${fansGained.toLocaleString()}`} valueColor="text-blue-600" />
                     </div>
-                    {/* --- THIS IS THE NEWLY ADDED SECTION --- */}
-                    {modalData.performanceStats && (
-                        <div className="p-3 mt-2 rounded-lg bg-white bg-opacity-10 text-xs">
-                            <h4 className="font-bold text-center text-gray-300 mb-2">Performance Breakdown</h4>
+
+                    {performanceStats && (
+                        <div className="p-3 mt-4 rounded-lg bg-white/20 text-xs backdrop-blur-sm border border-white/30">
+                            <h4 className="font-bold text-center text-pink-900/80 mb-2">Performance Breakdown</h4>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-center">
-                                <div>
-                                    <p className="font-bold text-blue-300 text-lg">{modalData.performanceStats.singing.toFixed(1)}</p>
-                                    <p className="text-gray-400">Avg. Vocal</p>
-                                </div>
-                                <div>
-                                    <p className="font-bold text-green-300 text-lg">{modalData.performanceStats.dancing.toFixed(1)}</p>
-                                    <p className="text-gray-400">Avg. Dance</p>
-                                </div>
-                                <div>
-                                    <p className="font-bold text-cyan-300 text-lg">{modalData.performanceStats.visual.toFixed(1)}</p>
-                                    <p className="text-gray-400">Avg. Visual</p>
-                                </div>
-                                <div>
-                                    <p className="font-bold text-rose-300 text-lg">{modalData.performanceStats.charisma.toFixed(1)}</p>
-                                    <p className="text-gray-400">Avg. Charisma</p>
-                                </div>
+                                <div><p className="font-bold text-blue-600 text-lg">{performanceStats.singing.toFixed(1)}</p><p className="text-pink-900/70">Avg. Vocal</p></div>
+                                <div><p className="font-bold text-green-600 text-lg">{performanceStats.dancing.toFixed(1)}</p><p className="text-pink-900/70">Avg. Dance</p></div>
+                                <div><p className="font-bold text-cyan-500 text-lg">{performanceStats.visual.toFixed(1)}</p><p className="text-pink-900/70">Avg. Visual</p></div>
+                                <div><p className="font-bold text-rose-500 text-lg">{performanceStats.charisma.toFixed(1)}</p><p className="text-pink-900/70">Avg. Charisma</p></div>
                             </div>
                         </div>
                     )}
-
-                    {modalData.totalMerchRevenue > 0 && (
-                        <div className="p-3 mt-2 rounded-lg bg-white bg-opacity-10 text-xs">
-                            <h4 className="font-bold text-center text-gray-300 mb-2">Merchandise Report</h4>
+                    {totalMerchRevenue > 0 && (
+                        <div className="p-3 mt-2 rounded-lg bg-white/20 text-xs backdrop-blur-sm border border-white/30">
+                            <h4 className="font-bold text-center text-pink-900/80 mb-2">Merchandise Report</h4>
                             <div className="grid grid-cols-2 gap-2 text-center">
-                                <div>
-                                    <p className="font-bold text-green-300 text-lg">¥{modalData.totalMerchRevenue.toLocaleString()}</p>
-                                    <p className="text-gray-400">Merch Revenue</p>
-                                </div>
-                                <div>
-                                    <p className="font-bold text-yellow-300 text-lg truncate" title={modalData.bestSellerName}>{modalData.bestSellerName}</p>
-                                    <p className="text-gray-400">Best Seller</p>
-                                </div>
+                                <div><p className="font-bold text-green-600 text-lg">¥{totalMerchRevenue.toLocaleString()}</p><p className="text-pink-900/70">Merch Revenue</p></div>
+                                <div><p className="font-bold text-yellow-600 text-lg truncate" title={bestSellerName}>{bestSellerName}</p><p className="text-pink-900/70">Best Seller</p></div>
                             </div>
                         </div>
                     )}
+                    
+                    <div ref={crowdRef} className="crowd h-40 rounded-lg relative overflow-hidden bg-black/10 border border-white/20 shadow-inner my-6"></div>
 
-
-                    {/* --- END OF NEW SECTION --- */}
-                    <div ref={crowdRef} className="crowd h-52 rounded-lg relative overflow-hidden bg-gray-900 bg-opacity-50 border border-gray-700 shadow-inner">
-                        {/* Penlights are generated by useEffect */}
-                        
+                    <div className="flex justify-center mt-6">
+                        <button onClick={() => setShowModal(null)} className="bg-gradient-to-br from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 active:scale-95 text-white px-12 py-3 rounded-full font-bold shadow-lg shadow-pink-500/30 transition-all text-lg border-2 border-white/80">
+                            SUGOI!
+                        </button>
                     </div>
-                     <button onClick={() => setShowModal(null)} className="w-full p-3 bg-blue-600 text-white rounded-lg font-bold text-base hover:bg-blue-700 transition-colors">
-                        Continue
-                    </button>
+                </div>
+                
+                <style jsx>{`
+                    .particle-float { position: absolute; top: 100%; pointer-events: none; animation: floatUpAndFade 5s linear forwards; font-size: 1.5rem; }
+                    @keyframes floatUpAndFade { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(-80vh) rotate(720deg); opacity: 0; } }
+                    .penlight { position: absolute; bottom: 12px; width: 8px; transform-origin: bottom center; animation: wave 1.9s ease-in-out infinite; }
+                    .penlight .handle { position:absolute; bottom:0; left:50%; transform: translateX(-50%); width: 8px; height: 32px; border-radius: 4px; background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.14); box-shadow: 0 6px 16px rgba(0,0,0,.35); }
+                    .penlight .glow { position:absolute; bottom: 28px; left:50%; transform: translateX(-50%); width: 10px; height: 46px; border-radius: 999px; box-shadow: 0 0 18px var(--c), 0 0 32px color-mix(in srgb, var(--c), transparent 35%), 0 0 60px color-mix(in srgb, var(--c), transparent 55%); background: linear-gradient(180deg, color-mix(in srgb, var(--c), white 22%), var(--c)); border: 1px solid color-mix(in srgb, var(--c), white 25%); }
+                    .crowd::before { content:""; position:absolute; inset:-40px; background: radial-gradient(220px 160px at 15% 30%, rgba(255,192,203,.4), transparent 60%), radial-gradient(240px 160px at 80% 25%, rgba(255,182,193,.3), transparent 62%), radial-gradient(300px 200px at 60% 65%, rgba(255,105,180,.25), transparent 65%); filter: blur(10px); opacity: .9; }
+                    .sil { position:absolute; bottom:0; left:0; right:0; height: 40px; background: linear-gradient(180deg, transparent, rgba(0,0,0,.85)); }
+                    @keyframes wave { 0% { transform: rotate(-8deg) translateY(0); } 50% { transform: rotate(10deg) translateY(-6px); } 100% { transform: rotate(-8deg) translateY(0); } }
+                `}</style>
+            </div>
+        );
+    };
+
+    const ConfirmModal = () => {
+        if (!modalData) return null;
+        const { title, message, onConfirm, onCancel } = modalData;
+
+        return (
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md text-center">
+                    <h3 className="text-xl font-bold text-gray-800 mb-2">{title}</h3>
+                    <p className="text-gray-600 mb-6">{message}</p>
+                    <div className="flex justify-center gap-4">
+                        <button onClick={onCancel || (() => setShowModal(null))} className="px-6 py-2 rounded bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold">Cancel</button>
+                        <button onClick={onConfirm} className="px-6 py-2 rounded bg-red-500 hover:bg-red-600 text-white font-semibold">Confirm</button>
+                    </div>
                 </div>
             </div>
-            <style jsx>{`
-                .penlight {
-                    position: absolute;
-                    bottom: 12px;
-                    width: 8px;
-                    transform-origin: bottom center;
-                    animation: wave 1.9s ease-in-out infinite;
-                }
-                .penlight .handle {
-                    position:absolute; bottom:0; left:50%; transform: translateX(-50%);
-                    width: 8px; height: 32px; border-radius: 4px;
-                    background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.14);
-                    box-shadow: 0 6px 16px rgba(0,0,0,.35);
-                }
-                .penlight .glow {
-                    position:absolute; bottom: 28px; left:50%; transform: translateX(-50%);
-                    width: 10px; height: 46px; border-radius: 999px;
-                    box-shadow: 0 0 18px var(--c), 0 0 32px color-mix(in srgb, var(--c), transparent 35%), 0 0 60px color-mix(in srgb, var(--c), transparent 55%);
-                    background: linear-gradient(180deg, color-mix(in srgb, var(--c), white 22%), var(--c));
-                    border: 1px solid color-mix(in srgb, var(--c), white 25%);
-                }
-                .crowd::before {
-                    content:""; position:absolute; inset:-40px;
-                    background: radial-gradient(220px 160px at 15% 30%, rgba(120,84,255,.28), transparent 60%),
-                                radial-gradient(240px 160px at 80% 25%, rgba(0,255,198,.22), transparent 62%),
-                                radial-gradient(300px 200px at 60% 65%, rgba(255,62,128,.18), transparent 65%);
-                    filter: blur(10px); opacity: .9;
-                }
-                .sil {
-                    position:absolute; bottom:0; left:0; right:0; height: 40px;
-                    background: linear-gradient(180deg, transparent, rgba(0,0,0,.85));
-                }
-                @keyframes wave {
-                    0% { transform: rotate(-8deg) translateY(0); }
-                    50% { transform: rotate(10deg) translateY(-6px); }
-                    100% { transform: rotate(-8deg) translateY(0); }
-                }
-            `}</style>
-        </div>
+        );
+    };
+
+    const ShuffleModeSelectionModal = () => {
+        return (
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-lg text-center">
+                    <h3 className="text-2xl font-bold text-gray-800 mb-4">Choose Shuffle Mode</h3>
+                    <p className="text-gray-600 mb-6">How do you want to conduct this shuffle?</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="border p-4 rounded-lg">
+                            <h4 className="font-bold text-lg">Automatic Shuffle</h4>
+                            <p className="text-sm text-gray-500 my-2">The fates will decide. Captains and Aces have a high chance to stay, but everyone else is fair game. Quick and chaotic.</p>
+                            <button onClick={() => executeShuffle('auto')} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded w-full mt-2">
+                                Automatic
+                            </button>
+                        </div>
+                        <div className="border p-4 rounded-lg">
+                            <h4 className="font-bold text-lg">Manual Shuffle</h4>
+                            <p className="text-sm text-gray-500 my-2">You are in full control. Drag and drop members to their new teams. Strategic, but time-consuming.</p>
+                            <button onClick={() => setShowModal('manualShuffle')} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full mt-2">
+                                Manual
+                            </button>
+                        </div>
+                    </div>
+                     <button onClick={() => setShowModal(null)} className="mt-6 text-gray-500 hover:text-gray-700">Cancel Shuffle</button>
+                </div>
+            </div>
+        );
+    };
+
+const ShuffleResultModal = () => {
+    if (!modalData || !modalData.result) return null;
+    const { result } = modalData;
+
+    const groupByCategory = (members, categoryKey) => {
+        return members.reduce((acc, item) => {
+            const key = item[categoryKey];
+            if (!acc[key]) acc[key] = [];
+            acc[key].push(item.memberName);
+            return acc;
+        }, {});
+    };
+
+    return (
+        <ModalWrapper title="Grand Shuffle Results" maxWidth="max-w-4xl">
+            <div className="space-y-6 max-h-[75vh] overflow-y-auto p-2">
+                {Object.values(result).map((teamData) => {
+                    const shuffledFromTeams = groupByCategory(teamData.shuffledIn, 'fromTeam');
+                    const transferredFromGroups = groupByCategory(teamData.transferredIn, 'fromGroup');
+                    const kenninFromGroups = groupByCategory(teamData.kenninIn, 'fromGroup');
+
+                    const hasContent = teamData.retained.length > 0 || teamData.shuffledIn.length > 0 || teamData.transferredIn.length > 0 || teamData.kenninIn.length > 0;
+                    if (!hasContent) return null;
+
+                    return (
+                        <div key={teamData.id} className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg border dark:border-gray-700">
+                            <h3 className="text-2xl font-bold text-pink-500">{teamData.groupName}</h3>
+                            <h4 className="text-xl font-semibold mb-3 border-b pb-2 dark:border-gray-600">{teamData.name}</h4>
+
+                            {teamData.retained.length > 0 && (
+                                <div className="mb-3">
+                                    <p className="font-bold text-sm text-gray-700 dark:text-gray-200">Original Members</p>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400">{teamData.retained.map(m => m.memberName).join(', ')}</p>
+                                </div>
+                            )}
+
+                            {Object.entries(shuffledFromTeams).map(([fromTeam, members]) => (
+                                <div key={fromTeam} className="mb-3">
+                                    <p className="font-bold text-sm text-blue-600 dark:text-blue-400">From {fromTeam}</p>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400">{members.join(', ')}</p>
+                                </div>
+                            ))}
+
+                            {Object.entries(transferredFromGroups).map(([fromGroup, members]) => (
+                                <div key={fromGroup} className="mb-3">
+                                    <p className="font-bold text-sm text-purple-600 dark:text-purple-400">From {fromGroup}</p>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400">{members.join(', ')}</p>
+                                </div>
+                            ))}
+
+                            {Object.entries(kenninFromGroups).map(([fromGroup, members]) => (
+                                <div key={fromGroup} className="mb-3">
+                                    <p className="font-bold text-sm text-yellow-600 dark:text-yellow-400">Concurrent Position from {fromGroup}</p>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400">{members.join(', ')}</p>
+                                </div>
+                            ))}
+                        </div>
+                    );
+                })}
+            </div>
+            <div className="mt-6 flex justify-end">
+                <button onClick={() => setShowModal(null)} className="px-6 py-2 bg-gray-500 text-white font-semibold rounded-lg hover:bg-gray-600">Close</button>
+            </div>
+        </ModalWrapper>
     );
 };
 
-const SportsFestivalModal = () => {
+    const ManualShuffleModal = () => {
+        const [unassigned, setUnassigned] = useState([]);
+        const [teamBuckets, setTeamBuckets] = useState({});
+        const [lockedMembers, setLockedMembers] = useState([]);
+
+        useEffect(() => {
+            const allTeamMembers = getMainGroupRoster().filter(m => m.teamId);
+            const initialBuckets = teams.reduce((acc, team) => ({ ...acc, [team.id]: [] }), {});
+            const membersToLock = [];
+            const captainIds = Object.values(groupRoles);
+
+            allTeamMembers.forEach(member => {
+                const memberId = member.rosterId || member.id;
+                if (captainIds.includes(memberId)) {
+                    membersToLock.push(member);
+                    if (initialBuckets[member.teamId]) {
+                       initialBuckets[member.teamId].push(member);
+                    }
+                }
+            });
+            
+            const lockedIds = membersToLock.map(m => m.rosterId || m.id);
+            setLockedMembers(lockedIds);
+
+            const remainingMembers = allTeamMembers.filter(m => !lockedIds.includes(m.rosterId || m.id));
+            setUnassigned(remainingMembers);
+            setTeamBuckets(initialBuckets);
+        }, []);
+
+        const handleAssignMember = (member, teamIdStr) => {
+            const teamId = parseInt(teamIdStr);
+            if (!teamId) return;
+
+            const team = teams.find(t => t.id === teamId);
+            if (teamBuckets[teamId].length >= team.members.length) {
+                alert(`Team ${team.name} is already at its capacity of ${team.members.length}.`);
+                return;
+            }
+            setUnassigned(prev => prev.filter(m => (m.rosterId || m.id) !== (member.rosterId || member.id)));
+            setTeamBuckets(prev => ({
+                ...prev,
+                [teamId]: [...prev[teamId], member]
+            }));
+        };
+
+        const handleUnassignMember = (member, fromTeamId) => {
+            if (lockedMembers.includes(member.rosterId || member.id)) return; // Prevent unassigning locked members
+            setTeamBuckets(prev => ({
+                ...prev,
+                [fromTeamId]: prev[fromTeamId].filter(m => (m.rosterId || m.id) !== (member.rosterId || member.id))
+            }));
+            setUnassigned(prev => [member, ...prev]);
+        };
+        
+        const handleLockMember = (member) => {
+            const teamId = member.teamId;
+            const team = teams.find(t => t.id === teamId);
+            if (teamBuckets[teamId].length >= team.members.length) {
+                alert(`Cannot lock ${member.name}: Team ${team.name} is full.`);
+                return;
+            }
+            const memberId = member.rosterId || member.id;
+            setLockedMembers(prev => [...prev, memberId]);
+            setUnassigned(prev => prev.filter(m => (m.rosterId || m.id) !== memberId));
+            setTeamBuckets(prev => ({
+                ...prev,
+                [teamId]: [...prev[teamId], member]
+            }));
+        };
+
+        const handleConfirmShuffle = () => {
+            if (unassigned.length > 0) {
+                alert("You must assign all members to a team before confirming the shuffle.");
+                return;
+            }
+            const finalAssignments = {};
+            Object.keys(teamBuckets).forEach(teamId => {
+                teamBuckets[teamId].forEach(member => {
+                    finalAssignments[member.rosterId || member.id] = parseInt(teamId);
+                });
+            });
+            executeShuffle('manual', finalAssignments);
+        };
+
+        return (
+            <ModalWrapper title="Manual Shuffle" maxWidth="max-w-2xl">
+                <div className="flex flex-col h-[85vh]">
+                    {/* Scrollable content area */}
+                    <div className="flex-grow overflow-y-auto space-y-6 pr-2 -mr-2">
+
+                        {/* Unassigned Members Pool */}
+                        <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border dark:border-gray-700">
+                            <h4 className="font-bold text-lg mb-3">Member Pool ({unassigned.length})</h4>
+                            {unassigned.length > 0 ? (
+                                <div className="space-y-3">
+                                    {unassigned.map(member => (
+                                        <div key={member.rosterId || member.id} className="p-3 rounded bg-white dark:bg-gray-700/50 border dark:border-gray-600">
+                                            <div className="flex justify-between items-center">
+                                                <div>
+                                                    <p className="font-semibold">{member.name}</p>
+                                                    <p className="text-xs text-gray-500 dark:text-gray-400">Original: {teams.find(t => t.id === member.teamId)?.name || 'N/A'}</p>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <button onClick={() => handleLockMember(member)} title="Lock member to their original team" className="text-gray-400 hover:text-blue-600 p-1">
+                                                        <Lock size={16} />
+                                                    </button>
+                                                    <select
+                                                        onChange={(e) => handleAssignMember(member, e.target.value)}
+                                                        className="text-xs rounded border-gray-300 dark:bg-gray-600 dark:border-gray-500 shadow-sm"
+                                                        value="" // Uncontrolled select, acts as action buttons
+                                                    >
+                                                        <option value="" disabled>Assign to...</option>
+                                                        {teams.map(team => (
+                                                            <option key={team.id} value={team.id} disabled={(teamBuckets[team.id]?.length || 0) >= team.members.length}>
+                                                                {team.name} {(teamBuckets[team.id]?.length || 0) >= team.members.length ? '(Full)' : ''}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p className="text-sm text-gray-500 dark:text-gray-400">All members have been assigned.</p>
+                            )}
+                        </div>
+
+                        {/* Team Buckets */}
+                        <div className="space-y-4">
+                            <h4 className="font-bold text-lg">Teams</h4>
+                            {teams.map(team => {
+                                const teamGroupName = team.groupId === 'main' ? groupName : (sisterGroups.find(sg => String(sg.id) === String(team.groupId))?.name);
+                                return (
+                                    <div key={team.id} className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
+                                        <h5 className="font-bold mb-3 text-pink-500">
+                                            {teamGroupName} - {team.name}
+                                            <span className="ml-2 font-normal text-sm text-gray-500 dark:text-gray-400">({teamBuckets[team.id]?.length || 0} / {team.members.length})</span>
+                                        </h5>
+                                        <div className="space-y-2">
+                                            {(teamBuckets[team.id] || []).length > 0 ? (
+                                                (teamBuckets[team.id] || []).map(member => {
+                                                    const memberId = member.rosterId || member.id;
+                                                    const isLocked = lockedMembers.includes(memberId);
+                                                    return (
+                                                        <div key={memberId} className={`p-2 rounded text-sm flex justify-between items-center ${isLocked ? 'bg-blue-50 dark:bg-blue-900/30' : 'bg-green-50 dark:bg-green-900/30'}`}>
+                                                            <span className="flex items-center">
+                                                                {isLocked && <Lock size={14} className="mr-2 text-blue-500 flex-shrink-0" />}
+                                                                {member.name}
+                                                            </span>
+                                                            {!isLocked && (
+                                                                <button onClick={() => handleUnassignMember(member, team.id)} className="text-red-500 hover:text-red-700 font-bold text-xl leading-none px-2 rounded-full">
+                                                                    &times;
+                                                                </button>
+                                                            )}
+                                                        </div>
+                                                    );
+                                                })
+                                            ) : (
+                                                 <p className="text-xs text-gray-400 italic">No members assigned yet.</p>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    {/* Footer */}
+                    <div className="pt-4 mt-auto border-t dark:border-gray-700 flex justify-end gap-4">
+                         <button onClick={() => setShowModal('shuffleModeSelection')} className="px-6 py-2 rounded bg-gray-200 hover:bg-gray-300 text-gray-800 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500 font-semibold">
+                            Back
+                        </button>
+                        <button onClick={handleConfirmShuffle} disabled={unassigned.length > 0} className={`px-6 py-2 rounded text-white font-semibold transition-colors ${unassigned.length > 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'}`}>
+                            Confirm Shuffle
+                        </button>
+                    </div>
+                </div>
+            </ModalWrapper>
+        );
+    };
+    const SportsFestivalModal = () => {
     return (
         <ModalWrapper title="Hold Sports Festival" maxWidth="max-w-lg">
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
@@ -5227,6 +5522,7 @@ const TeamManagementModal = ({ isEditing = false, team = null }) => {
     // NEW state for the filter
     const [filterKey, setFilterKey] = useState('All');
     
+    // The `team.members` array should already contain unique rosterIds.
     const [selectedMembers, setSelectedMembers] = useState(isEditing ? team.members.map(id => ({ id, type: 'existing' })) : []);
     const [pendingDecision, setPendingDecision] = useState(null);
 
@@ -5239,8 +5535,9 @@ const TeamManagementModal = ({ isEditing = false, team = null }) => {
         generations: [...new Set(fullRoster.filter(m => String(m.groupId) === String(sg.id)).map(m => m.generation).filter(Boolean))]
     }));
 
+    // CORRECTED: Use rosterId for all operations
     const handleAddMemberClick = (member) => {
-        if (selectedMembers.some(m => m.id === member.id)) return;
+        if (selectedMembers.some(m => m.id === member.rosterId)) return;
         
         const memberHomeGroupId = member.isSisterMember ? String(member.groupId) : 'main';
         const isCrossGroupAssignment = String(memberHomeGroupId) !== String(groupId);
@@ -5249,13 +5546,14 @@ const TeamManagementModal = ({ isEditing = false, team = null }) => {
         if (isCrossGroupAssignment || isAlreadyInAnotherTeam) {
             setPendingDecision({ ...member, isCrossGroupAssignment });
         } else {
-            setSelectedMembers(prev => [...prev, { id: member.id, type: 'add' }]);
+            setSelectedMembers(prev => [...prev, { id: member.rosterId, type: 'add' }]);
         }
     };
     
+    // CORRECTED: Use rosterId from pendingDecision
     const resolveDecision = (decisionType) => {
         if (decisionType && pendingDecision) {
-            setSelectedMembers(prev => [...prev, { id: pendingDecision.id, type: decisionType }]);
+            setSelectedMembers(prev => [...prev, { id: pendingDecision.rosterId, type: decisionType }]);
         }
         setPendingDecision(null);
     };
@@ -5268,14 +5566,12 @@ const TeamManagementModal = ({ isEditing = false, team = null }) => {
     const filteredRoster = fullRoster.filter(member => {
         if (filterKey === 'All') return true;
         
-        // Main group filters
         if (filterKey === 'main') return !member.isSisterMember;
         if (filterKey.startsWith('main-gen-')) {
             const gen = filterKey.replace('main-gen-', '');
             return !member.isSisterMember && member.generation === gen;
         }
 
-        // Sister group filters
         if (filterKey.startsWith('sg-')) {
             if (filterKey.includes('-gen-')) {
                 const [sgIdStr, gen] = filterKey.replace('sg-', '').split('-gen-');
@@ -5289,8 +5585,9 @@ const TeamManagementModal = ({ isEditing = false, team = null }) => {
         return false;
     });
 
+    // CORRECTED: Use rosterId
     const handleSelectAllFiltered = () => {
-        const filteredIds = filteredRoster.map(m => m.id);
+        const filteredIds = filteredRoster.map(m => m.rosterId);
         const allCurrentlySelected = filteredIds.every(id => selectedMembers.some(sm => sm.id === id));
         if (allCurrentlySelected) {
             setSelectedMembers(prev => prev.filter(sm => !filteredIds.includes(sm.id)));
@@ -5335,7 +5632,7 @@ const TeamManagementModal = ({ isEditing = false, team = null }) => {
                     {sisterGroups.map(sg => <option key={sg.id} value={sg.id}>Team for: {sg.name}</option>)}
                 </select>
 
-                <select value={selectedSetlist} onChange={e => setSelectedSetlist(Number(e.target.value))} className="w-full p-2 border rounded bg-gray-50 dark:bg-gray-700">
+                <select value={selectedSetlist || ''} onChange={e => setSelectedSetlist(Number(e.target.value))} className="w-full p-2 border rounded bg-gray-50 dark:bg-gray-700">
                     <option value="">-- Select a Setlist --</option>
                     {allSetlists.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                 </select>
@@ -5382,11 +5679,10 @@ const TeamManagementModal = ({ isEditing = false, team = null }) => {
                     </div>
 
                     <div className="border rounded p-2 h-64 overflow-y-auto bg-gray-50 dark:bg-gray-900">
-                        {/* --- MODIFIED: Use filteredRoster --- */}
                         {filteredRoster.map(member => {
-                            const isSelected = selectedMembers.some(m => m.id === member.id);
+                            const isSelected = selectedMembers.some(m => m.id === member.rosterId);
                             return (
-                                <div key={member.id} className="flex items-center justify-between p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
+                                <div key={member.rosterId} className="flex items-center justify-between p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
                                     <div className="flex flex-col">
                                         <span className="font-medium">{member.name}</span>
                                             <span className="text-xs text-gray-500 dark:text-gray-400">
@@ -5394,7 +5690,7 @@ const TeamManagementModal = ({ isEditing = false, team = null }) => {
                                                 {getMemberWarning(member) && <span className="text-yellow-500 ml-2 font-semibold">{getMemberWarning(member)}</span>}
                                             </span>
                                     </div>
-                                    <button onClick={() => isSelected ? removeMember(member.id) : handleAddMemberClick(member)} className={`px-2 py-1 text-xs rounded ${isSelected ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`}>
+                                    <button onClick={() => isSelected ? removeMember(member.rosterId) : handleAddMemberClick(member)} className={`px-2 py-1 text-xs rounded ${isSelected ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`}>
                                         {isSelected ? 'Remove' : 'Add'}
                                     </button>
                                 </div>
@@ -5464,15 +5760,28 @@ const TeamDetailsModal = ({ team }) => {
     return (
         <ModalWrapper title={`Team Details: ${team.name}`}>
             <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
-                <div>
-                    <h4 className="font-semibold text-lg mb-2 border-b pb-1">Current Members ({team.members.length})</h4>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-1 text-sm">
-                        {team.members.map(memberId => {
-                            const member = fullRoster.find(m => m.id === memberId);
-                            return <p key={memberId}>{member ? member.name : 'Unknown Member'}</p>;
-                        })}
-                    </div>
-                </div>
+        <div>
+            <h4 className="font-semibold text-lg mb-2 border-b pb-1">Current Members ({team.members.length})</h4>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2">
+                {team.members.map(memberId => {
+                    const member = fullRoster.find(m => String(m.id) === String(memberId) || String(m.rosterId) === String(memberId));
+                    if (!member) return <p key={memberId} className="text-gray-400">Unknown Member</p>;
+
+                    return (
+                        <div key={member.rosterId} className="flex items-center justify-between p-1 rounded hover:bg-gray-50 dark:hover:bg-gray-700">
+                            <button onClick={() => { setSelectedMember(member); setShowModal('memberDetails'); }} className="text-sm text-left truncate hover:underline">
+                                {member.name}
+                            </button>
+                            {member.kennin && (
+                                <span className="ml-2 text-xs font-semibold bg-yellow-200 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-200 px-1.5 py-0.5 rounded-full flex-shrink-0">
+                                    Kennin
+                                </span>
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
 
 <div>
     <h4 className="font-semibold text-lg mb-2 border-b pb-1">Team Captain</h4>
@@ -5484,10 +5793,10 @@ const TeamDetailsModal = ({ team }) => {
     >
         <option value="">-- Appoint a Team Captain --</option>
         {team.members.map(memberId => {
-            const member = fullRoster.find(m => m.id === memberId);
+            const member = fullRoster.find(m => String(m.id) === String(memberId) || String(m.rosterId) === String(memberId));
             if (!member) return null;
             return (
-                <option key={member.id} value={member.id}>{member.name}</option>
+                <option key={member.rosterId} value={member.rosterId}>{member.name}</option>
             )
         })}
     </select>
@@ -5615,79 +5924,89 @@ const SetlistDetailsModal = ({ setlist, allTheaterSongs, getFormattedDateForWeek
         const [newHomeGroup, setNewHomeGroup] = useState(String(initialHomeGroupId));
         const [kenninStatus, setKenninStatus] = useState(initialKenninGroupNames);
     
-            const handleConfirmMove = () => {
-                const originalHomeGroup = allGroups.find(g => String(g.id) === String(initialHomeGroupId));
-                const finalNewHomeGroup = allGroups.find(g => String(g.id) === newHomeGroup);
-                const wasTransferred = finalNewHomeGroup.id !== originalHomeGroup.id;
-    
-                const addedKennins = kenninStatus.filter(name => !initialKenninGroupNames.includes(name));
-                const removedKennins = initialKenninGroupNames.filter(name => !kenninStatus.includes(name));
-                let historyEvents = [];
-    
-                if (wasTransferred) historyEvents.push({ week: week, event: `Transferred from ${originalHomeGroup.name} to ${finalNewHomeGroup.name}` });
-                addedKennins.forEach(name => historyEvents.push({ week: week, event: `Given a Concurrent Position in ${name}` }));
-                removedKennins.forEach(name => historyEvents.push({ week: week, event: `Concurrent Position in ${name} canceled` }));
-    
-                if (historyEvents.length === 0) {
-                    setMessage("No changes were made.");
-                    return setShowModal(null);
-                }
-    
-                // --- UNIFIED IMMUTABLE LOGIC ---
-    
-                const isCrossGroupTransfer = wasTransferred && ((originalHomeGroup.id === 'main' && finalNewHomeGroup.id !== 'main') || (originalHomeGroup.id !== 'main' && finalNewHomeGroup.id === 'main'));
-                const memberIdToUse = isCrossGroupTransfer ? Math.max(0, ...members.map(m => m.id), ...sisterGroups.flatMap(sg => sg.members || []).map(m => m.id)) + 1 : member.id;
-    
-                const finalUpdatedMember = { ...member, id: memberIdToUse, homeGroup: finalNewHomeGroup.name, kenninGroups: kenninStatus, teamHistory: [...(member.teamHistory || []), ...historyEvents], teamId: wasTransferred ? null : member.teamId };
-    
-                let intermediateMembers = members;
-                let intermediateSisterGroups = sisterGroups;
-    
-                // Step 1: REMOVE the member from their original location (if a transfer occurred)
-                if (wasTransferred) {
-                    if (originalHomeGroup.id === 'main') {
-                        intermediateMembers = members.filter(m => String(m.id) !== String(member.id));
-                    } else {
-                        intermediateSisterGroups = sisterGroups.map(sg => {
-                            if (String(sg.id) !== String(originalHomeGroup.id)) return sg;
-                            // Create a new SG object with the member immutably removed
-                            return { ...sg, members: sg.members.filter(m => String(m.id) !== String(member.id)) };
-                        });
+        const handleConfirmMove = () => {
+            const allGroups = [{ id: 'main', name: groupName }, ...(sisterGroups || [])];
+            const originalHomeGroup = allGroups.find(g => String(g.id) === String(initialHomeGroupId));
+            const finalNewHomeGroup = allGroups.find(g => String(g.id) === newHomeGroup);
+            const wasTransferred = finalNewHomeGroup.id !== originalHomeGroup.id;
+
+            const addedKennins = kenninStatus.filter(name => !initialKenninGroupNames.includes(name));
+            const removedKennins = initialKenninGroupNames.filter(name => !kenninStatus.includes(name));
+            let historyEvents = [];
+
+            if (wasTransferred) historyEvents.push({ week: week, event: `Transferred from ${originalHomeGroup.name} to ${finalNewHomeGroup.name}` });
+            addedKennins.forEach(name => historyEvents.push({ week: week, event: `Given a Concurrent Position in ${name}` }));
+            removedKennins.forEach(name => historyEvents.push({ week: week, event: `Concurrent Position in ${name} canceled` }));
+
+            if (historyEvents.length === 0) {
+                setMessage("No changes were made.");
+                return setShowModal(null);
+            }
+
+            // Create deep copies to modify safely
+            let nextMembers = JSON.parse(JSON.stringify(members));
+            let nextSisterGroups = JSON.parse(JSON.stringify(sisterGroups));
+            let memberToMove = JSON.parse(JSON.stringify(member));
+
+            // Part 1: Remove the member from their original group if a transfer occurred
+            if (wasTransferred) {
+                if (originalHomeGroup.id === 'main') {
+                    nextMembers = nextMembers.filter(m => String(m.id) !== String(memberToMove.id));
+                } else {
+                    const sgIndex = nextSisterGroups.findIndex(sg => String(sg.id) === String(originalHomeGroup.id));
+                    if (sgIndex > -1) {
+                        nextSisterGroups[sgIndex].members = (nextSisterGroups[sgIndex].members || []).filter(m => String(m.id) !== String(memberToMove.id));
                     }
                 }
-    
-                // Step 2: ADD or UPDATE the member in their final location
-                let finalMembers = intermediateMembers;
-                let finalSisterGroups = intermediateSisterGroups;
-    
-                if (finalNewHomeGroup.id === 'main') {
-                    if (wasTransferred) {
-                        finalMembers = [...intermediateMembers, finalUpdatedMember];
-                    } else { // Kennin-only update for main group member
-                        finalMembers = intermediateMembers.map(m => String(m.id) === String(member.id) ? finalUpdatedMember : m);
-                    }
-                } else { // Final location is a sister group
-                    finalSisterGroups = intermediateSisterGroups.map(sg => {
-                        if (String(sg.id) !== String(finalNewHomeGroup.id)) return sg;
-                        
-                        if (wasTransferred) {
-                            // Create a new SG object with the transferred member immutably added
-                            return { ...sg, members: [...(sg.members || []), finalUpdatedMember] };
-                        } else { // Kennin-only update for sister group member
-                            // Create a new SG object with the member immutably updated
-                            return { ...sg, members: sg.members.map(m => String(m.id) === String(member.id) ? finalUpdatedMember : m) };
-                        }
-                    });
-                }
-    
-                setMembers(finalMembers);
-                setSisterGroups(finalSisterGroups);
-    
-                setMessage(`${member.name}'s placement was updated.`);
-                addNotification({ type: 'Management', message: `${member.name}'s placement was updated.` });
-                setShowModal(null);
-                setSelectedMember(null);
+            }
+            
+            // Part 2: Prepare the final member object with updated properties
+            const finalUpdatedMember = {
+                ...memberToMove,
+                homeGroup: finalNewHomeGroup.name,
+                kenninGroups: kenninStatus,
+                teamHistory: [...(memberToMove.teamHistory || []), ...historyEvents],
+                teamId: wasTransferred ? null : memberToMove.teamId,
             };
+            // Clean up temporary properties that shouldn't be saved on the member object itself
+            delete finalUpdatedMember.rosterId;
+            delete finalUpdatedMember.isSisterMember;
+            delete finalUpdatedMember.displayGroupName;
+
+            // Part 3: Add or Update the member in their final location
+            if (finalNewHomeGroup.id === 'main') {
+                if (wasTransferred) {
+                    const newMainId = (nextMembers.length > 0 ? Math.max(0, ...nextMembers.map(m => m.id)) : 0) + 1;
+                    finalUpdatedMember.id = newMainId;
+                    nextMembers.push(finalUpdatedMember);
+                } else {
+                    // This is a Kennin-only update for a member already in the main group
+                    nextMembers = nextMembers.map(m => String(m.id) === String(memberToMove.id) ? finalUpdatedMember : m);
+                }
+            } else { // Destination is a sister group
+                const destSgIndex = nextSisterGroups.findIndex(sg => String(sg.id) === String(finalNewHomeGroup.id));
+                if (destSgIndex > -1) {
+                    if (wasTransferred) {
+                        const destSgMembers = nextSisterGroups[destSgIndex].members || [];
+                        const newSisterId = (destSgMembers.length > 0 ? Math.max(0, ...destSgMembers.map(m => m.id)) : 0) + 1;
+                        finalUpdatedMember.id = newSisterId;
+                        nextSisterGroups[destSgIndex].members.push(finalUpdatedMember);
+                    } else {
+                        // This is a Kennin-only update for a member already in this sister group
+                        nextSisterGroups[destSgIndex].members = (nextSisterGroups[destSgIndex].members || []).map(m => String(m.id) === String(memberToMove.id) ? finalUpdatedMember : m);
+                    }
+                }
+            }
+
+            // Part 4: Commit all state changes
+            setMembers(nextMembers);
+            setSisterGroups(nextSisterGroups);
+
+            setMessage(`${member.name}'s placement was updated.`);
+            addNotification({ type: 'Management', message: `${member.name}'s placement was updated.` });
+            setShowModal(null);
+            setSelectedMember(null); // Deselect to force UI refresh
+        };
     
         // --- The Unified UI ---
         return (
@@ -5798,9 +6117,9 @@ const SetlistDetailsModal = ({ setlist, allTheaterSongs, getFormattedDateForWeek
                   <div className="space-y-1 max-h-[400px] overflow-y-auto border rounded p-1 bg-gray-50 dark:bg-gray-900">
                       {availableMembers.map(member => (
                           <div
-                              key={member.id}
-                              className={`flex items-center justify-between p-2 rounded cursor-pointer ${selectedMemberId === member.id ? 'bg-blue-200 dark:bg-blue-800 shadow' : 'bg-white dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-700'}`}
-                              onClick={() => setSelectedMemberId(member.id)}
+                          key={member.rosterId}
+                              className={`flex items-center justify-between p-2 rounded cursor-pointer ${selectedMemberId === member.rosterId ? 'bg-blue-200 dark:bg-blue-800 shadow' : 'bg-white dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-700'}`}
+                              onClick={() => setSelectedMemberId(member.rosterId)}
                           >
                               <div>
                                   <p className="font-semibold text-sm">{member.name}</p>
@@ -8188,9 +8507,9 @@ if (!gameStarted) {
             className="w-full p-1.5 text-sm border rounded bg-white dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
         >
             <option value="">-- Appoint a Captain --</option>
-            {members.filter(m => m.isAvailable && !m.isSisterMember).sort((a,b) => (b.charisma + b.intelligence) - (a.charisma + a.intelligence)).map(member => (
-                <option key={member.id} value={member.id}>{member.name}</option>
-            ))}
+        {members.filter(m => m.isAvailable && !m.isSisterMember).sort((a,b) => (b.charisma + b.intelligence) - (a.charisma + a.intelligence)).map(member => (
+            <option key={member.id} value={member.id}>{member.name}</option>
+        ))}
         </select>
     </div>
 
@@ -8208,8 +8527,14 @@ if (!gameStarted) {
                     .filter(m => m.isAvailable)
                     .sort((a,b) => (b.charisma + b.intelligence) - (a.charisma + a.intelligence))
                     .map(member => (
-                        <option key={member.id} value={`sg-${sg.id}-${member.id}`}>{member.name}</option>
+                        <option 
+                            key={`sg-${sg.id}-${member.id}`} 
+                            value={`sg-${sg.id}-${member.id}`}
+                        >
+                            {member.name}
+                        </option>
                     ))
+
                 }
             </select>
         </div>
@@ -8371,6 +8696,12 @@ if (!gameStarted) {
                   <button onClick={createTeam} className="flex-1 p-1.5 text-sm bg-blue-500 text-white rounded font-semibold" disabled={theaters.length === 0}>
                     Create New Team
                   </button>
+
+                    <button onClick={() => initiateShuffle()} className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-full mt-4 transition-all duration-200 ease-in-out shadow-lg border border-red-800">
+                        <Shuffle size={16} className="inline-block mr-2" />
+                        Initiate Grand Shuffle
+                    </button>
+
                   <button onClick={createCustomSetlist} className="flex-1 p-1.5 text-sm bg-indigo-500 text-white rounded font-semibold" disabled={theaters.length === 0}>
                     <Plus size={16} className='inline mr-1'/> Custom Setlist
                   </button>
@@ -9038,6 +9369,78 @@ if (!gameStarted) {
                     </button>
                   </div>
     {/* Member Detail Panel */}
+    {showModal === 'memberDetails' && selectedMember && (
+    <ModalWrapper title="Member Details" onBack={() => setShowModal('teamDetails')}>
+        <div className="space-y-3 text-sm">
+            <h3 className="text-xl font-bold">{selectedMember.name}</h3>
+            
+<div>
+    <span className="font-semibold">Primary Team: </span>
+    <span>{selectedMember.teamName}</span>
+</div>
+<div>
+    <span className="font-semibold">Primary Group: </span>
+    <span>
+            {selectedMember.isSisterMember
+                ? (selectedMember.homeGroup || 'Unknown')
+                : groupName
+            }
+    </span>
+</div>
+
+{selectedMember.kennin && (
+    <>
+        <div className="pt-2 mt-2 border-t dark:border-gray-600">
+            <span className="font-semibold">Concurrent Team: </span>
+            <span className="bg-yellow-200 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-200 px-2 py-1 rounded-full text-xs">
+                {selectedMember.kennin.teamName}
+            </span>
+        </div>
+        <div>
+            <span className="font-semibold">Concurrent Group: </span>
+            <span>
+                {selectedMember.kennin.groupId === 'main'
+                    ? groupName
+                    : (sisterGroups.find(sg => String(sg.id) === String(selectedMember.kennin.groupId))?.name || 'Unknown')
+                }
+            </span>
+        </div>
+    </>
+)}
+
+            <div className="grid grid-cols-2 gap-4 pt-2">
+                <div>
+                    <p className="font-semibold">Morale</p>
+                    <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                        <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: `${selectedMember.morale}%` }}></div>
+                    </div>
+                </div>
+                <div>
+                    <p className="font-semibold">Stress</p>
+                    <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                        <div className="bg-red-600 h-2.5 rounded-full" style={{ width: `${selectedMember.stress}%` }}></div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h4 className="font-semibold text-base mt-3 mb-2 border-b pb-1">History</h4>
+                <div className="space-y-2 max-h-40 overflow-y-auto">
+                    {[...(selectedMember.teamHistory || [])].reverse().map((entry, index) => (
+                        <div key={index}>
+                            <p className="font-semibold">{entry.event}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">Week {entry.week}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+        <div className="flex justify-end mt-4 pt-2 border-t dark:border-gray-700">
+            <button onClick={() => setShowModal('teamDetails')} className="px-4 py-2 bg-gray-300 dark:bg-gray-600 rounded font-semibold">Back to Team</button>
+        </div>
+    </ModalWrapper>
+)}
+
 {selectedMember ? (
   <div className="flex-1 overflow-y-auto p-4">
     <button 
@@ -9418,6 +9821,10 @@ if (!gameStarted) {
         {showModal === 'createTeam' && <TeamManagementModal isEditing={false} />}
         {showModal === 'editTeam' && modalData && <TeamManagementModal isEditing={true} team={modalData} />}
         {showModal === 'teamDetails' && modalData && <TeamDetailsModal team={modalData} />}
+        {showModal === 'confirm' && modalData && <ConfirmModal />}
+        {showModal === 'shuffleModeSelection' && <ShuffleModeSelectionModal />}
+        {showModal === 'shuffleResult' && modalData && <ShuffleResultModal />}
+        {showModal === 'manualShuffle' && <ManualShuffleModal />}
         {showModal === 'saveGame' && <SaveGameModal />}
         {showModal === 'loadGame' && <LoadGameModal />}
         {showModal === 'handshakeEvent' && <HandshakeEventModal />}

@@ -483,7 +483,17 @@ export const useIdolManager = () => {
 { id: 4, name: "A4 'Tadaima Renaichuu'", theme: 'idol', difficulty: 140, isCustom: false  },
 { id: 5, name: "A5 'Renai Kinshi Jourei'", theme: 'vocal', difficulty: 170, isCustom: false  },
 { id: 6, name: "A6 'Mokugekisha'", theme: 'theatrical', difficulty: 220, isCustom: false  },
-{ id: 7, name: "A7 'M.T. ni Sasagu'", theme: 'vocal', difficulty: 250, isCustom: false  }
+{ id: 7, name: "A7 'M.T. ni Sasagu'", theme: 'vocal', difficulty: 250, isCustom: false  },
+{ id: 8, name: "Kimi to Boku no Milestone", theme: 'classic', difficulty: 125, isCustom: false },
+{ id: 9, name: "Houkago no Cinderella", theme: 'idol', difficulty: 115, isCustom: false },
+{ id: 10, name: "Manatsu no Glass Doll", theme: 'idol', difficulty: 140, isCustom: false },
+{ id: 11, name: "Sora no Iro wa Uso wo Tsukanai", theme: 'vocal', difficulty: 190, isCustom: false },
+{ id: 12, name: "Pink no Heartbeat", theme: 'idol', difficulty: 105, isCustom: false },
+{ id: 13, name: "Namida no Graduation", theme: 'theatrical', difficulty: 215, isCustom: false },
+{ id: 14, name: "Mugen no Kaleidoscope", theme: 'theatrical', difficulty: 245, isCustom: false },
+{ id: 15, name: "Kirari! Seishun Graffiti", theme: 'idol', difficulty: 130, isCustom: false },
+{ id: 16, name: "Hoshizora no Letter", theme: 'vocal', difficulty: 155, isCustom: false },
+{ id: 17, name: "Zettai Muteki no Oujousama", theme: 'idol', difficulty: 165, isCustom: false }
 ]);
     
     const [theaterSongs, setTheaterSongs] = useState([]);
@@ -1040,26 +1050,23 @@ setGroupRoles(loadedRoles);
       }
     };
     
-const getMainGroupRoster = () => {
-  const mainRoster = members.map(m => ({
-    ...m,
-    isSisterMember: false
-  }));
-
-  const sisterRoster = sisterGroups.flatMap(sg => 
-    (sg.members || []).map(m => ({
-      ...m,
-      // IMPORTANT FIX: We are now replacing the ID to be consistent everywhere.
-      id: `sg-${sg.id}-${m.id}`, 
-      isSisterMember: true,
-      displayGroupName: sg.name,
-      groupId: sg.id // THE FIX: This line was missing.
-    }))
-  );
-  
-  const combined = [...mainRoster, ...sisterRoster];
-  return combined.sort((a,b) => getTotalFansForMember(b) - getTotalFansForMember(a));
-};
+    const getMainGroupRoster = () => {
+        const allIds = new Set();
+        
+        // Add all main member IDs
+        members.forEach(m => allIds.add(String(m.id)));
+    
+        // Add all sister group member IDs using their unique rosterId format
+        (sisterGroups || []).forEach(sg => {
+            (sg.members || []).forEach(m => {
+                allIds.add(`sg-${sg.id}-${m.id}`);
+            });
+        });
+    
+        // Use the robust getMemberById to resolve the unique list of IDs into member objects.
+        // This prevents any possibility of duplicate objects in the final array.
+        return Array.from(allIds).map(id => getMemberById(id)).filter(Boolean);
+    };
 
     const getAllAvailableMembers = (includeSisterGroups = false) => {
       let all = [...members];
@@ -1083,33 +1090,102 @@ const getMainGroupRoster = () => {
     };
     
 const getMemberById = (memberId) => {
-  if (String(memberId).startsWith('sg-')) {
-      const parts = String(memberId).split('-'); 
-      const sgId = parseInt(parts[1]);
-      const mId = parseInt(parts[2]);
-      const sg = (sisterGroups || []).find(g => g.id === sgId);
-      const member = (sg?.members || []).find(m => m.id === mId);
-      if (member && sg) {
-          // Return the decorated object, similar to how the roster creates it
-          return {
-              ...member,
-              rosterId: memberId, 
-              isSisterMember: true,
-              displayGroupName: sg.name,
-          };
-      }
-  }
-  // Fallback for main group members
-  const mainMember = members.find(m => String(m.id) === String(memberId));
-  if (mainMember) {
-    return {
-      ...mainMember,
-      isSisterMember: false
-    };
-  }
-  return null; // Return null if not found
-};
+    const memberIdStr = String(memberId);
+
+    // If a unique roster ID is provided, use it for a direct lookup.
+    if (memberIdStr.startsWith('sg-')) {
+        const parts = memberIdStr.split('-');
+        if (parts.length === 3) {
+            const sgId = parseInt(parts[1], 10);
+            const mId = parseInt(parts[2], 10);
+            const sg = (sisterGroups || []).find(g => g.id === sgId);
+            if (sg) {
+                const member = (sg.members || []).find(m => m.id === mId);
+                if (member) {
+                    return {
+                        ...member,
+                        rosterId: memberIdStr,
+                        isSisterMember: true,
+                        displayGroupName: sg.name,
+                        groupId: sg.id
+                    };
+                }
+            }
+        }
+    }
+
+    // If it's a numeric ID, it MUST be a main group member.
+    // This removes the ambiguity that caused the original bug.
+    const mainMember = members.find(m => String(m.id) === memberIdStr);
+    if (mainMember) {
+        return {
+            ...mainMember,
+            rosterId: mainMember.id,
+            isSisterMember: false,
+            displayGroupName: groupName,
+        };
+    }
     
+    // As a final fallback for any older data or edge cases, search all sister groups by numeric ID.
+    // This should not be the primary way to find sister group members.
+    for (const sg of (sisterGroups || [])) {
+        const member = (sg.members || []).find(m => String(m.id) === memberIdStr);
+        if (member) {
+            return {
+                ...member,
+                rosterId: `sg-${sg.id}-${member.id}`, // Correctly format the unique ID
+                isSisterMember: true,
+                displayGroupName: sg.name,
+                groupId: sg.id
+            };
+        }
+    }
+
+    return null; // Return null if no member is found anywhere.
+};
+
+    const getChemistry = (memberA, memberB) => {
+        if (!memberA || !memberB) return 0;
+
+        const personalityChemistry = {
+            'Leader': { 'Diva': -15, 'Shy': 10, 'Airhead': -5, 'Cool': 5, 'Energetic': 5, 'Serious': 10, 'Sarcastic': -5, 'Ambitious': 10, 'Lazy': -10 },
+            'Diva': { 'Diva': -25, 'Shy': -10, 'Airhead': -5, 'Cool': -15, 'Energetic': -5, 'Serious': -10, 'Sarcastic': 10, 'Ambitious': -5, 'Lazy': -15 },
+            'Shy': { 'Leader': 10, 'Diva': -10, 'Shy': 10, 'Airhead': 5, 'Cool': 5, 'Energetic': -5, 'Serious': 5, 'Sarcastic': -10, 'Ambitious': -5, 'Lazy': 5 },
+            'Airhead': { 'Leader': -5, 'Diva': -5, 'Shy': 5, 'Airhead': 5, 'Cool': 0, 'Energetic': 10, 'Serious': -10, 'Sarcastic': 5, 'Ambitious': -5, 'Lazy': 5 },
+            'Cool': { 'Leader': 5, 'Diva': -15, 'Shy': 5, 'Airhead': 0, 'Cool': 10, 'Energetic': 0, 'Serious': 5, 'Sarcastic': 10, 'Ambitious': 5, 'Lazy': -5 },
+            'Energetic': { 'Leader': 5, 'Diva': -5, 'Shy': -5, 'Airhead': 10, 'Cool': 0, 'Energetic': 10, 'Serious': -5, 'Sarcastic': 5, 'Ambitious': 5, 'Lazy': -10 },
+            'Serious': { 'Leader': 10, 'Diva': -10, 'Shy': 5, 'Airhead': -10, 'Cool': 5, 'Energetic': -5, 'Serious': 10, 'Sarcastic': -15, 'Ambitious': 10, 'Lazy': -15 },
+            'Sarcastic': { 'Leader': -5, 'Diva': 10, 'Shy': -10, 'Airhead': 5, 'Cool': 10, 'Energetic': 5, 'Serious': -15, 'Sarcastic': -5, 'Ambitious': 0, 'Lazy': 10 },
+            'Ambitious': { 'Leader': 10, 'Diva': -5, 'Shy': -5, 'Airhead': -5, 'Cool': 5, 'Energetic': 5, 'Serious': 10, 'Sarcastic': 0, 'Ambitious': 5, 'Lazy': -20 },
+            'Lazy': { 'Leader': -10, 'Diva': -15, 'Shy': 5, 'Airhead': 5, 'Cool': -5, 'Energetic': -10, 'Serious': -15, 'Sarcastic': 10, 'Ambitious': -20, 'Lazy': 20 },
+        };
+
+        let score = 0;
+        const pA = memberA.personality;
+        const pB = memberB.personality;
+
+        if (personalityChemistry[pA] && personalityChemistry[pA][pB]) {
+            score += personalityChemistry[pA][pB];
+        }
+        if (personalityChemistry[pB] && personalityChemistry[pB][pA]) {
+            score += personalityChemistry[pB][pA];
+        }
+
+        // Add direct chemistry if it exists
+        const memberAId = String(memberA.rosterId || memberA.id);
+        const memberBId = String(memberB.rosterId || memberB.id);
+
+        if (memberA.chemistry && memberA.chemistry[memberBId]) {
+            score += memberA.chemistry[memberBId];
+        }
+        if (memberB.chemistry && memberB.chemistry[memberAId]) {
+            score += memberB.chemistry[memberAId];
+        }
+
+        return score;
+    };
+
+
     const updateMemberState = (memberId, updateFn) => {
       if (!String(memberId).startsWith('sg-')) {
           setMembers(prev => prev.map(m => String(m.id) === String(memberId) ? updateFn(m) : m));
@@ -1130,31 +1206,26 @@ const getMemberById = (memberId) => {
       }
     };
 
-const getMemberGroupStatus = (member) => {
-  if (!member) return '';
-
-  // Determine the primary group display name
-  let groupPart = member.isSisterMember ? member.displayGroupName : groupName;
-  
-  // Check for and append any Kennin (concurrent) positions
-  if (member.kenninGroups && member.kenninGroups.length > 0) {
-      const kenninNames = member.kenninGroups.map(id => {
-          if (id === 'main') return groupName;
-          const sg = sisterGroups.find(g => String(g.id) === String(id));
-          return sg ? sg.name : id;
-      }).join(', ');
-      
-      // Add the Kennin info in parentheses
-      groupPart += ` (Kennin: ${kenninNames})`;
-  }
-
-  // Get the team part (generation part is removed)
-  const teamPart = member.teamName ? `Team ${member.teamName}` : '';
-
-  // Join the parts together without the generation
-  return [groupPart, teamPart].filter(Boolean).join(' | ');
-};
-
+    const getMemberGroupStatus = (member) => {
+        if (!member) return '';
+    
+        // Determine the primary group display name
+        const primaryGroup = member.isSisterMember ? (sisterGroups.find(sg => String(sg.id) === String(member.homeGroup))?.name || member.displayGroupName) : groupName;
+        
+        // Get the primary team part
+        const primaryTeam = member.teamName ? `Team ${member.teamName}` : 'No Team';
+    
+        let displayString = `${primaryGroup} | ${primaryTeam}`;
+    
+        // Check for and append the Kennin position
+        if (member.kennin) {
+            const kenninGroup = member.kennin.groupId === 'main' ? groupName : (sisterGroups.find(sg => String(sg.id) === String(member.kennin.groupId))?.name || 'Unknown');
+            const kenninTeam = member.kennin.teamName ? `Team ${member.kennin.teamName}` : 'Unknown';
+            displayString += ` (Kennin: ${kenninTeam}, ${kenninGroup})`;
+        }
+    
+        return displayString;
+    };
     const getMemberRank = (member) => [...(members || [])].sort((a, b) => getTotalFansForMember(b) - getTotalFansForMember(a)).findIndex(m => m.id === member.id) + 1;
 
 const distributeFans = (amount, memberIds, conversionRate = 0.1) => {
@@ -1769,7 +1840,269 @@ const deleteTeam = (teamId) => {
         setModalData(team);
         setShowModal('teamDetails');
     };
+    const initiateShuffle = () => {
+      const cost = 1000000;
+      // const repCost = 5; // Temporarily disabled for testing
+  
+      if (teams.length < 2) {
+          return setMessage("You need at least two teams to conduct a shuffle.");
+      }
+      if (money < cost) {
+          return setMessage(`A Grand Shuffle costs ¥${cost.toLocaleString()}. You don't have enough funds.`);
+      }
+      // if (groupReputation < repCost) { // Temporarily disabled for testing
+      //     return setMessage(`A Grand Shuffle requires ${repCost} Reputation. You don't have enough.`);
+      // }
+  
+      setModalData({
+          title: 'Initiate Grand Shuffle?',
+          message: `This will cause major stress for all members and may reset team setlists. This action is irreversible. Cost: ¥${cost.toLocaleString()}.`,
+          onConfirm: () => {
+              setMoney(prev => prev - cost);
+              // setGroupReputation(prev => prev - repCost); // Temporarily disabled for testing
+              addNotification({ type: 'Management', message: 'The Grand Shuffle is beginning!' });
+              setShowModal('shuffleModeSelection');
+          },
+          onCancel: () => setShowModal(null) 
+      });
+      setShowModal('confirm');
+    };
 
+const executeShuffle = (mode, manualAssignments = null) => {
+    // This is a complex operation. We create deep copies to manipulate safely.
+    let membersCopy = JSON.parse(JSON.stringify(members));
+    let sisterGroupsCopy = JSON.parse(JSON.stringify(sisterGroups));
+    let teamsCopy = JSON.parse(JSON.stringify(teams));
+
+    const getTeamById = (id) => teamsCopy.find(t => t.id === id);
+
+    const finalAssignments = {};
+    const shuffleResultData = teamsCopy.reduce((acc, team) => {
+        const groupForTeam = team.groupId === 'main' ? { name: groupName } : sisterGroupsCopy.find(sg => String(sg.id) === String(team.groupId));
+        return { ...acc, [team.id]: { id: team.id, name: team.name, groupName: groupForTeam?.name, retained: [], shuffledIn: [], transferredIn: [], kenninIn: [] } };
+    }, {});
+
+    // Master roster for easy lookup
+    const masterRoster = [
+        ...membersCopy.map(m => ({ ...m, rosterId: String(m.id), isSisterMember: false, groupId: 'main', homeGroup: groupName })),
+        ...sisterGroupsCopy.flatMap(sg => (sg.members || []).map(m => ({ ...m, rosterId: `sg-${sg.id}-${m.id}`, isSisterMember: true, groupId: sg.id, homeGroup: sg.name })))
+    ];
+    const memberMap = new Map(masterRoster.map(m => [m.rosterId, m]));
+    const acesAndCaptains = Object.values(groupRoles);
+
+    if (mode === 'auto') {
+        const teamSlots = teamsCopy.map(t => ({ id: t.id, groupId: t.groupId, capacity: t.members.length, filled: 0 }));
+
+        const unassignedMembers = [];
+        // Pass 1: Determine who stays and who gets shuffled
+        masterRoster.forEach(member => {
+            const isProtected = acesAndCaptains.includes(member.rosterId) || getTotalFansForMember(member) > 250000;
+            const stayChance = isProtected ? 0.95 : 0.60;
+            const teamSlot = teamSlots.find(s => s.id === member.teamId);
+
+            if (teamSlot && Math.random() < stayChance) {
+                finalAssignments[member.rosterId] = { primaryTeamId: member.teamId };
+                teamSlot.filled++;
+                shuffleResultData[member.teamId].retained.push({ memberName: member.name });
+            } else {
+                unassignedMembers.push(member);
+            }
+        });
+
+        const transferChance = 0.05; // 5% chance
+        const kenninChance = 0.10;   // 10% chance
+        let crossGroupMoves = 0;
+
+        unassignedMembers.forEach(member => {
+            const roll = Math.random();
+            let assigned = false;
+
+            // Step A: RARE cross-group Transfer
+            if (!assigned && crossGroupMoves < 4 && roll < transferChance && !acesAndCaptains.includes(member.rosterId)) {
+                const potentialTeams = teamsCopy.filter(t => String(t.groupId) !== String(member.groupId));
+                if (potentialTeams.length > 0) {
+                    const targetTeam = potentialTeams[Math.floor(Math.random() * potentialTeams.length)];
+                    finalAssignments[member.rosterId] = { primaryTeamId: targetTeam.id };
+                    teamSlots.find(s => s.id === targetTeam.id).filled++;
+                    shuffleResultData[targetTeam.id].transferredIn.push({ memberName: member.name, fromGroup: member.homeGroup });
+                    assigned = true;
+                    crossGroupMoves++;
+                }
+            }
+
+            // Step B: RARE cross-group Kennin
+            if (!assigned && crossGroupMoves < 4 && roll < transferChance + kenninChance && !acesAndCaptains.includes(member.rosterId) && member.teamId) {
+                const homeTeamSlot = teamSlots.find(s => s.id === member.teamId);
+                const potentialKenninTeams = teamsCopy.filter(t => String(t.groupId) !== String(member.groupId));
+                
+                if (homeTeamSlot && potentialKenninTeams.length > 0) {
+                    const targetKenninTeam = potentialKenninTeams[Math.floor(Math.random() * potentialKenninTeams.length)];
+                    finalAssignments[member.rosterId] = { primaryTeamId: member.teamId, kenninTeamId: targetKenninTeam.id };
+                    homeTeamSlot.filled++;
+                    teamSlots.find(s => s.id === targetKenninTeam.id).filled++;
+                    shuffleResultData[member.teamId].retained.push({ memberName: member.name });
+                    shuffleResultData[targetKenninTeam.id].kenninIn.push({ memberName: member.name, fromGroup: member.homeGroup });
+                    assigned = true;
+                    crossGroupMoves++;
+                }
+            }
+
+            // Step C: DEFAULT - Shuffle within the member's HOME GROUP
+            if (!assigned) {
+                const homeGroupTeams = teamsCopy.filter(t => String(t.groupId) === String(member.groupId));
+                if (homeGroupTeams.length > 0) {
+                    const targetTeam = homeGroupTeams[Math.floor(Math.random() * homeGroupTeams.length)];
+                    finalAssignments[member.rosterId] = { primaryTeamId: targetTeam.id };
+                    teamSlots.find(s => s.id === targetTeam.id).filled++;
+                    if (member.teamId && member.teamId !== targetTeam.id) {
+                        shuffleResultData[targetTeam.id].shuffledIn.push({ memberName: member.name, fromTeam: getTeamById(member.teamId)?.name || 'N/A' });
+                    } else {
+                        shuffleResultData[targetTeam.id].retained.push({ memberName: member.name });
+                    }
+                } else {
+                    if (member.teamId) {
+                        finalAssignments[member.rosterId] = { primaryTeamId: member.teamId };
+                        shuffleResultData[member.teamId].retained.push({ memberName: member.name });
+                    }
+                }
+            }
+        });
+
+    } else if (mode === 'manual') {
+       Object.keys(manualAssignments).forEach(rosterId => {
+            finalAssignments[rosterId] = { primaryTeamId: manualAssignments[rosterId] };
+       });
+    }
+    
+    // --- FINAL STATE RECONSTRUCTION ---
+    Object.keys(finalAssignments).forEach(rosterId => {
+        const assignment = finalAssignments[rosterId];
+        const member = memberMap.get(rosterId);
+        if (!member || !assignment) return; 
+
+        const newPrimaryTeam = getTeamById(assignment.primaryTeamId);
+        const newKenninTeam = assignment.kenninTeamId ? getTeamById(assignment.kenninTeamId) : null;
+        if (!newPrimaryTeam) return; 
+
+        let memberObjectInState;
+        if (member.isSisterMember) {
+            const sg = sisterGroupsCopy.find(sg => String(sg.id) === String(member.groupId));
+            if (sg) memberObjectInState = sg.members.find(m => m.id === member.id);
+        } else {
+            memberObjectInState = membersCopy.find(m => String(m.id) === String(member.id));
+        }
+        if (!memberObjectInState) return;
+
+        memberObjectInState.teamHistory = memberObjectInState.teamHistory || [];
+        const wasKenninObject = memberObjectInState.kennin;
+
+        // Update Primary Team and log history for both member and team
+        if (member.teamId !== newPrimaryTeam.id) {
+             const isTransfer = member.groupId !== newPrimaryTeam.groupId;
+             const memberEventText = isTransfer ? `Transferred to Team ${newPrimaryTeam.name} via Shuffle` : `Shuffled to Team ${newPrimaryTeam.name}`;
+             memberObjectInState.teamHistory.push({ week, event: memberEventText });
+
+             const fromTeamName = getTeamById(member.teamId)?.name || 'Unassigned';
+             const teamEventText = isTransfer 
+                ? `Member Transferred In: ${member.name} (from ${member.homeGroup})`
+                : `Member Shuffled In: ${member.name} (from Team ${fromTeamName})`;
+             const primaryTeamForUpdate = teamsCopy.find(t => t.id === newPrimaryTeam.id);
+             if (primaryTeamForUpdate) {
+                primaryTeamForUpdate.history = [...(primaryTeamForUpdate.history || []), { week, event: teamEventText }];
+             }
+
+             memberObjectInState.teamId = newPrimaryTeam.id;
+             memberObjectInState.teamName = newPrimaryTeam.name;
+        }
+
+        // Update Kennin status, synchronizing both `kennin` object and `kenninGroups` array
+        if (newKenninTeam) {
+            const kenninGroupName = newKenninTeam.groupId === 'main' ? groupName : (sisterGroupsCopy.find(sg => String(sg.id) === String(newKenninTeam.groupId))?.name || 'N/A');
+            memberObjectInState.kennin = { teamId: newKenninTeam.id, teamName: newKenninTeam.name, groupId: newKenninTeam.groupId };
+            
+            const existingKenninGroups = memberObjectInState.kenninGroups || [];
+            if (!existingKenninGroups.includes(kenninGroupName)) {
+                memberObjectInState.kenninGroups = [...existingKenninGroups, kenninGroupName];
+            }
+
+            if (!wasKenninObject) { 
+                memberObjectInState.teamHistory.push({ week, event: `Concurrent position added in Team ${newKenninTeam.name} (${kenninGroupName}) via Shuffle` });
+                const kenninTeamForUpdate = teamsCopy.find(t => t.id === newKenninTeam.id);
+                if (kenninTeamForUpdate) {
+                    const eventText = `Kennin Member Joined: ${member.name} (from ${member.homeGroup})`;
+                    kenninTeamForUpdate.history = [...(kenninTeamForUpdate.history || []), { week, event: eventText }];
+                }
+            }
+        } else if (wasKenninObject) { 
+            const oldKenninGroupName = wasKenninObject.groupId === 'main' ? groupName : (sisterGroupsCopy.find(sg => String(sg.id) === String(wasKenninObject.groupId))?.name || 'N/A');
+            delete memberObjectInState.kennin;
+            memberObjectInState.kenninGroups = (memberObjectInState.kenninGroups || []).filter(gName => gName !== oldKenninGroupName);
+            memberObjectInState.teamHistory.push({ week, event: `Concurrent position ended via Shuffle` });
+        }
+    });
+
+    teamsCopy.forEach(team => { team.members = []; });
+
+    Object.keys(finalAssignments).forEach(rosterId => {
+        const assignment = finalAssignments[rosterId];
+        const member = memberMap.get(rosterId);
+        if (!assignment || !member) return;
+        
+        const newPrimaryTeam = getTeamById(assignment.primaryTeamId);
+        const newGroupId = newPrimaryTeam.groupId;
+        let finalRosterId = rosterId;
+
+        if (member.groupId !== newGroupId) {
+            let memberObjectRef;
+             if (member.isSisterMember) {
+                const sg = sisterGroupsCopy.find(sg => String(sg.id) === String(member.groupId));
+                if (sg && sg.members) {
+                    const idx = sg.members.findIndex(m => m.id === member.id);
+                    if (idx > -1) memberObjectRef = sg.members.splice(idx, 1)[0];
+                }
+             } else {
+                const idx = membersCopy.findIndex(m => String(m.id) === String(member.id));
+                if (idx > -1) memberObjectRef = membersCopy.splice(idx, 1)[0];
+             }
+
+             if (memberObjectRef) {
+                if (newGroupId === 'main') {
+                    const newId = (membersCopy.length > 0 ? Math.max(0, ...membersCopy.map(m => m.id)) : 0) + 1;
+                    memberObjectRef.id = newId;
+                    memberObjectRef.homeGroup = groupName;
+                    membersCopy.push(memberObjectRef);
+                    finalRosterId = String(newId);
+                } else {
+                    const destSg = sisterGroupsCopy.find(sg => String(sg.id) === String(newGroupId));
+                    if (destSg) {
+                        if (!destSg.members) destSg.members = [];
+                        const newId = (destSg.members.length > 0 ? Math.max(0, ...destSg.members.map(m => m.id)) : 0) + 1;
+                        memberObjectRef.id = newId;
+                        memberObjectRef.homeGroup = destSg.name;
+                        destSg.members.push(memberObjectRef);
+                        finalRosterId = `sg-${destSg.id}-${newId}`;
+                    }
+                }
+             }
+        }
+        
+        if (assignment.primaryTeamId) {
+            const team = teamsCopy.find(t => t.id === assignment.primaryTeamId);
+            if(team) team.members.push(finalRosterId);
+        }
+        if (assignment.kenninTeamId) {
+            const team = teamsCopy.find(t => t.id === assignment.kenninTeamId);
+            if(team) team.members.push(finalRosterId);
+        }
+    });
+
+    setMembers(membersCopy);
+    setSisterGroups(sisterGroupsCopy);
+    setTeams(teamsCopy);
+    setModalData({ result: shuffleResultData });
+    setShowModal('shuffleResult');
+    addNotification({ type: 'Management', message: 'The Grand Shuffle is complete!' });
+};
 
     const startTheaterShowPrep = () => {
       if (theaters.length === 0) return setMessage("Build a theater first!");
@@ -2032,24 +2365,19 @@ const deleteTeam = (teamId) => {
 
         const team = teamId ? teams.find(t => t.id === teamId) : null;
         const setlist = team ? allSetlists.find(s => s.id === team.currentSetlistId) : null;
-        // --- FIX: Compare owner and venueOwnerId as strings to avoid type mismatch ---
         const venue = theaters.find(t => String(t.owner) === String(venueOwnerId));
 
         if (!venue) return setMessage("Error: Selected theater not found.");
-
-        if (hasPerformedThisWeek) {
-            setMessage("You can only hold one performance activity per week.");
-            return;
-        }
+        if (hasPerformedThisWeek) return setMessage("You can only hold one performance activity per week.");
         
         let performingMembers;
         if (team) {
-            const allMembersWithStatus = getMainGroupRoster();
-            performingMembers = allMembersWithStatus.filter(m => team.members.includes(String(m.id)) && m.isAvailable);
+            performingMembers = getMainGroupRoster().filter(m => team.members.includes(String(m.id)) && m.isAvailable);
         } else {
             performingMembers = members.filter(m => m.isAvailable);
         }
         const performingMemberIds = performingMembers.map(m => m.id);
+
         if (performingMembers.length === 0) {
             return setMessage(team ? `${team.name} has no available members!` : 'No available members in the main group!');
         }
@@ -2057,156 +2385,176 @@ const deleteTeam = (teamId) => {
         const avgStamina = performingMembers.reduce((sum, m) => sum + (m.stamina || 0), 0) / performingMembers.length;
         if (avgStamina < 30) return setMessage('Performing members are too tired!');
           
-        let themeBonus = 1.0;
-        if (setlist && setlist.theme === concertTheme) {
-            themeBonus = 1.5; 
-        } else if (setlist) {
-            themeBonus = 0.8; 
+        let fanGainMultiplier = 1.0;
+        let revenueMultiplier = 1.0;
+        let performanceName = team ? `${team.name} Show` : `${groupName} Theater Show`;
+        let isBirthdayStage = false;
+        let isShonichi = false;
+        let isSenshuuraku = false;
+        let staminaDrain = 20;
+        let stressGain = 10;
+
+        // --- Shonichi (First Day) Logic ---
+        if (team && setlist) {
+            const usage = setlist.usageHistory?.find(h => h.teamName === team.name && !h.endWeek);
+            if (usage && usage.startWeek === week) {
+                isShonichi = true;
+                performanceName = `${setlist.name} - SHONICHI!`;
+                fanGainMultiplier *= 1.15; // 15% fan bonus
+                staminaDrain = 30; // Higher stamina cost
+                stressGain = 20;   // Higher stress from nervousness
+                setGroupReputation(prev => prev + 1);
+                addNotification({ type: 'Event', message: `Today is the Shonichi (First Day) for ${team.name}'s new setlist!` });
+            }
         }
 
+        let birthdayMember = null;
+        const currentWeekOfYear = (week - 1) % 52 + 1;
+        for (const member of performingMembers) {
+            if (member.birthday === currentWeekOfYear) {
+                birthdayMember = member;
+                break; 
+            }
+        }
+
+        if (birthdayMember) {
+            isBirthdayStage = true;
+            performanceName = `${birthdayMember.name}'s Birthday Stage!`;
+            fanGainMultiplier = 1.25;
+            revenueMultiplier = 1.15;
+            updateMemberState(birthdayMember.id, m => ({
+                ...m,
+                morale: Math.min(100, (m.morale || 0) + 50),
+                fans: { ...m.fans, casual: (m.fans?.casual || 0) + 5000 }
+            }));
+            addNotification({ type: 'Event', message: `Today's show is a special Birthday Stage for ${birthdayMember.name}!` });
+        }
+        
         const memberCount = performingMembers.length || 1;
+        const avgCharisma = performingMembers.reduce((s, m) => s + (m.charisma || 0), 0) / memberCount;
+
+        let malfunctionMessage = null;
+        if (Math.random() < 0.15 && !isBirthdayStage && !isShonichi) {
+            const avgIntelligence = performingMembers.reduce((s, m) => s + (m.intelligence || 0), 0) / memberCount;
+            const recoveryScore = (avgIntelligence + avgCharisma) / 2;
+            if (recoveryScore > 55) {
+                malfunctionMessage = "A sound issue occurred, but the members' professional ad-libs charmed the audience!";
+                fanGainMultiplier *= 1.10; revenueMultiplier *= 1.05;
+                addNotification({ type: 'Event', message: "The members expertly handled a technical issue on stage!" });
+            } else {
+                malfunctionMessage = "The show was interrupted by a technical problem, creating an awkward pause.";
+                fanGainMultiplier *= 0.90; revenueMultiplier *= 0.95;
+                addNotification({ type: 'Warning', message: "A technical problem on stage created an awkward moment." });
+            }
+        }
+
+        let themeBonus = 1.0;
+        if (setlist && setlist.theme === concertTheme) themeBonus = 1.5; 
+        else if (setlist) themeBonus = 0.8; 
+
         const avgSinging = performingMembers.reduce((s, m) => s + (m.singing || 0), 0) / memberCount;
         const avgDancing = performingMembers.reduce((s, m) => s + (m.dancing || 0), 0) / memberCount;
         const avgVisual = performingMembers.reduce((s, m) => s + (m.visual || 0), 0) / memberCount;
-        const avgCharisma = performingMembers.reduce((s, m) => s + (m.charisma || 0), 0) / memberCount;
-let totalChemistry = 0;
-let pairs = 0;
-for (let i = 0; i < performingMembers.length; i++) {
-    for (let j = i + 1; j < performingMembers.length; j++) {
-        const memberA = performingMembers[i];
-        const memberB = performingMembers[j];
-        const chemistryScore = (memberA.chemistry && memberA.chemistry[memberB.rosterId]) || 0;
-        totalChemistry += chemistryScore;
-        pairs++;
-    }
-}
-const avgChemistry = pairs > 0 ? totalChemistry / pairs : 0;
-const chemistryBonus = 1 + (avgChemistry / 500); // e.g., avg chemistry of 50 gives a +10% bonus
 
         const performance = performingMembers.reduce((sum, m) => {
-            const memberScore = ((m.singing || 0) * 0.3 + 
-                                 (m.dancing || 0) * 0.4 + 
-                                 (m.visual || 0) * 0.2 + 
-                                 (m.charisma || 0) * 0.1);
-            const staminaModifier = (m.stamina || 100) / 100;
-            return sum + (memberScore * staminaModifier);
-        }, 0) * themeBonus * chemistryBonus;
+            const memberScore = ((m.singing || 0) * 0.3 + (m.dancing || 0) * 0.4 + (m.visual || 0) * 0.2 + (m.charisma || 0) * 0.1);
+            return sum + (memberScore * ((m.stamina || 100) / 100));
+        }, 0) * themeBonus;
 
-        let salesData = {};
-        let merchRevenue = 0;
-        const fanDemand = Math.floor(totalFans / 200);
-        const newInventory = { ...merchInventory }; 
-
-        Object.keys(merchInventory).forEach(inventoryKey => {
-            const [item, tier] = inventoryKey.split('_');
-            const tierInfo = merchTiers[item]?.[tier];
-
-            if (tierInfo && newInventory[inventoryKey] > 0) {
-                let demandModifier = 1.0;
-                if (tier === 'standard') demandModifier = 0.8;
-                if (tier === 'premium') demandModifier = 0.5;
-
-                const toSell = Math.min(
-                    newInventory[inventoryKey], 
-                    Math.floor((fanDemand * demandModifier) + Math.random() * (fanDemand * 0.5))
-                );
-
-                if (toSell > 0) {
-                    merchRevenue += toSell * tierInfo.price;
-                    newInventory[inventoryKey] -= toSell;
-                    salesData[tierInfo.name] = (salesData[tierInfo.name] || 0) + toSell;
-                    if (newInventory[inventoryKey] === 0) {
-                        addNotification({ type: 'Info', message: `${tierInfo.name} has sold out!` });
-                        distributeFans(50, performingMemberIds, 0.05); // Small group fan boost
-                    }
-                }
-            }
-        });
-        setMerchInventory(newInventory);
-
-        const newIdolInventory = { ...idolMerchInventory };
-        Object.keys(idolMerchInventory).forEach(inventoryKey => {
-            const [memberId, itemType] = inventoryKey.split('_');
-            const tierInfo = idolMerchTiers[itemType];
-            const member = getMemberById(memberId);
-
-            if (tierInfo && member && newIdolInventory[inventoryKey] > 0) {
-                const idolFanDemand = Math.floor(getTotalFansForMember(member) / 100);
-                
-                const toSell = Math.min(
-                    newIdolInventory[inventoryKey],
-                    Math.floor(idolFanDemand + Math.random() * (idolFanDemand * 0.5))
-                );
-
-                if (toSell > 0) {
-                    merchRevenue += toSell * tierInfo.price;
-                    newIdolInventory[inventoryKey] -= toSell;
-                    const itemName = `${member.name}'s ${tierInfo.name}`;
-                    salesData[itemName] = (salesData[itemName] || 0) + toSell;
-                    if (newIdolInventory[inventoryKey] === 0) {
-                        addNotification({ type: 'Info', message: `${member.name}'s ${tierInfo.name} has sold out!` });
-                        updateMemberState(memberId, m => ({ ...m, fans: { ...m.fans, casual: (m.fans.casual || 0) + 200 }}));
-                    }
-                }
-            }
-        });
-        setIdolMerchInventory(newIdolInventory);
-
+        let salesData = {}, merchRevenue = 0; /* Merch logic */
         const merchHypeBonus = 1 + (merchRevenue / 500000); 
-        const newFans = Math.floor((20 + (performance / 10)) * merchHypeBonus);
-
-        const bestSeller = Object.entries(salesData).reduce((best, current) => {
-            return current[1] > best.quantity ? { name: current[0], quantity: current[1] } : best;
-        }, { name: 'None', quantity: 0 });
-
-        const ticketRevenue = Math.floor(performance * 50);
-
-        if (staff.merchManager > 0) {
-            const revenueBonus = staff.merchManager * 0.05; // 5% per level
-            merchRevenue = Math.floor(merchRevenue * (1 + revenueBonus));
+        let newFans = Math.floor(((20 + (performance / 10)) * merchHypeBonus) * fanGainMultiplier);
+        const ticketRevenue = Math.floor(performance * 50 * revenueMultiplier);
+        if (staff.merchManager > 0) merchRevenue = Math.floor(merchRevenue * (1 + (staff.merchManager * 0.05)));
+        const totalRevenue = ticketRevenue + merchRevenue, totalCosts = travelCost || 0; 
+        const netProfit = totalRevenue - totalCosts, agencyProfit = Math.floor(netProfit * 0.6);
+        
+        let senshuurakuFansConverted = 0;
+        if (team && setlist && !isShonichi && !isBirthdayStage && !malfunctionMessage && Math.random() < 0.03) {
+            const usage = setlist.usageHistory?.find(h => h.teamName === team.name && !h.endWeek);
+            if (usage && (week - usage.startWeek > 12)) {
+                isSenshuuraku = true;
+                performanceName = `${setlist.name} - SENSHUURAKU!`;
+                senshuurakuFansConverted = Math.floor(newFans * 0.15); // 15% of new fans become hardcore
+                newFans -= senshuurakuFansConverted;
+                addNotification({ type: 'Event', message: `An emotional Senshuuraku for ${setlist.name} has deeply moved the fans!` });
+            }
+        }
+        
+        distributeFans(newFans, performingMemberIds);
+        
+        if (senshuurakuFansConverted > 0) {
+            const fansPerMember = Math.floor(senshuurakuFansConverted / performingMemberIds.length) || 1;
+            performingMemberIds.forEach(id => {
+                updateMemberState(id, m => ({ ...m, fans: { ...m.fans, hardcore: (m.fans?.hardcore || 0) + fansPerMember }}));
+            });
         }
 
-        const totalRevenue = ticketRevenue + merchRevenue;
-        const totalCosts = travelCost || 0; 
-        const netProfit = totalRevenue - totalCosts;
-        const agencyProfit = Math.floor(netProfit * 0.6); 
-        const idolShare = netProfit - agencyProfit;
-        distributeFans(newFans, performingMemberIds);
-
+        let legendaryPerformanceMessage = null;
+        if (Math.random() < 0.05 && !isBirthdayStage && !malfunctionMessage && !isShonichi && !isSenshuuraku) {
+            const legendaryMember = performingMembers[Math.floor(Math.random() * performingMembers.length)];
+            if (legendaryMember) {
+                const statBoosts = { singing: 0, dancing: 0, charisma: 0 };
+                const statUpMessage = [];
+                if (Math.random() < 0.25) { statBoosts.singing = 1; statUpMessage.push('Vocal'); }
+                if (Math.random() < 0.25) { statBoosts.dancing = 1; statUpMessage.push('Dance'); }
+                if (Math.random() < 0.25) { statBoosts.charisma = 1; statUpMessage.push('Charisma'); }
+                const bonusFans = Math.floor(newFans * 0.20);
+                updateMemberState(legendaryMember.id, m => ({
+                    ...m,
+                    fans: { ...m.fans, casual: (m.fans?.casual || 0) + bonusFans },
+                    singing: Math.min(100, (m.singing || 0) + statBoosts.singing),
+                    dancing: Math.min(100, (m.dancing || 0) + statBoosts.dancing),
+                    charisma: Math.min(100, (m.charisma || 0) + statBoosts.charisma),
+                }));
+                legendaryPerformanceMessage = `Tonight belonged to ${legendaryMember.name}! She delivered a legendary performance that left the audience breathless!`;
+                let notificationText = `${legendaryMember.name} had a legendary performance, gaining an extra ${bonusFans.toLocaleString()} fans!`;
+                if (statUpMessage.length > 0) {
+                    notificationText += ` Her ${statUpMessage.join(', ')} skill(s) have permanently increased!`;
+                }
+                addNotification({ type: 'Event', message: notificationText });
+            }
+        }
+        
         performingMembers.forEach(member => {
-            updateMemberState(member.id, m => ({
-                ...m,
-                stamina: Math.max(0, (m.stamina || 100) - 20),
-                stress: Math.min(100, (m.stress || 0) + 10),
+            updateMemberState(member.id, m => ({ 
+                ...m, 
+                stamina: Math.max(0, (m.stamina || 100) - staminaDrain), 
+                stress: Math.min(100, (m.stress || 0) + stressGain),
+                morale: isSenshuuraku ? Math.min(100, (m.morale || 0) + 30) : m.morale
             }));
         });
 
-        setMoney(prev => (prev || 0) + agencyProfit);
+        setMoney(prev => (prev || 0) + agencyProfit - totalCosts);
         setStatistics(prev => ({ ...prev, totalRevenue: (prev.totalRevenue || 0) + totalRevenue, totalConcerts: (prev.totalConcerts || 0) + 1 }));
-          
-        let concertMessage = `Theater Show at ${venue.name}!`;
-        if (totalCosts > 0) concertMessage += ` Travel Costs: ¥${totalCosts.toLocaleString()}.`;
-        concertMessage += ` Agency Profit: ¥${agencyProfit.toLocaleString()}. External Cost (Idol Share, Staffs, Rental, Etc): ¥${idolShare.toLocaleString()}. +${newFans.toLocaleString()} fans.`;
-        
         setHasPerformedThisWeek(true);
-        setMessage(concertMessage);
-        addNotification({ type: 'Performance', message: concertMessage });
+        addNotification({ type: 'Performance', message: `${performanceName} earned ¥${agencyProfit.toLocaleString()} and gained ${newFans.toLocaleString()} fans.` });
+
+        for (const member of performingMembers) {
+            const willAnnounce = (member.graduationUrgency > 70) && (member.stress > 85 || member.morale < 15) && Math.random() < 0.02;
+            if (willAnnounce) {
+                addNotification({ type: 'Shock', message: `Wait... ${member.name} has something to say... She's announcing her graduation on stage!` });
+                setModalData(member);
+                setShowModal('graduationAnnouncement');
+                return;
+            }
+        }
+        
+        const bestSeller = Object.entries(salesData).reduce((best, current) => (current[1] > best.quantity ? { name: current[0], quantity: current[1] } : best), { name: 'None', quantity: 0 });
 
         setModalData({
-            title: "Theater Show Result",
-            message: `The crowd loved the performance! Total Revenue: ¥${totalRevenue.toLocaleString()}. Travel Costs: ¥${totalCosts.toLocaleString()}. External Cost (Idol Share, Staffs, Rental, Etc): ¥${idolShare.toLocaleString()}`,
+            title: performanceName,
+            isBirthdayStage,
+            isShonichi,
+            isSenshuuraku,
+            malfunctionMessage,
+            legendaryPerformanceMessage,
             fansGained: newFans,
             revenue: agencyProfit,
-            performanceStats: {
-                singing: avgSinging,
-                dancing: avgDancing,
-                visual: avgVisual,
-                charisma: avgCharisma
-            },
-            totalMerchRevenue: merchRevenue, // Correct variable name
-            bestSellerName: bestSeller.name   // Correct placement
+            performanceStats: { singing: avgSinging, dancing: avgDancing, visual: avgVisual, charisma: avgCharisma },
+            totalMerchRevenue: merchRevenue,
+            bestSellerName: bestSeller.name
         });
-
         setShowModal('performanceResult');
     };
     
@@ -4870,6 +5218,7 @@ if ((newWeek - 1) % 52 === 49) { // Trigger at the end of Week 49
         let membersForUpdate = JSON.parse(JSON.stringify(members));
         let sisterGroupsForUpdate = JSON.parse(JSON.stringify(sisterGroups));
         let songsForUpdate = JSON.parse(JSON.stringify(songs || []));
+        let teamsForUpdate = JSON.parse(JSON.stringify(teams));
         let moneyForUpdate = money;
         let notificationsForUpdate = [...notifications];
         let messageForUpdate = '';
@@ -5137,6 +5486,19 @@ if (requestHourStatus && requestHourStatus.isActive && newWeek > requestHourStat
                             graduatingIdsThisWeek.push(memberId);
                             
                             priorityMessage = `${graduatedMember.name} has officially graduated and entered the Hall of Fame.`;
+                                                        // --- NEW TEAM CLEANUP LOGIC ---
+                            teamsForUpdate = teamsForUpdate.map(team => {
+                                if ((team.members || []).map(String).includes(memberId)) {
+                                    return {
+                                        ...team,
+                                        members: team.members.filter(id => String(id) !== memberId),
+                                        history: [...(team.history || []), { week: newWeek, event: `Member Graduated: ${graduatedMember.name}` }]
+                                    };
+                                }
+                                return team;
+                            });
+                            // --- END NEW LOGIC ---
+
                         }
                     });
                 }
@@ -5863,6 +6225,7 @@ newStress += chemistryStressEffect;
         setMoney(moneyForUpdate);
         setSongs(songsForUpdate);
         setHallOfFame(hallOfFameForUpdate);
+        setTeams(teamsForUpdate);
         setMembers(membersForUpdate.filter(m => !graduatingIdsThisWeek.includes(String(m.id))));
         setSisterGroups(sisterGroupsForUpdate.map(sg => ({
             ...sg,
@@ -6318,8 +6681,8 @@ const executeRequestHourConcert = () => {
 
     const handleCheatCode = (code) => {
       if (code === 'rich') {
-        setMoney(prev => prev + 1000000);
-        setMessage("Cheat activated! You gained ¥1,000,000.");
+        setMoney(prev => prev + 5000000);
+        setMessage("Cheat activated! You gained ¥5,000,000.");
         setShowModal(null);
       } else if (code === 'fans') {
         const allMemberIds = getMainGroupRoster().map(m => m.rosterId || m.id);
@@ -7032,6 +7395,6 @@ const simulateRivalActions = (currentRivals, currentWeek, addNotificationInLoop)
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
-    completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, startHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining
+    executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, startHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining
     };
     };
