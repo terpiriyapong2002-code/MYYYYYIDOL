@@ -29,7 +29,7 @@ const App = () => {
     // Destructure everything from the custom hook
     const {
     // State
-    draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory,  merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
+    gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory,  merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
     // Firebase/Persistence
     getSavedGames, saveGame, loadGame,
     // Utilities
@@ -4281,6 +4281,7 @@ const ShuffleResultModal = () => {
     if (!modalData || !modalData.result) return null;
     const { result } = modalData;
 
+    // This helper function is still used for Kennin members.
     const groupByCategory = (members, categoryKey) => {
         return members.reduce((acc, item) => {
             const key = item[categoryKey];
@@ -4294,9 +4295,15 @@ const ShuffleResultModal = () => {
         <ModalWrapper title="Grand Shuffle Results" maxWidth="max-w-4xl">
             <div className="space-y-6 max-h-[75vh] overflow-y-auto p-2">
                 {Object.values(result).map((teamData) => {
-                    const shuffledFromTeams = groupByCategory(teamData.shuffledIn, 'fromTeam');
-                    const transferredFromGroups = groupByCategory(teamData.transferredIn, 'fromGroup');
                     const kenninFromGroups = groupByCategory(teamData.kenninIn, 'fromGroup');
+
+                    // Group shuffled-in members by their "from" location.
+                    const groupedShuffledIn = teamData.shuffledIn.reduce((acc, move) => {
+                        const key = move.fromTeam;
+                        if (!acc[key]) acc[key] = [];
+                        acc[key].push(move); // Push the whole move object
+                        return acc;
+                    }, {});
 
                     const hasContent = teamData.retained.length > 0 || teamData.shuffledIn.length > 0 || teamData.transferredIn.length > 0 || teamData.kenninIn.length > 0;
                     if (!hasContent) return null;
@@ -4313,19 +4320,33 @@ const ShuffleResultModal = () => {
                                 </div>
                             )}
 
-                            {Object.entries(shuffledFromTeams).map(([fromTeam, members]) => (
-                                <div key={fromTeam} className="mb-3">
-                                    <p className="font-bold text-sm text-blue-600 dark:text-blue-400">From {fromTeam}</p>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400">{members.join(', ')}</p>
-                                </div>
-                            ))}
+                            {/* --- NEW LOGIC TO RENDER GROUPS WITH COLORS --- */}
+                            {Object.entries(groupedShuffledIn).map(([fromTeam, moves]) => {
+                                // All moves in this group have the same type, so we just check the first one.
+                                const moveType = moves[0]?.moveType;
 
-                            {Object.entries(transferredFromGroups).map(([fromGroup, members]) => (
-                                <div key={fromGroup} className="mb-3">
-                                    <p className="font-bold text-sm text-purple-600 dark:text-purple-400">From {fromGroup}</p>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400">{members.join(', ')}</p>
-                                </div>
-                            ))}
+                                const getColorForMove = () => {
+                                    switch (moveType) {
+                                        case 'transfer':
+                                            return 'text-purple-600 dark:text-purple-400';
+                                        case 'promotion':
+                                            return 'text-red-600 dark:text-red-400';
+                                        default: // 'shuffle'
+                                            return 'text-blue-600 dark:text-blue-400';
+                                    }
+                                };
+                                
+                                const color = getColorForMove();
+                                const memberNames = moves.map(m => m.memberName).join(', ');
+
+                                return (
+                                    <div key={fromTeam} className="mb-3">
+                                        <p className={`font-bold text-sm ${color}`}>From {fromTeam}</p>
+                                        <p className="text-sm text-gray-600 dark:text-gray-400">{memberNames}</p>
+                                    </div>
+                                );
+                            })}
+                            {/* --- END NEW LOGIC --- */}
 
                             {Object.entries(kenninFromGroups).map(([fromGroup, members]) => (
                                 <div key={fromGroup} className="mb-3">
@@ -4525,6 +4546,7 @@ const ShuffleResultModal = () => {
             </ModalWrapper>
         );
     };
+
     const SportsFestivalModal = () => {
     return (
         <ModalWrapper title="Hold Sports Festival" maxWidth="max-w-lg">
@@ -6869,6 +6891,80 @@ const deselectAll = () => {
     );
 };
 
+const ShuffleHistoryViewer = ({ data }) => {
+    if (!data) return null;
+
+    // Helper function to group members by a category, needed for Kennin members.
+    const groupByCategory = (members, categoryKey) => {
+        if (!members) return {};
+        return members.reduce((acc, item) => {
+            const key = item[categoryKey];
+            if (!acc[key]) acc[key] = [];
+            acc[key].push(item.memberName);
+            return acc;
+        }, {});
+    };
+
+    return (
+        <div className="mt-2 space-y-4 rounded-lg border dark:border-gray-700 p-4 bg-gray-50 dark:bg-gray-800/50">
+            {Object.values(data).map((teamData) => {
+                // Group shuffled-in members by their "from" location.
+                const groupedShuffledIn = (teamData.shuffledIn || []).reduce((acc, move) => {
+                    const key = move.fromTeam;
+                    if (!acc[key]) acc[key] = [];
+                    acc[key].push(move); // Push the whole move object
+                    return acc;
+                }, {});
+
+                // Group Kennin members by their original group.
+                const kenninFromGroups = groupByCategory(teamData.kenninIn, 'fromGroup');
+
+                // Update the content check to include Kennin members.
+                const hasContent = (teamData.retained?.length || 0) > 0 || (teamData.shuffledIn?.length || 0) > 0 || (teamData.kenninIn?.length || 0) > 0;
+                if (!hasContent) return null;
+
+                return (
+                    <div key={teamData.id} className="p-2">
+                        <h4 className="text-md font-semibold text-pink-500">{teamData.groupName} - {teamData.name}</h4>
+                        
+                        {teamData.retained.length > 0 && (
+                            <div className="mb-2">
+                                <p className="font-semibold text-xs text-gray-700 dark:text-gray-300">Original Members</p>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">{teamData.retained.map(m => m.memberName).join(', ')}</p>
+                            </div>
+                        )}
+
+                        {Object.entries(groupedShuffledIn).map(([fromTeam, moves]) => {
+                            const moveType = moves[0]?.moveType;
+                            const colorClass = 
+                                moveType === 'transfer' ? 'text-purple-500' :
+                                moveType === 'promotion' ? 'text-red-500' :
+                                'text-blue-500';
+                            const memberNames = moves.map(m => m.memberName).join(', ');
+
+                            return (
+                                <div key={fromTeam} className="mb-2">
+                                    <p className={`font-semibold text-xs ${colorClass}`}>From {fromTeam}</p>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400">{memberNames}</p>
+                                </div>
+                            );
+                        })}
+
+                        {/* Add the rendering logic for Kennin members. */}
+                        {Object.entries(kenninFromGroups).map(([fromGroup, members]) => (
+                            <div key={fromGroup} className="mb-2">
+                                <p className="font-semibold text-xs text-yellow-500">Concurrent Position from {fromGroup}</p>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">{members.join(', ')}</p>
+                            </div>
+                        ))}
+                    </div>
+                );
+            })}
+        </div>
+    );
+};
+
+
         const HistoryDetailModal = () => {
         if (!modalData) return null;
 
@@ -7038,6 +7134,9 @@ const deselectAll = () => {
                     </div>
                 </div>
             );
+        } else if (type === 'Grand Shuffle') {
+            title = `Grand Shuffle`;
+            content = <ShuffleHistoryViewer data={history.data} />;
         }
 
         return (
@@ -9009,6 +9108,32 @@ if (!gameStarted) {
                 )}
             </div>
         </div>
+
+            {/* Shuffle History */}
+            <div>
+                <h3 className="text-xl font-semibold mb-3 border-b-2 pb-2">Shuffle History</h3>
+                <div className="space-y-2 max-h-[60vh] overflow-y-auto">
+                    {gameHistory.filter(e => e.type === 'Grand Shuffle').length > 0 ? (
+                        gameHistory
+                            .filter(e => e.type === 'Grand Shuffle')
+                            .map((event, index, arr) => (
+                            <button 
+                                key={`shuffle-${index}`}
+                                onClick={() => {
+                                    setModalData({ type: 'Grand Shuffle', ...event });
+                                    setShowModal('historyDetail');
+                                }}
+                                className="w-full text-left p-3 bg-blue-100 dark:bg-gray-700 rounded-lg shadow hover:bg-blue-200 dark:hover:bg-gray-600 transition-colors"
+                            >
+                                <span className="font-bold">Week {event.week}:</span> Grand Shuffle #{arr.length - index}
+                            </button>
+                        ))
+                    ) : (
+                        <p className="text-gray-500 italic">No shuffles have occurred yet.</p>
+                    )}
+                </div>
+            </div>
+
 
             {/* Sports Festival History */}
             <div>
