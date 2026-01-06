@@ -3298,86 +3298,160 @@ const createSong = () => {
             });
         }
         
-        // --- TRIVIA GENERATION ---
-        const triviaItems = [];
-        const formatNames = (nameArray) => {
-            if (nameArray.length === 0) return '';
-            if (nameArray.length === 1) return nameArray[0];
-            if (nameArray.length === 2) return nameArray.join(' and ');
-            return nameArray.slice(0, -1).join(', ') + ', and ' + nameArray.slice(-1);
-        };
-        
-        const releasingGroupNameForTrivia = songData.targetGroup === 'main' ? groupName : (initialSisterGroups.find(g => g.name === songData.targetGroup)?.name || songData.targetGroup);
-        const allParticipatingMembers = [...new Set(songData.tracks.flatMap(t => (t.members || []).map(m => m.id)))].map(id => getMemberById(id)).filter(Boolean);
+            // --- TRIVIA GENERATION ---
+            const triviaItems = [];
+            const formatNames = (nameArray) => {
+                if (nameArray.length === 0) return '';
+                if (nameArray.length === 1) return nameArray[0];
+                if (nameArray.length === 2) return nameArray.join(' and ');
+                return nameArray.slice(0, -1).join(', ') + ', and ' + nameArray.slice(-1);
+            };
 
-        const firstTimeParticipationThisGroup = allParticipatingMembers.filter(m => {
-            const participationsForThisGroup = (m.singlesParticipation || []).filter(p => p.group === releasingGroupNameForTrivia);
-            return participationsForThisGroup.length === 0;
-        });
-        if (firstTimeParticipationThisGroup.length > 0) {
-            triviaItems.push(`First Time ${releasingGroupNameForTrivia} Single Participation of ${formatNames(firstTimeParticipationThisGroup.map(m => m.name))}.`);
-        }
+            const releasingGroupNameForTrivia = songData.targetGroup === 'main' ? groupName : (initialSisterGroups.find(g => g.name === songData.targetGroup)?.name || songData.targetGroup);
+            const MAIN_GROUP_IDENTIFIER = 'main';
 
-        if (titleTrack) {
-            const senbatsuMembers = (titleTrack.members || []).map(m => getMemberById(m.id)).filter(Boolean);
-            
-            const firstTimeSenbatsuThisGroup = senbatsuMembers.filter(m => {
-                const senbatsuHistoryForThisGroup = (m.singlesParticipation || []).filter(p => p.isTitleTrackSenbatsu && p.group === releasingGroupNameForTrivia);
-                return senbatsuHistoryForThisGroup.length === 0;
-            });
-            if (firstTimeSenbatsuThisGroup.length > 0) {
-                triviaItems.push(`First Time ${releasingGroupNameForTrivia} Senbatsu of ${formatNames(firstTimeSenbatsuThisGroup.map(m => m.name))}.`);
-            }
-
-            if (titleTrack.center && titleTrack.center.length > 0) {
-                const centerMembers = titleTrack.center.map(id => getMemberById(id)).filter(Boolean);
-                const firstTimeACenters = centerMembers.filter(m => (m.centerHistory || []).filter(h => h.type === 'title').length === 0);
-                if (firstTimeACenters.length > 0) {
-                    triviaItems.push(`First A-Side Single Center of ${formatNames(firstTimeACenters.map(m => m.name))}.`);
+            const isReleasingHomeGroupMember = (member) => {
+                // If the song is released by the main group...
+                if (releasingGroupNameForTrivia === groupName) {
+                    // ...a member is a "home" member if they are NOT a sister group member.
+                    return !member.isSisterMember;
+                } else {
+                    // If the song is released by a sister group...
+                    // ...a member is a "home" member if their homeGroup name matches the releasing group's name.
+                    return member.homeGroup === releasingGroupNameForTrivia;
                 }
             }
 
-            const songListOfGroup = releasingGroupNameForTrivia === groupName ? initialSongs : (initialSisterGroups.find(sg => sg.name === releasingGroupNameForTrivia)?.songs || []);
-            const previousSingle = songListOfGroup.filter(s => s.type === 'single' && s.releaseWeek < week).sort((a,b) => b.releaseWeek - a.releaseWeek)[0];
 
-            if (previousSingle) {
-                const prevTitleTrack = previousSingle.tracks.find(t => t.type === 'title');
-                if (prevTitleTrack) {
-                    const prevSenbatsuIds = (prevTitleTrack.members || []).map(m => String(m.id));
-                    const currentSenbatsuIds = (titleTrack.members || []).map(m => String(m.id));
-                    const droppedMemberIds = prevSenbatsuIds.filter(id => !currentSenbatsuIds.includes(id));
+            if (titleTrack) {
+                const senbatsuMembers = (titleTrack.members || []).map(m => getMemberById(m.id)).filter(Boolean);
+
+                if (titleTrack.center && titleTrack.center.length > 0) {
+                    const firstTimeACenters = titleTrack.center.map(id => getMemberById(id)).filter(Boolean).filter(m => {
+                        const centerHistoryForGroup = (m.centerHistory || []).filter(h => h.type === 'title' && h.group === releasingGroupNameForTrivia);
+                        return centerHistoryForGroup.length === 0;
+                    });
                     
-                    if (droppedMemberIds.length > 0) {
-                        const droppedMemberNames = droppedMemberIds.map(id => {
-                            const member = getMemberById(id);
-                            return member ? member.name : '';
-                        }).filter(Boolean);
+                    if (firstTimeACenters.length > 0) {
+                        const homeGroupCenters = firstTimeACenters.filter(m => isReleasingHomeGroupMember(m));
+                        if (homeGroupCenters.length > 0) {
+                             triviaItems.push(`First A-Side Center: ${formatNames(homeGroupCenters.map(m => m.name))}.`);
+                        }
                         
-                        if (droppedMemberNames.length > 0) {
-                            triviaItems.push(`Dropped from Senbatsu: ${formatNames(droppedMemberNames)}.`);
+                        const guestMembers = firstTimeACenters.filter(m => !isReleasingHomeGroupMember(m));
+                        const guestGroups = [...new Set(guestMembers.map(m => m.homeGroup))];
+                        guestGroups.forEach(homeGroupIdentifier => {
+                            const guestCentersInGroup = guestMembers.filter(m => m.homeGroup === homeGroupIdentifier);
+                            if (guestCentersInGroup.length > 0) {
+                                const displayGroupName = homeGroupIdentifier === MAIN_GROUP_IDENTIFIER ? groupName : homeGroupIdentifier;
+                                triviaItems.push(`First Time ${releasingGroupNameForTrivia} A-Side Center for ${formatNames(guestCentersInGroup.map(m => m.name))} (${displayGroupName}).`);
+                            }
+                        });
+                    }
+                }
+
+                const firstTimeSenbatsu = senbatsuMembers.filter(m => {
+                    const senbatsuHistoryForThisGroup = (m.singlesParticipation || []).filter(p => p.isTitleTrackSenbatsu && p.group === releasingGroupNameForTrivia);
+                    return senbatsuHistoryForThisGroup.length === 0;
+                });
+
+                if (firstTimeSenbatsu.length > 0) {
+                    const homeGroupFirsts = firstTimeSenbatsu.filter(m => isReleasingHomeGroupMember(m));
+                     if (homeGroupFirsts.length > 0) {
+                        triviaItems.push(`First Time Senbatsu: ${formatNames(homeGroupFirsts.map(m => m.name))}.`);
+                    }
+
+                    const guestMembers = firstTimeSenbatsu.filter(m => !isReleasingHomeGroupMember(m));
+                    const guestGroups = [...new Set(guestMembers.map(m => m.homeGroup))];
+                    guestGroups.forEach(homeGroupIdentifier => {
+                        const guestFirstsInGroup = guestMembers.filter(m => m.homeGroup === homeGroupIdentifier);
+                        if (guestFirstsInGroup.length > 0) {
+                            const displayGroupName = homeGroupIdentifier === MAIN_GROUP_IDENTIFIER ? groupName : homeGroupIdentifier;
+                            triviaItems.push(`First Time ${releasingGroupNameForTrivia} Senbatsu for ${formatNames(guestFirstsInGroup.map(m => m.name))} (${displayGroupName}).`);
+                        }
+                    });
+                }
+            }
+
+            const allParticipatingMembers = [...new Set(songData.tracks.flatMap(t => (t.members || []).map(m => m.id)))].map(id => getMemberById(id)).filter(Boolean);
+            const firstParticipationMembers = allParticipatingMembers.filter(m => {
+                const participationsForThisGroup = (m.singlesParticipation || []).filter(p => p.group === releasingGroupNameForTrivia);
+                return participationsForThisGroup.length === 0;
+            });
+
+            if (firstParticipationMembers.length > 0) {
+                const homeGroupFirsts = firstParticipationMembers.filter(m => isReleasingHomeGroupMember(m));
+                if (homeGroupFirsts.length > 0) {
+                    triviaItems.push(`First Single Participation: ${formatNames(homeGroupFirsts.map(m => m.name))}.`);
+                }
+
+                const guestMembers = firstParticipationMembers.filter(m => !isReleasingHomeGroupMember(m));
+                const guestGroups = [...new Set(guestMembers.map(m => m.homeGroup))];
+                guestGroups.forEach(homeGroupIdentifier => {
+                    const guestFirstsInGroup = guestMembers.filter(m => m.homeGroup === homeGroupIdentifier);
+                    if (guestFirstsInGroup.length > 0) {
+                        const displayGroupName = homeGroupIdentifier === MAIN_GROUP_IDENTIFIER ? groupName : homeGroupIdentifier;
+                        triviaItems.push(`First Time ${releasingGroupNameForTrivia} Single Participation for ${formatNames(guestFirstsInGroup.map(m => m.name))} (${displayGroupName}).`);
+                    }
+                });
+            }
+
+            if(titleTrack) {
+                const songListOfGroup = releasingGroupNameForTrivia === groupName ? initialSongs : (initialSisterGroups.find(sg => sg.name === releasingGroupNameForTrivia)?.songs || []);
+                const previousSingle = songListOfGroup.filter(s => s.type === 'single' && s.releaseWeek < week).sort((a,b) => b.releaseWeek - a.releaseWeek)[0];
+    
+                if (previousSingle) {
+                    const prevTitleTrack = previousSingle.tracks.find(t => t.type === 'title');
+                    if (prevTitleTrack) {
+                        const prevSenbatsuIds = (prevTitleTrack.members || []).map(m => String(m.id));
+                        const currentSenbatsuIds = (titleTrack.members || []).map(m => String(m.id));
+                        const droppedMemberIds = prevSenbatsuIds.filter(id => !currentSenbatsuIds.includes(id));
+                        
+                        if (droppedMemberIds.length > 0) {
+                            const droppedMemberNames = droppedMemberIds.map(id => getMemberById(id)?.name).filter(Boolean);
+                            if (droppedMemberNames.length > 0) {
+                                triviaItems.push(`Dropped from Senbatsu: ${formatNames(droppedMemberNames)}.`);
+                            }
                         }
                     }
                 }
             }
-        }
-        
-        const firstTimeBSideCenters = bSideTracks.flatMap(track => (track.center || []))
-            .map(id => getMemberById(id))
-            .filter(member => member && (member.centerHistory || []).filter(h => h.type === 'b-side').length === 0);
             
-        if (firstTimeBSideCenters.length > 0) {
-            const uniqueNames = [...new Set(firstTimeBSideCenters.map(m => m.name))];
-            triviaItems.push(`First B-Side Center of ${formatNames(uniqueNames)}.`);
-        }
+            const firstTimeBSideCenters = bSideTracks.flatMap(track => (track.center || []))
+                .map(id => getMemberById(id))
+                .filter(Boolean)
+                .filter(member => {
+                    const centerHistoryForGroup = (member.centerHistory || []).filter(h => h.type === 'b-side' && h.group === releasingGroupNameForTrivia);
+                    return centerHistoryForGroup.length === 0;
+                });
+            
+            if (firstTimeBSideCenters.length > 0) {
+                const uniqueFirstTimeCenters = [...new Set(firstTimeBSideCenters)];
+                
+                const homeGroupCenters = uniqueFirstTimeCenters.filter(m => isReleasingHomeGroupMember(m));
+                if (homeGroupCenters.length > 0) {
+                    triviaItems.push(`First B-Side Center: ${formatNames(homeGroupCenters.map(m => m.name))}.`);
+                }
 
-        if (songData.isGraduationSingle && titleTrack.center && titleTrack.center.length > 0) {
-            const gradMember = getMemberById(titleTrack.center[0]);
-            if (gradMember) {
-                triviaItems.push(`Final Single Participation of ${gradMember.name}.`);
-                triviaItems.push(`Last Senbatsu of ${gradMember.name}.`);
-                triviaItems.push(`Final A-Side Center of ${gradMember.name}.`);
+                const guestMembers = uniqueFirstTimeCenters.filter(m => !isReleasingHomeGroupMember(m));
+                const guestGroups = [...new Set(guestMembers.map(m => m.homeGroup))];
+                guestGroups.forEach(homeGroupIdentifier => {
+                    const guestCentersInGroup = guestMembers.filter(m => m.homeGroup === homeGroupIdentifier);
+                    if (guestCentersInGroup.length > 0) {
+                        const displayGroupName = homeGroupIdentifier === MAIN_GROUP_IDENTIFIER ? groupName : homeGroupIdentifier;
+                        triviaItems.push(`First Time ${releasingGroupNameForTrivia} B-Side Center for ${formatNames(guestCentersInGroup.map(m => m.name))} (${displayGroupName}).`);
+                    }
+                });
             }
-        }
+
+            if (songData.isGraduationSingle && titleTrack?.center?.length > 0) {
+                const gradMember = getMemberById(titleTrack.center[0]);
+                if (gradMember) {
+                    triviaItems.push(`Final Single Participation of ${gradMember.name}.`);
+                    triviaItems.push(`Last Senbatsu of ${gradMember.name}.`);
+                    triviaItems.push(`Final A-Side Center of ${gradMember.name}.`);
+                }
+            }
 
         const newSong = {
             id: Date.now(),
@@ -4352,15 +4426,27 @@ const startHandshakeEvent = (selectedMemberIds) => {
                 cost = 200000;
                 if (money < cost) return setMessage("Not enough money to organize a national handshake event.");
                 let totalFansConverted = 0;
+                const newCasualFans = 100000; // Add 100,000 new fans
+                distributeFans(newCasualFans, senbatsuMemberIds); // Distribute the new fans
+
                 senbatsuMemberIds.forEach(memberId => {
                     updateMemberState(memberId, m => {
                         const toConvert = Math.floor((m.fans.casual || 0) * 0.2);
                         totalFansConverted += toConvert;
-                        return { ...m, fans: { hardcore: (m.fans.hardcore || 0) + toConvert, casual: (m.fans.casual || 0) - toConvert }, stamina: Math.max(0, m.stamina - 60), stress: Math.min(100, m.stress + 30), morale: Math.min(100, m.morale + 20) };
+                        return { 
+                            ...m, 
+                            fans: { 
+                                hardcore: (m.fans.hardcore || 0) + toConvert, 
+                                casual: Math.max(0, (m.fans.casual || 0) - toConvert)
+                            }, 
+                            stamina: Math.max(0, m.stamina - 60), 
+                            stress: Math.min(100, m.stress + 30), 
+                            morale: Math.min(100, m.morale + 20) 
+                        };
                     });
                 });
-                message = `The national handshake event was exhausting but a massive success! The direct interaction converted ${totalFansConverted.toLocaleString()} casual fans into hardcore fans.`;
-                modalPayload = { promoType, singleName: single.name, fansConverted: totalFansConverted, message };
+                message = `The national handshake event gained ${newCasualFans.toLocaleString()} new fans and converted ${totalFansConverted.toLocaleString()} existing fans to hardcore.`;
+                modalPayload = { promoType, singleName: single.name, totalFanGain: newCasualFans, fansConverted: totalFansConverted, message };
                 break;
 
             case 'tvSpecial':
@@ -4440,7 +4526,28 @@ const startHandshakeEvent = (selectedMemberIds) => {
                 cost -= income; // The final cost is the production cost minus the income.
                 
                 const photoFans = 80000;
-                distributeFans(photoFans, senbatsuMemberIds, 'visual');
+
+                // --- FIX START: Distribute fans based on visual stat ---
+                const visualSenbatsu = senbatsuMembers.filter(m => (m.visual || 0) > 0);
+                const totalVisual = visualSenbatsu.reduce((sum, m) => sum + (m.visual || 0), 0);
+
+                if (totalVisual > 0) {
+                    visualSenbatsu.forEach(member => {
+                        const fanShare = (member.visual || 0) / totalVisual;
+                        const fanGain = Math.floor(photoFans * fanShare);
+                        updateMemberState(member.rosterId || member.id, m => ({ 
+                            ...m, 
+                            fans: { 
+                                hardcore: (m.fans.hardcore || 0) + Math.floor(fanGain * 0.1), 
+                                casual: (m.fans.casual || 0) + Math.floor(fanGain * 0.9) 
+                            } 
+                        }));
+                    });
+                } else if (senbatsuMembers.length > 0) {
+                    // Fallback if no one has visual stat: distribute evenly
+                    distributeFans(photoFans, senbatsuMemberIds);
+                }
+                // --- FIX END ---
 
                 message = `The '${single.name}' official photobook is a bestseller! It cost ¥${(300000).toLocaleString()} to produce and brought in ¥${income.toLocaleString()}, gaining ${photoFans.toLocaleString()} fans focused on the most visual members.`;
                 modalPayload = { promoType, singleName: single.name, totalFanGain: photoFans, income: income, message };
