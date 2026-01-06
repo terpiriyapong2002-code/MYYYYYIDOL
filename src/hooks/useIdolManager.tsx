@@ -3285,71 +3285,74 @@ const createSong = () => {
         addNotification({ type: 'Production', message: `Setlist "${name}" created with ${newSongsCount} new and ${reusedSongsCount} reused songs.` });
     };
 
-    const scheduleNewSingle = ({ songData, productionData, releaseWeek, physicalVersions }) => {
-        const baseCostPerVersion = 100000;
-        const productionTierCost = Object.keys(productionData).reduce((total, key) => {
-            const choice = productionData[key];
-            const tiers = { training: { standard: { cost: 0 }, workshop: { cost: 50000 }, overseas: { cost: 250000 }, bootcamp: { cost: 400000 }, elite: { cost: 650000 }, oneOnOne: { cost: 900000 } }, song: { inHouse: { cost: 0 }, rookie: { cost: 50000 }, external: { cost: 100000 }, trend: { cost: 180000 }, famous: { cost: 400000 }, hitmaker: { cost: 750000 } }, mv: { none: { cost: 0 }, practice: { cost: 20000 }, performance: { cost: 60000 }, location: { cost: 150000 }, storyline: { cost: 300000 }, cinematic: { cost: 600000 }, blockbuster: { cost: 1000000 } }, outfits: { existing: { cost: 0 }, recolor: { cost: 40000 }, custom: { cost: 120000 }, concept: { cost: 200000 }, luxury: { cost: 450000 } }, promo: { none: { cost: 0 }, social: { cost: 30000 }, teaser: { cost: 60000 }, variety: { cost: 120000 }, blitz: { cost: 200000 }, global: { cost: 400000 } } };
-            return total + (tiers[key]?.[choice]?.cost || 0);
-        }, 10000);
-        
-        const physicalCost = songData.releaseFormat === 'physical' ? baseCostPerVersion * physicalVersions : 0;
-        const totalCost = productionTierCost + physicalCost;
-
-        if (money < totalCost) {
-            setMessage("Not enough money for this production!");
-            return;
-        }
-        setMoney(prev => prev - totalCost);
-
-        const timeline = [];
-        const weeksBefore = releaseWeek - week;
-        if (productionData.training !== 'standard') timeline.push({ week: week + Math.max(1, Math.floor(weeksBefore * 0.2)), message: `Special training for "${songData.name}" has begun!` });
-        if (productionData.promo !== 'none') timeline.push({ week: releaseWeek - 1, message: `Promotions for "${songData.name}" have begun!` });
-
-        const newScheduledRelease = {
-            type: 'single',
-            songData,
-            productionData,
-            releaseWeek,
-            physicalVersions, // <-- THE CRUCIAL ADDITION
-            timeline,
-        };
-
-    // --- Graduation Urgency on Failure (Being Left Out) ---
-    const allParticipatingIds = new Set(songData.tracks.flatMap(t => (t.members || []).map(m => String(m.id))));
-
-    // Get all members who could have participated in this single's group
-    const potentialParticipants = getAllAvailableMembers(true).filter(m => {
-        if (songData.targetGroup === 'main') {
-            return m.homeGroup === 'main' || (m.kenninGroups || []).includes(groupName);
-        } else {
-            const sg = sisterGroups.find(g => g.name === songData.targetGroup);
-            if (!sg) return false;
-            return m.homeGroup === sg.name || (m.kenninGroups || []).includes(sg.name);
-        }
-    });
-
-    const unselectedMembers = potentialParticipants.filter(m => !allParticipatingIds.has(String(m.rosterId || m.id)));
-
-    unselectedMembers.forEach(member => {
-        // Increase urgency for being left out, with a larger penalty for certain ambitions
-        let urgencyIncrease = 3;
-        if (member.ambition === 'Prove My Worth') {
-            urgencyIncrease = 10; // Much higher penalty for being ignored
-        }
-        updateMemberState(member.rosterId || member.id, m => ({
-            ...m,
-            graduationUrgency: Math.min(100, (m.graduationUrgency || 0) + urgencyIncrease)
-        }));
-    });
-    // ---
+    const scheduleNewSingle = ({ songData, productionData, releaseWeek, physicalVersions, includeHandshakeTickets }) => {
+    const baseCostPerVersion = 100000;
+    const productionTierCost = Object.keys(productionData).reduce((total, key) => {
+        const choice = productionData[key];
+        const tiers = { training: { standard: { cost: 0 }, workshop: { cost: 50000 }, overseas: { cost: 250000 }, bootcamp: { cost: 400000 }, elite: { cost: 650000 }, oneOnOne: { cost: 900000 } }, song: { inHouse: { cost: 0 }, rookie: { cost: 50000 }, external: { cost: 100000 }, trend: { cost: 180000 }, famous: { cost: 400000 }, hitmaker: { cost: 750000 } }, mv: { none: { cost: 0 }, practice: { cost: 20000 }, performance: { cost: 60000 }, location: { cost: 150000 }, storyline: { cost: 300000 }, cinematic: { cost: 600000 }, blockbuster: { cost: 1000000 } }, outfits: { existing: { cost: 0 }, recolor: { cost: 40000 }, custom: { cost: 120000 }, concept: { cost: 200000 }, luxury: { cost: 450000 } }, promo: { none: { cost: 0 }, social: { cost: 30000 }, teaser: { cost: 60000 }, variety: { cost: 120000 }, blitz: { cost: 200000 }, global: { cost: 400000 } } };
+        return total + (tiers[key]?.[choice]?.cost || 0);
+    }, 10000);
+    
+    const physicalCost = songData.releaseFormat === 'physical' ? baseCostPerVersion * physicalVersions : 0;
+    const handshakeTicketCost = includeHandshakeTickets ? 300000 : 0;
+    const totalCost = productionTierCost + physicalCost + handshakeTicketCost;
 
 
-        setScheduledSingles(prev => [...prev, newScheduledRelease]);
-        setShowModal(null);
-        setMessage(`Production for "${songData.name}" scheduled for Week ${releaseWeek}! Cost: ¥${totalCost.toLocaleString()}`);
+    if (money < totalCost) {
+        setMessage("Not enough money for this production!");
+        return;
+    }
+    setMoney(prev => prev - totalCost);
+
+    const timeline = [];
+    const weeksBefore = releaseWeek - week;
+    if (productionData.training !== 'standard') timeline.push({ week: week + Math.max(1, Math.floor(weeksBefore * 0.2)), message: `Special training for "${songData.name}" has begun!` });
+    if (productionData.promo !== 'none') timeline.push({ week: releaseWeek - 1, message: `Promotions for "${songData.name}" have begun!` });
+
+    const newScheduledRelease = {
+        type: 'single',
+        songData,
+        productionData,
+        releaseWeek,
+        physicalVersions,
+        includeHandshakeTickets,
+        timeline,
     };
+
+// --- Graduation Urgency on Failure (Being Left Out) ---
+const allParticipatingIds = new Set(songData.tracks.flatMap(t => (t.members || []).map(m => String(m.id))));
+
+// Get all members who could have participated in this single's group
+const potentialParticipants = getAllAvailableMembers(true).filter(m => {
+    if (songData.targetGroup === 'main') {
+        return m.homeGroup === 'main' || (m.kenninGroups || []).includes(groupName);
+    } else {
+        const sg = sisterGroups.find(g => g.name === songData.targetGroup);
+        if (!sg) return false;
+        return m.homeGroup === sg.name || (m.kenninGroups || []).includes(sg.name);
+    }
+});
+
+const unselectedMembers = potentialParticipants.filter(m => !allParticipatingIds.has(String(m.rosterId || m.id)));
+
+unselectedMembers.forEach(member => {
+    // Increase urgency for being left out, with a larger penalty for certain ambitions
+    let urgencyIncrease = 3;
+    if (member.ambition === 'Prove My Worth') {
+        urgencyIncrease = 10; // Much higher penalty for being ignored
+    }
+    updateMemberState(member.rosterId || member.id, m => ({
+        ...m,
+        graduationUrgency: Math.min(100, (m.graduationUrgency || 0) + urgencyIncrease)
+    }));
+});
+// ---
+
+
+    setScheduledSingles(prev => [...prev, newScheduledRelease]);
+    setShowModal(null);
+    setMessage(`Production for "${songData.name}" scheduled for Week ${releaseWeek}! Cost: ¥${totalCost.toLocaleString()}`);
+};
 
     const scheduleNewAlbum = ({ albumData, productionData, releaseWeek }) => {
         
@@ -3819,6 +3822,7 @@ const createSong = () => {
             type: 'single',
             isGraduationSingle: songData.isGraduationSingle,
             isElectionSingle: songData.isElectionSingle,
+            includeHandshakeTickets: singleToRelease.includeHandshakeTickets,
             releaseFormat: songData.releaseFormat,
             tracks: songData.tracks,
             baseSalesPotential: baseSalesPotential,
@@ -4473,59 +4477,75 @@ const beginActivity = (memberId, activityType) => {
 };
 
 
-const startHandshakeEvent = (selectedMemberIds) => {
-      const cost = 50000;
-      if (money < cost) return setMessage(`Handshake events cost ¥${cost.toLocaleString()}!`);
-      
-      const participatingMembers = selectedMemberIds.map(id => getMemberById(id)).filter(m => m && m.isAvailable);
-      
-      if (participatingMembers.length === 0) {
-          return setMessage("No members were selected for the handshake event.");
-      }
+    const openHandshakeModal = () => {
+        const eligibleSingle = songs.find(s => s.includeHandshakeTickets && !s.handshakeEventHeld && s.chartWeeksLeft > 0);
+        if (!eligibleSingle) {
+            return setMessage("No single is currently eligible for a handshake event.");
+        }
+        // Pass the single to the modal so it knows which event we're holding
+        setModalData({ eligibleSingle }); 
+        setShowModal('handshakeSelection');
+    };
 
-      setMoney(prev => prev - cost);
-      
-      let totalConvertedFans = 0;
-      let totalNewFans = 0;
-
-      participatingMembers.forEach(member => {
-        const currentCasual = member.fans?.casual || 0;
+    const executeHandshakeEvent = (selectedMemberIds, singleId) => {
+        const eligibleSingle = songs.find(s => s.id === singleId);
+    
+        if (!eligibleSingle) {
+            return setMessage("Error: Could not find the single for this handshake event.");
+        }
         
-        // --- NEW: Fan conversion and gain are now based on Charisma ---
-        const charismaModifier = (member.charisma || 0) / 250; // Max of 0.4 for 100 charisma
-        const fansToConvert = Math.floor(currentCasual * (0.15 + charismaModifier)); // Base 15% conversion, up to 55% with max charisma
-        const newCasualFans = Math.min(50000, 500 + Math.floor(currentCasual * 0.01) + (member.charisma * 100)); // Capped, flat gain + bonus
-        // --- END NEW ---
+        if (selectedMemberIds.length === 0) {
+            return setMessage("You must select at least one member to participate.");
+        }
 
-        totalConvertedFans += fansToConvert;
-        totalNewFans += newCasualFans;
+        const participatingMembers = selectedMemberIds.map(id => getMemberById(id)).filter(m => m && m.isAvailable);
+          
+        if (participatingMembers.length === 0) {
+            return setMessage("None of the selected members are available for the handshake event.");
+        }
+        
+        let totalConvertedFans = 0;
+        let totalNewFans = 0;
+        const salesFanBoost = (eligibleSingle.totalSales || 0) * 0.1;
 
-        updateMemberState(member.rosterId || member.id, m => {
-          const casual = m.fans?.casual || 0;
-          const hardcore = m.fans?.hardcore || 0;
-          return {
-            ...m,
-            fans: {
-              hardcore: hardcore + fansToConvert,
-              casual: Math.max(0, casual - fansToConvert) + newCasualFans,
-            },
-            stamina: Math.max(0, (m.stamina || 100) - 50),
-            stress: Math.min(100, (m.stress || 0) + 25),
-            morale: Math.min(100, (m.morale || 0) + 5)
-          };
+        participatingMembers.forEach(member => {
+            const currentCasual = member.fans?.casual || 0;
+            const charismaModifier = (member.charisma || 0) / 250; 
+            const fansToConvert = Math.floor(currentCasual * (0.15 + charismaModifier));
+            const newCasualFans = Math.floor(salesFanBoost / participatingMembers.length) * (1 + charismaModifier);
+    
+            totalConvertedFans += fansToConvert;
+            totalNewFans += newCasualFans;
+    
+            updateMemberState(member.rosterId || member.id, m => {
+                const casual = m.fans?.casual || 0;
+                const hardcore = m.fans?.hardcore || 0;
+                return {
+                    ...m,
+                    fans: {
+                        hardcore: hardcore + fansToConvert,
+                        casual: Math.max(0, casual - fansToConvert) + newCasualFans,
+                    },
+                    stamina: Math.max(0, (m.stamina || 100) - 50),
+                    stress: Math.min(100, (m.stress || 0) + 25),
+                    morale: Math.min(100, (m.morale || 0) + 5)
+                };
+            });
         });
-      });
-      
-            const successMessage = `Handshake event success! Converted ${totalConvertedFans.toLocaleString()} fans to hardcore and gained ${totalNewFans.toLocaleString()} new casual fans.`;
-      addNotification({ type: 'Fans', message: successMessage });
-      
-      // NEW: Set modal data and show the new modal
-      setModalData({
-          convertedFans: totalConvertedFans,
-          newFans: totalNewFans,
-          members: participatingMembers
-      });
-      setShowModal('handshakeResult');
+          
+        setSongs(prevSongs => prevSongs.map(s => 
+            s.id === eligibleSingle.id ? { ...s, handshakeEventHeld: true } : s
+        ));
+    
+        const successMessage = `The handshake event for "${eligibleSingle.name}" was a massive success!`;
+        addNotification({ type: 'Fans', message: successMessage });
+        
+        setModalData({
+            convertedFans: totalConvertedFans,
+            newFans: totalNewFans,
+            members: participatingMembers
+        });
+        setShowModal('handshakeResult');
     };
 
     
@@ -6326,7 +6346,7 @@ if (requestHourStatus && requestHourStatus.isActive && newWeek > requestHourStat
         let weeklyChartReport = [];
 
         // This is a single, unified function to process any song's sales for the week.
-        const processSongSales = (song, groupNameForLog = groupName) => {
+                const processSongSales = (song, groupNameForLog = groupName) => {
             if (song.chartWeeksLeft > 0) {
                 const chartWeekIndex = 8 - song.chartWeeksLeft;
 
@@ -7959,6 +7979,6 @@ const simulateRivalActions = (currentRivals, currentWeek, addNotificationInLoop)
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
-    executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, startHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining
+    executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent,  startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining
     };
     };

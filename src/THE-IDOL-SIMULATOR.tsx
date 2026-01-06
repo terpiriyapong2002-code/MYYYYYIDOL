@@ -35,7 +35,7 @@ const App = () => {
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
-    executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, startHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference,  completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining
+    executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference,  completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining
 
     } = useIdolManager();
 
@@ -1046,6 +1046,7 @@ const AnnualAwardsResultModal = () => {
     const [draggingMember, setDraggingMember] = useState(null);
     const [physicalVersions, setPhysicalVersions] = useState(1);
     const [isElectionSingle, setIsElectionSingle] = useState(false);
+    const [includeHandshakeTickets, setIncludeHandshakeTickets] = useState(false);
 
     const generateUniqueRandomName = () => {
         const allSongNames = [
@@ -1069,6 +1070,7 @@ const AnnualAwardsResultModal = () => {
         const baseCostPerVersion = 100000;
         const baseCostAlbum = 800000; // Base cost for producing a full album
         const electionBallotCost = 200000;
+        const handshakeTicketCost = 300000;
         const albumPhysicalSurcharge = 200000; // Fixed additional cost for physical albums
 
         const productionChoicesCost = Object.keys(productionChoices).reduce((total, key) => total + productionTiers[key][productionChoices[key]].cost, 10000);
@@ -1080,7 +1082,7 @@ const AnnualAwardsResultModal = () => {
                     ? baseCostAlbum + (releaseFormat === 'physical' ? albumPhysicalSurcharge : 0)
                     : (releaseFormat === 'physical' ? baseCostPerVersion * physicalVersions : 0)
             ) + 
-            (isElectionSingle ? electionBallotCost : 0);
+            (isElectionSingle ? electionBallotCost : 0) + (includeHandshakeTickets ? handshakeTicketCost : 0);
 
             const handleRandomizeRows = () => {
                 const currentIndex = releaseType === 'album' ? selectedAlbumTrackIndex : selectedTrackIndex;
@@ -1866,7 +1868,8 @@ const handleSchedule = () => {
         songData, 
         productionData: productionChoices, 
         releaseWeek,
-        physicalVersions 
+        physicalVersions,
+        includeHandshakeTickets 
     });
 };
 
@@ -2675,7 +2678,25 @@ const renderSelectGraduatingMemberStep = () => {
                             <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
                             This will turn this single into an Election Single. Final sales will determine the vote pool for the next election. Production costs will increase.
                             </p>
+
+                        <div className="mt-4 p-4 max-w-3xl mx-auto bg-green-50 dark:bg-gray-900/50 rounded-lg text-center border-2 border-dashed border-green-300 dark:border-green-700">
+                            <label className="font-semibold flex items-center justify-center dark:text-gray-200 cursor-pointer">
+                            <input
+                                type="checkbox"
+                                checked={includeHandshakeTickets}
+                                onChange={(e) => setIncludeHandshakeTickets(e.target.checked)}
+                                className="form-checkbox h-5 w-5 text-green-600 mr-3 focus:ring-green-500"
+                            />
+                            Include Handshake Event Tickets
+                            </label>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                            This will schedule a post-release handshake event. Production costs will increase by ¥300,000.
+                            </p>
                         </div>
+
+
+                        </div>
+                        
                         )}
                    
                     </div>
@@ -4563,6 +4584,166 @@ const ShuffleResultModal = () => {
         );
     };
 
+    const HandshakeSelectionModal = () => {
+        if (!modalData || !modalData.eligibleSingle) return null;
+
+        const { eligibleSingle } = modalData;
+        const [selectedMemberIds, setSelectedMemberIds] = useState([]);
+        const availableMembers = getAllAvailableMembers(true).filter(m => m.isAvailable);
+
+        const toggleMember = (memberId) => {
+            setSelectedMemberIds(prev => 
+                prev.includes(memberId) 
+                    ? prev.filter(id => id !== memberId) 
+                    : [...prev, memberId]
+            );
+        };
+
+        const selectAll = () => setSelectedMemberIds(availableMembers.map(m => m.id));
+        const deselectAll = () => setSelectedMemberIds([]);
+
+        const handleConfirm = () => {
+            executeHandshakeEvent(selectedMemberIds, eligibleSingle.id);
+        };
+
+        return (
+            <ModalWrapper title={`Select Members for "${eligibleSingle.name}" Handshake`} maxWidth="max-w-2xl">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Select members from your entire agency to participate. This event boosts fans but is very tiring.</p>
+                <div className="flex gap-2 mb-2">
+                    <button onClick={selectAll} className="px-3 py-1 text-xs bg-blue-100 text-blue-800 rounded font-semibold hover:bg-blue-200">Select All</button>
+                    <button onClick={deselectAll} className="px-3 py-1 text-xs bg-gray-200 text-gray-800 rounded font-semibold hover:bg-gray-300">Deselect All</button>
+                </div>
+                <div className="space-y-1 max-h-[400px] overflow-y-auto border-t border-b dark:border-gray-700 p-1 mb-4">
+                    {availableMembers.map(member => (
+                        <div key={member.id} className={`flex items-center justify-between p-2 rounded cursor-pointer ${selectedMemberIds.includes(member.id) ? 'bg-blue-100 dark:bg-blue-800' : 'bg-white dark:bg-gray-700/50 hover:bg-gray-50'}`} onClick={() => toggleMember(member.id)}>
+                            <div>
+                                <p className="font-semibold text-sm">{member.name}</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400">Fans: {getTotalFansForMember(member).toLocaleString()}</p>
+                            </div>
+                            <input type="checkbox" checked={selectedMemberIds.includes(member.id)} readOnly className="form-checkbox h-4 w-4 text-blue-600"/>
+                        </div>
+                    ))}
+                </div>
+                <div className="flex justify-end gap-2">
+                    <button onClick={() => setShowModal(null)} className="p-2 bg-gray-300 dark:bg-gray-600 rounded px-4">Cancel</button>
+                    <button onClick={handleConfirm} disabled={selectedMemberIds.length === 0} className="p-3 bg-green-500 text-white rounded font-bold disabled:bg-gray-400">
+                        Confirm Event ({selectedMemberIds.length} members)
+                    </button>
+                </div>
+            </ModalWrapper>
+        );
+    };
+
+    const HandshakeEventResultModal = () => {
+        if (!modalData) return null;
+        const { convertedFans, newFans, members } = modalData;
+        const containerRef = useRef(null);
+
+        // A simple, reusable chibi character component for the modal
+        const Chibi = ({ index }) => {
+            return (
+                <div className="relative flex flex-col items-center chibi-bounce" style={{ animationDelay: `${index * 0.15}s` }}>
+                    <div className="relative w-20 h-28">
+                        {/* Hair */}
+                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-20 rounded-full bg-[#ff99c8]"></div>
+                        {/* Face */}
+                        <div className="absolute top-6 left-1/2 -translate-x-1/2 w-16 h-16 rounded-full bg-[#ffdab9]"></div>
+                        {/* Hair highlight */}
+                        <div className="absolute top-2 left-8 w-6 h-4 rounded-full bg-white/60" style={{transform: 'rotate(-30deg)'}}></div>
+                        {/* Dress */}
+                        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-8 bg-pink-300 rounded-t-lg"></div>
+                    </div>
+                </div>
+            );
+        };
+
+        // This effect creates the floating hearts and sparkles
+        useEffect(() => {
+            const container = containerRef.current;
+            if (!container) return;
+
+            const createParticle = (emoji, className) => {
+                const particle = document.createElement('div');
+                particle.innerHTML = emoji;
+                particle.className = `absolute bottom-0 pointer-events-none text-2xl ${className}`;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.animationDuration = `${Math.random() * 2 + 3}s`;
+                particle.style.opacity = `${Math.random()}`;
+                container.appendChild(particle);
+                setTimeout(() => particle.remove(), 5000);
+            };
+            
+            const heartInterval = setInterval(() => createParticle('❤️', 'heart-float'), 300);
+            const sparkleInterval = setInterval(() => createParticle('✨', 'sparkle-float'), 450);
+
+            return () => {
+                clearInterval(heartInterval);
+                clearInterval(sparkleInterval);
+            };
+        }, []);
+
+        return (
+            <div ref={containerRef} className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in overflow-hidden">
+                <div className="w-full max-w-xl rounded-3xl bg-gradient-to-br from-pink-300/80 to-purple-300/60 border-2 border-white/50 shadow-2xl p-6 text-center text-white relative animate-in fade-in slide-in-from-bottom-5">
+                    
+                    <h2 className="text-4xl font-bold text-white drop-shadow-lg mb-2" style={{ fontFamily: 'Mochiy Pop One, sans-serif', textShadow: '2px 2px 8px rgba(236, 72, 153, 0.8)'}}>
+                        HANDSHAKE SUCCESS!
+                    </h2>
+                    <p className="text-white/80 mb-6">The fans absolutely loved the event!</p>
+                    
+                    <div className="flex justify-center items-end gap-4 my-6 h-32">
+                        {(members || []).slice(0, 5).map((member, index) => (
+                            <Chibi key={member.id} index={index} />
+                        ))}
+                    </div>
+
+                    <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl space-y-4 border border-white/20">
+                        <div className="flex items-center justify-center gap-4">
+                            <div className="text-4xl drop-shadow-md">💖</div>
+                            <p className="text-lg text-left">
+                                Converted <span className="font-bold text-2xl text-red-300 drop-shadow-sm">{convertedFans.toLocaleString()}</span> fans to Hardcore!
+                            </p>
+                        </div>
+                        <div className="flex items-center justify-center gap-4">
+                            <div className="text-4xl drop-shadow-md">✨</div>
+                            <p className="text-lg text-left">
+                                Gained <span className="font-bold text-2xl text-cyan-300 drop-shadow-sm">{newFans.toLocaleString()}</span> new Casual fans!
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="flex justify-center mt-8">
+                        <button 
+                            onClick={() => setShowModal(null)} 
+                            className="bg-gradient-to-br from-pink-500 to-fuchsia-500 hover:from-pink-600 hover:to-fuchsia-600 active:scale-95 text-white px-12 py-3 rounded-full font-bold shadow-xl transition-all text-lg border-2 border-white/50"
+                        >
+                            SUGOI!
+                        </button>
+                    </div>
+                </div>
+                <style jsx>{`
+                    @import url('https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&display=swap');
+                    .chibi-bounce { animation: bounce 3s infinite ease-in-out; }
+                    @keyframes bounce { 
+                        0%, 100% { transform: translateY(0); } 
+                        50% { transform: translateY(-12px); } 
+                    }
+                    .heart-float, .sparkle-float { 
+                        animation-name: floatUp;
+                        animation-timing-function: linear;
+                        animation-fill-mode: forwards;
+                    }
+                    @keyframes floatUp { 
+                        to { 
+                            transform: translateY(-500px) rotate(360deg); 
+                            opacity: 0; 
+                        } 
+                    }
+                `}</style>
+            </div>
+        );
+    };
+
     const SportsFestivalModal = () => {
     return (
         <ModalWrapper title="Hold Sports Festival" maxWidth="max-w-lg">
@@ -4726,118 +4907,6 @@ const LiveSportsFestivalModal = () => {
     );
 };
 
-
-    const HandshakeEventResultModal = () => {
-        if (!modalData) return null;
-        const { convertedFans, newFans, members } = modalData;
-        const containerRef = useRef(null);
-
-        const Chibi = ({ index }) => {
-            const hairColor = '#ff99c8'; // Brighter pink for hair
-            const skinColor = '#ffdab9'; // Peach skin tone
-            const dressColor = '#fcf6bd'; // Pastel yellow dress
-            const highlightColor = 'rgba(255, 255, 255, 0.6)';
-
-            return (
-                <div className="relative flex flex-col items-center chibi-bounce" style={{ animationDelay: `${index * 0.15}s` }}>
-                    <div className="relative w-20 h-28">
-                        {/* Hair */}
-                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-20 rounded-full" style={{ backgroundColor: hairColor }}></div>
-                        {/* Face */}
-                        <div className="absolute top-6 left-1/2 -translate-x-1/2 w-16 h-16 rounded-full" style={{ backgroundColor: skinColor }}></div>
-                        {/* Hair highlight */}
-                        <div className="absolute top-2 left-8 w-6 h-4 rounded-full" style={{ backgroundColor: highlightColor, transform: 'rotate(-30deg)'}}></div>
-                        {/* Dress */}
-                        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-8 bg-pink-300 rounded-t-lg"></div>
-                    </div>
-                </div>
-            );
-        };
-
-        useEffect(() => {
-            const container = containerRef.current;
-            if (!container) return;
-
-            const createParticle = (emoji, className) => {
-                const particle = document.createElement('div');
-                particle.innerHTML = emoji;
-                particle.className = `absolute bottom-0 pointer-events-none text-2xl ${className}`;
-                particle.style.left = `${Math.random() * 100}%`;
-                particle.style.animationDuration = `${Math.random() * 2 + 3}s`;
-                particle.style.opacity = Math.random();
-                container.appendChild(particle);
-                setTimeout(() => particle.remove(), 5000);
-            };
-            
-            const heartInterval = setInterval(() => createParticle('❤️', 'heart-float'), 300);
-            const sparkleInterval = setInterval(() => createParticle('✨', 'sparkle-float'), 450);
-
-            return () => {
-                clearInterval(heartInterval);
-                clearInterval(sparkleInterval);
-            };
-        }, []);
-
-        return (
-            <div ref={containerRef} className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in overflow-hidden">
-                <div className="w-full max-w-xl rounded-3xl bg-gradient-to-br from-pink-400/50 to-purple-400/30 border-2 border-white/30 shadow-2xl p-6 text-center text-white relative animate-in fade-in slide-in-from-bottom-5">
-                    
-                    <h2 className="text-4xl font-bold font-['Fredoka_One'] text-white drop-shadow-lg mb-2" style={{ textShadow: '2px 2px 8px rgba(236, 72, 153, 0.8)'}}>
-                        HANDSHAKE SUCCESS!
-                    </h2>
-                    <p className="text-white/80 mb-6">The fans absolutely loved the event!</p>
-                    
-                    <div className="flex justify-center items-end gap-4 my-6 h-32">
-                        {(members || []).slice(0, 5).map((member, index) => (
-                            <Chibi key={member.id} index={index} />
-                        ))}
-                    </div>
-
-                    <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl space-y-4 border border-white/20">
-                        <div className="flex items-center justify-center gap-4">
-                            <div className="text-4xl drop-shadow-md">❤️</div>
-                            <p className="text-lg text-left">
-                                Converted <span className="font-bold text-2xl text-red-300 drop-shadow-sm">{convertedFans.toLocaleString()}</span> fans to Hardcore!
-                            </p>
-                        </div>
-                        <div className="flex items-center justify-center gap-4">
-                            <div className="text-4xl drop-shadow-md">✨</div>
-                            <p className="text-lg text-left">
-                                Gained <span className="font-bold text-2xl text-cyan-300 drop-shadow-sm">{newFans.toLocaleString()}</span> new Casual fans!
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="flex justify-center mt-8">
-                        <button 
-                            onClick={() => setShowModal(null)} 
-                            className="bg-gradient-to-br from-pink-500 to-fuchsia-500 hover:from-pink-600 hover:to-fuchsia-600 active:scale-95 text-white px-12 py-3 rounded-full font-bold shadow-xl transition-all text-lg border-2 border-white/50"
-                        >
-                            Awesome!
-                        </button>
-                    </div>
-                </div>
-                <style jsx>{`
-                    .chibi-bounce { animation: bounce 3s infinite ease-in-out; }
-                    @keyframes bounce { 
-                        0%, 100% { transform: translateY(0); } 
-                        50% { transform: translateY(-12px); } 
-                    }
-                    .heart-float, .sparkle-float { 
-                        animation-name: floatUp;
-                        animation-timing-function: linear;
-                        animation-fill-mode: forwards;
-                    }
-                    @keyframes floatUp { 
-                        to { 
-                            transform: translateY(-500px) rotate(360deg); 
-                            opacity: 0; 
-                        } 
-                    }
-                `}</style>
-            </div>
-        );
-    };
 
     const GraduationTalkModal = () => {
         if (!modalData || !modalData.member) return null;
@@ -6390,69 +6459,6 @@ const SetlistDetailsModal = ({ setlist, allTheaterSongs, getFormattedDateForWeek
         );
       };
 
-    const HandshakeEventModal = () => {
-        const [selectedMemberIds, setSelectedMemberIds] = useState([]);
-        const availableMembers = getAllAvailableMembers(true).filter(m => m.isAvailable);
-
-        const toggleMember = (memberId) => {
-            setSelectedMemberIds(prev => 
-                prev.includes(memberId) 
-                    ? prev.filter(id => id !== memberId) 
-                    : [...prev, memberId]
-            );
-        };
-
-        const selectAll = () => {
-    setSelectedMemberIds(availableMembers.map(m => m.id));
-};
-
-const deselectAll = () => {
-    setSelectedMemberIds([]);
-};
-
-
-        const handleConfirm = () => {
-            if (selectedMemberIds.length === 0) {
-                return setMessage("You must select at least one member to participate.");
-            }
-            startHandshakeEvent(selectedMemberIds);
-        };
-
-        return (
-            <ModalWrapper title="Plan Handshake Event" maxWidth="max-w-2xl">
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Select members to participate. This event converts casual fans to hardcore fans and attracts new ones. It is very tiring for the idols.</p>
-
-<div className="flex gap-2 mb-2">
-    <button onClick={selectAll} className="px-3 py-1 text-xs bg-blue-100 text-blue-800 rounded font-semibold hover:bg-blue-200">Select All</button>
-    <button onClick={deselectAll} className="px-3 py-1 text-xs bg-gray-200 text-gray-800 rounded font-semibold hover:bg-gray-300">Deselect All</button>
-</div>
-
-
-                <div className="space-y-1 max-h-[400px] overflow-y-auto border-t border-b dark:border-gray-700 p-1 mb-4">
-                    {availableMembers.map(member => (
-                        <div key={member.id} className={`flex items-center justify-between p-2 rounded cursor-pointer ${selectedMemberIds.includes(member.id) ? 'bg-blue-100 dark:bg-blue-800' : 'bg-white dark:bg-gray-700/50 hover:bg-gray-50'}`} onClick={() => toggleMember(member.id)}>
-                            <div>
-                                <p className="font-semibold text-sm">{member.name}</p>
-                                <p className="text-xs text-gray-500 dark:text-gray-400">Casual Fans: {(member.fans?.casual || 0).toLocaleString()}</p>
-                            </div>
-                            <input type="checkbox" checked={selectedMemberIds.includes(member.id)} readOnly className="form-checkbox h-4 w-4 text-blue-600"/>
-                        </div>
-                    ))}
-                    {availableMembers.length === 0 && <p className="text-gray-500 text-center p-4">No members are available for this event.</p>}
-                </div>
-
-                <div className="flex justify-between items-center mt-6 pt-4 border-t dark:border-gray-600">
-                    <p className="font-bold text-lg dark:text-gray-100">Cost: ¥50,000</p>
-                    <div className="flex gap-2">
-                        <button onClick={() => setShowModal(null)} className="p-2 bg-gray-300 dark:bg-gray-600 rounded px-4">Cancel</button>
-                        <button onClick={handleConfirm} disabled={selectedMemberIds.length === 0 || money < 50000} className="p-3 bg-green-500 text-white rounded font-bold disabled:bg-gray-400">
-                            Confirm Event ({selectedMemberIds.length} members)
-                        </button>
-                    </div>
-                </div>
-            </ModalWrapper>
-        );
-    };
 
     const SenbatsuPromotionModal = () => {
         if (!modalData || !modalData.single) return null;
@@ -9395,8 +9401,17 @@ if (!gameStarted) {
     <div className="p-2 rounded-lg shadow-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
       <h3 className="text-base font-bold mb-2 flex items-center"><Hand size={18} className="mr-2"/> Fan Events</h3>
       <div className="flex flex-col gap-1.5">
-      <button onClick={() => setShowModal('handshakeEvent')} className="w-full p-2 text-sm bg-green-500 text-white rounded">          <div className="flex justify-center items-center gap-1 font-semibold"><Hand size={16} /> Hold Handshake Event</div>
-          <span className="text-xs font-normal">(¥50,000) - Boosts fans, drains all member stamina/morale.</span>
+        <button
+          onClick={openHandshakeModal}
+          disabled={!songs.some(s => s.includeHandshakeTickets && !s.handshakeEventHeld && s.chartWeeksLeft > 0)}
+          className="w-full p-2 text-sm bg-green-500 text-white rounded disabled:bg-gray-500 disabled:cursor-not-allowed"
+        >
+            <div className="flex justify-center items-center gap-1 font-semibold">
+                <Hand size={16} /> Hold Post-Release Handshake Event
+            </div>
+            <span className="text-xs font-normal">
+                {songs.find(s => s.includeHandshakeTickets && !s.handshakeEventHeld && s.chartWeeksLeft > 0)?.name || '(Requires a single with Handshake Tickets)'}
+            </span>
         </button>
 
         <button onClick={() => setShowModal('sportsFestival')} className="w-full p-2 text-sm bg-red-500 text-white rounded">
@@ -10003,7 +10018,8 @@ if (!gameStarted) {
         {showModal === 'manualShuffle' && <ManualShuffleModal />}
         {showModal === 'saveGame' && <SaveGameModal />}
         {showModal === 'loadGame' && <LoadGameModal />}
-        {showModal === 'handshakeEvent' && <HandshakeEventModal />}
+        {showModal === 'handshakeSelection' && <HandshakeSelectionModal />}
+        {showModal === 'handshakeResult' && <HandshakeEventResultModal />}
         {showModal === 'mediaJob' && <MediaJobModal />}
         {showModal === 'groupMediaJob' && <GroupMediaModal />}
         {showModal === 'trainingCamp' && <TrainingCampModal />}
