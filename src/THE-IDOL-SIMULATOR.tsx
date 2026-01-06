@@ -600,88 +600,110 @@ const CustomSetlistModal = () => {
   };
   
 
-const ElectionSummaryModal = () => {
+const ElectionSummaryModal = ({ modalData, onHide, getMemberGroupStatus, groupName, sisterGroups }) => {
     const { participating, nonParticipating, onConfirm } = modalData;
-    if (!participating) return null;
+    const [rankedSpots, setRankedSpots] = React.useState('80');
 
-    const GroupDisplay = ({ title, members, colorClass, icon: Icon }) => {
-        if (!members || members.length === 0) return null;
+    const rankOptions = [16, 32, 48, 64, 80];
 
-        const grouped = {};
-        const mainGroupName = groupName;
-        
-        members.forEach(item => {
-            const member = item.member || item;
-            const groupKey = member.isSisterMember ? member.displayGroupName : mainGroupName;
-            const subGroupKey = member.teamName ? `Team ${member.teamName}` : `${member.generation || 'Gen ?'}`;
-            
-            if (!grouped[groupKey]) grouped[groupKey] = {};
-            if (!grouped[groupKey][subGroupKey]) grouped[groupKey][subGroupKey] = [];
-            
-            const memberInfo = { name: member.name, reason: item.reason || null };
-            grouped[groupKey][subGroupKey].push(memberInfo);
-        });
+    React.useEffect(() => {
+        if (participating && participating.length > 0) {
+            const highestTier = rankOptions.slice().reverse().find(tier => tier <= participating.length);
+            setRankedSpots(String(highestTier || rankOptions[0]));
+        }
+    }, [participating]);
 
-        const groupEntries = Object.entries(grouped).filter(([_, subGroups]) => Object.keys(subGroups).length > 0);
-
-        return (
-            <div className={`p-4 rounded-xl bg-white/5 border ${colorClass} flex flex-col`}>
-                <h3 className={`text-xl font-bold mb-3 flex items-center text-gray-100 flex-shrink-0`}>
-                    <Icon size={22} className="mr-2" />
-                    {title} ({members.length})
-                </h3>
-                {/* --- THIS IS THE FIX --- */}
-                {/* The list div now has a max height and will scroll internally. */}
-                <div className="space-y-3 pr-2 custom-scrollbar max-h-64 overflow-y-auto">
-                    {groupEntries.map(([groupName, subGroups]) => (
-                        <div key={groupName}>
-                            <h4 className="font-semibold text-md border-b border-white/10 pb-1 mb-2 text-gray-300">{groupName}</h4>
-                            {Object.entries(subGroups).map(([subGroupKey, members]) => (
-                                <div key={subGroupKey} className="text-sm pl-2">
-                                    <p className="font-bold text-gray-400">{subGroupKey} ({members.length})</p>
-                                    <ul className="list-disc list-inside pl-2 text-gray-200">
-                                        {members.map((m, i) => (
-                                            <li key={i}>{m.name} {m.reason && <span className="text-xs text-red-400">({m.reason})</span>}</li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            ))}
-                        </div>
-                    ))}
-                </div>
-            </div>
-        );
+    const groupMembersByTeam = (members) => {
+        return members.reduce((acc, current) => {
+            const member = current.member || current;
+            const groupStatus = getMemberGroupStatus(member);
+            if (!acc[groupStatus]) {
+                acc[groupStatus] = [];
+            }
+            acc[groupStatus].push(current);
+            return acc;
+        }, {});
     };
 
+    const groupedParticipating = groupMembersByTeam(participating);
+    const groupedNonParticipating = groupMembersByTeam(nonParticipating);
+    const sortedParticipatingGroups = Object.entries(groupedParticipating).sort((a, b) => a[0].localeCompare(b[0]));
+    const sortedNonParticipatingGroups = Object.entries(groupedNonParticipating).sort((a, b) => a[0].localeCompare(b[0]));
+
+
+    if (!participating) return null;
+
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in fade-in">
-            <div className="w-full max-w-5xl rounded-2xl bg-gray-800 bg-opacity-70 border border-gray-700 shadow-2xl flex flex-col max-h-[90vh] animate-in fade-in slide-in-from-bottom-5">
-                {/* Header (fixed) */}
-                <div className="p-4 flex justify-between items-center bg-white bg-opacity-10 flex-shrink-0">
-                    <div className="flex items-center gap-3">
-                        <span className="text-xs font-bold uppercase tracking-wider bg-white bg-opacity-20 text-white py-1 px-3 rounded-full">ELECTION</span>
-                        <h3 className="font-bold text-lg text-white">General Election Summary</h3>
-                    </div>
-                    <button onClick={() => setShowModal(null)} className="w-9 h-9 rounded-full bg-white bg-opacity-10 text-white flex items-center justify-center hover:bg-opacity-20 transition-colors">
-                        <X size={20} />
-                    </button>
+        <div className="fixed inset-0 bg-pink-300/10 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in">
+            <div className="bg-gradient-to-br from-white via-pink-50 to-blue-50 dark:from-gray-800 dark:via-gray-800 dark:to-slate-900 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col text-gray-800 dark:text-gray-100 border-2 border-white dark:border-slate-700">
+                <div className="p-6 border-b border-pink-200/80 dark:border-slate-700/80">
+                    <h2 className="text-3xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-blue-500 tracking-tight">General Election Summary</h2>
+                    <p className="text-center text-pink-400/90 dark:text-pink-300/90 mt-1">Confirm members and settings before starting the election!</p>
                 </div>
-                
-                {/* Scrollable Content Area */}
-                <div className="p-5 grid gap-4 overflow-y-auto">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <GroupDisplay title="Participating" members={participating} colorClass="border-green-500/50" icon={Check} />
-                        <GroupDisplay title="Not Participating" members={nonParticipating} colorClass="border-red-500/50" icon={X} />
+
+                <div className="p-6 flex-grow overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Participating Members */}
+                    <div className="bg-green-100/30 dark:bg-green-500/10 p-4 rounded-xl border border-green-200/80 dark:border-green-500/20">
+                        <h3 className="font-bold text-lg text-green-700 dark:text-green-300 mb-3 border-b border-green-500/20 pb-2">
+                            Participating Members ({participating.length})
+                        </h3>
+                        <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
+                           {sortedParticipatingGroups.map(([groupName, members]) => (
+                               <div key={groupName}>
+                                   <h4 className="font-semibold text-xs uppercase text-green-600 dark:text-green-400 tracking-wider bg-green-100 dark:bg-green-900/30 p-1 rounded-md">{groupName}</h4>
+                                   <div className="pl-2 mt-1 space-y-1">
+                                       {members.map(member => (
+                                            <div key={member.rosterId || member.id} className="text-sm p-1.5 bg-white/50 dark:bg-slate-700/30 rounded-md">{member.name}</div>
+                                       ))}
+                                   </div>
+                               </div>
+                           ))}
+                        </div>
+                    </div>
+
+                    {/* Non-Participating Members */}
+                    <div className="bg-red-100/30 dark:bg-red-500/10 p-4 rounded-xl border border-red-200/80 dark:border-red-500/20">
+                        <h3 className="font-bold text-lg text-red-700 dark:text-red-300 mb-3 border-b border-red-500/20 pb-2">
+                            Non-Participating Members ({nonParticipating.length})
+                        </h3>
+                        <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
+                           {sortedNonParticipatingGroups.length > 0 ? sortedNonParticipatingGroups.map(([groupName, membersWithReason]) => (
+                               <div key={groupName}>
+                                   <h4 className="font-semibold text-xs uppercase text-red-600 dark:text-red-400 tracking-wider bg-red-100 dark:bg-red-900/30 p-1 rounded-md">{groupName}</h4>
+                                   <div className="pl-2 mt-1 space-y-1">
+                                       {membersWithReason.map(({ member, reason }) => (
+                                            <div key={member.rosterId || member.id} className="text-sm p-1.5 bg-white/50 dark:bg-slate-700/30 rounded-md">
+                                                <span className="font-semibold">{member.name}</span>
+                                                <span className="text-gray-500 dark:text-gray-400 text-xs"> - {reason}</span>
+                                            </div>
+                                       ))}
+                                   </div>
+                               </div>
+                           )) : <p className="text-gray-500 italic text-sm p-2">All eligible members are participating.</p>}
+                        </div>
                     </div>
                 </div>
 
-                {/* Footer / Actions (fixed) */}
-                <div className="flex justify-between items-center p-5 mt-auto border-t border-white/10 flex-shrink-0">
-                    <p className="font-bold text-lg text-gray-300">Total Cost: <span className="text-green-400">¥5,000</span></p>
-                    <div className="flex gap-4">
-                        <button onClick={() => setShowModal(null)} className="px-6 py-2 bg-gray-500/20 text-gray-200 rounded-lg font-semibold hover:bg-gray-500/40 transition-colors">Cancel</button>
-                        <button onClick={onConfirm} className="px-8 py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/20">
-                            Confirm & Begin Election
+                <div className="p-6 border-t border-pink-200/80 dark:border-slate-700/80 flex justify-between items-center bg-white/50 dark:bg-slate-800/20">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Election Cost: <span className="font-semibold text-pink-500 dark:text-pink-400">¥5,000</span></p>
+                    <div className="flex items-center gap-4">
+                        <div>
+                            <label htmlFor="rank-spots" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Ranked Spots:</label>
+                            <select
+                                id="rank-spots"
+                                value={rankedSpots}
+                                onChange={(e) => setRankedSpots(e.target.value)}
+                                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:outline-none focus:ring-pink-400 focus:border-pink-400 sm:text-sm rounded-md"
+                            >
+                                {rankOptions.map(opt => (
+                                    <option key={opt} value={opt} disabled={opt > participating.length}>
+                                        Top {opt}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <button onClick={() => onConfirm(Number(rankedSpots))} className="self-end px-6 py-3 bg-gradient-to-r from-pink-400 to-blue-500 text-white rounded-lg font-bold hover:from-pink-500 hover:to-blue-600 transition-all duration-300 shadow-lg hover:shadow-xl shadow-blue-500/20 dark:shadow-blue-500/10">
+                            Confirm & Begin
                         </button>
                     </div>
                 </div>
@@ -692,13 +714,39 @@ const ElectionSummaryModal = () => {
 
 
 const ElectionResultModal = () => {
-    const { rankedMembers, electionYear } = modalData;
+    const { rankedMembers, electionYear, trivia, spots } = modalData;
+
+    // This is the main fix: Only use the members within the selected rank spots.
+    const membersToReveal = rankedMembers.slice(0, spots);
 
     const [revealIndex, setRevealIndex] = useState(0);
     const [revealedRanks, setRevealedRanks] = useState([]);
     const [currentMember, setCurrentMember] = useState(null);
     const [infoPanelVisible, setInfoPanelVisible] = useState(false);
     const [displayVotes, setDisplayVotes] = useState(0);
+    const containerRef = useRef(null);
+
+    // Particle effect with more transparent particles
+    useEffect(() => {
+        const container = containerRef.current;
+        if (!container) return;
+
+        const createParticle = () => {
+            const particle = document.createElement('div');
+            const emojis = ['✨', '💖', '🌸', '🎀', '⭐'];
+            particle.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+            particle.className = 'particle-float';
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.transform = `scale(${Math.random() * 0.6 + 0.8})`;
+            particle.style.animationDuration = `${Math.random() * 4 + 3}s`;
+            // More transparent particles
+            particle.style.opacity = Math.random() * 0.3 + 0.2; 
+            container.appendChild(particle);
+            setTimeout(() => particle.remove(), 7000);
+        };
+        const interval = setInterval(createParticle, 200);
+        return () => clearInterval(interval);
+    }, []);
 
     useEffect(() => {
         if (!currentMember) return;
@@ -717,10 +765,9 @@ const ElectionResultModal = () => {
     }, [currentMember]);
 
     const revealNextRank = () => {
-        if (revealIndex >= rankedMembers.length) return;
-
-        const memberToReveal = rankedMembers[rankedMembers.length - 1 - revealIndex];
-        const rank = rankedMembers.length - revealIndex;
+        if (revealIndex >= membersToReveal.length) return;
+        const memberToReveal = membersToReveal[membersToReveal.length - 1 - revealIndex];
+        const rank = membersToReveal.length - revealIndex;
 
         setCurrentMember({ ...memberToReveal, rank });
         setInfoPanelVisible(false);
@@ -728,144 +775,113 @@ const ElectionResultModal = () => {
             setRevealedRanks(prev => [{ ...memberToReveal, rank }, ...prev]);
             setInfoPanelVisible(true);
         }, 300);
-
         setRevealIndex(prev => prev + 1);
     };
 
     const getButtonText = () => {
-        if (revealIndex >= rankedMembers.length) return "ELECTION COMPLETE";
-        const nextRank = rankedMembers.length - revealIndex;
-        if (nextRank === 1) return "REVEAL CENTER (#1)";
-        if (nextRank <= 7) return `REVEAL KAMI 7 (#${nextRank})`;
+        if (revealIndex >= membersToReveal.length) return "ELECTION COMPLETE";
+        const nextRank = membersToReveal.length - revealIndex;
+        if (nextRank === 1) return "👑 REVEAL CENTER (#1) 👑";
+        if (nextRank <= 7) return `✨ REVEAL KAMI 7 (#${nextRank}) ✨`;
         return `REVEAL RANK #${nextRank}`;
     };
 
-        const RankChangeArrow = ({ member }) => {
-            if (!member) return null;
-            const oldRank = member.previousRank;
-            const newRank = member.rank;
+    const RankChangeArrow = ({ member }) => {
+        if (!member) return null;
+        const oldRank = member.previousRank;
+        const newRank = member.rank;
+        const hadPreviousRankings = (member.electionHistory || []).length > 0;
 
-            // This history is from *before* the current election.
-            const hadPreviousRankings = (member.electionHistory || []).length > 0;
+        if (oldRank === 999 || !oldRank) {
+            return hadPreviousRankings 
+                ? <span className="text-purple-500 font-bold">Re-Entry</span> 
+                : <span className="text-cyan-500 font-bold">New Entry</span>;
+        }
+        if (newRank < oldRank) return <span className="text-green-500 font-bold flex items-center">▲{oldRank - newRank}</span>;
+        if (newRank > oldRank) return <span className="text-red-500 font-bold flex items-center">▼{newRank - oldRank}</span>;
+        return <span className="text-gray-400 font-bold">-</span>;
+    };
 
-            if (oldRank === 999 || !oldRank) {
-                if (hadPreviousRankings) {
-                    // Was ranked before, but not last year = Re-Entry!
-                    return <span className="text-purple-500 font-bold">Re-Entry</span>;
-                } else {
-                    // Never ranked before = New Entry!
-                    return <span className="text-cyan-500 font-bold">New Entry</span>;
-                }
-            }
-            if (newRank < oldRank) return <span className="text-green-400 font-bold">▲{oldRank - newRank}</span>;
-            if (newRank > oldRank) return <span className="text-red-400 font-bold">▼{newRank - oldRank}</span>;
-            return <span className="text-gray-400 font-bold">-</span>;
-        };
-    
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4 animate-in fade-in" style={{ background: 'radial-gradient(circle at 50% 30%, #ffffff 0%, #dfe6e9 60%, #b2bec3 100%)' }}>
-            <div className="absolute top-[-100px] left-1/2 -translate-x-1/2 w-full max-w-[800px] h-screen bg-gradient-to-b from-white/80 to-transparent filter blur-xl pointer-events-none"></div>
+        <div ref={containerRef} className="fixed inset-0 bg-pink-100/30 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4 animate-in fade-in overflow-hidden">
+            <style jsx>{`
+                .particle-float { position: absolute; top: 100%; pointer-events: none; animation: floatUpAndFade 7s linear forwards; font-size: 1.5rem; }
+                @keyframes floatUpAndFade { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; } }
+            `}</style>
             
-            {/* --- THE FIX IS HERE --- */}
-            {/* This div now has a fixed pixel width on desktop (md:w-[896px]) to prevent squishing. */}
-            <div className="w-full md:w-[896px] max-w-4xl h-full sm:h-[85vh]auto sm:max-h-[90vh] bg-white/95 border border-white rounded-lg shadow-2xl flex flex-col relative z-10">
-                <div className="p-3 sm:p-4 flex justify-between items-center font-extrabold text-xs tracking-widest text-yellow-500 border-b-4 border-yellow-500 bg-white">
+            <div className="w-full max-w-4xl h-full sm:h-auto sm:max-h-[90vh] bg-white/80 dark:bg-slate-800/80 backdrop-blur-lg border border-white/50 dark:border-slate-700/50 rounded-2xl shadow-2xl flex flex-col relative z-10">
+                <div className="p-3 sm:p-4 flex justify-between items-center font-extrabold text-xs tracking-widest text-pink-500 dark:text-pink-300 border-b-4 border-pink-300 dark:border-pink-500 bg-white/80 dark:bg-slate-800/80 rounded-t-2xl">
                     <span>{electionYear} GENERAL ELECTION</span>
-                    <span className="text-gray-400">OFFICIAL RESULTS</span>
+                    <span className="text-gray-400 dark:text-gray-500">OFFICIAL RESULTS</span>
                 </div>
 
                 <div className="flex flex-col md:grid md:grid-cols-[256px,1fr] flex-1 overflow-hidden">
-                    <div className="w-full flex-shrink-0 h-40 md:h-auto border-b md:border-b-0 md:border-r border-gray-200 bg-gray-100/80 overflow-y-auto">
+                    <div className="w-full flex-shrink-0 h-40 md:h-auto border-b md:border-b-0 md:border-r border-gray-200 dark:border-slate-700 bg-gray-100/50 dark:bg-slate-900/50 overflow-y-auto">
                         <div className="grid grid-cols-2 md:grid-cols-1 gap-2 p-2">
                             {revealedRanks.slice().map(member => (
-                                 <div key={member.rosterId} className={`p-2 bg-white shadow-sm flex justify-between items-center border-l-4 ${member.rank === 1 ? 'border-red-600' : member.rank <= 7 ? 'border-blue-500' : 'border-yellow-500'}`}>
+                                <div key={member.rosterId} className={`p-2 bg-white/80 dark:bg-slate-700/50 shadow-sm flex justify-between items-center border-l-4 rounded-md ${member.rank === 1 ? 'border-yellow-400' : member.rank <= 7 ? 'border-pink-400' : 'border-blue-400'}`}>
                                     <div>
-                                        <p className="font-black text-yellow-600 text-sm">#{member.rank} <span className="text-xs font-normal">({(getMemberGroupStatus(member) || '').split(' | ')[0]})</span></p>
-                                        <p className="font-semibold text-xs truncate">{member.name}</p>
+                                        <p className="font-black text-pink-500 dark:text-pink-400 text-sm">#{member.rank} <span className="text-xs font-normal text-gray-500 dark:text-gray-400">({(getMemberGroupStatus(member) || '').split(' | ')[0]})</span></p>
+                                        <p className="font-semibold text-xs truncate text-gray-700 dark:text-gray-200">{member.name}</p>
                                     </div>
-                                    <RankChangeArrow oldRank={member.previousRank} newRank={member.rank} />
+                                    <RankChangeArrow member={member} />
                                 </div>
                             ))}
                         </div>
+                        {revealIndex >= membersToReveal.length && trivia && trivia.length > 0 && (
+                            <div className="p-3 mt-2 border-t border-gray-200 dark:border-slate-700">
+                                <h4 className="font-bold text-sm mb-2 text-gray-800 dark:text-gray-200">Election Trivia</h4>
+                                <ul className="list-disc list-inside text-xs space-y-2 text-gray-600 dark:text-gray-300">
+                                    {trivia.map((item, index) => <li key={index}>{item}</li>)}
+                                </ul>
+                            </div>
+                        )}
                     </div>
 
-                    <div className="relative flex-1 flex flex-col items-center justify-end p-4">
-                    {revealIndex >= rankedMembers.length ? (
-                        <button 
-                            onClick={() => setShowModal(null)} 
-                            className="absolute top-4 right-4 px-4 py-2 sm:px-6 sm:py-3 bg-gray-500 text-white rounded-full font-bold shadow-lg transition-all hover:bg-gray-600"
-                        >
-                            Close
-                        </button>
-                    ) : (
-                        <button 
-                            onClick={revealNextRank} 
-                            disabled={revealIndex >= rankedMembers.length} 
-                            className="absolute top-4 right-4 px-4 py-2 sm:px-6 sm:py-3 bg-yellow-500 border-2 border-yellow-600 text-white rounded-full font-bold shadow-lg transition-all hover:bg-yellow-600 disabled:bg-gray-300 disabled:border-gray-400 disabled:text-gray-500 disabled:shadow-none"
-                        >
-                            {getButtonText()}
-                        </button>
-                    )}
+                    <div className="relative flex-1 flex flex-col items-center justify-center p-4 min-h-[400px]">
+                        {revealIndex >= membersToReveal.length ? (
+                            <button onClick={() => setShowModal(null)} className="absolute top-4 right-4 px-6 py-3 bg-gray-400/80 text-white rounded-full font-bold shadow-lg transition-all hover:bg-gray-500/80">Close</button>
+                        ) : (
+                            <button onClick={revealNextRank} disabled={revealIndex >= membersToReveal.length} className="absolute top-4 right-4 px-6 py-3 bg-gradient-to-r from-pink-400 to-blue-400 text-white rounded-full font-bold shadow-lg transition-all hover:shadow-xl disabled:bg-gray-300 disabled:from-gray-300 disabled:to-gray-400 disabled:shadow-none">
+                                {getButtonText()}
+                            </button>
+                        )}
+                        
+                        <div className={`absolute inset-0 flex items-center justify-center p-4 pointer-events-none`}>
+                            <div className={`transition-all duration-500 ${infoPanelVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
+                                <p className="p-6 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm rounded-2xl shadow-lg max-w-md text-center text-xl italic text-gray-800 dark:text-gray-200 pointer-events-auto">
+                                    "{currentMember?.speech}"
+                                </p>
+                            </div>
+                        </div>
 
-                        <div className={`absolute bottom-4 left-4 right-4 sm:bottom-8 sm:left-8 sm:right-8 bg-white/95 border-t-4 border-yellow-500 p-3 sm:p-5 rounded-md shadow-xl transition-transform duration-500 ${infoPanelVisible ? 'translate-y-0' : 'translate-y-48'}`}>
+                        <div className={`absolute bottom-4 left-4 right-4 bg-white/90 dark:bg-slate-700/90 backdrop-blur-md border-t-4 border-pink-300 dark:border-pink-500 p-4 rounded-xl shadow-xl transition-transform duration-500 ${infoPanelVisible ? 'translate-y-0' : 'translate-y-48'}`}>
                             <div className="flex flex-col sm:flex-row justify-between sm:items-center">
                                 <div>
                                     <div className="flex items-center gap-3">
-                                        <h2 className="text-xl sm:text-3xl font-bold uppercase tracking-tighter">{currentMember?.name || '...'}</h2>
+                                        <h2 className="text-2xl sm:text-3xl font-bold uppercase tracking-tighter text-pink-500 dark:text-pink-300">{currentMember?.name || '...'}</h2>
                                         <div className="flex items-center gap-1.5">
-                                            <span className="font-bold text-lg sm:text-xl text-yellow-600">#{currentMember?.rank}</span>
+                                            <span className="font-bold text-lg sm:text-xl text-blue-500 dark:text-blue-400">#{currentMember?.rank}</span>
                                             <RankChangeArrow member={currentMember} />
                                         </div>
                                     </div>
-                                        <span className="text-[11px] sm:text-xs font-bold text-gray-500 tracking-widest">
-        {(() => {
-            if (!currentMember) return '...';
-            
-            const { isSisterMember, displayGroupName, generation, id } = currentMember;
-            let teamStatus = '';
-
-            // Find all teams the member is currently in
-            const allMemberTeams = teams.filter(t => (t.members || []).map(String).includes(String(id)));
-
-            if (allMemberTeams.length > 0) {
-                teamStatus = allMemberTeams.map(team => {
-                    let parentGroupName;
-                    if (team.groupId === 'main') {
-                        parentGroupName = groupName;
-                    } else {
-                        const parentGroup = sisterGroups.find(sg => String(sg.id) === String(team.groupId));
-                        parentGroupName = parentGroup ? parentGroup.name : '';
-                    }
-                    return `${parentGroupName} Team ${team.name}`;
-                }).join(' / ');
-            } else {
-                // Fallback for members not in any team (Kenkyuusei)
-                teamStatus = isSisterMember ? displayGroupName : groupName;
-            }
-
-            const generationStatus = generation ? `${generation}` : null;
-            
-            return [teamStatus, generationStatus].filter(Boolean).join(' | ');
-        })()}
-    </span>
+                                    <span className="text-[11px] sm:text-xs font-bold text-gray-500 dark:text-gray-400 tracking-widest">
+                                        {(() => {
+                                            if (!currentMember) return '...';
+                                            const { isSisterMember, displayGroupName, generation, id } = currentMember;
+                                            const team = teams.find(t => (t.members || []).map(String).includes(String(id)));
+                                            const teamStatus = team ? `Team ${team.name}` : (isSisterMember ? displayGroupName : `${groupName} Kenkyuusei`);
+                                            const generationStatus = generation ? `${generation}` : null;
+                                            return [teamStatus, generationStatus].filter(Boolean).join(' | ');
+                                        })()}
+                                    </span>
                                 </div>
                                 <div className="text-left sm:text-right mt-2 sm:mt-0">
-                                    <div className="text-2xl sm:text-3xl font-black text-yellow-600 font-mono">{displayVotes.toLocaleString()}</div>
-                                    <div className="text-xs text-gray-400 font-bold tracking-wider">TOTAL VOTES</div>
+                                    <div className="text-2xl sm:text-3xl font-black text-blue-500 dark:text-blue-400 font-mono">{displayVotes.toLocaleString()}</div>
+                                    <div className="text-xs text-gray-500 dark:text-gray-400 font-bold tracking-wider">TOTAL VOTES</div>
                                 </div>
                             </div>
                         </div>
-
-                        {/* --- Centered Speech Display --- */}
-                        <div className={`absolute inset-0 flex items-center justify-center p-4 pointer-events-none`}>
-                            <div className={`transition-all duration-500 ${infoPanelVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
-                                 <p className="p-6 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg max-w-md text-center text-xl italic text-gray-800 pointer-events-auto">
-                                     "{currentMember?.speech}"
-                                 </p>
-                            </div>
-                        </div>
-
-
                     </div>
                 </div>
             </div>
@@ -6965,191 +6981,227 @@ const ShuffleHistoryViewer = ({ data }) => {
 };
 
 
-        const HistoryDetailModal = () => {
-        if (!modalData) return null;
+const HistoryDetailModal = () => {
+    if (!modalData) return null;
 
-        const { type, week } = modalData;
-        const history = modalData;
-        let title = '';
-        let content = null;
+    const { type, week } = modalData;
+    const history = modalData;
+    let title = '';
+    let content = null;
 
-        if (type === 'election') {
-            title = `General Election #${electionHistory.findIndex(e => e.week === week) + 1}`;
+if (type === 'election') {
+        title = `General Election #${electionHistory.findIndex(e => e.week === week) + 1}`;
 
-            // Helper to get detailed status string, now used by history
-            const getMemberStatusString = (member) => {
-                if (!member) return '...';
-                
-                const { isSisterMember, displayGroupName, generation, id } = member;
+        // Helper to get detailed status string, now used by history
+        const getMemberStatusString = (member) => {
+            if (!member) return '...';
+            
+            const { isSisterMember, displayGroupName, generation, id } = member;
 
-                // Fallback for very old data that doesn't have the required properties
-                if (typeof id === 'undefined') {
-                    return member.teamName ? `Team ${member.teamName}` : (member.group || 'Unknown Group');
-                }
-
-                let teamStatus = '';
-                const allMemberTeams = teams.filter(t => (t.members || []).map(String).includes(String(id)));
-
-                if (allMemberTeams.length > 0) {
-                    teamStatus = allMemberTeams.map(team => {
-                        let parentGroupName;
-                        if (team.groupId === 'main') {
-                            parentGroupName = groupName;
-                        } else {
-                            const parentGroup = sisterGroups.find(sg => String(sg.id) === String(team.groupId));
-                            parentGroupName = parentGroup ? parentGroup.name : '';
-                        }
-                        return `${parentGroupName} Team ${team.name}`;
-                    }).join(' / ');
-                } else {
-                    teamStatus = isSisterMember ? displayGroupName : groupName;
-                }
-
-                const generationStatus = generation ? `${generation}` : null;
-                return [teamStatus, generationStatus].filter(Boolean).join(' | ');
-            };
-
-                const RankChangeArrow = ({ member, electionWeek }) => {
-                    if (!member) return null;
-                    const oldRank = member.previousRank;
-                    const newRank = member.rank;
-
-                    // Check if the member has any history entries *before* this specific election's week.
-                    const hadRankingsBeforeThisElection = (member.electionHistory || []).some(entry => entry.week < electionWeek);
-
-                    if (oldRank === 999 || !oldRank) {
-                        if (hadRankingsBeforeThisElection) {
-                            return <span className="text-purple-500 font-bold text-center">Re-Entry</span>;
-                        } else {
-                            return <span className="text-cyan-500 font-bold text-center">New Entry</span>;
-                        }
-                    }
-                    if (newRank < oldRank) return <span className="text-green-400 font-bold flex items-center justify-center"><ChevronUp size={16} />{oldRank - newRank}</span>;
-                    if (newRank > oldRank) return <span className="text-red-400 font-bold flex items-center justify-center"><ChevronDown size={16} />{newRank - oldRank}</span>;
-                    return <span className="text-gray-400 font-bold text-center">-</span>;
-                };
-
-            const units = {
-                'Senbatsu': { min: 1, max: 16, members: [], color: 'from-yellow-400 to-amber-500' },
-                'Undergirls': { min: 17, max: 32, members: [], color: 'from-blue-400 to-sky-500' },
-                'Next Girls': { min: 33, max: 48, members: [], color: 'from-green-400 to-emerald-500' },
-                'Future Girls': { min: 49, max: 64, members: [], color: 'from-purple-400 to-violet-500' },
-                'Upcoming Girls': { min: 65, max: 80, members: [], color: 'from-orange-400 to-red-500' },
-            };
-
-            if (history.results) {
-                [...history.results].sort((a, b) => a.rank - b.rank).forEach(member => {
-                    const unit = Object.values(units).find(u => member.rank >= u.min && member.rank <= u.max);
-                    if (unit) unit.members.push(member);
-                });
+            if (typeof id === 'undefined') {
+                return member.teamName ? `Team ${member.teamName}` : (member.group || 'Unknown Group');
             }
 
-            const UnitSection = ({ name, data }) => {
-                if (data.members.length === 0) return null;
-                return (
-                    <div className="mb-4">
-                        <h2 className={`text-lg font-bold p-2 bg-gradient-to-r ${data.color} text-white rounded-t-lg shadow-md`}>
-                            {name} (Ranks {data.min}-{data.max})
-                        </h2>
-                        <div className="bg-white dark:bg-gray-900 rounded-b-lg shadow-md">
-                            <div className="grid grid-cols-12 gap-2 items-center p-2 font-bold text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 border-b dark:border-gray-700">
-                                <div className="col-span-1 text-center">Rank</div>
-                                <div className="col-span-7">Member</div>
-                                <div className="col-span-1 text-center">Change</div>
-                                <div className="col-span-3 text-right">Votes</div>
-                            </div>
-                            {data.members.map(member => (
-                                <div key={member.id} className="grid grid-cols-12 gap-2 items-center p-2 border-b dark:border-gray-700 last:border-b-0">
-                                    <div className="col-span-1 text-center font-bold text-gray-700 dark:text-gray-200">#{member.rank}</div>
-                                            <div className="col-span-7">
-                                                <p className="font-semibold text-sm">{member.name}</p>
-                                                <p className="text-[10px] text-gray-500 dark:text-gray-400 truncate" title={getMemberStatusString(member)}>{getMemberStatusString(member)}</p>
-                                            </div>
-                                    <div className="col-span-1 text-center text-[13px]">
-                                        <RankChangeArrow member={member} electionWeek={history.week} />
-                                    </div>
-                                    <div className="col-span-3 text-right font-mono text-[14px] text-gray-600 dark:text-gray-400">{member.votes.toLocaleString()}</div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                );
-            };
+            let teamStatus = '';
+            const allMemberTeams = teams.filter(t => (t.members || []).map(String).includes(String(id)));
 
-            content = (
-                <div className="max-h-[70vh] overflow-y-auto p-1">
-                    {Object.entries(units).map(([name, data]) => <UnitSection key={name} name={name} data={data} />)}
-                </div>
-            );
+            if (allMemberTeams.length > 0) {
+                teamStatus = allMemberTeams.map(team => {
+                    let parentGroupName;
+                    if (team.groupId === 'main') {
+                        parentGroupName = groupName;
+                    } else {
+                        const parentGroup = sisterGroups.find(sg => String(sg.id) === String(team.groupId));
+                        parentGroupName = parentGroup ? parentGroup.name : '';
+                    }
+                    return `${parentGroupName} Team ${team.name}`;
+                }).join(' / ');
+            } else {
+                teamStatus = isSisterMember ? displayGroupName : groupName;
+            }
 
-        } else if (type === 'janken') {
-            title = `Janken Tournament #${jankenHistory.findIndex(j => j.week === week) + 1}`;
-            
-            const MemberRow = ({ member, isSenbatsu = false }) => (
-                <div className="py-2 px-3 grid grid-cols-12 gap-2 items-center border-b border-gray-200 dark:border-gray-700">
-                    <div className="col-span-1 font-bold text-center">{isSenbatsu ? `#${member.rank}` : '-'}</div>
-                    <div className="col-span-4 font-semibold">{member.name}</div>
-                    <div className="col-span-3 text-sm text-gray-600 dark:text-gray-400">{member.eliminationRound}</div>
-                    <div className="col-span-4 text-sm text-gray-600 dark:text-gray-400">
-                        {member.lostTo ? (
-                            <span><span className="text-red-500">Lost to:</span> {member.lostTo}</span>
-                        ) : (
-                            <span className="text-green-500 font-semibold">Tournament Winner</span>
-                        )}
-                    </div>
-                </div>
-            );
+            const generationStatus = generation ? `${generation}` : null;
+            return [teamStatus, generationStatus].filter(Boolean).join(' | ');
+        };
 
-            const { senbatsu, unplaced } = history;
+        const RankChangeArrow = ({ member, electionWeek }) => {
+            if (!member) return null;
+            const oldRank = member.previousRank;
+            const newRank = member.rank;
 
-            content = (
-                <div className="p-1 bg-gray-50 dark:bg-gray-800 max-h-[70vh] overflow-y-auto">
-                    <div className="mb-6">
-                        <h2 className="text-xl font-bold p-3 bg-gradient-to-r from-yellow-400 to-amber-500 text-white rounded-t-lg">
-                            Senbatsu (Top 16)
-                        </h2>
-                        <div className="bg-white dark:bg-gray-900 rounded-b-lg shadow-md">
-                            <div className="py-2 px-3 grid grid-cols-12 gap-2 font-semibold text-sm bg-gray-100 dark:bg-gray-700">
-                                <div className="col-span-1 text-center">Rank</div>
-                                <div className="col-span-4">Member</div>
-                                <div className="col-span-3">Elimination Round</div>
-                                <div className="col-span-4">Details</div>
-                            </div>
-                            {senbatsu && senbatsu.map((member) => ( <MemberRow key={member.id} member={member} isSenbatsu={true} /> ))}
-                        </div>
-                    </div>
-                    <div>
-                        <h2 className="text-xl font-bold p-3 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-t-lg">
-                            Unplaced Members
-                        </h2>
-                        <div className="bg-white dark:bg-gray-900 rounded-b-lg shadow-md">
-                            <div className="py-2 px-3 grid grid-cols-12 gap-2 font-semibold text-sm bg-gray-100 dark:bg-gray-700">
-                                <div className="col-span-1 text-center">Rank</div>
-                                <div className="col-span-4">Member</div>
-                                <div className="col-span-3">Elimination Round</div>
-                                <div className="col-span-4">Details</div>
-                            </div>
-                            {unplaced && unplaced.map((member) => ( <MemberRow key={member.id} member={member} /> ))}
-                        </div>
-                    </div>
-                </div>
-            );
-        } else if (type === 'Grand Shuffle') {
-            title = `Grand Shuffle`;
-            content = <ShuffleHistoryViewer data={history.data} />;
+            const hadRankingsBeforeThisElection = (member.electionHistory || []).some(entry => entry.week < electionWeek);
+
+            if (oldRank === 999 || !oldRank) {
+                if (hadRankingsBeforeThisElection) {
+                    return <span className="text-purple-500 font-bold text-center">Re-Entry</span>;
+                } else {
+                    return <span className="text-cyan-500 font-bold text-center">New Entry</span>;
+                }
+            }
+            if (newRank < oldRank) return <span className="text-green-400 font-bold flex items-center justify-center"><ChevronUp size={16} />{oldRank - newRank}</span>;
+            if (newRank > oldRank) return <span className="text-red-400 font-bold flex items-center justify-center"><ChevronDown size={16} />{newRank - oldRank}</span>;
+            return <span className="text-gray-400 font-bold text-center">-</span>;
+        };
+
+        const allUnits = {
+            'Senbatsu': { min: 1, max: 16, members: [], color: 'from-pink-400 to-red-400' },
+            'Undergirls': { min: 17, max: 32, members: [], color: 'from-blue-400 to-sky-500' },
+            'Next Girls': { min: 33, max: 48, members: [], color: 'from-green-400 to-emerald-500' },
+            'Future Girls': { min: 49, max: 64, members: [], color: 'from-purple-400 to-violet-500' },
+            'Upcoming Girls': { min: 65, max: 80, members: [], color: 'from-orange-400 to-red-500' },
+        };
+    
+        const spots = history.spots || 80;
+        const units = Object.entries(allUnits).reduce((acc, [name, data]) => {
+            if (data.min <= spots) {
+                acc[name] = { ...data, max: Math.min(data.max, spots) };
+            }
+            return acc;
+        }, {});
+        
+        const unrankedMembers = [];
+
+        if (history.results) {
+            [...history.results].sort((a, b) => a.rank - b.rank).forEach(member => {
+                const unit = Object.values(units).find(u => member.rank >= u.min && member.rank <= u.max);
+                if (unit) {
+                    unit.members.push(member);
+                } else if (member.rank > spots) {
+                    unrankedMembers.push(member);
+                }
+            });
         }
 
-        return (
-            <ModalWrapper title={`${title} (Week ${week})`} maxWidth="max-w-4xl">
-                <div className="p-1">
-                    {content}
-                    <button onClick={() => setShowModal(null)} className="mt-6 w-full p-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700">
-                        Close
-                    </button>
+        const UnitSection = ({ name, data, isUnranked = false }) => {
+            if (data.members.length === 0) return null;
+            const title = isUnranked ? `${name} (Ranks ${data.min}+)` : `${name} (Ranks ${data.min}-${data.max})`;
+            
+            return (
+                <div className="mb-4">
+                    <h2 className={`text-lg font-bold p-2 bg-gradient-to-r ${data.color} text-white rounded-t-lg shadow-md`}>
+                        {title}
+                    </h2>
+                    <div className="bg-white/70 dark:bg-slate-900/70 rounded-b-lg shadow-md">
+                        <div className="grid grid-cols-12 gap-2 items-center p-2 font-bold text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-slate-800 border-b dark:border-slate-700">
+                            <div className="col-span-1 text-center">Rank</div>
+                            <div className="col-span-7">Member</div>
+                            <div className="col-span-1 text-center">Change</div>
+                            <div className="col-span-3 text-right">Votes</div>
+                        </div>
+                        {data.members.map(member => (
+                            <div key={`${member.rank}-${member.rosterId || member.id}`} className="grid grid-cols-12 gap-2 items-center p-2 border-b dark:border-slate-700 last:border-b-0">
+                                <div className="col-span-1 text-center font-bold text-pink-600 dark:text-pink-400">#{member.rank}</div>
+                                        <div className="col-span-7">
+                                            <p className="font-semibold text-sm text-gray-800 dark:text-gray-200">{member.name}</p>
+                                            <p className="text-[10px] text-gray-500 dark:text-gray-400 truncate" title={getMemberStatusString(member)}>{getMemberStatusString(member)}</p>
+                                        </div>
+                                <div className="col-span-1 text-center text-[13px]">
+                                    <RankChangeArrow member={member} electionWeek={history.week} />
+                                </div>
+                                <div className="col-span-3 text-right font-mono text-[14px] text-blue-600 dark:text-blue-400">{member.votes.toLocaleString()}</div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
-            </ModalWrapper>
+            );
+        };
+
+        content = (
+            <div className="max-h-[70vh] overflow-y-auto p-1">
+                {Object.entries(units).map(([name, data]) => <UnitSection key={name} name={name} data={data} />)}
+
+                {unrankedMembers.length > 0 && (
+                     <UnitSection
+                         key="unranked"
+                         name="Unranked"
+                         isUnranked={true}
+                         data={{
+                             members: unrankedMembers,
+                             color: 'from-slate-400 to-slate-500',
+                             min: spots + 1,
+                         }}
+                     />
+                )}
+                
+                {history.trivia && history.trivia.length > 0 && (
+                    <div className="mt-4 p-4 bg-white/50 dark:bg-slate-800/50 rounded-lg shadow-inner">
+                        <h3 className="text-lg font-bold mb-2 text-gray-800 dark:text-gray-200">Election Trivia</h3>
+                        <ul className="list-disc list-inside text-sm space-y-1 text-gray-600 dark:text-gray-300">
+                            {history.trivia.map((item, index) => <li key={index}>{item}</li>)}
+                        </ul>
+                    </div>
+                )}
+            </div>
         );
-    };
+
+    } else if (type === 'janken') {
+        title = `Janken Tournament #${jankenHistory.findIndex(j => j.week === week) + 1}`;
+        
+        const MemberRow = ({ member, isSenbatsu = false }) => (
+            <div className="py-2 px-3 grid grid-cols-12 gap-2 items-center border-b border-gray-200 dark:border-gray-700">
+                <div className="col-span-1 font-bold text-center">{isSenbatsu ? `#${member.rank}` : '-'}</div>
+                <div className="col-span-4 font-semibold">{member.name}</div>
+                <div className="col-span-3 text-sm text-gray-600 dark:text-gray-400">{member.eliminationRound}</div>
+                <div className="col-span-4 text-sm text-gray-600 dark:text-gray-400">
+                    {member.lostTo ? (
+                        <span><span className="text-red-500">Lost to:</span> {member.lostTo}</span>
+                    ) : (
+                        <span className="text-green-500 font-semibold">Tournament Winner</span>
+                    )}
+                </div>
+            </div>
+        );
+
+        const { senbatsu, unplaced } = history;
+
+        content = (
+            <div className="p-1 bg-gray-50 dark:bg-gray-800 max-h-[70vh] overflow-y-auto">
+                <div className="mb-6">
+                    <h2 className="text-xl font-bold p-3 bg-gradient-to-r from-yellow-400 to-amber-500 text-white rounded-t-lg">
+                        Senbatsu (Top 16)
+                    </h2>
+                    <div className="bg-white dark:bg-gray-900 rounded-b-lg shadow-md">
+                        <div className="py-2 px-3 grid grid-cols-12 gap-2 font-semibold text-sm bg-gray-100 dark:bg-gray-700">
+                            <div className="col-span-1 text-center">Rank</div>
+                            <div className="col-span-4">Member</div>
+                            <div className="col-span-3">Elimination Round</div>
+                            <div className="col-span-4">Details</div>
+                        </div>
+                        {senbatsu && senbatsu.map((member) => ( <MemberRow key={member.id} member={member} isSenbatsu={true} /> ))}
+                    </div>
+                </div>
+                <div>
+                    <h2 className="text-xl font-bold p-3 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-t-lg">
+                        Unplaced Members
+                    </h2>
+                     <div className="bg-white dark:bg-gray-900 rounded-b-lg shadow-md">
+                        <div className="py-2 px-3 grid grid-cols-12 gap-2 font-semibold text-sm bg-gray-100 dark:bg-gray-700">
+                            <div className="col-span-1 text-center">Rank</div>
+                            <div className="col-span-4">Member</div>
+                            <div className="col-span-3">Elimination Round</div>
+                            <div className="col-span-4">Details</div>
+                        </div>
+                        {unplaced && unplaced.map((member) => ( <MemberRow key={member.id} member={member} /> ))}
+                    </div>
+                </div>
+            </div>
+        );
+    } else if (type === 'Grand Shuffle') {
+        title = `Grand Shuffle`;
+        content = <ShuffleHistoryViewer data={history.data} />;
+    }
+
+    return (
+        <ModalWrapper title={`${title} (Week ${week})`} maxWidth="max-w-4xl">
+            <div className="p-1">
+                {content}
+                <button onClick={() => setShowModal(null)} className="mt-6 w-full p-2 bg-gradient-to-r from-pink-400 to-blue-500 text-white font-bold rounded-lg hover:from-pink-500 hover:to-blue-600">
+                    Close
+                </button>
+            </div>
+        </ModalWrapper>
+    );
+};
 
 const JankenResultModal = () => {
     if (!modalData) return null;
@@ -8099,69 +8151,68 @@ const DraftKaigiModal = () => {
        };
     
 const PyramidRanking = () => {
-  const sortedMembers = getMainGroupRoster().sort((a, b) => (a.rank || 999) - (b.rank || 999));
+    const sortedMembers = getMainGroupRoster().sort((a, b) => (a.rank || 999) - (b.rank || 999));
 
-         const tiers = {
-             'Center (#1)': sortedMembers.slice(0, 1),
-             'Kami 7 (#2-7)': sortedMembers.slice(1, 7),
-             'Senbatsu (#8-16)': sortedMembers.slice(7, 16),
-             'Undergirls (#17-32)': sortedMembers.slice(16, 32),
-             'Next Girls (#33-48)': sortedMembers.slice(32, 48),
-             'Future Girls (#49-64)': sortedMembers.slice(48, 64),
-             'Upcoming Girls (#65-80)': sortedMembers.slice(64, 80),
-             'Unplaced (81+)': sortedMembers.slice(80),
-         };
+    const tiers = {
+        'Center (#1)': sortedMembers.slice(0, 1),
+        'Kami 7 (#2-7)': sortedMembers.slice(1, 7),
+        'Senbatsu (#8-16)': sortedMembers.slice(7, 16),
+        'Undergirls (#17-32)': sortedMembers.slice(16, 32),
+        'Next Girls (#33-48)': sortedMembers.slice(32, 48),
+        'Future Girls (#49-64)': sortedMembers.slice(48, 64),
+        'Upcoming Girls (#65-80)': sortedMembers.slice(64, 80),
+        'Unplaced (81+)': sortedMembers.slice(80),
+    };
 
-         const tierColors = {
-            'Center (#1)': 'bg-amber-400 border-2 border-amber-600 text-black',
-            'Kami 7 (#2-7)': 'bg-yellow-500 text-yellow-900',
-            'Senbatsu (#8-16)': 'bg-yellow-300 text-yellow-800',
-            'Undergirls (#17-32)': 'bg-red-400 text-white',
-            'Next Girls (#33-48)': 'bg-blue-400 text-white',
-            'Future Girls (#49-64)': 'bg-green-400 text-white',
-            'Upcoming Girls (#65-80)': 'bg-purple-400 text-white',
-            'Unplaced (81+)': 'bg-gray-400 text-white',
-         };
-   
-         const renderTier = (tierName, tierMembers) => {
-             if ((tierMembers || []).length === 0) return null;
-             
-             return (
-                 <div className={`p-2 m-1 rounded-lg shadow-md text-center ${tierColors[tierName]} w-full`}>
-                     <h3 className="font-bold text-lg">{tierName}</h3>
-                     <div className={`flex flex-wrap justify-center gap-1 mt-2`}>
-                         {tierMembers.map((member) => (
-                            <div key={member.id} className="text-xs p-1 bg-black bg-opacity-20 rounded flex-shrink-0" style={{flexBasis: '75px'}}>
-                                <span className="font-bold block">#{member.rank}</span>
-                                <span className="truncate block">{member.name}</span>
-                            </div>
-                         ))}
-                     </div>
-                 </div>
-             );
-         };
-       
-         return (
-             <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
-                 <h2 className="text-2xl font-bold mb-4 text-center">Group Ranking Pyramid</h2>
-                 
-                 <div className="w-full max-w-xl mx-auto">
-                     <div className="flex flex-col-reverse items-center space-y-1">
-                         {renderTier('Unplaced (81+)', tiers['Unplaced (81+)'])}
-                         {renderTier('Upcoming Girls (#65-80)', tiers['Upcoming Girls (#65-80)'])}
-                         {renderTier('Future Girls (#49-64)', tiers['Future Girls (#49-64)'])}
-                         {renderTier('Next Girls (#33-48)', tiers['Next Girls (#33-48)'])}
-                         {renderTier('Undergirls (#17-32)', tiers['Undergirls (#17-32)'])}
-                         {renderTier('Senbatsu (#8-16)', tiers['Senbatsu (#8-16)'])}
-                         {renderTier('Kami 7 (#2-7)', tiers['Kami 7 (#2-7)'])}
-                         {renderTier('Center (#1)', tiers['Center (#1)'])}
-                     </div>
-                 </div>
-                 
-                 {sortedMembers.length === 0 && <p className="text-gray-500">Recruit members to see the ranking pyramid!</p>}
-             </div>
-         );
-       };
+    const tierStyles = {
+       'Center (#1)':         'from-yellow-200 via-pink-200 to-amber-200 text-amber-800 border-amber-300',
+       'Kami 7 (#2-7)':       'from-pink-200 to-purple-200 text-pink-800 border-pink-300',
+       'Senbatsu (#8-16)':    'from-blue-200 to-cyan-200 text-blue-800 border-blue-300',
+       'Undergirls (#17-32)': 'from-orange-200 to-yellow-200 text-orange-800 border-orange-300',
+       'Next Girls (#33-48)': 'from-teal-200 to-green-200 text-teal-800 border-teal-300',
+       'Future Girls (#49-64)': 'from-indigo-200 to-violet-200 text-indigo-800 border-indigo-300',
+       'Upcoming Girls (#65-80)': 'from-rose-200 to-fuchsia-200 text-rose-800 border-rose-300',
+       'Unplaced (81+)':      'from-slate-200 to-gray-300 text-slate-600 border-slate-400',
+    };
+
+    // Converted the renderTier helper into a proper component
+    const Tier = ({ tierName, tierMembers }) => {
+        if ((tierMembers || []).length === 0) return null;
+        
+        return (
+            <div className={`p-2 m-1 rounded-xl shadow-lg text-center bg-gradient-to-br ${tierStyles[tierName]} border-2 w-full transition-all duration-300 hover:shadow-xl`}>
+                <h3 className="font-bold text-lg" style={{ textShadow: '1px 1px 2px rgba(255,255,255,0.7)' }}>{tierName}</h3>
+                <div className={`flex flex-wrap justify-center gap-1 mt-2`}>
+                    {tierMembers.map((member) => (
+                       <div key={member.rosterId} className="text-xs p-1 bg-white/50 backdrop-blur-sm rounded-md flex-shrink-0" style={{flexBasis: '80px'}}>
+                           <span className="font-bold block text-pink-500">#{member.rank}</span>
+                           <span className="truncate block font-semibold">{member.name}</span>
+                       </div>
+                    ))}
+                </div>
+            </div>
+        );
+    };
+  
+    return (
+        <div className="bg-gradient-to-br from-pink-100 via-blue-100 to-purple-100 dark:from-slate-800 dark:via-slate-900 dark:to-black p-4 rounded-lg">
+            <h2 className="text-3xl font-bold mb-4 text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-blue-500" style={{ textShadow: '1px 1px 3px rgba(255, 255, 255, 0.5)' }}>
+                Group Ranking Pyramid
+            </h2>
+            
+            <div className="w-full max-w-2xl mx-auto">
+                <div className="flex flex-col items-center space-y-1">
+                    {/* Now we call the Tier component and pass a unique key */}
+                    {Object.entries(tiers).map(([name, members]) => (
+                        <Tier key={name} tierName={name} tierMembers={members} />
+                    ))}
+                </div>
+            </div>
+            
+            {sortedMembers.length === 0 && <p className="text-gray-500 text-center p-8">Recruit members to see the ranking pyramid!</p>}
+        </div>
+    );
+};
     
 
 
@@ -8693,7 +8744,7 @@ if (!gameStarted) {
 
                 <div className="flex flex-col gap-1.5">
                     <button onClick={holdElection} disabled={isCampaignActive || electionVotePool <= 0} className="w-full p-1.5 text-sm bg-purple-500 text-white rounded font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed">
-                        Hold Election (¥5k)
+                        Hold Election (¥1m)
                     </button>
                     <p className="text-center text-xs text-gray-500 dark:text-gray-400">
                         Vote Pool: {electionVotePool.toLocaleString()}
@@ -9981,7 +10032,13 @@ if (!gameStarted) {
         {showModal === 'graduationAnnouncement' && <GraduationAnnouncementModal />}
         {showModal === 'graduationPath' && <GraduationPathModal />}
         {showModal === 'graduationTalk' && <GraduationTalkModal />}
-        {showModal === 'electionSummary' && <ElectionSummaryModal />}
+        {showModal === 'electionSummary' && <ElectionSummaryModal 
+            modalData={modalData} 
+            onHide={() => setShowModal(null)}
+            getMemberGroupStatus={getMemberGroupStatus}
+            groupName={groupName}
+            sisterGroups={sisterGroups}
+        />}
         {showModal === 'electionResult' && <ElectionResultModal />}
         {showModal === 'annualAwardsResult' && <AnnualAwardsResultModal />}
         {showModal === 'scandalDecision' && <ScandalDecisionModal />}

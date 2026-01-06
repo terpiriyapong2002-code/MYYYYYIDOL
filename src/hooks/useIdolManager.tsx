@@ -2855,14 +2855,14 @@ const holdElection = () => {
   setModalData({
     participating: participatingMembers,
     nonParticipating: nonParticipatingMembers,
-    onConfirm: () => runElectionLogic(participatingMembers) // This function will be called by the modal
+    onConfirm: (spots) => runElectionLogic(participatingMembers, spots),
   });
   setShowModal('electionSummary');
 };
 
-const runElectionLogic = (participants) => {
-    if (money < 5000) return;
-    setMoney(prev => prev - 5000);
+const runElectionLogic = (participants, numberOfSpots = 80) => {
+if (money < 1000000) return;
+setMoney(prev => prev - 1000000);
 
     const previousRankMap = new Map(participants.map(m => [m.rosterId || m.id, m.rank || 999]));
     const totalFanWeight = participants.reduce((sum, member) => {
@@ -2895,7 +2895,8 @@ const runElectionLogic = (participants) => {
         return { ...member, rank: newRank, previousRank: oldRank, speech: speech };
     });
 
-    const getUnitNameFromRank = (rank) => {
+        const getUnitNameFromRank = (rank) => {
+        if (rank > numberOfSpots) return "Unranked";
         if (rank === 1) return "Center";
         if (rank <= 7) return "Kami 7";
         if (rank <= 16) return "Senbatsu";
@@ -2942,16 +2943,26 @@ const runElectionLogic = (participants) => {
         const id = String(member.rosterId || member.id);
         const newRank = index + 1;
         const oldRank = member.previousRank;
-
+        
         let moraleChange = 0;
         let stressChange = 0;
 
-        if (oldRank === undefined || oldRank === 999) { moraleChange = 25; stressChange = -10; }
-        else if (newRank < oldRank) { moraleChange = 15; stressChange = -5; }
-        else if (newRank > oldRank) { moraleChange = -20; stressChange = 15; }
-        else { moraleChange = 5; }
+        if (newRank <= numberOfSpots) { // Only apply ranking-related changes if they made the cut
+            if (oldRank === undefined || oldRank === 999 || oldRank > numberOfSpots) { // New entry or re-entry into the ranks
+                moraleChange = 25; stressChange = -10;
+            } else if (newRank < oldRank) { // Rank up
+                moraleChange = 15; stressChange = -5;
+            } else if (newRank > oldRank) { // Rank down
+                moraleChange = -20; stressChange = 15;
+            } else { // Hold rank
+                moraleChange = 5;
+            }
 
-        if (newRank === 1) { stressChange += 25; moraleChange += 15; }
+            if (newRank === 1) { stressChange += 25; moraleChange += 15; }
+        } else { // They didn't rank this year
+            moraleChange = -5;
+            stressChange = 5;
+        }
 
         return [id, { newRank, moraleChange, stressChange, newChemistry: member.chemistry }];
     }));
@@ -2995,10 +3006,193 @@ const runElectionLogic = (participants) => {
         members: (sg.members || []).map(m => updateMemberWithResults(m, true, sg.id))
     })));
 
-    setModalData({
-        rankedMembers: universallySortedMembers,
-        electionYear: Math.floor(week / 52) + 1,
-    });
+        // --- ELECTION TRIVIA GENERATION ---
+        const electionTrivia = [];
+        const totalVotesCasted = universallySortedMembers.reduce((sum, m) => sum + m.votes, 0);
+        electionTrivia.push(`This year's election saw a record-breaking ${totalVotesCasted.toLocaleString()} total votes cast.`);
+
+        const formatNames = (nameArray) => {
+            if (nameArray.length === 0) return '';
+            if (nameArray.length === 1) return nameArray[0];
+            if (nameArray.length === 2) return nameArray.join(' and ');
+            return nameArray.slice(0, -1).join(', ') + ', and ' + nameArray.slice(-1);
+        };
+
+        // --- Story & Drama Analysis ---
+        let biggestJump = { name: '', spots: 0, newRank: 0 };
+        let biggestDrop = { name: '', spots: 0, newRank: 0, oldRank: 0 };
+        const fallFromKami7 = [];
+        const captainIds = Object.values(groupRoles);
+        const rivalriesClimaxed = [];
+
+        universallySortedMembers.forEach(member => {
+            const oldRank = member.previousRank || 999;
+            const newRank = member.rank;
+
+            // Rank Changes
+            if (oldRank !== 999) {
+                if (oldRank - newRank > biggestJump.spots) {
+                    biggestJump = { name: member.name, spots: oldRank - newRank, newRank: newRank };
+                }
+                if (newRank - oldRank > biggestDrop.spots) {
+                    biggestDrop = { name: member.name, spots: newRank - oldRank, newRank: newRank, oldRank: oldRank };
+                }
+                if (oldRank <= 7 && newRank > 80) {
+                    fallFromKami7.push(member.name);
+                }
+            }
+
+            // First Time Rankers & Career Highs
+            const previousRanks = (member.electionHistory || []).map(e => e.rank);
+            if (oldRank === 999 && newRank <= 80) {
+                if (newRank <= 7) electionTrivia.push(`${member.name} makes a stunning debut, entering the Kami 7 at rank #${newRank}!`);
+                else if (newRank <= 16) electionTrivia.push(`From unranked to stardom! ${member.name} enters Senbatsu for the first time at rank #${newRank}.`);
+            } else if (newRank < oldRank && (!previousRanks.some(pr => pr < newRank))) {
+                 electionTrivia.push(`Career High! ${member.name} achieves her best-ever rank at #${newRank}.`);
+            }
+
+            if (oldRank > 7 && newRank <= 7) {
+                electionTrivia.push(`${member.name} breaks into the prestigious Kami 7 for the first time at rank #${newRank}.`);
+            }
+
+            // Ambition & Role Stories
+            if (member.ambition === 'Prove My Worth' && (oldRank - newRank) > 20) {
+                electionTrivia.push(`A Worth Proven: Fulfilling her personal goal, ${member.name} proves her worth with a massive jump into rank #${newRank}.`);
+            }
+            if (member.ambition === 'The Unwilling Idol' && newRank <= 16) {
+                electionTrivia.push(`Against all odds, the 'Unwilling Idol' ${member.name} has been pushed into the Senbatsu by the fans.`);
+            }
+            if (captainIds.includes(member.rosterId || member.id)) {
+                electionTrivia.push(`Leader's Reward: The group's captain, ${member.name}, is rewarded by fans with a rank of #${newRank}.`);
+            }
+            
+            // Rivalry's Climax
+            if (member.chemistry) {
+                const rivalries = Object.keys(member.chemistry).filter(id => member.chemistry[id] < -50);
+                rivalries.forEach(rivalId => {
+                    const rival = universallySortedMembers.find(m => (m.rosterId || m.id) === rivalId);
+                    if (rival && newRank < rival.rank) {
+                        if (!rivalriesClimaxed.some(r => r.winner === rival.name && r.loser === member.name)) {
+                            rivalriesClimaxed.push({winner: member.name, loser: rival.name});
+                        }
+                    }
+                });
+            }
+        });
+
+        if (biggestJump.spots > 10) electionTrivia.push(`The Biggest Jump: ${biggestJump.name} jumped an incredible ${biggestJump.spots} spots to rank #${biggestJump.newRank}!`);
+        if (biggestDrop.spots > 10) electionTrivia.push(`The Shocking Drop: In a stunning turn of events, last year's rank #${biggestDrop.oldRank} ${biggestDrop.name} has fallen to rank #${biggestDrop.newRank}.`);
+        if (fallFromKami7.length > 0) electionTrivia.push(`The Fall from Grace: In a shocking turn, former Kami 7 member(s) ${formatNames(fallFromKami7)} fell out of the rankings completely.`);
+        rivalriesClimaxed.forEach(r => {
+            electionTrivia.push(`A Rivalry's Climax: ${r.winner} finally surpasses her rival ${r.loser} in the rankings.`);
+        });
+
+        // --- NEW: Unit Center & Gatekeeper Trivia ---
+        const findAndAddTrivia = (rank, message) => {
+            const member = universallySortedMembers.find(m => m.rank === rank);
+            if (member) electionTrivia.push(message.replace('[Name]', member.name));
+        };
+
+        // Centers
+        findAndAddTrivia(17, `The Undergirls Center: [Name] takes the coveted spot as the Center for the Undergirls at rank #17.`);
+        findAndAddTrivia(33, `The Next Girls Center: [Name] will lead the Next Girls, crowned their center at rank #33.`);
+        findAndAddTrivia(49, `The Future Girls Center: [Name] is the new center for the Future Girls, landing at rank #49.`);
+        findAndAddTrivia(65, `The Upcoming Girls Center: [Name] stands at the front of the Upcoming Girls, securing rank #65.`);
+
+        // Gatekeepers
+        findAndAddTrivia(16, `Senbatsu Gatekeeper: [Name] secures the final, precious spot in Senbatsu at rank #16.`);
+        findAndAddTrivia(32, `Hanging On: [Name] claims the last spot in the Undergirls at rank #32.`);
+        findAndAddTrivia(80, `The Last Rank: [Name] secures the final ranked position, just making it in at #80.`);
+        
+
+        // --- NEW: Statistical & Milestone Trivia ---
+        if (universallySortedMembers.length > 1) {
+            const winner = universallySortedMembers[0];
+            const runnerUp = universallySortedMembers[1];
+            if (runnerUp.votes > winner.votes * 0.9) { // If runner-up has > 90% of winner's votes
+                electionTrivia.push(`Closest Race in History! ${winner.name} narrowly beat ${runnerUp.name} for the top spot by a razor-thin margin.`);
+            } else {
+                 electionTrivia.push(`Most Votes (Without Winning): ${runnerUp.name} achieved an incredible ${runnerUp.votes.toLocaleString()} votes, landing at #2.`);
+            }
+        }
+
+
+        // --- Skill-based Trivia ---
+        const topVisual = [...universallySortedMembers].sort((a,b) => (b.visual || 0) - (a.visual || 0))[0];
+        if(topVisual) electionTrivia.push(`The Visual Queen: This year's top-ranking 'Visual' is ${topVisual.name} (Rank #${topVisual.rank}).`);
+        const topVocal = [...universallySortedMembers].sort((a,b) => (b.singing || 0) - (a.singing || 0))[0];
+        if(topVocal) electionTrivia.push(`Vocal Powerhouse: ${topVocal.name} (Rank #${topVocal.rank}) becomes the highest-ranking 'Vocalist'.`);
+        const topDance = [...universallySortedMembers].sort((a,b) => (b.dancing || 0) - (a.dancing || 0))[0];
+        if(topDance) electionTrivia.push(`Dance Leader: This year's top-ranking 'Dance Ace' is ${topDance.name} (Rank #${topDance.rank}).`);
+
+
+        // --- NEW & ENHANCED: Group & Generational Trivia ---
+        const queen = universallySortedMembers[0];
+        if(queen) {
+            const hadPreviousFirstRank = (queen.electionHistory || []).some(e => e.rank === 1);
+            if (!hadPreviousFirstRank) {
+                electionTrivia.push(`A New Queen: ${queen.name} wins the General Election for the first time!`);
+            }
+            const firstGenWinner = !participants.some(p => p.generation === queen.generation && (p.electionHistory || []).some(e => e.rank === 1));
+            if (firstGenWinner) {
+                electionTrivia.push(`Generational Victory: ${queen.name} is the first member from the ${queen.generation} to win the election.`);
+            }
+        }
+
+        const rankedCount = Math.min(numberOfSpots, universallySortedMembers.length);
+        const rankedMembers = universallySortedMembers.slice(0, rankedCount);
+        const mainGroupCount = rankedMembers.filter(m => !m.isSisterMember).length;
+        const mainGroupPercentage = rankedCount > 0 ? (mainGroupCount / rankedCount) * 100 : 0;
+        if (mainGroupPercentage > 60) {
+            electionTrivia.push(`${groupName} dominates the election, securing ${mainGroupCount} of the available spots (${mainGroupPercentage.toFixed(0)}%).`);
+        }
+
+        sisterGroups.forEach(sg => {
+            const sgRankedMembers = rankedMembers.filter(m => m.displayGroupName === sg.name);
+            if (sgRankedMembers.length === 1) {
+                electionTrivia.push(`Solo Representative: ${sgRankedMembers[0].name} is the only member from ${sg.name} to rank this year.`);
+            } else if (sgRankedMembers.length > 0) {
+                const sgAce = sgRankedMembers[0];
+                electionTrivia.push(`The ${sg.name} Ace: ${sgAce.name} is the highest-ranking member from her group at rank #${sgAce.rank}.`);
+            }
+        });
+
+        teams.forEach(team => {
+            const teamMembersInRoster = participants.filter(p => team.members.map(String).includes(String(p.rosterId || p.id)));
+            if (teamMembersInRoster.length < 3) return; // Only check for teams with a reasonable number of members
+            const allRanked = teamMembersInRoster.every(tm => rankedMembers.some(rm => rm.rosterId === tm.rosterId));
+            if (allRanked) {
+                electionTrivia.push(`Team Sweep! In an incredible display of unity, every member of Team ${team.name} has successfully ranked!`);
+            }
+        });
+
+        const totalElections = electionHistory.length + 1;
+        const ironRankers = participants.filter(m => ((m.electionHistory?.length || 0) + 1) >= totalElections && rankedMembers.some(rm => rm.rosterId === m.rosterId));
+        if (ironRankers.length > 0) {
+            electionTrivia.push(`The Iron Rankers: ${formatNames(ironRankers.map(m => m.name))} continue a legendary streak, having ranked in every single General Election held.`);
+        }
+
+        const generations = [...new Set(participants.map(p => p.generation))].filter(Boolean);
+        generations.forEach(gen => {
+            const genMembersInRoster = participants.filter(p => p.generation === gen);
+            if (genMembersInRoster.length < 5) return;
+            const genRankedCount = genMembersInRoster.filter(m => rankedMembers.some(rm => rm.rosterId === m.rosterId)).length;
+            if (genRankedCount === 1) {
+                const soloRanker = genMembersInRoster.find(m => rankedMembers.some(rm => rm.rosterId === m.rosterId));
+                electionTrivia.push(`The Last of a Generation: ${soloRanker.name} is the sole member from the ${gen} to rank.`);
+            }
+            else if (genRankedCount / genMembersInRoster.length < 0.2) {
+                electionTrivia.push(`Generational Decline: A sign of a changing era, as the veteran ${gen} saw a majority of its members fail to rank.`);
+            }
+        });
+
+        setModalData({
+            rankedMembers: universallySortedMembers,
+            electionYear: Math.floor(week / 52) + 1,
+            trivia: electionTrivia,
+            spots: numberOfSpots
+        });
+
     setShowModal('electionResult');
 
     const successMessage = `General Election held! New center: ${universallySortedMembers[0]?.name || 'Unknown'}.`;
@@ -3007,7 +3201,7 @@ const runElectionLogic = (participants) => {
     relationshipNotifications.forEach(notif => addNotification({ type: 'Group', message: notif }));
     setElectionVotePool(0);
     setLastElectionResult(universallySortedMembers);
-    setElectionHistory(prev => [...prev, { week: week, results: universallySortedMembers }]);
+    setElectionHistory(prev => [...prev, { week: week, results: universallySortedMembers, trivia: electionTrivia, spots: numberOfSpots }]);
 };
 
 const createSong = () => {
@@ -3298,8 +3492,9 @@ const createSong = () => {
             });
         }
         
-            // --- TRIVIA GENERATION ---
+            // --- TRIVIA & STREAK GENERATION ---
             const triviaItems = [];
+
             const formatNames = (nameArray) => {
                 if (nameArray.length === 0) return '';
                 if (nameArray.length === 1) return nameArray[0];
@@ -3307,25 +3502,124 @@ const createSong = () => {
                 return nameArray.slice(0, -1).join(', ') + ', and ' + nameArray.slice(-1);
             };
 
+            // --- 1. SETUP & COMMON VARIABLES ---
             const releasingGroupNameForTrivia = songData.targetGroup === 'main' ? groupName : (initialSisterGroups.find(g => g.name === songData.targetGroup)?.name || songData.targetGroup);
             const MAIN_GROUP_IDENTIFIER = 'main';
 
             const isReleasingHomeGroupMember = (member) => {
-                // If the song is released by the main group...
                 if (releasingGroupNameForTrivia === groupName) {
-                    // ...a member is a "home" member if they are NOT a sister group member.
                     return !member.isSisterMember;
                 } else {
-                    // If the song is released by a sister group...
-                    // ...a member is a "home" member if their homeGroup name matches the releasing group's name.
                     return member.homeGroup === releasingGroupNameForTrivia;
+                }
+            };
+
+            const allParticipatingMemberIds = new Set(songData.tracks.flatMap(t => (t.members || []).map(m => m.id)));
+            const allParticipatingMembers = [...allParticipatingMemberIds].map(id => getMemberById(id)).filter(Boolean);
+            const trivia_senbatsuMemberIds = new Set((titleTrack?.members || []).map(m => m.id));
+            const trivia_senbatsuMembers = [...trivia_senbatsuMemberIds].map(id => getMemberById(id)).filter(Boolean);
+
+            const songListOfGroup = releasingGroupNameForTrivia === groupName ? initialSongs : (initialSisterGroups.find(sg => sg.name === releasingGroupNameForTrivia)?.songs || []);
+            const previousSingle = songListOfGroup.filter(s => s.type === 'single' && s.releaseWeek < week).sort((a,b) => b.releaseWeek - a.releaseWeek)[0];
+
+
+            // --- 2. STREAK COUNTER UPDATES & TRIVIA ---
+            const allMemberRosterIdsInAgency = [...members.map(m => m.id), ...initialSisterGroups.flatMap(sg => (sg.members || []).map(m => `sg-${sg.id}-${m.id}`))];
+
+            allMemberRosterIdsInAgency.forEach(memberId => {
+                const member = getMemberById(memberId);
+                if (!member) return;
+
+                let newConsecutiveSenbatsu = member.consecutiveSenbatsu || 0;
+                let newConsecutiveSingles = member.consecutiveSingles || 0;
+
+                if (trivia_senbatsuMemberIds.has(member.rosterId)) {
+                    newConsecutiveSenbatsu++;
+                } else {
+                    newConsecutiveSenbatsu = 0;
+                }
+                if (allParticipatingMemberIds.has(member.rosterId)) {
+                    newConsecutiveSingles++;
+                } else {
+                    newConsecutiveSingles = 0;
+                }
+                
+                updateMemberState(memberId, m => ({ ...m, consecutiveSenbatsu: newConsecutiveSenbatsu, consecutiveSingles: newConsecutiveSingles }));
+                
+                if (newConsecutiveSenbatsu > 0 && newConsecutiveSenbatsu % 5 === 0) {
+                    triviaItems.push(`${member.name} has now been selected for ${newConsecutiveSenbatsu} consecutive Senbatsu!`);
+                } else if (newConsecutiveSingles > 0 && newConsecutiveSingles % 5 === 0) {
+                    triviaItems.push(`${member.name} has participated in ${newConsecutiveSingles} consecutive singles!`);
+                }
+            });
+
+            // --- 3. SINGLE-LEVEL TRIVIA (Comeback, Dropped, Generational Debut) ---
+            if (titleTrack) {
+                if (previousSingle) {
+                    const prevTitleTrack = previousSingle.tracks.find(t => t.type === 'title');
+                    if (prevTitleTrack) {
+                        const prevSenbatsuIds = new Set((prevTitleTrack.members || []).map(m => String(m.id)));
+                        
+                        const comebackMembers = trivia_senbatsuMembers.filter(member => {
+                            if (prevSenbatsuIds.has(String(member.rosterId))) return false;
+                            const history = member.singlesParticipation || [];
+                            return history.some(p => p.isTitleTrackSenbatsu && p.singleId !== previousSingle.id);
+                        });
+                        if (comebackMembers.length > 0) {
+                            triviaItems.push(`Comeback to Senbatsu for ${formatNames(comebackMembers.map(m => m.name))}!`);
+                        }
+
+                        const droppedMemberIds = [...prevSenbatsuIds].filter(id => !trivia_senbatsuMemberIds.has(id));
+                        if (droppedMemberIds.length > 0) {
+                            const droppedMemberNames = droppedMemberIds.map(id => getMemberById(id)?.name).filter(Boolean);
+                            if (droppedMemberNames.length > 0) {
+                                triviaItems.push(`Dropped from Senbatsu: ${formatNames(droppedMemberNames)}.`);
+                            }
+                        }
+                    }
+                }
+
+                if (titleTrack.center && titleTrack.center.length > 0) {
+                    const centerMember = getMemberById(titleTrack.center[0]);
+                    if (centerMember && centerMember.generation) {
+                        const allMembersInAgency = [...initialMembers, ...initialSisterGroups.flatMap(sg => sg.members)];
+                        const isFirstOfGeneration = !allMembersInAgency.some(m =>
+                            m.id !== centerMember.id &&
+                            m.generation === centerMember.generation &&
+                            (m.centerHistory || []).some(h => h.type === 'title')
+                        );
+                        if (isFirstOfGeneration) {
+                            triviaItems.push(`${centerMember.name} becomes the first A-Side Center from the ${centerMember.generation}.`);
+                        }
+                    }
                 }
             }
 
+            const allGenerationsInHistory = new Set([...initialSongs, ...initialSisterGroups.flatMap(sg => sg.songs || [])].flatMap(s => s.tracks || []).flatMap(t => t.members || []).map(m => m.generation).filter(Boolean));
+            const currentGenerations = new Set(allParticipatingMembers.map(m => m.generation).filter(Boolean));
+            const newGenerations = [...currentGenerations].filter(gen => !allGenerationsInHistory.has(gen));
+            if (newGenerations.length > 0) {
+                newGenerations.forEach(gen => {
+                    triviaItems.push(`This single marks the debut of the ${gen}.`);
+                });
+            }
 
+            // --- 4. B-SIDE UNIT TRIVIA ---
+            bSideTracks.forEach(track => {
+                const unitMembers = (track.members || []).map(m => getMemberById(m.id)).filter(Boolean);
+                if (unitMembers.length === 0) return;
+
+                const avgVocal = unitMembers.reduce((sum, m) => sum + (m.singing || 0), 0) / unitMembers.length;
+                const avgDance = unitMembers.reduce((sum, m) => sum + (m.dancing || 0), 0) / unitMembers.length;
+                const avgVisual = unitMembers.reduce((sum, m) => sum + (m.visual || 0), 0) / unitMembers.length;
+
+                if (avgVocal > 75) triviaItems.push(`The unit for "${track.name}" is a 'Vocal Powerhouse', featuring some of the group's best singers.`);
+                if (avgDance > 75) triviaItems.push(`Featuring an elite 'Dance Line', the performance for "${track.name}" is a must-see.`);
+                if (avgVisual > 75) triviaItems.push(`The unit for "${track.name}" is a 'Visual Bomb', starring top-tier visuals.`);
+            });
+
+            // --- 5. "FIRST TIME" TRIVIA (Center, Senbatsu, Participation) ---
             if (titleTrack) {
-                const senbatsuMembers = (titleTrack.members || []).map(m => getMemberById(m.id)).filter(Boolean);
-
                 if (titleTrack.center && titleTrack.center.length > 0) {
                     const firstTimeACenters = titleTrack.center.map(id => getMemberById(id)).filter(Boolean).filter(m => {
                         const centerHistoryForGroup = (m.centerHistory || []).filter(h => h.type === 'title' && h.group === releasingGroupNameForTrivia);
@@ -3350,7 +3644,7 @@ const createSong = () => {
                     }
                 }
 
-                const firstTimeSenbatsu = senbatsuMembers.filter(m => {
+                const firstTimeSenbatsu = trivia_senbatsuMembers.filter(m => {
                     const senbatsuHistoryForThisGroup = (m.singlesParticipation || []).filter(p => p.isTitleTrackSenbatsu && p.group === releasingGroupNameForTrivia);
                     return senbatsuHistoryForThisGroup.length === 0;
                 });
@@ -3373,7 +3667,6 @@ const createSong = () => {
                 }
             }
 
-            const allParticipatingMembers = [...new Set(songData.tracks.flatMap(t => (t.members || []).map(m => m.id)))].map(id => getMemberById(id)).filter(Boolean);
             const firstParticipationMembers = allParticipatingMembers.filter(m => {
                 const participationsForThisGroup = (m.singlesParticipation || []).filter(p => p.group === releasingGroupNameForTrivia);
                 return participationsForThisGroup.length === 0;
@@ -3394,27 +3687,6 @@ const createSong = () => {
                         triviaItems.push(`First Time ${releasingGroupNameForTrivia} Single Participation for ${formatNames(guestFirstsInGroup.map(m => m.name))} (${displayGroupName}).`);
                     }
                 });
-            }
-
-            if(titleTrack) {
-                const songListOfGroup = releasingGroupNameForTrivia === groupName ? initialSongs : (initialSisterGroups.find(sg => sg.name === releasingGroupNameForTrivia)?.songs || []);
-                const previousSingle = songListOfGroup.filter(s => s.type === 'single' && s.releaseWeek < week).sort((a,b) => b.releaseWeek - a.releaseWeek)[0];
-    
-                if (previousSingle) {
-                    const prevTitleTrack = previousSingle.tracks.find(t => t.type === 'title');
-                    if (prevTitleTrack) {
-                        const prevSenbatsuIds = (prevTitleTrack.members || []).map(m => String(m.id));
-                        const currentSenbatsuIds = (titleTrack.members || []).map(m => String(m.id));
-                        const droppedMemberIds = prevSenbatsuIds.filter(id => !currentSenbatsuIds.includes(id));
-                        
-                        if (droppedMemberIds.length > 0) {
-                            const droppedMemberNames = droppedMemberIds.map(id => getMemberById(id)?.name).filter(Boolean);
-                            if (droppedMemberNames.length > 0) {
-                                triviaItems.push(`Dropped from Senbatsu: ${formatNames(droppedMemberNames)}.`);
-                            }
-                        }
-                    }
-                }
             }
             
             const firstTimeBSideCenters = bSideTracks.flatMap(track => (track.center || []))
@@ -3444,6 +3716,94 @@ const createSong = () => {
                 });
             }
 
+            // --- 6. EXPANDED TRIVIA (SALES, CENTER, COMPOSITION) ---
+            const finalSales = (songData.salesHistory || []).reduce((acc, curr) => acc + curr.sales, 0);
+            const allSinglesForGroup = songListOfGroup.filter(s => s.type === 'single');
+            const bestSellingSingle = [...allSinglesForGroup].sort((a,b) => (b.finalSales || 0) - (a.finalSales || 0))[0];
+
+            if (finalSales > (bestSellingSingle?.finalSales || 0)) {
+                triviaItems.push(`A new record! This is now ${releasingGroupNameForTrivia}'s best-selling single of all time.`);
+            }
+
+            if (previousSingle && previousSingle.finalSales) {
+                const salesDiff = ((finalSales - previousSingle.finalSales) / previousSingle.finalSales) * 100;
+                if (salesDiff > 10) {
+                    triviaItems.push(`A certified hit! This single sold ${Math.round(salesDiff)}% more than the previous one.`);
+                } else if (salesDiff < -10) {
+                    triviaItems.push(`A slight downturn. This single's sales were ${Math.abs(Math.round(salesDiff))}% lower than the last release.`);
+                }
+            }
+
+            let millionStreak = 0;
+            for (let i = allSinglesForGroup.length - 1; i >= 0; i--) {
+                if ((allSinglesForGroup[i].finalSales || 0) > 1000000) {
+                    millionStreak++;
+                } else {
+                    break;
+                }
+            }
+            if ((finalSales || 0) > 1000000 && millionStreak > 1) {
+                triviaItems.push(`The streak continues! This is the group's ${millionStreak}rd consecutive million-selling single.`);
+            }
+
+            if (titleTrack?.center?.length > 0) {
+                const centerMember = getMemberById(titleTrack.center[0]);
+                const prevTitleTrack = previousSingle?.tracks.find(t => t.type === 'title');
+
+                if (centerMember) {
+                    if (prevTitleTrack?.center?.includes(centerMember.rosterId)) {
+                        triviaItems.push(`Unstoppable! ${centerMember.name} holds the center position for a second consecutive single.`);
+                    } else {
+                        const centerHistory = (centerMember.centerHistory || []).filter(h => h.type === 'title' && h.group === releasingGroupNameForTrivia);
+                        const singlesSinceLastCenter = allSinglesForGroup.filter(s => s.releaseWeek > (centerHistory[centerHistory.length-2]?.week || 0)).length;
+                        if (singlesSinceLastCenter > 1) {
+                            triviaItems.push(`The Return of the Queen! ${centerMember.name} reclaims the center position after ${singlesSinceLastCenter} singles.`);
+                        }
+                    }
+
+                    const allGroupMembers = isReleasingHomeGroupMember(centerMember) ?
+                        members.filter(m => !m.isSisterMember) :
+                        (initialSisterGroups.find(sg => sg.name === centerMember.homeGroup)?.members || []);
+
+                    if (allGroupMembers && allGroupMembers.length > 0){
+                        const sortedByFans = [...allGroupMembers].sort((a,b) => (a.fans?.total || 0) - (b.fans?.total || 0));
+                        const fanQuartile = sortedByFans.findIndex(m => m.id === centerMember.id) / sortedByFans.length;
+                        const latestGen = Math.max(...allGroupMembers.map(m => m.generation || 0));
+                        if ((centerMember.generation === latestGen || centerMember.generation === latestGen -1) && fanQuartile < 0.25) {
+                             triviaItems.push(`A star is born! In a surprise move, rookie ${centerMember.name} has been chosen for the center position.`);
+                        }
+                    }
+                }
+            }
+
+            if (previousSingle && trivia_senbatsuMembers.length > 0) {
+                const prevSenbatsuIds = new Set((previousSingle.tracks.find(t => t.type === 'title')?.members || []).map(m => String(m.id)));
+                const newFaces = trivia_senbatsuMembers.filter(m => !prevSenbatsuIds.has(String(m.id)));
+                if ((newFaces.length / trivia_senbatsuMembers.length) > 0.5) {
+                    triviaItems.push(`A major shake-up! Over 50% of the Senbatsu members are new compared to the last single.`);
+                }
+            }
+
+            if (trivia_senbatsuMembers.length > 1) {
+                const sortedByAge = [...trivia_senbatsuMembers].sort((a,b) => a.age - b.age);
+                const youngest = sortedByAge[0];
+                const oldest = sortedByAge[sortedByAge.length - 1];
+                if (youngest && oldest && youngest.id !== oldest.id) {
+                    triviaItems.push(`A mix of generations! The Senbatsu features the group's youngest member, ${youngest.name}, and the veteran, ${oldest.name}.`);
+                }
+            }
+
+            const totalSinglesForGroup = allSinglesForGroup.length + 1;
+            const ironWomen = allParticipatingMembers.filter(m => {
+                const participationsForThisGroup = (m.singlesParticipation || []).filter(p => p.group === releasingGroupNameForTrivia);
+                return (participationsForThisGroup.length + 1) === totalSinglesForGroup;
+            });
+
+            if (ironWomen.length > 0) {
+                triviaItems.push(`The Ever-Present! ${formatNames(ironWomen.map(m => m.name))} continue a legendary streak, having appeared on every single the group has ever released.`);
+            }
+
+            // --- 7. GRADUATION TRIVIA ---
             if (songData.isGraduationSingle && titleTrack?.center?.length > 0) {
                 const gradMember = getMemberById(titleTrack.center[0]);
                 if (gradMember) {
