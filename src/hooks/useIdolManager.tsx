@@ -274,6 +274,150 @@ export const productionTiers = {
             "Mikan Map", "Tosho Labyrinth", "Izumi Namida", "Tokei Seishun", 
             "Tsubasa Kage", "Azure Suihei", "Velvet Yozora", "Majority Heart", 
             "Koukai Prism", "Umibe Tetsugaku", "Kagami Genjitsu", "Hakanai Yuki",
+        ],
+        Dreamy: [
+            "Moonlight Marshmallow", "Yume-Yume Sleepy", "Twinkle Pillow", "Lavender Lullaby", "Star-Candy Orbit",
+            "Cloud-Cotton Waltz", "Milk-Tea Nebula", "Fantasy Pajama", "Pastel Comet", "Utopia Balloon",
+            "Nemurenai Night", "Stardust Cradle", "Madoromi Galaxy", "Secret Nap Time", "Ribbon no Kumo",
+            "Midnight Macaron", "Fuwa-Fuwa Dreamer", "Cosmic Slumber", "Usagi no Moonwalk", "Melty Starlight",
+            "Hoshi no Drop", "Velvet Goodnight", "Sugar-Coat Sekai", "Planetarium Kiss", "Kira-Kira Pillow",
+            "Dreamy Flight", "Yume no Labyrinth", "Floating Heart", "Boku no Fantasy", "Soft-Serve Sky",
+            "Prism Lullaby", "Teddy Bear Whisper", "Yura-Yura Star", "Chiffon Journey", "Moonlight Parfait",
+            "Night-Sky Swing", "Bubbling Dream", "Kimi to Sleepy", "Magic Hour Dust", "Pastel Palette",
+            "Starry Soda", "Angel Wing Waltz", "Misty Morning", "Sweetie Nap", "Nebula Ribbon",
+            "Wonderland Gate", "Milky Way Tea", "Sleepless Sheep", "Sparkle Blanket", "Yume-Kawaii Day"
+        ],
+        Foodie: [
+            "Peko-Peko Pancake", "Chocolate Fountain Fall", "Mogu-Mogu Magic", "Strawberry Parfait Panic", "Custard Castle",
+            "Berry-Berry Go-Round", "Sugar Rush Step", "Gummy Galaxy", "Waffle Wonderland", "Syrup Smile",
+            "Oishii Miracle", "Donut Hole Love", "Crepe-colored Sky", "Honey-Toast Heart", "Caramel Kiss",
+            "Omurice Day", "Melon-pan March", "Sweetie Buffet", "Meringue Magic", "Choco-Mint Dash",
+            "Cookie Crumb Memory", "Soda Pop Sensation", "Apple Pie Avenue", "Bento Box Party", "Vanilla Whip",
+            "Tasty Treasure", "Yummy-Yummy Yell", "Fruit Sandwich Waltz", "Bakery Bloom", "Whipped Cream Cloud",
+            "Jam Session Love", "Candy Cane Lane", "Syrup-iro Sky", "Mochi-Mochi Pop", "Gourmet Girl",
+            "Kitchen Kingdom", "Shortcake Shinkirou", "Yashoku Night", "Donut Worry", "Pudding Princess",
+            "Tabetai Motto", "Flavor Finder", "Gohan no Jikan", "Crispy Colorful", "Marshmallow Meadow",
+            "Cocoa Warmth", "Berry-Full Life", "Kitchen Rhythm", "Bon Appetit Kiss", "Delicious Dream"
+        ],
+        MagicalGirl: [
+            "Prism Transformation", "Starlight Baton", "Majestic Ribbon", "Miracle Compact", "Lyrical Sparkle",
+            "Jewel Heart Beam", "Cosmic Tiara", "Magical Moonlight", "Crystal Wish", "Shining Sentai Love",
+            "Pinky Promise Spell", "Mahou no Door", "Glitter Guard", "Twinkle Scepter", "Secret Henshin",
+            "Shooting Star Hero", "Eternal Charm", "Jeweled Justice", "Pure Pink Power", "Magical Girl Mode",
+            "Sparkle Burst", "Radiant Wings", "Kira-Kira Force", "Mystic Mascot", "Heroine Heartbeat",
+            "Luminous Legend", "Galaxy Gear", "Heart-Shaped Shield", "Celestial Shine", "Fantasy Form",
+            "Henshin Heroine", "Dazzling Destiny", "Magic Wand Waltz", "Starlight Soul", "Moonlight Mission",
+            "Ribbon Ray", "Kiseki no Spell", "Wonder Wand", "Shiny Silhouette", "Prism Protector",
+            "Dreamy Defender", "Amulet Angel", "Legendary Love", "Magic Circle", "Sparkling Spirit",
+            "Cosmo Charge", "Glow-up Girl", "Wish Upon A Wand", "Shining Scepter", "Final Form Flash"
+        ],
+        Retro80s: [
+            "Seaside Radio", "Polka-Dot Date", "Showa Silhouette", "Nagisa no Step", "Vintage Valentine",
+            "Telephone Card Love", "Cassette Memories", "Soda-iro Summer", "Ribbon no Yume", "Bayside Blue",
+            "Popsicle High", "Sunlight Roller", "First Date Fever", "Checkered Heart", "Secret Diary",
+            "Boombox Breeze", "School Bus Stop", "Cherry Blossom Walk", "Kimi ni Muchuu", "Disco Dreamer",
+            "Sunset Scooter", "Lemonade Sunday", "Classic Crush", "Magical Idol", "Melody Lane",
+            "Pastel Overalls", "Sunday Morning Love", "Patio Party", "Garasu no Shoes", "Heartbeat Highway",
+            "Retro Romance", "Summer Cinema", "Wink and Kiss", "Pocketful of Stars", "Analog Angel",
+            "Candy Pop Station", "Record Player Rain", "Seifuku Swing", "Marina Bay Melody", "Love Letter Line",
+            "Sparkling Soda", "Dancing Heroine", "Pinky Promise", "Neon Nostalgia", "Fancy Free",
+            "Dreamy Drive", "Twinkle Town", "Sweet 16 Shine", "Misty Moonlight", "Showa Sweetheart"
+        ],
+        GameCenter: [
+            "Level Up Love", "Pixel Heartbeat", "Game Over Kiss", "Bonus Stage", "Joystick Journey",
+            "Combo Count", "Electronic Echo", "Digital Doll", "Virtual Vacation", "8-Bit Adventure",
+            "High Score Hero", "Cyber Candy", "Plugin Passion", "Glitchy Girl", "Pixelated Paradise",
+            "Quest of Love", "Arcade Anthem", "Power-Up Pop", "Button Mash Blues", "Controller Connection",
+            "Neon Network", "Bit-rate Baby", "Loading Luck", "Super Secret Code", "D-Pad Dance",
+            "Avatar Angel", "Screen Start", "Data Dash", "Gravity Jump", "Shiny Shield",
+            "Mana Magic", "World One-One", "Respawn Rhythm", "Coin Toss Cupid", "Battery Low Love",
+            "Mecha Melody", "Binary Bliss", "Circuit City", "Polygon Party", "Pixel Rain",
+            "Turbo Mode", "Save Point Smile", "Upgrade Urself", "Laser Love", "System Sweetie",
+            "Electric Emotion", "Digital Dreamer", "Heroine Hack", "Retro Reboot", "Final Boss Feelings"
+        ],
+        RainyDay: [
+            "Raindrop Rhythm", "Clear Umbrella", "Ajisai Afternoon", "Puddle Jump", "Waterproof Wish",
+            "Mist-iro Melody", "Cloudy Coziness", "Raincoat Ribbon", "Drip-Drop Dance", "Window Reflection",
+            "Aqua Avenue", "Sunday Shower", "Shelter from Rain", "Blue Hydrangea", "Rainy Rooftop",
+            "Droplet Diary", "Soft Splash", "Cozy Cafe Rain", "Sky Blue Tears", "After the Rain",
+            "Rainbow Bridge", "Mist Morning", "Dewdrop Dream", "Teacup Tempest", "Rainy Day Date",
+            "Thunderclap Thump", "Walking in Rain", "Gentle Gray", "Soaking Secret", "Umbrella for Two",
+            "Rainy Season Song", "Petal in Puddle", "Cloudy Castanet", "Ame-agari Air", "Water Waltz",
+            "Crystal Canopy", "Damp Road Dash", "Rainy Romance", "Slippery Step", "Indoor Idol",
+            "Tearful Terrace", "Pitter-Patter Pop", "Wet Paint Love", "Blue Sky Waiting", "Glistening Garden",
+            "Foggy Fantasy", "Rainy Refresh", "Stormy Sweetness", "Liquid Lullaby", "Pure Puddle"
+        ],
+        SchoolLife: [
+            "Seifuku Signal", "Hajimete no Classroom", "Kutsu-bako Love Letter", "Houkago Step", "Kyo-shitsu no Secret",
+            "Chalkboard no Yume", "Locker Room Heartbeat", "Roof-top Rendezvous", "Sensei no Favorite", "Eraser Dust Memory",
+            "Seishun Diary", "Lunchbox no Omoide", "Kou-tei no Sunshine", "Blue Sky Gym-fuku", "Note-book no Rakugaki",
+            "Bicycle Bell Melody", "Bunbougu Magic", "Kaze no Corridor", "Club-katsu Crush", "Yuuhi no Kaerimichi",
+            "First Bell no Kiseki", "Tegami no Feeling", "Mado-giwa no Seat", "Shiken-mae Panic", "Gakuen-sai Star",
+            "Seifuku Ribbon", "Asa no Aisatsu", "Pocket no Treasure", "Megane no Classmate", "Koutei no Hero",
+            "Library no Shizuke", "Natsu-fuku Change", "Kutsu-zumi Waltz", "Tomodachi no Distance", "Sensei ni Naisho",
+            "Gokaku no Smile", "School Bag no Omosa", "Bukatsu no Sweat", "Hajimari no Chime", "Kyoushou no Kaze",
+            "Ink-stained Finger", "Gakkou no Kaidan", "Sotugyou no Shiroi", "Shinjirou Seishun", "Kokuban no Message",
+            "Zekkei no Rooftop", "Kyoukasho no Sumi", "Fuyu-fuku no Nukumori", "Hajimete no Kokuhaku", "Eien no School Day"
+        ],
+        BoutiqueFashion: [
+            "Oshare-iro Palette", "Lipstick no Mahou", "Kira-Kira Mirror", "High-Heel no Rhythm", "Ribbon no Coordination",
+            "Machi-kado Boutique", "Pastel-iro Polish", "Wardrobe no Himitsu", "Kyou no Outfit", "Check-gara Chic",
+            "Fuku-ya no Waltz", "Glossy na Kuchibiru", "Vintage no Kaori", "Runway no Heroine", "Kagami no naka no Me",
+            "Jewelry no Kirameki", "Boutique Boulevard", "Perfume no Scent", "Manicure no Yume", "Beret-bou no Kaze",
+            "Stylist no Mahou", "Closet no Party", "Fancy na Fitting", "Oshare na Step", "Model no Silhouette",
+            "Accessory no Kiseki", "Sneaker de Jump", "Cardigan no Nukumori", "Chiffon no Tsubasa", "Brand-new Bloom",
+            "Magazine no Muse", "Lace no Curtain", "Stylish na Everyday", "Boutique no Bell", "Kira-mode Activate",
+            "Colorful na Closet", "Trend no Kaze", "Me-ishou no Star", "Make-up no Jikan", "Silk-no Michi",
+            "Dress-code no Koi", "Oshare-bancho", "Kutsu no Oto", "Pinky na Polish", "Fashion no Mahou",
+            "Mimi-moto no Earring", "Boutique no Afternoon", "Coordinate no Tensai", "Velvet no Yoru", "Shining na Style"
+        ],
+        WinterWonderland: [
+            "Diamond Dust no Odori", "Yuki-daruma no Yell", "Fuyu-iro Snowflake", "Mittens no Nukumori", "Shiroi Lullaby",
+            "Muffler no Mahou", "Silver na Shizuku", "Powder Snow Pop", "Ice-skate no Waltz", "Winter no Wish",
+            "Knitted na Heart", "Igloo no Naka", "Crystal no Cocoa", "Aurora no Kiseki", "Fuyu no Flower",
+            "Starlight na Skier", "Marshmallow no Kumo", "Shiroi Sekai no Smile", "Kira-Kira Snowfall", "Icicle no Melody",
+            "Frozen na Yakusoku", "Sleigh-bell no Oto", "Fuyu no Nichiyoubi", "Evergreen no Uta", "Misty na Window",
+            "Arctic na Angel", "Yuki no Kaerimichi", "Kogoe-sou na Heart", "Warm-up Cozy", "Fireplace no Yume",
+            "Winter-window no Inori", "Chilly na Kiss", "Snowy na Streetlight", "Glistening na Mori", "Ice-cream no Fuyu",
+            "Sub-zero no Sweetheart", "Twinkle na Tundra", "Frosty na Friday", "Blanket no Mahou", "Sledding na Star",
+            "Yuki-matsuri no Night", "North-pole no Note", "Fuyu-fuku no Memory", "Silver na Silent", "Cozy na Cabin",
+            "Yuki no Hana-taba", "Snowflake no Soda", "Fuyu-zora no Star", "White-out no Waltz", "Oyasumi no Snow"
+        ],
+        SeishunAnthem: [
+            "Kimi wa Melody no Naka de", "Seifuku no Silhouette", "Aozora to Ha-tachi no Bus-stop", "Hajimete no Summer Chime", "Sakura-iro no Yakusoku",
+            "Houkago no Blue Moon", "Kimi ni Deaeta Kiseki", "Seishun no Fragile", "Mado-giwa no Canvas", "Nagisa no First Love",
+            "Sorezore no Graduation", "Kousha no Kage de Matsu", "Futari no Distance", "Yume no Kakehashi", "Sora e no Step",
+            "Ano Hi no Blue Sky", "School Bag no Himitsu", "Kimi no Smile wa Sunshine", "Hoshizora no Playlist", "Koi no Bookmark",
+            "Kizuna no Overdrive", "Hajimari no Prologue", "Seifuku de Kiss Shite", "Kaze no Naka no Girl", "Aoi Haru no Ticket",
+            "Kimi to Boku no Season", "Mirai e no Countdown", "Saka-michi no Memory", "Sunlight Through Leaves", "Hajimete no Heartbreak",
+            "Everyday no Kiseki", "Kimi dake no Heroine", "Seishun no Bookmark", "Aozora no Shita de", "Mabushii Kimi no Yokogao",
+            "Komorebi no Waltz", "Tsugi no Stop de Aimashou", "Kaze ni Natte Kimi e", "One-Way Love Street", "Seifuku no Sparkle",
+            "Ano Natsu no High-Touch", "Kokoro no Lens", "Yuuhi ni Somaru School-yard", "Kimi to no Parallel Line", "Hakanai Haru no Kaze",
+            "Mirai Palette no Yume", "Seishun wa Doko e?", "Bokura no Adventure", "Kimi ga Iru kara", "Final Chime no Ato de"
+        ],
+        IdolSpirit: [
+            "Zettai Center Position", "Stage no Ue no Tenshi", "Kira-Kira no Spotlight", "Oshimen no Magic", "Senbatsu no Inori",
+            "Mirror-ball Revolution", "Idol no Namida", "Garasu no Stage", "Doki-Doki Setlist", "Kimi no tame no Encore",
+            "Handshake no Nukumori", "Majic na Costume", "Yume no Curtain Call", "Idol Sanka", "Kira-meki no Frontier",
+            "Backstage no Secret", "Oshi-goto no Mainichi", "Starlight Senbatsu", "Rainbow Color Penlight", "Kimi e no Fanfare",
+            "Dancing Through the Night", "Dreamer no Kiseki", "Center no Juu-atsu", "Idol Doudou", "Kimi no Oshi ni Naritai",
+            "Shining My Soul", "Luminous no Inori", "Sparkle no Sekai", "Stage-ura no Tears", "Kira-Kira no Mahou",
+            "Zettai ni Akiramenai", "Hajimete no Solo Single", "Unit no Kizuna", "Kimi no Scent wa Flower", "Glitter na Everyday",
+            "Idol no Pride", "Ouen-ka for You", "Theater no Kami-sama", "First Row no Keshiki", "Kimi no Namae o Yobitai",
+            "Star-dust no Sute-ji", "Idol no Glass Heart", "Pika-Pika no My Heart", "Dokkyun no Mahou", "Oshi-hen Kinshi!",
+            "Kimi to no Hi-Touch", "Future no Center", "Kira-Kira Sunshine", "Idol no Mirai-zu", "Sekai de Ichiban Kawaii"
+        ],
+        UrbanKawaii: [
+            "Tokyo Neon Girl", "Shibuya de Rendezvous", "Harajuku no Pancake", "Subway no Cinderella", "Midnight no Soda-sui",
+            "Digital na Love-Letter", "City Lights and You", "Neon no Machi-kado", "Sky-line no Yume", "Asphalt no Daisy",
+            "Smartphone no Screen", "Electric na Koigokoro", "Metro no Melody", "Tower no Mieru Oka", "Urban na Princess",
+            "Hoshi-furu Night-Club", "Cosmic na City-Pop", "Neon-iro no Tears", "Digital na Heartbeat", "Future na Girl",
+            "Cyber na Romance", "Street no Muse", "Glass no Skyscraper", "Blue Light no Machi", "Starlight Highway",
+            "Shibuya no Scramble Love", "Tokyo no Sora wa Blue", "Urban na Dreamer", "Cosmo no Signal", "Neon na Butterfly",
+            "Night-View no Kiseki", "City-Girl no Secret", "Digital na Kisu", "Modern na Girl", "Crystal na City",
+            "Harajuku no Sweets", "Omotesando no Step", "Tokyo Tower no Shita de", "Neon no Diamond", "Urban na Flower",
+            "Cyber no Alice", "Futuristic na Love", "Blue Sky in Tokyo", "Metro no Mado kara", "Neon no Paradise",
+            "City Pop no Rhythm", "Tokyo na Morning", "Digital no Inori", "Urban no Melody", "Neon-iro no Sekai"
         ],    
     };
 
@@ -2558,13 +2702,60 @@ const remainingUnassigned = [...unassignedMain, ...unassignedSister];
             return sum + (memberScore * ((m.stamina || 100) / 100));
         }, 0) * themeBonus;
 
-        let salesData = {}, merchRevenue = 0; /* Merch logic */
-        const merchHypeBonus = 1 + (merchRevenue / 500000); 
-        let newFans = Math.floor(((20 + (performance / 10)) * merchHypeBonus) * fanGainMultiplier);
-        const ticketRevenue = Math.floor(performance * 50 * revenueMultiplier);
-        if (staff.merchManager > 0) merchRevenue = Math.floor(merchRevenue * (1 + (staff.merchManager * 0.05)));
-        const totalRevenue = ticketRevenue + merchRevenue, totalCosts = travelCost || 0; 
-        const netProfit = totalRevenue - totalCosts, agencyProfit = Math.floor(netProfit * 0.6);
+const fanDemandHype = performingMembers.reduce((sum, m) => sum + getTotalFansForMember(m), 0);
+const demandMultiplier = 0.5 + (avgCharisma / 200); // 0.5 to 1.0
+const attendance = Math.min(venue.capacity, Math.floor(fanDemandHype * 0.05 * demandMultiplier));
+
+const ticketPrice = getTicketPrice(venue.level);
+const ticketRevenue = Math.floor(attendance * ticketPrice * revenueMultiplier);
+
+// --- Theater Merch Sales Logic ---
+let salesData = {};
+let merchRevenue = 0;
+const merchDemand = Math.floor(attendance * (0.1 + (avgCharisma / 500))); // 10% to 30% of attendees buy merch
+
+// Sell general merch
+Object.keys(merchInventory).forEach(key => {
+    if (merchInventory[key] > 0) {
+        const toSell = Math.min(merchInventory[key], Math.floor(merchDemand * (Math.random() * 0.2 + 0.1)));
+        const [item, tier] = key.split('_');
+        const tierInfo = merchTiers[item]?.[tier];
+        if (tierInfo && toSell > 0) {
+            merchRevenue += toSell * tierInfo.price;
+            salesData[tierInfo.name] = (salesData[tierInfo.name] || 0) + toSell;
+            setMerchInventory(prev => ({ ...prev, [key]: prev[key] - toSell }));
+        }
+    }
+});
+
+// Sell idol-specific merch for performing members
+performingMembers.forEach(member => {
+    Object.keys(idolMerchTiers).forEach(itemType => {
+        const inventoryKey = `${member.id}_${itemType}`;
+        if (idolMerchInventory[inventoryKey] > 0) {
+            const toSell = Math.min(idolMerchInventory[inventoryKey], Math.floor(merchDemand * (0.05 + (member.charisma / 1000))));
+            const tierInfo = idolMerchTiers[itemType];
+            if (toSell > 0) {
+                merchRevenue += toSell * tierInfo.price;
+                const merchName = `${member.name}'s ${tierInfo.name}`;
+                salesData[merchName] = (salesData[merchName] || 0) + toSell;
+                setIdolMerchInventory(prev => ({ ...prev, [inventoryKey]: prev[inventoryKey] - toSell }));
+            }
+        }
+    });
+});
+
+if (staff.merchManager > 0) {
+    const revenueBonus = staff.merchManager * 0.05; // 5% per level
+    merchRevenue = Math.floor(merchRevenue * (1 + revenueBonus));
+}
+
+const merchHypeBonus = 1 + (merchRevenue / 500000);
+let newFans = Math.floor(((attendance / 10) + (performance / 10)) * merchHypeBonus * fanGainMultiplier);
+const totalRevenue = ticketRevenue + merchRevenue;
+const totalCosts = travelCost || 0;
+const netProfit = totalRevenue - totalCosts;
+const agencyProfit = Math.floor(netProfit * 0.6);
         
         let senshuurakuFansConverted = 0;
         if (team && setlist && !isShonichi && !isBirthdayStage && !malfunctionMessage && Math.random() < 0.03) {
@@ -3395,6 +3586,8 @@ unselectedMembers.forEach(member => {
             addNotification({ type: 'alert', message: 'A corrupted single release was detected and automatically cancelled.' });
             return { updatedMembers: initialMembers, updatedSisterGroups: initialSisterGroups, releaseMessage: null };
         }
+        const newSongId = Date.now();
+
         let updatedMembers = initialMembers;
         let updatedSisterGroups = initialSisterGroups;
 
@@ -3526,84 +3719,114 @@ unselectedMembers.forEach(member => {
             const previousSingle = songListOfGroup.filter(s => s.type === 'single' && s.releaseWeek < week).sort((a,b) => b.releaseWeek - a.releaseWeek)[0];
 
 
-            // --- 2. STREAK COUNTER UPDATES & TRIVIA ---
-            const allMemberRosterIdsInAgency = [...members.map(m => m.id), ...initialSisterGroups.flatMap(sg => (sg.members || []).map(m => `sg-${sg.id}-${m.id}`))];
-
-            allMemberRosterIdsInAgency.forEach(memberId => {
-                const member = getMemberById(memberId);
-                if (!member) return;
-
-                let newConsecutiveSenbatsu = member.consecutiveSenbatsu || 0;
-                let newConsecutiveSingles = member.consecutiveSingles || 0;
-
-                if (trivia_senbatsuMemberIds.has(member.rosterId)) {
-                    newConsecutiveSenbatsu++;
-                } else {
-                    newConsecutiveSenbatsu = 0;
-                }
-                if (allParticipatingMemberIds.has(member.rosterId)) {
-                    newConsecutiveSingles++;
-                } else {
-                    newConsecutiveSingles = 0;
-                }
-                
-                updateMemberState(memberId, m => ({ ...m, consecutiveSenbatsu: newConsecutiveSenbatsu, consecutiveSingles: newConsecutiveSingles }));
-                
-                if (newConsecutiveSenbatsu > 0 && newConsecutiveSenbatsu % 5 === 0) {
-                    triviaItems.push(`${member.name} has now been selected for ${newConsecutiveSenbatsu} consecutive Senbatsu!`);
-                } else if (newConsecutiveSingles > 0 && newConsecutiveSingles % 5 === 0) {
-                    triviaItems.push(`${member.name} has participated in ${newConsecutiveSingles} consecutive singles!`);
-                }
-            });
-
-            // --- 3. SINGLE-LEVEL TRIVIA (Comeback, Dropped, Generational Debut) ---
-            if (titleTrack) {
-                if (previousSingle) {
-                    const prevTitleTrack = previousSingle.tracks.find(t => t.type === 'title');
-                    if (prevTitleTrack) {
-                        const prevSenbatsuIds = new Set((prevTitleTrack.members || []).map(m => String(m.id)));
-                        
-                        const comebackMembers = trivia_senbatsuMembers.filter(member => {
-                            if (prevSenbatsuIds.has(String(member.rosterId))) return false;
-                            const history = member.singlesParticipation || [];
-                            return history.some(p => p.isTitleTrackSenbatsu && p.singleId !== previousSingle.id);
-                        });
-                        if (comebackMembers.length > 0) {
-                            triviaItems.push(`Comeback to Senbatsu for ${formatNames(comebackMembers.map(m => m.name))}!`);
+            // --- 2. SINGLE-TO-SINGLE SENBATSU CHANGES ---
+            if (previousSingle) {
+                const prevTitleTrack = previousSingle.tracks.find(t => t.type === 'title');
+                if (prevTitleTrack) {
+                    // FIX: Robustly create roster IDs from previous single data
+                    const prevSenbatsuRosterIds = new Set((prevTitleTrack.members || []).map(m => {
+                        const memberIdStr = String(m.id);
+                        if (memberIdStr.startsWith('sg-')) return memberIdStr; // Already a unique ID
+                        // Construct the unique ID based on the group that released the *previous* single
+                        if (previousSingle.targetGroup && previousSingle.targetGroup !== 'main') {
+                            const sg = initialSisterGroups.find(g => g.name === previousSingle.targetGroup || String(g.id) === String(previousSingle.targetGroup));
+                            if (sg) return `sg-${sg.id}-${memberIdStr}`;
                         }
+                        return memberIdStr; // Assume main group member if no other info
+                    }));
 
-                        const droppedMemberIds = [...prevSenbatsuIds].filter(id => !trivia_senbatsuMemberIds.has(id));
-                        if (droppedMemberIds.length > 0) {
-                            const droppedMemberNames = droppedMemberIds.map(id => getMemberById(id)?.name).filter(Boolean);
-                            if (droppedMemberNames.length > 0) {
-                                triviaItems.push(`Dropped from Senbatsu: ${formatNames(droppedMemberNames)}.`);
-                            }
+                    const currentSenbatsuRosterIds = new Set(trivia_senbatsuMembers.map(m => String(m.rosterId)));
+
+                    // Retained Members (The user's core request)
+                    const retainedMemberIds = [...prevSenbatsuRosterIds].filter(id => currentSenbatsuRosterIds.has(id));
+                    if (retainedMemberIds.length > 0) {
+                        const retainedMemberNames = retainedMemberIds.map(id => getMemberById(id)?.name).filter(Boolean);
+                        if (retainedMemberNames.length > 0) {
+                            triviaItems.push(`Continuing in Senbatsu: ${formatNames(retainedMemberNames)}.`);
                         }
                     }
-                }
 
-                if (titleTrack.center && titleTrack.center.length > 0) {
-                    const centerMember = getMemberById(titleTrack.center[0]);
-                    if (centerMember && centerMember.generation) {
-                        const allMembersInAgency = [...initialMembers, ...initialSisterGroups.flatMap(sg => sg.members)];
-                        const isFirstOfGeneration = !allMembersInAgency.some(m =>
-                            m.id !== centerMember.id &&
-                            m.generation === centerMember.generation &&
-                            (m.centerHistory || []).some(h => h.type === 'title')
-                        );
-                        if (isFirstOfGeneration) {
-                            triviaItems.push(`${centerMember.name} becomes the first A-Side Center from the ${centerMember.generation}.`);
+                    // Comeback Members
+                    const comebackMembers = trivia_senbatsuMembers.filter(member => {
+                        if (currentSenbatsuRosterIds.has(String(member.rosterId)) && !prevSenbatsuRosterIds.has(String(member.rosterId))) {
+                            const history = member.singlesParticipation || [];
+                            return history.some(p => p.isTitleTrackSenbatsu && p.group === releasingGroupNameForTrivia && p.singleId !== newSongId);
+                        }
+                        return false;
+                    });
+                    if (comebackMembers.length > 0) {
+                        triviaItems.push(`Comeback to Senbatsu: ${formatNames(comebackMembers.map(m => m.name))}!`);
+                    }
+
+                    // Dropped Members
+                    const droppedMemberIds = [...prevSenbatsuRosterIds].filter(id => !currentSenbatsuRosterIds.has(id));
+                    if (droppedMemberIds.length > 0) {
+                        const droppedMemberNames = droppedMemberIds.map(id => getMemberById(id)?.name).filter(Boolean);
+                        if (droppedMemberNames.length > 0) {
+                            triviaItems.push(`Dropped from Senbatsu: ${formatNames(droppedMemberNames)}.`);
                         }
                     }
                 }
             }
+            
+            // --- 3. OTHER SINGLE-LEVEL TRIVIA (Center, Generation, etc.) ---
+            if (titleTrack.center && titleTrack.center.length > 0) {
+                const centerMember = getMemberById(titleTrack.center[0]);
+                if (centerMember && centerMember.generation) {
+                    const allMembersInAgency = [...initialMembers, ...initialSisterGroups.flatMap(sg => sg.members)];
+                    const isFirstOfGeneration = !allMembersInAgency.some(m =>
+                        (m.rosterId || m.id) !== centerMember.rosterId && // Use robust ID check
+                        m.generation === centerMember.generation &&
+                        (m.centerHistory || []).some(h => h.type === 'title')
+                    );
+                    if (isFirstOfGeneration) {
+                        triviaItems.push(`${centerMember.name} becomes the first A-Side Center from the ${centerMember.generation}.`);
+                    }
+                }
+            }
 
-            const allGenerationsInHistory = new Set([...initialSongs, ...initialSisterGroups.flatMap(sg => sg.songs || [])].flatMap(s => s.tracks || []).flatMap(t => t.members || []).map(m => m.generation).filter(Boolean));
-            const currentGenerations = new Set(allParticipatingMembers.map(m => m.generation).filter(Boolean));
-            const newGenerations = [...currentGenerations].filter(gen => !allGenerationsInHistory.has(gen));
-            if (newGenerations.length > 0) {
-                newGenerations.forEach(gen => {
-                    triviaItems.push(`This single marks the debut of the ${gen}.`);
+            // FIX: Correctly identify generations that have already debuted for each specific group
+            const allGenerationsInHistory = new Set(
+                [...initialSongs, ...initialSisterGroups.flatMap(sg => sg.songs || [])]
+                    .flatMap(s => {
+                        // Correctly identify the group name for historical songs
+                        let groupNameForHistory;
+                        if (s.artist) { // For albums
+                            groupNameForHistory = s.artist;
+                        } else if (s.targetGroup) { // For singles
+                            if (s.targetGroup === 'main') {
+                                groupNameForHistory = groupName;
+                            } else {
+                                const sg = initialSisterGroups.find(g => g.name === s.targetGroup || String(g.id) === String(s.targetGroup));
+                                groupNameForHistory = sg ? sg.name : s.targetGroup;
+                            }
+                        }
+                        if (!groupNameForHistory) return [];
+                        // Create the unique identifier: 'GroupName-GenerationName'
+                        return (s.tracks || []).flatMap(t => (t.members || []).map(m => m.generation ? `${groupNameForHistory}-${m.generation}` : null));
+                    })
+                    .filter(Boolean)
+            );
+
+            const newGenerationsThisSingle = new Set();
+            allParticipatingMembers.forEach(member => {
+                if (member.generation) {
+                    // Create the same unique identifier for the current single's members
+                    const generationIdentifier = `${releasingGroupNameForTrivia}-${member.generation}`;
+                    // Only add if it's not in the entire history and not already added for this single
+                    if (!allGenerationsInHistory.has(generationIdentifier) && !newGenerationsThisSingle.has(generationIdentifier)) {
+                        newGenerationsThisSingle.add(generationIdentifier);
+                    }
+                }
+            });
+
+            if (newGenerationsThisSingle.size > 0) {
+                newGenerationsThisSingle.forEach(genIdentifier => {
+                    // Split the identifier to get the group and generation name back for the message
+                    const parts = genIdentifier.split('-');
+                    const group = parts[0];
+                    const gen = parts.slice(1).join('-'); // Re-join in case generation name has a hyphen
+                    triviaItems.push(`This single marks the debut of ${group}'s ${gen}.`);
                 });
             }
 
@@ -3720,33 +3943,32 @@ unselectedMembers.forEach(member => {
             }
 
             // --- 6. EXPANDED TRIVIA (SALES, CENTER, COMPOSITION) ---
-            const finalSales = (songData.salesHistory || []).reduce((acc, curr) => acc + curr.sales, 0);
             const allSinglesForGroup = songListOfGroup.filter(s => s.type === 'single');
-            const bestSellingSingle = [...allSinglesForGroup].sort((a,b) => (b.finalSales || 0) - (a.finalSales || 0))[0];
+            const bestSellingSingle = [...allSinglesForGroup].sort((a, b) => (b.totalSales || 0) - (a.totalSales || 0))[0];
 
-            if (finalSales > (bestSellingSingle?.finalSales || 0)) {
-                triviaItems.push(`A new record! This is now ${releasingGroupNameForTrivia}'s best-selling single of all time.`);
+            if (baseSalesPotential > (bestSellingSingle?.baseSalesPotential || 0)) {
+                triviaItems.push(`Highest sales potential yet! This single has the group's highest sales potential to date.`);
             }
 
-            if (previousSingle && previousSingle.finalSales) {
-                const salesDiff = ((finalSales - previousSingle.finalSales) / previousSingle.finalSales) * 100;
+            if (previousSingle && previousSingle.totalSales) {
+                const salesDiff = ((baseSalesPotential - previousSingle.baseSalesPotential) / previousSingle.baseSalesPotential) * 100;
                 if (salesDiff > 10) {
-                    triviaItems.push(`A certified hit! This single sold ${Math.round(salesDiff)}% more than the previous one.`);
+                    triviaItems.push(`A potential hit! This single has ${Math.round(salesDiff)}% more sales potential than the last one.`);
                 } else if (salesDiff < -10) {
-                    triviaItems.push(`A slight downturn. This single's sales were ${Math.abs(Math.round(salesDiff))}% lower than the last release.`);
+                    triviaItems.push(`A potential downturn. This single's sales potential is ${Math.abs(Math.round(salesDiff))}% lower than the last release.`);
                 }
             }
 
             let millionStreak = 0;
             for (let i = allSinglesForGroup.length - 1; i >= 0; i--) {
-                if ((allSinglesForGroup[i].finalSales || 0) > 1000000) {
+                if ((allSinglesForGroup[i].totalSales || 0) > 1000000) {
                     millionStreak++;
                 } else {
                     break;
                 }
             }
-            if ((finalSales || 0) > 1000000 && millionStreak > 1) {
-                triviaItems.push(`The streak continues! This is the group's ${millionStreak}rd consecutive million-selling single.`);
+            if (millionStreak > 0) {
+                triviaItems.push(`The group is on a ${millionStreak}-single million-selling streak!`);
             }
 
             if (titleTrack?.center?.length > 0) {
@@ -3758,22 +3980,32 @@ unselectedMembers.forEach(member => {
                         triviaItems.push(`Unstoppable! ${centerMember.name} holds the center position for a second consecutive single.`);
                     } else {
                         const centerHistory = (centerMember.centerHistory || []).filter(h => h.type === 'title' && h.group === releasingGroupNameForTrivia);
-                        const singlesSinceLastCenter = allSinglesForGroup.filter(s => s.releaseWeek > (centerHistory[centerHistory.length-2]?.week || 0)).length;
+                        const singlesSinceLastCenter = allSinglesForGroup.filter(s => s.releaseWeek > (centerHistory[centerHistory.length - 2]?.week || 0)).length;
                         if (singlesSinceLastCenter > 1) {
                             triviaItems.push(`The Return of the Queen! ${centerMember.name} reclaims the center position after ${singlesSinceLastCenter} singles.`);
                         }
                     }
 
-                    const allGroupMembers = isReleasingHomeGroupMember(centerMember) ?
-                        members.filter(m => !m.isSisterMember) :
-                        (initialSisterGroups.find(sg => sg.name === centerMember.homeGroup)?.members || []);
+                    // --- CORRECTED LOGIC FOR ROOKIE CHECK ---
+                    let allGroupMembers;
+                    if (!centerMember.isSisterMember) {
+                        // Center is a main group member
+                        allGroupMembers = initialMembers.filter(m => !m.isSisterMember);
+                    } else {
+                        // Center is a sister group member
+                        const sg = initialSisterGroups.find(sg => sg.name === centerMember.homeGroup);
+                        allGroupMembers = sg ? (sg.members || []) : [];
+                    }
+                    // --- END CORRECTION ---
 
-                    if (allGroupMembers && allGroupMembers.length > 0){
-                        const sortedByFans = [...allGroupMembers].sort((a,b) => (a.fans?.total || 0) - (b.fans?.total || 0));
-                        const fanQuartile = sortedByFans.findIndex(m => m.id === centerMember.id) / sortedByFans.length;
-                        const latestGen = Math.max(...allGroupMembers.map(m => m.generation || 0));
-                        if ((centerMember.generation === latestGen || centerMember.generation === latestGen -1) && fanQuartile < 0.25) {
-                             triviaItems.push(`A star is born! In a surprise move, rookie ${centerMember.name} has been chosen for the center position.`);
+                    if (allGroupMembers && allGroupMembers.length > 0) {
+                        const sortedByFans = [...allGroupMembers].sort((a, b) => getTotalFansForMember(b) - getTotalFansForMember(a));
+                        const fanQuartileIndex = sortedByFans.findIndex(m => m.id === centerMember.id);
+                        const fanQuartile = fanQuartileIndex !== -1 ? fanQuartileIndex / sortedByFans.length : 1;
+                        const latestGen = Math.max(0, ...allGroupMembers.map(m => m.generation || 0));
+
+                        if ((centerMember.generation === latestGen || centerMember.generation === latestGen - 1) && fanQuartile < 0.25) {
+                            triviaItems.push(`A star is born! In a surprise move, rookie ${centerMember.name} has been chosen for the center position.`);
                         }
                     }
                 }
@@ -3788,7 +4020,7 @@ unselectedMembers.forEach(member => {
             }
 
             if (trivia_senbatsuMembers.length > 1) {
-                const sortedByAge = [...trivia_senbatsuMembers].sort((a,b) => a.age - b.age);
+                const sortedByAge = [...trivia_senbatsuMembers].sort((a, b) => a.age - b.age);
                 const youngest = sortedByAge[0];
                 const oldest = sortedByAge[sortedByAge.length - 1];
                 if (youngest && oldest && youngest.id !== oldest.id) {
@@ -3817,7 +4049,7 @@ unselectedMembers.forEach(member => {
             }
 
         const newSong = {
-            id: Date.now(),
+            id: newSongId,
             name: songData.name,
             type: 'single',
             isGraduationSingle: songData.isGraduationSingle,
@@ -4002,6 +4234,7 @@ unselectedMembers.forEach(member => {
 
         const netProfit = (ticketRevenue + eventMerchRevenue) - baseCost;
         const agencyProfit = Math.floor(netProfit * 0.6);
+        
         const idolShare = netProfit - agencyProfit;
 
         // --- NEW: Reputation Gain/Loss from Concerts ---
