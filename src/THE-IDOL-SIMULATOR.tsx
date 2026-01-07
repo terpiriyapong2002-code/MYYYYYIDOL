@@ -7,6 +7,8 @@ import { DndContext, useDraggable, useDroppable, closestCenter, PointerSensor, T
 import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
+import DailyChartModal from './DailyChartModal';
+
 import { useIdolManager, getTotalFansForMember, getFormattedDateForWeek, productionTiers, getGraduationRisk, songTitles, generateSongTitle, electionSpeechTemplates, performanceTypes, scandalResponseOptions, tiers, getTheaterCapacity, getTicketPrice, hometowns, generateRandomHometown,  warehouseTiers, staffTiers, ambitions } from "./hooks/useIdolManager";
 
 import React, { useState, useEffect, useCallback, useRef, memo } from 'react';
@@ -29,7 +31,7 @@ const App = () => {
     // Destructure everything from the custom hook
     const {
     // State
-    gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory,  merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
+    activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory,  merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
     // Firebase/Persistence
     getSavedGames, saveGame, loadGame,
     // Utilities
@@ -106,7 +108,8 @@ const App = () => {
     // Utility function to generate a random name for the startup screen
     const generateRandomGroupName = () => {
       const prefixes = ['Hoshi','Sakura','Tsuki','Ame','Yume','Hana','Aoi','Hikari','Mizu','Kumo','Kaze','Yuki','Kokoro','Akari','Nozomi','Kiseki','Seika','Ameiro','Momoiro','Aozora','Hoshimi','Hanabi','Miyabi','Tokimeki','Ariake','Kouyou','Asahi','Kouka','Suiren','Kurenai','Starlit','Moonlite','Petalix','Blossia','KiraKira','Sparkleon','Dreamia','Twinkia','Glowin','Lumina','Aurasia','MiraiX','Flawra','Cherrix','Fantasia','Hoshira','Sakurive','Prismia','Melodia','Radiant','Hanaria','Yumelia','Akuria','Sakurune','Hoshika','Tsukira','Fuwaria','Kirafine','Mizura','Aozelle','Momoria','Nijika','Haruline','Kokolia','Amelune','Lunaria','Miraiya','Shinoria','Tokira','Asteria','Celestia','Vividia','Eterneo','Luvia','Rhythmex','Purella','Zellia','Xylia','Novelle','Harmonix','Bellaria','Chocola','Sweetia','Angellic','Seraphia','Galaxia','Nebulla','Stellaris','Orion','Eclipsa','Solaria','Lyra','Vespera','Aethel','Nyx','Aura','Lyrica','Sonnet','Fable','Mythia','Legendia','FuwaFuwa','MeroMero','PikaPika','MochiMochi','KyunKyun','PuruPuru','Ribbon','Hearty','Lovely','Berry','Peachia','Milky','Parfait','Soufflé','Sugar','Candy','Bonbon','Chiffon','Marshmo','Lace','Frill','Tiara','Jewelly','Shiny','Pastel','PopStep','Beatly','Melty','Honey','Bunny','Kitty','Puppy','Pony','Cookie','Creamy','Dreamy','Wishy','Magic','Magica','Wand','Starry','Twinkle','Sparkle','Dazzle','Glimmer','Plume','Petit','Belle','Mignon','Ange','Chouchou','Lulu','Mimi','Nana','Coco','Ruru','Kiki','Lala','Nono'];
-      const symbols = ['✩', '★', '☆', '✦', '✧', '⊹', '♡', '♥', '❤︎', '✿', '❀', '❃', '❁', '・', '×', '⚡︎', '❖', '◈', '◇', '◆', '∆', '∇', '／', '≠', '≈', '∞', '♪', '♫', '♬', '♩', '♭', '♯', '†', '‡', ' ', ' ', ' ', ' '];      const suffixes = ['48','46','Key','Girls','Project','Idols','Stars','Z','Unit','Crew','X','Wave','Beat','Stage','Dream','Lite','Mode','Charm','Flow','Vision','Tone','Pop','Bloom','Rise','Edge','Link','Sphere','Note','Line','46','Team','Stage48','Factory','Palette','Branch','Station','Campus','Zaka','Slope','District','Section','Division','Area','Side','Point','Club','Chuu','Hearts','Notes','Melody','Rabbits','Dreamers','Angels','Spark','Fantasy','Rhythm','Harmony','Kyun','ChuChu','Piyo','Puff','Mochi','Luv','Nyan','Koko','Poko','Ruru','Neo','Zero','01','Alpha','Beta','Omega','Type-A','Type-B','Type-X','Generation','Phase','System','Circuit','Signal','Protocol','Delta','Sigma','Infinity','Burst','Dive','Dash','Max','Hyper','Ultra','Sonic','Velocity','Drive','Force','Impact','Strike','Sparkle','Shine','Glitter','Flash','Flare','Glow','Beam','Blast','Boost','Aura','Spirit','Power','Energy','Soul','Passion','Kiss','Berry','Candy','Honey','Sweet','Sugar','Cookie','Parfait','Ribbon','Lace','Tiara','Princess','Queen','Doll','Bunny','Kitty','Puppy','Mouse','Bear','Panda','Choco','Mint','Lemon','Peach','Cherry','Apple','Bloom','Petal','Leaf','Garden','Forest','Island','World','Universe','Galaxy','Cosmos','Orbit','Planet','Moon','Sun','Sky','Cloud','Rain','Snow'];
+      const symbols = ['✩', '★', '☆', '✦', '✧', '⊹', '♡', '♥', '❤︎', '✿', '❀', '❃', '❁', '・', '×', '⚡︎', '❖', '◈', '◇', '◆', '∆', '∇', '／', '≠', '≈', '∞', '♪', '♫', '♬', '♩', '♭', '♯', '†', '‡', ' ', ' ', ' ', ' '];      
+      const suffixes = ['48','46','Key','Girls','Project','Idols','Stars','Z','Unit','Crew','X','Wave','Beat','Stage','Dream','Lite','Mode','Charm','Flow','Vision','Tone','Pop','Bloom','Rise','Edge','Link','Sphere','Note','Line','46','Team','Stage48','Factory','Palette','Branch','Station','Campus','Zaka','Slope','District','Section','Division','Area','Side','Point','Club','Chuu','Hearts','Notes','Melody','Rabbits','Dreamers','Angels','Spark','Fantasy','Rhythm','Harmony','Kyun','ChuChu','Piyo','Puff','Mochi','Luv','Nyan','Koko','Poko','Ruru','Neo','Zero','01','Alpha','Beta','Omega','Type-A','Type-B','Type-X','Generation','Phase','System','Circuit','Signal','Protocol','Delta','Sigma','Infinity','Burst','Dive','Dash','Max','Hyper','Ultra','Sonic','Velocity','Drive','Force','Impact','Strike','Sparkle','Shine','Glitter','Flash','Flare','Glow','Beam','Blast','Boost','Aura','Spirit','Power','Energy','Soul','Passion','Kiss','Berry','Candy','Honey','Sweet','Sugar','Cookie','Parfait','Ribbon','Lace','Tiara','Princess','Queen','Doll','Bunny','Kitty','Puppy','Mouse','Bear','Panda','Choco','Mint','Lemon','Peach','Cherry','Apple','Bloom','Petal','Leaf','Garden','Forest','Island','World','Universe','Galaxy','Cosmos','Orbit','Planet','Moon','Sun','Sky','Cloud','Rain','Snow'];
       const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
       const symbol = symbols[Math.floor(Math.random() * symbols.length)];
       const suffix = suffixes[Math.floor(Math.random() * suffixes.length)];
@@ -2885,9 +2888,10 @@ const memberGroups = memberObjects.reduce((acc, member) => {
 
         const releasingGroupName = release.targetGroup === 'main' ? groupName : (sisterGroups.find(sg => String(sg.id) === String(release.targetGroup))?.name || release.targetGroup);
         
-        // Correctly calculates total sales from the sales history
-        const totalSales = (release.salesHistory || []).reduce((sum, entry) => sum + entry.sales, 0);
-        const totalRevenue = totalSales * 15;
+            // Correctly calculates total sales from the sales history
+            const totalSales = (release.salesHistory || []).reduce((sum, entry) => sum + entry.sales, 0);
+            const totalRevenue = totalSales * 15;
+            const chartEntry = activeChart?.entries.find(e => e.id === release.id);
 
         // --- FIXED HELPER COMPONENTS ---
         const ProductionInfo = () => {
@@ -3135,22 +3139,38 @@ const memberGroups = memberObjects.reduce((acc, member) => {
                   <ProductionInfo />
                 </div>
   
-                {/* FIX: Use 'salesHistory' which contains objects, not just numbers */}
-                {(release.salesHistory || []).length > 0 && (
-                  <div className="mb-4">
-                      <h4 className="font-semibold text-lg mb-2 border-t pt-3 flex items-center dark:text-gray-100"><BarChart2 size={18} className="mr-2"/> Weekly Chart Performance</h4>
-                      <div className="max-h-32 overflow-y-auto bg-gray-50 dark:bg-gray-800 p-2 rounded-lg border">
-                        <ul className="text-sm space-y-1">
-                            {release.salesHistory.map((entry, index) => (
-                                <li key={index} className="flex justify-between">
-                                    <span>Week {entry.week}:</span>
-                                    <span className="font-mono">{entry.sales.toLocaleString()} units</span>
-                                </li>
-                            ))}
-                        </ul>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    {(release.salesHistory || []).length > 0 && (
+                      <div>
+                          <h4 className="font-semibold text-lg mb-2 border-t pt-3 flex items-center dark:text-gray-100"><DollarSign size={18} className="mr-2 text-green-500"/> Weekly Sales</h4>
+                          <div className="max-h-32 overflow-y-auto bg-gray-50 dark:bg-gray-800 p-2 rounded-lg border">
+                            <ul className="text-sm space-y-1">
+                                {release.salesHistory.map((entry, index) => (
+                                    <li key={index} className="flex justify-between">
+                                        <span>Week {entry.week}:</span>
+                                        <span className="font-mono">{entry.sales.toLocaleString()} units</span>
+                                    </li>
+                                ))}
+                            </ul>
+                          </div>
                       </div>
-                  </div>
-                )}
+                    )}
+                    {(release.rankHistory || []).length > 0 && (
+                      <div>
+                          <h4 className="font-semibold text-lg mb-2 border-t pt-3 flex items-center dark:text-gray-100"><BarChart2 size={18} className="mr-2 text-pink-500"/> Weekly Rank</h4>
+                          <div className="max-h-32 overflow-y-auto bg-gray-50 dark:bg-gray-800 p-2 rounded-lg border">
+                            <ul className="text-sm space-y-1">
+                                {release.rankHistory.map((entry, index) => (
+                                    <li key={index} className="flex justify-between">
+                                        <span>Week {entry.week}:</span>
+                                        <span className="font-mono font-bold text-pink-500">#{entry.rank}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                          </div>
+                      </div>
+                    )}
+                </div>
   
                 <div className="mt-4">
                     <h3 className="text-lg font-bold mb-2 flex items-center dark:text-gray-200 pt-3 border-t">
@@ -7505,6 +7525,7 @@ const KouhakuResultModal = () => {
     );
 };
 
+
 const RequestHourVotingModal = () => {
     const allSongs = [
         ...songs.flatMap(s => (s.tracks || []).map(t => ({...t, id: `${s.id}-${t.name}`, artist: s.artist || s.targetGroup, singleName: s.name}))),
@@ -9463,35 +9484,68 @@ if (!gameStarted) {
   </div>
 )}
 
-        {/* ----- RIVALS TAB ----- */}
-        {currentTab === 'rivals' && (
-            <div className="space-y-4">
-                <h2 className="text-xl font-bold mb-4 flex items-center">
-                    <Globe size={22} className="mr-2 text-red-500"/> Rival Groups
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {(rivalGroups || []).map(rival => (
-                        <div key={rival.id} className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
-                            <h3 className="text-lg font-bold text-red-500">{rival.name}</h3>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">Members: {rival.membersCount}</p>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">Fans: {rival.fans.toLocaleString()}</p>
-                            <div className="mt-2 pt-2 border-t dark:border-gray-700">
-                                <h4 className="font-semibold text-xs mb-1">Recent Releases:</h4>
-                                <div className="max-h-24 overflow-y-auto text-xs space-y-1">
-                                    {(rival.songs && rival.songs.length > 0) ? rival.songs.slice(-5).reverse().map(song => (
-                                        <div key={song.name} className="p-1 bg-gray-100 dark:bg-gray-700 rounded">
-                                            <p className="font-semibold">{song.name}</p>
-                                            <p className="text-gray-500">Sales: {song.sales.toLocaleString()}</p>
-                                        </div>
-                                    )) : <p className="italic text-gray-500">No recent releases.</p>}
+            {/* ----- RIVALS TAB ----- */}
+            {currentTab === 'rivals' && (
+                <div className="space-y-4">
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-xl font-bold flex items-center">
+                            <Globe size={22} className="mr-2 text-red-500"/> Rival Groups
+                        </h2>
+                        {activeChart && (
+                            <button
+                                onClick={() => setShowModal('dailyChart')}
+                                className="px-3 py-1.5 text-sm bg-pink-600 hover:bg-pink-700 text-white rounded-md flex items-center"
+                            >
+                                <BarChart3 size={16} className="mr-2" /> View Daily Chart
+                            </button>
+                        )}
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {(rivalGroups || []).map(rival => (
+                            <div key={rival.id} className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 flex flex-col">
+                                <div>
+                                    <div className="flex justify-between items-start">
+                                        <h3 className="text-lg font-bold text-red-500">{rival.name}</h3>
+                                        <span className="text-xs font-semibold px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-full">{rival.archetype || 'Standard'}</span>
+                                    </div>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400">Members: {rival.membersCount}</p>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400">Total Fans: {rival.fans.toLocaleString()}</p>
+                                    {rival.ace && (
+                                        <p className="text-sm text-pink-600 dark:text-pink-400 font-semibold">
+                                            Ace: {rival.ace.name} ({(rival.ace.fans || 0).toLocaleString()} fans)
+                                        </p>
+                                    )}
+                                </div>
+                                
+                                <div className="mt-2 pt-2 border-t dark:border-gray-700">
+                                    <h4 className="font-semibold text-xs mb-1">Recent Releases:</h4>
+                                    <div className="max-h-24 overflow-y-auto text-xs space-y-1">
+                                        {(rival.songs && rival.songs.length > 0) ? rival.songs.slice(-5).reverse().map(song => (
+                                            <div key={song.name} className="p-1 bg-gray-100 dark:bg-gray-700 rounded">
+                                                <p className="font-semibold">{song.name}</p>
+                                                <p className="text-gray-500 dark:text-gray-400">Sales: {song.sales.toLocaleString()}</p>
+                                            </div>
+                                        )) : <p className="italic text-gray-500">No recent releases.</p>}
+                                    </div>
+                                </div>
+
+                                <div className="mt-2 pt-2 border-t dark:border-gray-700">
+                                    <h4 className="font-semibold text-xs mb-1">Activity Log:</h4>
+                                    <div className="max-h-24 overflow-y-auto text-xs space-y-1">
+                                        {(rival.history && rival.history.length > 0) ? rival.history.slice().reverse().map((log, index) => (
+                                            <div key={index} className="p-1 bg-gray-100 dark:bg-gray-700 rounded">
+                                                <p className="text-gray-500 dark:text-gray-400">
+                                                    <span className="font-semibold">Wk {log.week}:</span> {log.event}
+                                                </p>
+                                            </div>
+                                        )) : <p className="italic text-gray-500">No recent activity.</p>}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
-            </div>
-        )}
-
+            )}
 
             {/* ----- MERCHANDISE TAB ----- */}
             {currentTab === 'merch' && (
@@ -9554,7 +9608,7 @@ if (!gameStarted) {
                       </div>
                     )}
 
-                    <button
+ <button
                       onClick={activeTour ? progressTour : nextWeek}
                       className="w-full p-1 bg-blue-600 text-white rounded font-bold mt-2 hover:bg-blue-700 disabled:bg-gray-400"
                     >
@@ -10059,6 +10113,7 @@ if (!gameStarted) {
         />}
         {showModal === 'electionResult' && <ElectionResultModal />}
         {showModal === 'annualAwardsResult' && <AnnualAwardsResultModal />}
+        {showModal === 'dailyChart' && <DailyChartModal activeChart={activeChart} onHide={() => setShowModal(null)} groupName={groupName} songs={songs} sisterGroups={sisterGroups} />}
         {showModal === 'scandalDecision' && <ScandalDecisionModal />}
         {showModal === 'scandalResult' && <ScandalResultModal />}
         {showModal === 'senbatsuPromotion' && <SenbatsuPromotionModal />}

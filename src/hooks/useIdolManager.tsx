@@ -435,6 +435,15 @@ export const productionTiers = {
         }
     };
 
+export const generateRandomGroupName = () => {
+    const prefixes = ['Cosmic', 'Starlight', 'Cherry', 'Lunar', 'Crystal', 'Sapphire', 'Diamond', 'Melty', 'Pixel', 'Violet', 'Midnight', 'Neo', 'Velvet', 'Aero', 'Prism', 'Secret', 'Luminous', 'Vivid', 'Silent', 'Radiant', 'Ethereal'];
+    const suffixes = ['Kiss', 'Bloom', 'Riot', 'Dust', 'Rhythm', 'Hearts', 'Muse', 'Edge', 'Palette', 'Wings', 'Idols', 'Garden', 'Ray', 'Theory', 'Siren', 'Aura', 'Eclipse', 'Miracle', 'Sisters', 'Charm', '7', '9', 'X'];
+    const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+    const suffix = suffixes[Math.floor(Math.random() * suffixes.length)];
+    return `${prefix} ${suffix}`;
+};
+
+
 export const hometowns = [
     'Hokkaido', 'Aomori', 'Iwate', 'Miyagi', 'Akita', 'Yamagata', 'Fukushima',
     'Ibaraki', 'Tochigi', 'Gunma', 'Saitama', 'Chiba', 'Tokyo', 'Kanagawa',
@@ -791,7 +800,7 @@ const [pendingMerch, setPendingMerch] = useState([]);
     const [draftKaigi, setDraftKaigi] = useState(null); 
     const [groupRoles, setGroupRoles] = useState({});
     const [annualAwardsHistory, setAnnualAwardsHistory] = useState([]);
-
+    const [activeChart, setActiveChart] = useState(null)
 
 
     // START/LOAD/SAVE FUNCTIONS
@@ -846,6 +855,7 @@ const [pendingMerch, setPendingMerch] = useState([]);
                 buildings: JSON.stringify(buildings),
                 sisterGroups: JSON.stringify(sisterGroups),
                 rivalGroups: JSON.stringify(rivalGroups),
+                activeChart: JSON.stringify(activeChart), //
                 achievements: JSON.stringify(achievements),
                 hallOfFame: JSON.stringify(hallOfFame),
                 events: JSON.stringify(events),
@@ -1027,6 +1037,7 @@ if (sg.members) {
                 setSisterGroups(loadedSisterGroups);
 
                 setRivalGroups(JSON.parse(data.rivalGroups || "[]"));
+                setActiveChart(JSON.parse(data.activeChart || "null")); //
                 setAchievements(JSON.parse(data.achievements || "[]"));
                 setHallOfFame(JSON.parse(data.hallOfFame || "[]"));
                 setJankenTournament(JSON.parse(data.jankenTournament || "null"));
@@ -1163,27 +1174,48 @@ setGroupRoles(loadedRoles);
         setGroupName(startGroupName);
         setUsername(startUsername);
         const rivalNames = [
-            'Lunar Princesses', 'Project Nova', 'Sapphire Kiss', 'Onyx7', 
-            'Solstice', 'Equinox', 'Galaxy Girls', 'Cosmic Charm', 'Nebula Stars',
-            'Pixel Pop', 'Melty Kiss', 'Cherry Chu', 'Violet Theory', 'Zero Gravity',
-            'Saka46-X', 'Midnight Bloom', 'Neo-Genesis', 'Velvet Riot', 'Aero-Step',
-            'Diamond Dust', 'Pure Rhythm', 'Kira-Kira 5', 'Digital Hearts', 'Urban Muse',
-            'Crimson Edge', 'Starry Palette', 'Glass Wings', 'Next-Gen Idols', 'Prism 9',
-            'Secret Garden', 'Nova-Ray', 'Luminous', 'Bitter-Sweet', 'Infinity Girl',
-            'Code:Pink', 'Vivid Soul', 'Aozora Sisters', 'Techno-Tale', 'Goth-Loli Punk',
-            'Sugar Rush', 'Metal Maidens', 'Silent Siren', 'Aura-Blast', 'Future-Mix',
-            'Starlight 7', 'Honey-BEE', 'Lunar Eclipse', 'Paradox-G', 'Miracle-Step', 'Last-Piece'
-        ];            
-        
+            'Lunar Princesses', 'Project Nova', 'Sapphire Kiss', 'Onyx7', 'Solstice', 
+            'Equinox', 'Galaxy Girls', 'Cosmic Charm', 'Nebula Stars', 'Pixel Pop', 
+            'Melty Kiss', 'Cherry Chu', 'Violet Theory', 'Zero Gravity', 'Saka46-X', 
+            'Midnight Bloom', 'Neo-Genesis', 'Velvet Riot', 'Aero-Step', 'Diamond Dust', 
+            'Pure Rhythm', 'Kira-Kira 5', 'Digital Hearts', 'Urban Muse', 'Crimson Edge', 
+            'Starry Palette', 'Glass Wings', 'Next-Gen Idols', 'Prism 9', 'Secret Garden', 
+            'Nova-Ray', 'Luminous', 'Bitter-Sweet', 'Infinity Girl', 'Code:Pink', 
+            'Vivid Soul', 'Aozora Sisters', 'Techno-Tale', 'Goth-Loli Punk', 'Sugar Rush', 
+            'Metal Maidens', 'Silent Siren', 'Aura-Blast', 'Future-Mix', 'Starlight 7', 
+            'Honey-BEE', 'Lunar Eclipse', 'Paradox-G', 'Miracle-Step', 'Last-Piece',
+            // --- New Rivals Added Below ---
+            'Shadow Senbatsu', 'Kaminari Girls', 'Zenith 10', 'Ethereal Flow', 'Rubies of Tokyo',
+            'Midnight Protocol', 'Seifuku Rebellion', 'Afterglow 5', 'Digital Diva Project', 'Heart-Link',
+            'Neon Valkyries', 'Ametrine Dreams', 'Sonic Sweethearts', 'Hyper-Bloom', 'Aozora Project',
+            'Twilight Trigger', 'Platinum Pulse', 'Hana-bi Force', 'Reverse:Fantasy', 'Star-Crossed 9',
+            'Electric Enigma', 'Sakura Storm', 'Vanguard Vibe', 'Opal Odyssey', 'Phantom Idols',
+            'Kuro-Neko Kiss', 'Vector Vixens', 'Cyber-Siren', 'Majestic Moon', 'Alpha-Order',
+            'Gilded Ghost', 'Mirage Melody', 'Chaos Candy', 'Iron Rose', 'Synchro-Step',
+            'Blue-Sky Blade', 'Tear-Drop 4', 'Gravity Queens', 'Nova-Core', 'Tsuki-yomi 7',
+            'Glitter Gang', 'Bionic Berry', 'Royal Resonance', 'Savage Soul', 'Wink Warriors',
+            'Zenith Zero', 'Misty Muse', 'Neon-Knights', 'Radiant Riot', 'Final Fortune'
+        ];        
         const shuffledNames = [...rivalNames].sort(() => 0.5 - Math.random());
 
-            const initialRivals = shuffledNames.slice(0, 2).map((name, index) => ({
-                id: index + 1,
-                name: name,
-                fans: 5000 + Math.floor(Math.random() * 4000),
-                membersCount: 8 + Math.floor(Math.random() * 6),
-                songs: []
-            }));
+            const archetypes = ['Powerhouse', 'Visual Queens', 'Critical Darlings', 'Rising Stars'];
+            const initialRivals = shuffledNames.slice(0, 3).map((name, index) => {
+                const aceName = generateRandomMemberName();
+                return {
+                    id: index + 1,
+                    name: name,
+                    fans: 10000 + Math.floor(Math.random() * 15000),
+                    membersCount: 8 + Math.floor(Math.random() * 8),
+                    songs: [],
+                    archetype: archetypes[Math.floor(Math.random() * archetypes.length)],
+                    ace: {
+                        name: aceName,
+                        fans: 3000 + Math.floor(Math.random() * 5000)
+                    },
+                    aggression: Math.floor(Math.random() * 50) + 25, // 25-75
+                    history: [{ week: 1, event: `Formed as a new rival group.` }]
+                };
+            });
             setRivalGroups(initialRivals);
         setGameStarted(true);
         // Updated message to guide the player
@@ -3477,73 +3509,75 @@ const createSong = () => {
     };
 
     const scheduleNewSingle = ({ songData, productionData, releaseWeek, physicalVersions, includeHandshakeTickets }) => {
-    const baseCostPerVersion = 100000;
-    const productionTierCost = Object.keys(productionData).reduce((total, key) => {
-        const choice = productionData[key];
-        const tiers = { training: { standard: { cost: 0 }, workshop: { cost: 50000 }, overseas: { cost: 250000 }, bootcamp: { cost: 400000 }, elite: { cost: 650000 }, oneOnOne: { cost: 900000 } }, song: { inHouse: { cost: 0 }, rookie: { cost: 50000 }, external: { cost: 100000 }, trend: { cost: 180000 }, famous: { cost: 400000 }, hitmaker: { cost: 750000 } }, mv: { none: { cost: 0 }, practice: { cost: 20000 }, performance: { cost: 60000 }, location: { cost: 150000 }, storyline: { cost: 300000 }, cinematic: { cost: 600000 }, blockbuster: { cost: 1000000 } }, outfits: { existing: { cost: 0 }, recolor: { cost: 40000 }, custom: { cost: 120000 }, concept: { cost: 200000 }, luxury: { cost: 450000 } }, promo: { none: { cost: 0 }, social: { cost: 30000 }, teaser: { cost: 60000 }, variety: { cost: 120000 }, blitz: { cost: 200000 }, global: { cost: 400000 } } };
-        return total + (tiers[key]?.[choice]?.cost || 0);
-    }, 10000);
-    
-    const physicalCost = songData.releaseFormat === 'physical' ? baseCostPerVersion * physicalVersions : 0;
-    const handshakeTicketCost = includeHandshakeTickets ? 300000 : 0;
-    const totalCost = productionTierCost + physicalCost + handshakeTicketCost;
+        // ---- START: Existing Cost Logic ----
+        const baseCostPerVersion = 100000;
+        const productionTierCost = Object.keys(productionData).reduce((total, key) => {
+            const choice = productionData[key];
+            const tiers = { training: { standard: { cost: 0 }, workshop: { cost: 50000 }, overseas: { cost: 250000 }, bootcamp: { cost: 400000 }, elite: { cost: 650000 }, oneOnOne: { cost: 900000 } }, song: { inHouse: { cost: 0 }, rookie: { cost: 50000 }, external: { cost: 100000 }, trend: { cost: 180000 }, famous: { cost: 400000 }, hitmaker: { cost: 750000 } }, mv: { none: { cost: 0 }, practice: { cost: 20000 }, performance: { cost: 60000 }, location: { cost: 150000 }, storyline: { cost: 300000 }, cinematic: { cost: 600000 }, blockbuster: { cost: 1000000 } }, outfits: { existing: { cost: 0 }, recolor: { cost: 40000 }, custom: { cost: 120000 }, concept: { cost: 200000 }, luxury: { cost: 450000 } }, promo: { none: { cost: 0 }, social: { cost: 30000 }, teaser: { cost: 60000 }, variety: { cost: 120000 }, blitz: { cost: 200000 }, global: { cost: 400000 } } };
+            return total + (tiers[key]?.[choice]?.cost || 0);
+        }, 10000);
+        
+        const physicalCost = songData.releaseFormat === 'physical' ? baseCostPerVersion * physicalVersions : 0;
+        const handshakeTicketCost = includeHandshakeTickets ? 300000 : 0;
+        const totalCost = productionTierCost + physicalCost + handshakeTicketCost;
+
+        if (money < totalCost) {
+            setMessage("Not enough money for this production!");
+            return;
+        }
+        setMoney(prev => prev - totalCost);
+        // ---- END: Existing Cost Logic ----
+
+        // ---- START: Existing Timeline & Object Creation ----
+        const timeline = [];
+        const weeksBefore = releaseWeek - week;
+        if (productionData.training !== 'standard') timeline.push({ week: week + Math.max(1, Math.floor(weeksBefore * 0.2)), message: `Special training for "${songData.name}" has begun!` });
+        if (productionData.promo !== 'none') timeline.push({ week: releaseWeek - 1, message: `Promotions for "${songData.name}" have begun!` });
+
+        const newScheduledRelease = {
+            type: 'single',
+            songData,
+            productionData,
+            releaseWeek,
+            physicalVersions,
+            includeHandshakeTickets,
+            timeline,
+        };
+        setScheduledSingles(prev => [...prev, newScheduledRelease]);
+        // ---- END: Existing Timeline & Object Creation ----
+        
+        // --- START: Existing Graduation Urgency Logic ---
+        const allParticipatingIds = new Set(songData.tracks.flatMap(t => (t.members || []).map(m => String(m.id))));
+
+        const potentialParticipants = getAllAvailableMembers(true).filter(m => {
+            if (songData.targetGroup === 'main') {
+                return m.homeGroup === 'main' || (m.kenninGroups || []).includes(groupName);
+            } else {
+                const sg = sisterGroups.find(g => g.name === songData.targetGroup);
+                if (!sg) return false;
+                return m.homeGroup === sg.name || (m.kenninGroups || []).includes(sg.name);
+            }
+        });
+
+        const unselectedMembers = potentialParticipants.filter(m => !allParticipatingIds.has(String(m.rosterId || m.id)));
+
+        unselectedMembers.forEach(member => {
+            let urgencyIncrease = 3;
+            if (member.ambition === 'Prove My Worth') {
+                urgencyIncrease = 10;
+            }
+            updateMemberState(member.rosterId || member.id, m => ({
+                ...m,
+                graduationUrgency: Math.min(100, (m.graduationUrgency || 0) + urgencyIncrease)
+            }));
+        });
+        // --- END: Existing Graduation Urgency Logic ---
 
 
-    if (money < totalCost) {
-        setMessage("Not enough money for this production!");
-        return;
-    }
-    setMoney(prev => prev - totalCost);
-
-    const timeline = [];
-    const weeksBefore = releaseWeek - week;
-    if (productionData.training !== 'standard') timeline.push({ week: week + Math.max(1, Math.floor(weeksBefore * 0.2)), message: `Special training for "${songData.name}" has begun!` });
-    if (productionData.promo !== 'none') timeline.push({ week: releaseWeek - 1, message: `Promotions for "${songData.name}" have begun!` });
-
-    const newScheduledRelease = {
-        type: 'single',
-        songData,
-        productionData,
-        releaseWeek,
-        physicalVersions,
-        includeHandshakeTickets,
-        timeline,
+        // --- Final UI Updates ---
+        setShowModal(null);
+        setMessage(`Production for "${songData.name}" scheduled for Week ${releaseWeek}! Cost: ¥${totalCost.toLocaleString()}`);
     };
-
-// --- Graduation Urgency on Failure (Being Left Out) ---
-const allParticipatingIds = new Set(songData.tracks.flatMap(t => (t.members || []).map(m => String(m.id))));
-
-// Get all members who could have participated in this single's group
-const potentialParticipants = getAllAvailableMembers(true).filter(m => {
-    if (songData.targetGroup === 'main') {
-        return m.homeGroup === 'main' || (m.kenninGroups || []).includes(groupName);
-    } else {
-        const sg = sisterGroups.find(g => g.name === songData.targetGroup);
-        if (!sg) return false;
-        return m.homeGroup === sg.name || (m.kenninGroups || []).includes(sg.name);
-    }
-});
-
-const unselectedMembers = potentialParticipants.filter(m => !allParticipatingIds.has(String(m.rosterId || m.id)));
-
-unselectedMembers.forEach(member => {
-    // Increase urgency for being left out, with a larger penalty for certain ambitions
-    let urgencyIncrease = 3;
-    if (member.ambition === 'Prove My Worth') {
-        urgencyIncrease = 10; // Much higher penalty for being ignored
-    }
-    updateMemberState(member.rosterId || member.id, m => ({
-        ...m,
-        graduationUrgency: Math.min(100, (m.graduationUrgency || 0) + urgencyIncrease)
-    }));
-});
-// ---
-
-
-    setScheduledSingles(prev => [...prev, newScheduledRelease]);
-    setShowModal(null);
-    setMessage(`Production for "${songData.name}" scheduled for Week ${releaseWeek}! Cost: ¥${totalCost.toLocaleString()}`);
-};
 
     const scheduleNewAlbum = ({ albumData, productionData, releaseWeek }) => {
         
@@ -3578,6 +3612,65 @@ unselectedMembers.forEach(member => {
     setShowModal(null);
     setMessage(`Production for album "${albumData.name}" scheduled for Week ${releaseWeek}! Cost: ¥${totalCost.toLocaleString()}`);
 };
+
+    const generateNewChart = (playerSongsToAdd = []) => {
+        let chartEntries = [];
+
+        // 1. Add Player's Songs
+        playerSongsToAdd.forEach(song => {
+            chartEntries.push({
+                id: song.id,
+                isPlayer: true,
+                artist: song.targetGroup === 'main' ? groupName : song.targetGroup,
+                songName: song.name,
+                baseSalesPotential: song.baseSalesPotential,
+                totalSales: 0,
+                lastRank: 0,
+                currentRank: 0,
+            });
+        });
+
+        // 2. Add Persistent Rival Songs
+        const rivalReleaseChance = 0.3;
+        rivalGroups.forEach(rival => {
+            if (Math.random() < rivalReleaseChance) {
+                chartEntries.push({
+                    id: `rival-${rival.id}-${week}`,
+                    isPlayer: false,
+                    artist: rival.name,
+                    songName: generateSongTitle(),
+                    baseSalesPotential: (rival.fans / 15) * (1 + (rival.hype || 0) / 100),
+                    totalSales: 0,
+                    lastRank: 0,
+                    currentRank: 0,
+                });
+            }
+        });
+
+        // 3. Add Filler Groups
+        const fillerCount = 30 - chartEntries.length;
+        for (let i = 0; i < fillerCount; i++) {
+            let potential = 5000 + Math.random() * 35000;
+            if (Math.random() < 0.1) potential = 100000 + Math.random() * 200000;
+            else if (Math.random() < 0.4) potential = 40000 + Math.random() * 60000;
+
+            chartEntries.push({
+                id: `filler-${i}-${week}`,
+                isPlayer: false,
+                artist: generateRandomGroupName(),
+                songName: generateSongTitle(),
+                baseSalesPotential: potential,
+                totalSales: 0,
+                lastRank: 0,
+                currentRank: 0,
+            });
+        }
+
+        setActiveChart({
+            week: 0,
+            entries: chartEntries,
+        });
+    };
 
 
     const executeSongRelease = (singleToRelease, initialMembers, initialSisterGroups, initialSongs) => {
@@ -4060,6 +4153,7 @@ unselectedMembers.forEach(member => {
             baseSalesPotential: baseSalesPotential,
             weeklySales: [],
             chartWeeksLeft: 8,
+            rankHistory: [],
             hasVideo: productionData.mv !== 'none',
             targetGroup: songData.targetGroup,
             releaseWeek: week,
@@ -4124,6 +4218,10 @@ unselectedMembers.forEach(member => {
         const releaseMessage = `RELEASED: \"${songData.name}\"! It will begin charting next week. Initial Hype: +${newFansTotal.toLocaleString()} fans.`;
         addNotification({ type: 'success', message: releaseMessage });
         
+        // --- NEW: Daily Chart Generation ---
+        generateNewChart([newSong]);
+        // --- END: Daily Chart Generation ---
+
         return { updatedMembers, updatedSisterGroups, releaseMessage, newSong };
     };
     
@@ -5527,6 +5625,7 @@ let updatedSisterGroups = initialSisterGroups;
             baseSalesPotential: baseSalesPotential,
             totalSales: 0,
             peakRank: -1,
+            rankHistory: [],
             salesHistory: [],
             releaseWeek: week,
             tracks: albumToRelease.albumData.tracks,
@@ -5535,15 +5634,6 @@ let updatedSisterGroups = initialSisterGroups;
             productionCost: totalCost,
             chartWeeksLeft: 8,
         };
-
-        if (newAlbum.artist === groupName) {
-            setSongs(prev => [...(prev || []), newAlbum]);
-        } else {
-             const sgIndex = updatedSisterGroups.findIndex(sg => sg.name === newAlbum.artist);
-            if (sgIndex > -1) {
-                updatedSisterGroups[sgIndex].songs = [...(updatedSisterGroups[sgIndex].songs || []), newAlbum];
-            }
-        }
 
         allMemberIdsInAlbum.forEach(memberId => {
             const participatedTracks = albumData.tracks.filter(track =>
@@ -5588,7 +5678,7 @@ let updatedSisterGroups = initialSisterGroups;
 
         const releaseMessage = `RELEASED ALBUM: \"${albumData.name}\"! It will begin charting next week. Initial Hype: +${newFansTotal.toLocaleString()} fans.`;
         addNotification({ type: 'success', message: releaseMessage });
-        return { updatedMembers, updatedSisterGroups, releaseMessage };
+        return { updatedMembers, updatedSisterGroups, releaseMessage, newAlbum };
     };
 
     const startDraftKaigi = () => {
@@ -5948,6 +6038,47 @@ const runAnnualAwards = () => {
     return false; // Let the week advance while the modal is shown
 };
 
+    const simulateChartWeek = () => {
+        if (!activeChart) return;
+
+        // The chart runs for 8 weeks (0-7). If it's over, generate a new one.
+        if (activeChart.week >= 7) {
+            const playerSongsStillCharting = songs.filter(s => s.chartWeeksLeft > 0);
+            generateNewChart(playerSongsStillCharting);
+            return; 
+        }
+
+        let currentChart = { ...activeChart };
+        const chartWeekIndex = currentChart.week;
+
+        // Update lastRank for all entries before calculating new sales for this week
+        currentChart.entries.forEach(entry => {
+            entry.lastRank = entry.currentRank;
+        });
+        
+        currentChart.entries.forEach(entry => {
+            const salesCurvePoint = weeklySalesCurve[chartWeekIndex] || 0.01;
+            
+            // Calculate this week's visual sales
+            const salesThisWeek = Math.floor(
+                (entry.baseSalesPotential * salesCurvePoint) * (0.7 + Math.random() * 0.6)
+            );
+
+            entry.totalSales += salesThisWeek;
+        });
+
+        // Sort entries by total sales to determine weekly rank
+        currentChart.entries.sort((a, b) => b.totalSales - a.totalSales);
+        currentChart.entries.forEach((entry, index) => {
+            entry.currentRank = index + 1;
+        });
+        
+        // Update the chart state
+        setActiveChart({
+            ...currentChart,
+            week: currentChart.week + 1 // Increment the week
+        });
+    };
 
     const nextWeek = () => {
 
@@ -6013,6 +6144,11 @@ setPerformanceHistory(prev => [kouhakuPerformanceForHistory, ...prev]);
         }        
         
         // --- 1. SETUP & INITIALIZATION ---
+        // --- Simulate Chart Week ---
+        if (activeChart) {
+            simulateChartWeek();
+        }
+
         // The newWeek number is calculated once.
         const newWeek = week + 1;
 
@@ -6043,7 +6179,6 @@ if ((newWeek - 1) % 52 === 49) { // Trigger at the end of Week 49
         let tempVotingTickets = votingTickets;
         let graduatingIdsThisWeek = [];
         let hallOfFameForUpdate = JSON.parse(JSON.stringify(hallOfFame)); // <--- ADD THIS LINE
-
         // --- MERCH FIX: Initialize draft inventories ONCE ---
         let tempMerchInv = JSON.parse(JSON.stringify(merchInventory));
         let tempIdolMerchInv = JSON.parse(JSON.stringify(idolMerchInventory));
@@ -6385,42 +6520,165 @@ if (requestHourStatus && requestHourStatus.isActive && newWeek > requestHourStat
             addNotificationInLoop({ type: 'Election', message: 'The election campaign has ended! The results will be announced soon.' });
         }
 
-
-        // --- SINGLE & ALBUM RELEASES ---
-        const releasesForThisWeek = scheduledSingles.filter(r => r.releaseWeek === newWeek);
-        if (releasesForThisWeek.length > 0) {
-            releasesForThisWeek.forEach(release => {
-                // We pass our DRAFT arrays into the release functions.
-                const result = release.type === 'album'
-                    ? executeAlbumRelease(release, membersForUpdate, sisterGroupsForUpdate)
-                    : executeSongRelease(release, membersForUpdate, sisterGroupsForUpdate, songsForUpdate); // <-- THE FIX IS HERE
-                
-                if (result) {
-                    // The functions return updated member/group drafts, which we accept for this loop.
-                    membersForUpdate = result.updatedMembers;
-                    sisterGroupsForUpdate = result.updatedSisterGroups;
-
-                    if (result.newSong) {
-                         if (result.newSong.targetGroup === 'main' || result.newSong.targetGroup === groupName) {
-                            songsForUpdate.push(result.newSong);
+            // --- SINGLE & ALBUM RELEASES ---
+            const releasesForThisWeek = scheduledSingles.filter(r => r.releaseWeek === newWeek);
+            if (releasesForThisWeek.length > 0) {
+                releasesForThisWeek.forEach(release => {
+                    // We pass our DRAFT arrays into the release functions.
+                    const result = release.type === 'album'
+                        ? executeAlbumRelease(release, membersForUpdate, sisterGroupsForUpdate)
+                        : executeSongRelease(release, membersForUpdate, sisterGroupsForUpdate, songsForUpdate);
+                    
+                    if (result) {
+                        // The functions return updated member/group drafts, which we accept for this loop.
+                        membersForUpdate = result.updatedMembers;
+                        sisterGroupsForUpdate = result.updatedSisterGroups;
+    
+                        if (result.newSong) {
+                             if (result.newSong.targetGroup === 'main' || result.newSong.targetGroup === groupName) {
+                                songsForUpdate.push(result.newSong);
+                            }
+                        }
+    
+                        if (result.newAlbum) {
+                            if (result.newAlbum.artist === groupName) {
+                                songsForUpdate.push(result.newAlbum);
+                            } else {
+                                const sgIndex = sisterGroupsForUpdate.findIndex(sg => sg.name === result.newAlbum.artist);
+                                if (sgIndex > -1) {
+                                    if (!sisterGroupsForUpdate[sgIndex].songs) {
+                                        sisterGroupsForUpdate[sgIndex].songs = [];
+                                    }
+                                    sisterGroupsForUpdate[sgIndex].songs.push(result.newAlbum);
+                                }
+                            }
+                        }
+    
+                        if (result.releaseMessage && !priorityMessage) {
+                            priorityMessage = result.releaseMessage;
                         }
                     }
+    
+                });
+                 // We update the state directly here as it's safe.
+                setScheduledSingles(prev => prev.filter(r => r.releaseWeek !== newWeek));
+            }
 
-                    if (result.releaseMessage && !priorityMessage) {
-                        priorityMessage = result.releaseMessage;
-                    }
-                }
-            });
-             // We update the state directly here as it's safe.
-            setScheduledSingles(prev => prev.filter(r => r.releaseWeek !== newWeek));
-        }
 
-        // --- 4. CALCULATE ALL INCOME STREAMS ---
+                        // --- 4. CALCULATE ALL INCOME STREAMS ---
 
         let incomeBreakdown = [];
         let totalWeeklyIncome = 0;
         
-        
+// --- 5. CALCULATE CHART SALES & FAN GAINS (from drafts) ---
+
+        let weeklyChartRevenue = 0;
+        let weeklyChartReport = [];
+
+        // This is a single, unified function to process any song's sales for the week.
+        const processSongSales = (song, groupNameForLog = groupName) => {
+            if (song.chartWeeksLeft > 0) {
+                const chartWeekIndex = 8 - song.chartWeeksLeft;
+
+                if (chartWeekIndex >= 0 && chartWeekIndex < weeklySalesCurve.length) {
+                    const salesMultiplier = song.type === 'album' ? 1 : (salesMultipliers[song.production?.song] || 1);
+                    const salesThisWeek = Math.floor((song.baseSalesPotential || 0) * weeklySalesCurve[chartWeekIndex] * salesMultiplier * (0.85 + Math.random() * 0.3));
+                    const revenueThisWeek = salesThisWeek * 15;
+                    
+                    weeklyChartRevenue += revenueThisWeek;
+                    
+                    let fanMultiplier = 1;
+                    if (song.type === 'single') { fanMultiplier = (fanMultipliers[song.production?.mv] || 1) * (promoMultipliers[song.production?.promo] || 1); }
+                    else if (song.type === 'album' && song.production?.promo_album) { fanMultiplier = promoMultipliers[song.production.promo_album] || 1; }
+                    const fansThisWeek = Math.floor(5 + ((salesThisWeek / 15) * fanMultiplier));
+
+                    const allMemberIdsInSingle = (song.tracks || []).flatMap(t => (t.members || []).map(m => String(m.id)));
+                    const uniqueMemberIds = [...new Set(allMemberIdsInSingle)];
+                    localDistributeFans(fansThisWeek, uniqueMemberIds);
+
+                    const logName = (groupNameForLog === groupName || !groupNameForLog) ? song.name : `${groupNameForLog}'s ${song.name}`;
+                    weeklyChartReport.push(`${logName}: ${salesThisWeek.toLocaleString()} sold.`);
+
+                    const newChartWeeksLeft = song.chartWeeksLeft - 1;
+                    const finalTotalSales = (song.totalSales || 0) + salesThisWeek;
+
+                    if (newChartWeeksLeft === 0) { // --- Song has finished its chart run ---
+                        if (song.isElectionSingle) {
+                            tempElectionVotePool += finalTotalSales;
+                            addNotificationInLoop({ type: 'Election', message: `Votes from "${song.name}" are tallied! Added: ${finalTotalSales.toLocaleString()} votes.` });
+                            setIsElectionSingleFinished(true);
+                        }
+                        const ticketsEarned = Math.floor(finalTotalSales / 1000);
+                        if (ticketsEarned > 0) {
+                            tempVotingTickets += ticketsEarned;
+                            addNotificationInLoop({ type: 'Info', message: `Earned ${ticketsEarned.toLocaleString()} Request Hour Voting Tickets from "${song.name}" sales!` });
+                        }
+
+                        // --- NEW: Reputation Gain from Sales ---
+                        let reputationChange = 0;
+                        if (finalTotalSales >= 1000000) {
+                            reputationChange = 5;
+                            addNotificationInLoop({ type: 'Reputation', message: `"${song.name}" went Million! Your group's reputation has skyrocketed! (+5 Rep)` });
+                        } else if (finalTotalSales >= 500000) {
+                            reputationChange = 3;
+                            addNotificationInLoop({ type: 'Reputation', message: `"${song.name}" is a certified hit! Your reputation grows. (+3 Rep)` });
+                        } else if (finalTotalSales >= 100000) {
+                            reputationChange = 1;
+                        } else if (finalTotalSales < 10000) {
+                            reputationChange = -1;
+                            addNotificationInLoop({ type: 'alert', message: `"${song.name}" was a commercial flop, slightly damaging your reputation. (-1 Rep)` });
+                        }
+                        if (reputationChange !== 0) {
+                             setGroupReputation(prev => Math.max(0, prev + reputationChange));
+                        }
+                        // --- END NEW ---
+                    }
+                    // --- NEW: Remove song from active chart visuals ---
+                    if (newChartWeeksLeft === 0 && activeChart) {
+                        setActiveChart(prevChart => {
+                            if (!prevChart) return null;
+                            const newEntries = prevChart.entries.filter(e => e.id !== song.id);
+                            // The chart continues with fillers until the 8-week cycle is over.
+                            return { ...prevChart, entries: newEntries };
+                        });
+                    }
+                    // --- END NEW ---
+                    let weeklyRank = 'N/A';
+                    if (activeChart) {
+                        const chartEntryForRank = activeChart.entries.find(e => e.id === song.id);
+                        if (chartEntryForRank) {
+                            weeklyRank = chartEntryForRank.currentRank;
+                        }
+                    }
+
+                    return {
+                        ...song,
+                        totalSales: finalTotalSales,
+                        chartWeeksLeft: newChartWeeksLeft,
+                        salesHistory: [...(song.salesHistory || []), { week: newWeek, sales: salesThisWeek }],
+                        rankHistory: [...(song.rankHistory || []), { week: newWeek, rank: weeklyRank }],
+                        weeklySales: [...(song.weeklySales || []), salesThisWeek],
+                    };
+                }
+            }
+            return song;
+        };
+
+        // Now, apply this safe function to our draft arrays.
+        songsForUpdate = songsForUpdate.map(song => processSongSales(song, groupName));
+
+        sisterGroupsForUpdate = sisterGroupsForUpdate.map(sg => {
+            if (!sg.songs || sg.songs.length === 0) return sg;
+            const newSgSongs = sg.songs.map(song => processSongSales(song, sg.name));
+            return { ...sg, songs: newSgSongs };
+        });
+
+        // Finally, add the total chart revenue to our draft money variable.
+        if (weeklyChartRevenue > 0) {
+            totalWeeklyIncome += weeklyChartRevenue;
+            incomeBreakdown.push(`Chart Sales: ¥${weeklyChartRevenue.toLocaleString()}`);
+            addNotificationInLoop({ type: 'info', message: `Chart Sales Report: ${weeklyChartReport.join(' ')}` });
+        }
         // --- ENDORSEMENT INCOME ---
         // This must be calculated *before* chart sales decrement the weeks left on a single.
         let endorsementIncome = 0;
@@ -6573,98 +6831,6 @@ if (requestHourStatus && requestHourStatus.isActive && newWeek > requestHourStat
     }
 
 
-        // --- 5. CALCULATE CHART SALES & FAN GAINS (from drafts) ---
-
-        let weeklyChartRevenue = 0;
-        let weeklyChartReport = [];
-
-        // This is a single, unified function to process any song's sales for the week.
-                const processSongSales = (song, groupNameForLog = groupName) => {
-            if (song.chartWeeksLeft > 0) {
-                const chartWeekIndex = 8 - song.chartWeeksLeft;
-
-                if (chartWeekIndex >= 0 && chartWeekIndex < weeklySalesCurve.length) {
-                    const salesMultiplier = song.type === 'album' ? 1 : (salesMultipliers[song.production?.song] || 1);
-                    const salesThisWeek = Math.floor((song.baseSalesPotential || 0) * weeklySalesCurve[chartWeekIndex] * salesMultiplier * (0.85 + Math.random() * 0.3));
-                    const revenueThisWeek = salesThisWeek * 15;
-                    
-                    weeklyChartRevenue += revenueThisWeek;
-                    
-                    let fanMultiplier = 1;
-                    if (song.type === 'single') { fanMultiplier = (fanMultipliers[song.production?.mv] || 1) * (promoMultipliers[song.production?.promo] || 1); }
-                    else if (song.type === 'album' && song.production?.promo_album) { fanMultiplier = promoMultipliers[song.production.promo_album] || 1; }
-                    const fansThisWeek = Math.floor(5 + ((salesThisWeek / 15) * fanMultiplier));
-
-                    const allMemberIdsInSingle = (song.tracks || []).flatMap(t => (t.members || []).map(m => String(m.id)));
-                    const uniqueMemberIds = [...new Set(allMemberIdsInSingle)];
-                    localDistributeFans(fansThisWeek, uniqueMemberIds);
-
-                    const logName = (groupNameForLog === groupName || !groupNameForLog) ? song.name : `${groupNameForLog}'s ${song.name}`;
-                    weeklyChartReport.push(`${logName}: ${salesThisWeek.toLocaleString()} sold.`);
-
-                    const newChartWeeksLeft = song.chartWeeksLeft - 1;
-                    const finalTotalSales = (song.totalSales || 0) + salesThisWeek;
-
-                    if (newChartWeeksLeft === 0) { // --- Song has finished its chart run ---
-                        if (song.isElectionSingle) {
-                            tempElectionVotePool += finalTotalSales;
-                            addNotificationInLoop({ type: 'Election', message: `Votes from "${song.name}" are tallied! Added: ${finalTotalSales.toLocaleString()} votes.` });
-                            setIsElectionSingleFinished(true);
-                        }
-                        const ticketsEarned = Math.floor(finalTotalSales / 1000);
-                        if (ticketsEarned > 0) {
-                            tempVotingTickets += ticketsEarned;
-                            addNotificationInLoop({ type: 'Info', message: `Earned ${ticketsEarned.toLocaleString()} Request Hour Voting Tickets from "${song.name}" sales!` });
-                        }
-
-                        // --- NEW: Reputation Gain from Sales ---
-                        let reputationChange = 0;
-                        if (finalTotalSales >= 1000000) {
-                            reputationChange = 5;
-                            addNotificationInLoop({ type: 'Reputation', message: `"${song.name}" went Million! Your group's reputation has skyrocketed! (+5 Rep)` });
-                        } else if (finalTotalSales >= 500000) {
-                            reputationChange = 3;
-                            addNotificationInLoop({ type: 'Reputation', message: `"${song.name}" is a certified hit! Your reputation grows. (+3 Rep)` });
-                        } else if (finalTotalSales >= 100000) {
-                            reputationChange = 1;
-                        } else if (finalTotalSales < 10000) {
-                            reputationChange = -1;
-                            addNotificationInLoop({ type: 'alert', message: `"${song.name}" was a commercial flop, slightly damaging your reputation. (-1 Rep)` });
-                        }
-                        if (reputationChange !== 0) {
-                             setGroupReputation(prev => Math.max(0, prev + reputationChange));
-                        }
-                        // --- END NEW ---
-                    }
-                    
-                    return {
-                        ...song,
-                        totalSales: finalTotalSales,
-                        chartWeeksLeft: newChartWeeksLeft,
-                        salesHistory: [...(song.salesHistory || []), { week: newWeek, sales: salesThisWeek }],
-                        weeklySales: [...(song.weeklySales || []), salesThisWeek],
-                    };
-                }
-            }
-            return song;
-        };
-
-        // Now, apply this safe function to our draft arrays.
-        songsForUpdate = songsForUpdate.map(song => processSongSales(song, groupName));
-
-        sisterGroupsForUpdate = sisterGroupsForUpdate.map(sg => {
-            if (!sg.songs || sg.songs.length === 0) return sg;
-            const newSgSongs = sg.songs.map(song => processSongSales(song, sg.name));
-            return { ...sg, songs: newSgSongs };
-        });
-
-        // Finally, add the total chart revenue to our draft money variable.
-        if (weeklyChartRevenue > 0) {
-            moneyForUpdate += weeklyChartRevenue;
-            incomeBreakdown.push(`Chart Sales: ¥${weeklyChartRevenue.toLocaleString()}`);
-            addNotificationInLoop({ type: 'info', message: `Chart Sales Report: ${weeklyChartReport.join(' ')}` });
-        }
-      
         // --- 6. CALCULATE EXPENSES & FAN CHURN (from drafts) ---
 
         let expenseNotification = '';
@@ -7056,7 +7222,6 @@ newStress += chemistryStressEffect;
         setIdolMerchInventory(tempIdolMerchInv);
         setElectionVotePool(tempElectionVotePool);
         setVotingTickets(tempVotingTickets);
-
         // If a new member is announcing graduation, pause the game to show the modal.
         if (graduatingMember) {
             setModalData(graduatingMember);
@@ -8141,61 +8306,141 @@ const finishSportsFestival = () => {
 };
 
 const simulateRivalActions = (currentRivals, currentWeek, addNotificationInLoop) => {
-    const rivalNames = [
-        'Lunar Princesses', 'Project Nova', 'Sapphire Kiss', 'Onyx7', 
-        'Solstice', 'Equinox', 'Galaxy Girls', 'Cosmic Charm'
-    ];
-
     let updatedRivals = currentRivals.map(rival => {
-        let newRival = { ...rival };
-        // Basic fan growth
-        let newFans = Math.floor((newRival.fans || 0) * 0.01 * (0.5 + Math.random()));
+        let newRival = { ...rival, history: rival.history || [] };
+        let baseFanGrowth = 0.01;
+        let singleReleaseChance = 0.08;
+        let recruitmentChance = 0.04;
+
+        // Archetype modifiers
+        switch (rival.archetype) {
+            case 'Powerhouse':
+                baseFanGrowth = 0.015;
+                singleReleaseChance = 0.12;
+                break;
+            case 'Visual Queens':
+                // Higher chance for a special "commercial" event
+                if (Math.random() < 0.05) {
+                    const event = { week: currentWeek, event: `Landed a major commercial deal.` };
+                    newRival.history.push(event);
+                    newRival.fans += 5000 + Math.floor(Math.random() * 10000);
+                    addNotificationInLoop({
+                        type: 'Rival',
+                        message: `${rival.name} landed a major commercial deal, boosting their popularity!`
+                    });
+                }
+                break;
+            case 'Critical Darlings':
+                baseFanGrowth = 0.007;
+                singleReleaseChance = 0.05;
+                break;
+            case 'Rising Stars':
+                recruitmentChance = 0.08;
+                break;
+        }
+
+        // Basic fan growth for the group
+        let newFans = Math.floor((newRival.fans || 0) * baseFanGrowth * (0.5 + Math.random()));
         newRival.fans += newFans;
 
+        // Ace fan growth
+        if (newRival.ace) {
+            newRival.ace.fans += Math.floor(newFans * (0.1 + Math.random() * 0.2));
+        }
+
         // Chance to release a new single
-        if (Math.random() < 0.08) { // 8% chance each week
+        if (Math.random() < singleReleaseChance) {
             const newSongName = generateSongTitle();
             newRival.songs = [...(newRival.songs || []), { name: newSongName, sales: 0, releaseWeek: currentWeek }];
-            addNotificationInLoop({ 
-                type: 'Rival', 
-                message: `${newRival.name} has released a new single titled "${newSongName}"!` 
+            const event = { week: currentWeek, event: `Released new single: "${newSongName}"` };
+            newRival.history.push(event);
+            addNotificationInLoop({
+                type: 'Rival',
+                message: `${rival.name} has released a new single titled "${newSongName}"!`
             });
         }
 
         // Update sales for existing songs
         if (newRival.songs) {
-            newRival.songs = newRival.songs.map(song => ({
-                ...song,
-                sales: song.sales + Math.floor(Math.random() * 4000) + 1000
-            }));
+            newRival.songs = newRival.songs.map(song => {
+                const salesThisWeek = Math.floor(Math.random() * 4000) + 1000;
+                const newTotalSales = (song.sales || 0) + salesThisWeek;
+                const newSalesHistory = [...(song.salesHistory || []), { week: currentWeek, sales: salesThisWeek }];
+
+                return {
+                    ...song,
+                    sales: newTotalSales,
+                    salesHistory: newSalesHistory
+                };
+            });
         }
 
         // Chance to recruit a new member
-        if (Math.random() < 0.04) { // 4% chance each week
+        if (Math.random() < recruitmentChance) {
             newRival.membersCount = (newRival.membersCount || 10) + 1;
-             addNotificationInLoop({ 
-                type: 'Rival', 
-                message: `${newRival.name} recruited a new member, bringing their total to ${newRival.membersCount}.` 
+            const newMemberName = generateRandomMemberName();
+            const event = { week: currentWeek, event: `Recruited new member: ${newMemberName}` };
+            newRival.history.push(event);
+            addNotificationInLoop({
+                type: 'Rival',
+                message: `${rival.name} recruited a new member, ${newMemberName}, bringing their total to ${newRival.membersCount}.`
             });
         }
         
+        // Keep history to a reasonable size
+        if (newRival.history.length > 20) {
+            newRival.history = newRival.history.slice(newRival.history.length - 20);
+        }
+
         return newRival;
     });
 
     // Chance for a new rival group to appear
-    if (updatedRivals.length < 5 && Math.random() < 0.02) {
+    const rivalNames = [
+        'Lunar Princesses', 'Project Nova', 'Sapphire Kiss', 'Onyx7', 'Solstice', 
+        'Equinox', 'Galaxy Girls', 'Cosmic Charm', 'Nebula Stars', 'Pixel Pop', 
+        'Melty Kiss', 'Cherry Chu', 'Violet Theory', 'Zero Gravity', 'Saka46-X', 
+        'Midnight Bloom', 'Neo-Genesis', 'Velvet Riot', 'Aero-Step', 'Diamond Dust', 
+        'Pure Rhythm', 'Kira-Kira 5', 'Digital Hearts', 'Urban Muse', 'Crimson Edge', 
+        'Starry Palette', 'Glass Wings', 'Next-Gen Idols', 'Prism 9', 'Secret Garden', 
+        'Nova-Ray', 'Luminous', 'Bitter-Sweet', 'Infinity Girl', 'Code:Pink', 
+        'Vivid Soul', 'Aozora Sisters', 'Techno-Tale', 'Goth-Loli Punk', 'Sugar Rush', 
+        'Metal Maidens', 'Silent Siren', 'Aura-Blast', 'Future-Mix', 'Starlight 7', 
+        'Honey-BEE', 'Lunar Eclipse', 'Paradox-G', 'Miracle-Step', 'Last-Piece',
+        // --- New Rivals Added Below ---
+        'Shadow Senbatsu', 'Kaminari Girls', 'Zenith 10', 'Ethereal Flow', 'Rubies of Tokyo',
+        'Midnight Protocol', 'Seifuku Rebellion', 'Afterglow 5', 'Digital Diva Project', 'Heart-Link',
+        'Neon Valkyries', 'Ametrine Dreams', 'Sonic Sweethearts', 'Hyper-Bloom', 'Aozora Project',
+        'Twilight Trigger', 'Platinum Pulse', 'Hana-bi Force', 'Reverse:Fantasy', 'Star-Crossed 9',
+        'Electric Enigma', 'Sakura Storm', 'Vanguard Vibe', 'Opal Odyssey', 'Phantom Idols',
+        'Kuro-Neko Kiss', 'Vector Vixens', 'Cyber-Siren', 'Majestic Moon', 'Alpha-Order',
+        'Gilded Ghost', 'Mirage Melody', 'Chaos Candy', 'Iron Rose', 'Synchro-Step',
+        'Blue-Sky Blade', 'Tear-Drop 4', 'Gravity Queens', 'Nova-Core', 'Tsuki-yomi 7',
+        'Glitter Gang', 'Bionic Berry', 'Royal Resonance', 'Savage Soul', 'Wink Warriors',
+        'Zenith Zero', 'Misty Muse', 'Neon-Knights', 'Radiant Riot', 'Final Fortune'
+    ];   
+     if (updatedRivals.length < 5 && Math.random() < 0.02) {
          const newRivalName = rivalNames.find(name => !updatedRivals.some(r => r.name === name));
          if (newRivalName) {
+            const archetypes = ['Powerhouse', 'Visual Queens', 'Critical Darlings', 'Rising Stars'];
+            const aceName = generateRandomMemberName();
             updatedRivals.push({
                 id: Date.now(),
                 name: newRivalName,
                 fans: 5000 + Math.floor(Math.random() * 10000),
                 membersCount: 8 + Math.floor(Math.random() * 8),
-                songs: []
+                songs: [],
+                archetype: archetypes[Math.floor(Math.random() * archetypes.length)],
+                ace: {
+                    name: aceName,
+                    fans: 3000 + Math.floor(Math.random() * 5000)
+                },
+                aggression: Math.floor(Math.random() * 50) + 25,
+                history: [{ week: currentWeek, event: `Formed as a new rival group.` }]
             });
-             addNotificationInLoop({ 
-                type: 'Rival', 
-                message: `A new rival group, ${newRivalName}, has appeared on the scene!` 
+             addNotificationInLoop({
+                type: 'Rival',
+                message: `A new rival group, ${newRivalName}, has appeared on the scene!`
             });
          }
     }
@@ -8206,7 +8451,7 @@ const simulateRivalActions = (currentRivals, currentWeek, addNotificationInLoop)
 
     return {
     // State
-    gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
+    activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
     // Firebase/Persistence
     getSavedGames, saveGame, loadGame,
     // Utilities
