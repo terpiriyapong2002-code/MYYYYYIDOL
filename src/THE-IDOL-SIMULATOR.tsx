@@ -33,11 +33,11 @@ const App = () => {
     // State
     exchangeStudent, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory,  merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
     // Firebase/Persistence
-    getSavedGames, saveGame, loadGame,
+    saveGame, loadGame,
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
-    executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference,  completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining
+    startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference,  completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining
 
     } = useIdolManager();
 
@@ -63,14 +63,6 @@ const App = () => {
     const toggleDarkMode = () => {
         setIsDarkMode(!isDarkMode);
     };
-        useEffect(() => {
-        if (!gameStarted) {
-            const games = getSavedGames();
-            console.log("Saved games found on load:", games);
-            setSavedGames(games);
-        }
-    }, [gameStarted, showModal]);
-
 
     // --- NEW STATE FOR SORT/FILTER ---
     const [memberSort, setMemberSort] = useState({ key: 'rank', asc: true });
@@ -101,9 +93,8 @@ const App = () => {
     useEffect(() => {
         const mainFans = (members || []).reduce((sum, m) => sum + getTotalFansForMember(m), 0);
         const sisterFans = (sisterGroups || []).flatMap(sg => sg.members || []).reduce((sum, m) => sum + getTotalFansForMember(m), 0);
-        const exchangeFans = (exchangeStudents || []).reduce((sum, ex) => sum + getTotalFansForMember(ex.member), 0);
-        setTotalFans(mainFans + sisterFans + exchangeFans);
-    }, [members, sisterGroups, exchangeStudents]);
+        setTotalFans(mainFans + sisterFans);
+    }, [members, sisterGroups]);
 
 
     // Utility function to generate a random name for the startup screen
@@ -202,7 +193,7 @@ const MemberSelectionList = ({ members, selectedIds, toggleMember, disabled = fa
             <div className="max-h-40 overflow-y-auto border p-2 rounded bg-gray-50 dark:bg-gray-900">
                 {(filteredMembers).map(member => (
                   <div
-                    key={member.rosterId}
+                    key={member.id}
                     className={`p-1 text-sm flex justify-between items-center cursor-pointer rounded
                     bg-white dark:bg-gray-800
                     text-gray-800 dark:text-gray-100
@@ -449,7 +440,7 @@ const CustomSetlistModal = () => {
               
               <h4 className="font-semibold mb-1 text-gray-800 dark:text-gray-200">Target Group</h4>
               <select value={targetGroup} onChange={(e) => setTargetGroup(e.target.value)} className="w-full p-2 border rounded mb-3 bg-white dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">
-                  <option key="main" value="main">{groupName} (Main Group)</option>
+                  <option value="main">{groupName} (Main Group)</option>
                   {(sisterGroups || []).map(sg => <option key={sg.id} value={sg.id}>{sg.name}</option>)}
               </select>
               
@@ -869,16 +860,9 @@ const ElectionResultModal = () => {
                                             <RankChangeArrow member={currentMember} />
                                         </div>
                                     </div>
-                                    <span className="text-[11px] sm:text-xs font-bold text-gray-500 dark:text-gray-400 tracking-widest">
-                                        {(() => {
-                                            if (!currentMember) return '...';
-                                            const { isSisterMember, displayGroupName, generation, id } = currentMember;
-                                            const team = teams.find(t => (t.members || []).map(String).includes(String(id)));
-                                            const teamStatus = team ? `Team ${team.name}` : (isSisterMember ? displayGroupName : `${groupName} Kenkyuusei`);
-                                            const generationStatus = generation ? `${generation}` : null;
-                                            return [teamStatus, generationStatus].filter(Boolean).join(' | ');
-                                        })()}
-                                    </span>
+<span className="text-[11px] sm:text-xs font-bold text-gray-500 dark:text-gray-400 tracking-widest">
+    {currentMember ? getMemberGroupStatus(currentMember) : '...'}
+</span>
                                 </div>
                                 <div className="text-left sm:text-right mt-2 sm:mt-0">
                                     <div className="text-2xl sm:text-3xl font-black text-blue-500 dark:text-blue-400 font-mono">{displayVotes.toLocaleString()}</div>
@@ -1033,7 +1017,7 @@ const AnnualAwardsResultModal = () => {
 
     // --- UI/Filter State ---
     const [filterKey, setFilterKey] = useState('All');
-
+    const [showOnlyUnchosen, setShowOnlyUnchosen] = useState(false);
     // --- Production and Scheduling State ---
     const [step, setStep] = useState('type'); // 'type', 'selection', or 'production'
     const [releaseType, setReleaseType] = useState(null); // 'single' or 'album'
@@ -1117,7 +1101,7 @@ const AnnualAwardsResultModal = () => {
                 const allTracks = releaseType === 'album' ? albumTracks : tracks;
                 
                 const allChosenMemberIds = new Set(allTracks.flatMap(t => t.members.map(String)));
-                const unchosenPool = selectableMembers.filter(m => !allChosenMemberIds.has(String(m.id)));
+                const unchosenPool = visibleRoster.filter(m => !allChosenMemberIds.has(String(m.id)));
 
                 if (unchosenPool.length === 0) return;
 
@@ -1183,7 +1167,7 @@ const AnnualAwardsResultModal = () => {
         const updateFn = (prevTracks) => prevTracks.map((track, index) => {
             if (index !== currentIndex || !track.members || track.members.length === 0) return track;
 
-            const trackMembers = track.members.map(id => getMemberById(String(id))).filter(Boolean);
+            const trackMembers = track.members.map(id => selectableMembers.find(m => String(m.id) === String(id))).filter(Boolean);
             const centerId = track.center ? String(track.center) : null;
             const membersToRank = trackMembers.filter(m => String(m.rosterId || m.id) !== centerId);
 
@@ -1222,7 +1206,8 @@ const AnnualAwardsResultModal = () => {
         const updateFn = (prevTracks) => prevTracks.map((track, index) => {
             if (index !== currentIndex || !track.members || track.members.length === 0) return track;
 
-            const trackMembers = track.members.map(id => getMemberById(String(id))).filter(Boolean);
+            const trackMembers = track.members.map(id => selectableMembers.find(m => String(m.id) === String(id))).filter(Boolean);
+
             const centerId = track.center ? String(track.center) : null;
             const membersToRank = trackMembers.filter(m => String(m.rosterId || m.id) !== centerId);
 
@@ -1728,6 +1713,7 @@ const setAlbumCenter = (memberId) => {
 
     selectableMembers.sort((a, b) => getTotalFansForMember(b) - getTotalFansForMember(a));
 
+
     const currentTrack = tracks[selectedTrackIndex];
     const selectableSenbatsu = selectableMembers.filter(m => (currentTrack?.members || []).map(String).includes(String(m.id)));
 
@@ -1761,12 +1747,9 @@ if (memberFilter !== 'all') {
 
     // --- UPDATED Function ---
     // Define the list of currently visible members based on the filter
-    const visibleRoster = selectableMembers.filter(member => {
+    let visibleRoster = selectableMembers.filter(member => {
         if (filterKey === 'All') return true;
-        if (filterKey === 'Unchosen') {
-            const isMemberInAnyTrack = tracks.some(track => track.members.map(String).includes(String(member.id)));
-            return !isMemberInAnyTrack;
-        }
+        
         if (filterKey.startsWith('team-')) {
             const teamId = parseInt(filterKey.replace('team-', ''), 10);
             const selectedTeam = teams.find(t => t.id === teamId);
@@ -1794,6 +1777,11 @@ if (memberFilter !== 'all') {
         }
         return false;
     });
+
+    if (showOnlyUnchosen) {
+        const allChosenMemberIds = new Set(tracks.flatMap(t => t.members.map(String)));
+        visibleRoster = visibleRoster.filter(member => !allChosenMemberIds.has(String(member.id)));
+    }
 
     const handleToggleSelectAllFiltered = () => {
         if (!currentTrack) return;
@@ -1899,32 +1887,34 @@ const handleSchedule = () => {
         targetGroup: targetGroup,
         releaseFormat: releaseFormat,
         tracks: tracks.map(t => {
-            const trackMembers = (t.members || []).map(String).map(id => getMemberById(id)).filter(Boolean);
+            const trackMembers = (t.members || []).map(String).map(id => getMemberById(id) || rivalMembers.find(r => r.id === id)).filter(Boolean);
             return {
                 name: t.name,
                 unitName: t.unitName,
                 type: t.type,
                 popularity: 1.0,
-                    members: trackMembers.map(member => ({
-                        id: member.rosterId || member.id,
-                        name: member.name,
-                        teamName: member.teamName,
-                        displayGroupName: member.isSisterMember ? member.displayGroupName : groupName,
-                        isSisterMember: member.isSisterMember,
-                        generation: member.generation,
-                        isKenkyuusei: !member.teamName,
-                        isKennin: member.isKennin || (member.kenninGroups && member.kenninGroups.length > 0),
-                        kenninGroups: member.kenninGroups || [],
-                        homeGroup: member.homeGroup || (member.isSisterMember ? member.displayGroupName : groupName)
-                    })),
+                        members: trackMembers.map(member => ({
+                            ...member,
+                            id: member.rosterId || member.id,
+                            name: member.name,
+                            teamName: member.teamName,
+                            displayGroupName: member.isSisterMember ? member.displayGroupName : groupName,
+                            isSisterMember: member.isSisterMember,
+                            generation: member.generation,
+                            isKenkyuusei: !member.teamName,
+                            isKennin: member.isKennin || (member.kenninGroups && member.kenninGroups.length > 0),
+                            kenninGroups: member.kenninGroups || [],
+                            homeGroup: member.homeGroup || (member.isSisterMember ? member.displayGroupName : groupName)
+                        })),
                 center: t.center,
                 lineup: t.lineup,
                 cdType: t.cdType
             };
         }),
         isGraduationSingle: releaseType === 'graduationSingle', // This is the new line
-        isElectionSingle: isElectionSingle  
-
+        isElectionSingle: isElectionSingle, 
+        isCollaboration: isCollaboration, // Add this line
+        rivalPartner: rivalPartner,     // Add this line        
 };
             
     scheduleNewSingle({ 
@@ -2006,7 +1996,7 @@ const handleSchedule = () => {
                     <div key={rowName} className="flex flex-col items-center w-full">
                         <DroppableRow rowName={rowName}>
                             <div className="flex justify-center flex-wrap gap-2">
-                                {rows[rowName].length > 0 ? (rows[rowName].map(member => (<DraggableChip key={member.rosterId} member={member} />))) : (<p className="text-xs text-gray-400">Drop members here</p>)}
+                                {rows[rowName].length > 0 ? (rows[rowName].map(member => (<DraggableChip key={member.id} member={member} />))) : (<p className="text-xs text-gray-400">Drop members here</p>)}
                             </div>
                         </DroppableRow>
                         <p className="text-xs text-gray-500 mt-1">{rowName} ({rows[rowName].length})</p>
@@ -2073,7 +2063,7 @@ const renderSelectGraduatingMemberStep = () => {
             <p className="text-center text-gray-600 dark:text-gray-400 mb-6">Choose the member who will be the center of this graduation single.</p>
             <div className="max-h-[60vh] overflow-y-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {potentialGraduates.map(member => (
-                    <div key={member.rosterId} onClick={() => handleGraduatingMemberConfirm(member)} className="p-4 border rounded-lg text-center cursor-pointer hover:bg-yellow-100 dark:hover:bg-gray-700 dark:border-gray-600">
+                    <div key={member.id} onClick={() => handleGraduatingMemberConfirm(member)} className="p-4 border rounded-lg text-center cursor-pointer hover:bg-yellow-100 dark:hover:bg-gray-700 dark:border-gray-600">
                         <div className="w-16 h-16 bg-gray-300 rounded-full mx-auto mb-2"></div>
                         <p className="font-bold dark:text-gray-200">{member.name}</p>
                         <p className="text-xs text-gray-500 dark:text-gray-400">Fans: {getTotalFansForMember(member).toLocaleString()}</p>
@@ -2096,10 +2086,19 @@ const renderSelectGraduatingMemberStep = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                     {/* --- Left Column: Single/Track setup --- */}
                     <div className="lg:col-span-3 space-y-4">
+    {isCollaboration && rivalPartner && (
+        <div className="mb-4 p-3 rounded-lg bg-gradient-to-r from-pink-300 to-purple-300 dark:from-pink-500/50 dark:to-purple-500/50 border border-pink-400/50 shadow-inner">
+            <p className="text-center font-bold text-lg text-white dark:text-gray-100 drop-shadow-md">
+                <Sparkles className="inline-block mr-2 text-yellow-300" />
+                Collaboration with {rivalPartner.name}!
+                <Sparkles className="inline-block ml-2 text-yellow-300" />
+            </p>
+        </div>
+    )}
                         <div>
                             <h4 className="font-semibold mb-1 dark:text-gray-200">Target Group</h4>
                             <select value={targetGroup} onChange={(e) => { setTargetGroup(e.target.value); setTracks([{ name: 'Title Track', unitName: 'Senbatsu', type: 'title', members: [], center: null, lineup: {} }, { name: 'B-Side 1', unitName: 'Universe Girls', type: 'b-side', members: [], center: null, lineup: {}, cdType: 'common' }]); }} className="w-full p-2 border rounded bg-white dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">
-                                <option key="main" value="main">{groupName} (Main)</option>
+                                <option value="main">{groupName} (Main)</option>
                                 {(sisterGroups || []).map(sg => <option key={sg.id} value={sg.name}>{sg.name}</option>)}
                             </select>
                         </div>
@@ -2231,7 +2230,6 @@ const renderSelectGraduatingMemberStep = () => {
                                     className="w-full p-2 text-sm rounded border-gray-300 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200"
                                 >
                                     <option value="All">All</option>
-                                    <option value="Unchosen">Unchosen</option>
                                     
                                     {(teams || []).length > 0 && (
                                         <optgroup label="Teams">
@@ -2242,7 +2240,7 @@ const renderSelectGraduatingMemberStep = () => {
                                     )}
                                     
                                     <optgroup label="Groups">
-                                        <option key="main" value="main">{groupName}</option>
+                                        <option value="main">{groupName}</option>
                                         {sisterGroups.map(sg => (
                                             <option key={`sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>
                                         ))}
@@ -2252,7 +2250,7 @@ const renderSelectGraduatingMemberStep = () => {
                                         <optgroup label={`${groupName} Generations`}>
                                             {mainGroupGenerations.map(gen => (
                                                 <option key={`main-gen-${gen}`} value={`main-gen-${gen}`}>{gen}</option>
-                                            ))}
+                                            ))}\
                                         </optgroup>
                                     )}
 
@@ -2266,6 +2264,17 @@ const renderSelectGraduatingMemberStep = () => {
                                         )
                                     ))}
                                 </select>
+                                <div className="mt-2">
+                                    <label className="flex items-center text-sm cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            checked={showOnlyUnchosen}
+                                            onChange={(e) => setShowOnlyUnchosen(e.target.checked)}
+                                            className="form-checkbox h-4 w-4 rounded text-blue-600 dark:bg-gray-700 dark:border-gray-600"
+                                        />
+                                        <span className="ml-2 text-gray-700 dark:text-gray-300">Show only unchosen members</span>
+                                    </label>
+                                </div>
                             </div>
 
                             <button onClick={handleToggleSelectAllFiltered} className="w-full mb-2 px-3 py-1 text-sm bg-gray-500 text-white rounded hover:bg-gray-600">Toggle Select All (Filtered)</button>
@@ -2274,7 +2283,7 @@ const renderSelectGraduatingMemberStep = () => {
                                 {visibleRoster.map(member => {
                                     const isSelected = currentTrack?.members.map(String).includes(String(member.id));
                                     return (
-                                        <div key={member.rosterId} className="flex items-center justify-between p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
+                                        <div key={member.id} className="flex items-center justify-between p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
                                             <div className="flex flex-col">
                                                 <span className="font-medium dark:text-gray-200">
                                                     {member.name}
@@ -2322,7 +2331,7 @@ const renderSelectGraduatingMemberStep = () => {
                                             <tbody>
                                                 {selectableSenbatsu.map(member => (
                                                     <DraggableMemberRow
-                                                        key={member.rosterId}
+                                                        key={member.id}
                                                         member={member}
                                                         track={currentTrack}
                                                         trackIndex={selectedTrackIndex}
@@ -2564,7 +2573,7 @@ const renderSelectGraduatingMemberStep = () => {
             .map(member => {
                                     const isSelected = currentTrack?.members.map(String).includes(String(member.id));
                                     return (
-                                        <div key={member.rosterId} className="flex items-center justify-between p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
+                                        <div key={member.id} className="flex items-center justify-between p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
                                             <div className="flex flex-col">
                                                 <span className="font-medium dark:text-gray-200">
                                                     {member.name}
@@ -2612,7 +2621,7 @@ const renderSelectGraduatingMemberStep = () => {
                                             <tbody>
                                                 {selectableSenbatsu.map(member => (
                                                     <DraggableMemberRow
-                                                        key={member.rosterId}
+                                                        key={member.id}
                                                         member={member}
                                                         track={currentTrack}
                                                         trackIndex={selectedTrackIndex}
@@ -2939,11 +2948,20 @@ const memberGroups = memberObjects.reduce((acc, member) => {
         const release = modalData;
         if (!release) return null;
 
-        // --- FIXED HELPER VARIABLES ---
-        const memberMap = getAllAvailableMembers(true).reduce((map, m) => {
-            map[String(m.id)] = m;
-            return map;
-        }, {});
+            // --- FIXED HELPER VARIABLES ---
+            const memberMap = {};
+    
+            // FIRST: Load the historical members from the single itself. This is the most accurate data and includes rivals.
+            (release.tracks || []).flatMap(t => t.members || []).forEach(m => {
+                memberMap[String(m.id)] = m;
+            });
+    
+            // SECOND: Add any currently active members as a fallback, but DO NOT overwrite the historical data.
+            getAllAvailableMembers(true).forEach(m => {
+                if (!memberMap[String(m.id)]) {
+                    memberMap[String(m.id)] = m;
+                }
+            });
 
         const releasingGroupName = release.targetGroup === 'main' ? groupName : (sisterGroups.find(sg => String(sg.id) === String(release.targetGroup))?.name || release.targetGroup);
         
@@ -2986,22 +3004,12 @@ const memberGroups = memberObjects.reduce((acc, member) => {
                 let groupKey;
                 const mainGroupName = groupName || 'Hoshimi01';
 
-                if (member.isExchangeStudent) {
-                    // If an exchange student is on a team, show that. Otherwise, label them by their home group.
-                    groupKey = member.teamName 
-                        ? `${mainGroupName} Team ${member.teamName}` 
-                        : `${member.homeGroup} (Exchange)`;
-                } else if (member.isSisterMember) {
+                if (member.isSisterMember) {
                     const sgName = member.displayGroupName || 'Sister Group';
-                    // If a sister member has a team, show the team name. Otherwise, they are a trainee.
-                    groupKey = member.teamName 
-                        ? `${sgName} Team ${member.teamName}` 
-                        : `${sgName} Kenkyuusei`;
+                    groupKey = member.isKenkyuusei ? `${sgName} Kenkyuusei` : `${sgName} Team ${member.teamName}`;
                 } else {
-                    // If a main group member has a team, show the team name. Otherwise, they are a trainee.
-                    groupKey = member.teamName 
-                        ? `${mainGroupName} Team ${member.teamName}` 
-                        : `${mainGroupName} Kenkyuusei`;
+                    groupKey = member.isKenkyuusei ? `${mainGroupName} Kenkyuusei` : `${mainGroupName} Team ${member.teamName}`;
+
                 }
                 
                 if (!acc[groupKey]) {
@@ -3046,7 +3054,7 @@ const memberGroups = memberObjects.reduce((acc, member) => {
                             <p className="font-semibold text-pink-600 dark:text-pink-400">
                                 {groupKeyName}: <span className="font-normal text-gray-700 dark:text-gray-300">
                                     {memberGroups[groupKeyName].map(member => (
-                                        <span key={member.rosterId} className={centerMemberIds.includes(String(member.id)) ? 'font-bold' : ''}>
+                                        <span key={member.id} className={centerMemberIds.includes(String(member.id)) ? 'font-bold' : ''}>
                                             {member.name}
                                         </span>
                                     )).reduce((prev, curr) => [prev, ', ', curr])}
@@ -3659,7 +3667,7 @@ if (memberFilter !== 'all') {
                      <div className="space-y-1 max-h-[500px] overflow-y-auto border-t border-b dark:border-gray-700 p-1">
                         {/* MODIFIED: This now maps over 'filteredMembers' */}
                         {filteredMembers.map(member => (
-                            <div key={member.rosterId} className={`flex items-center justify-between p-2 rounded ${selectedMembers.includes(member.id) ? 'bg-blue-200 dark:bg-blue-800' : 'bg-white dark:bg-gray-800/50'}`}>
+                            <div key={member.id} className={`flex items-center justify-between p-2 rounded ${selectedMembers.includes(member.id) ? 'bg-blue-200 dark:bg-blue-800' : 'bg-white dark:bg-gray-800/50'}`}>
                                 <div>
                                     <p className="font-semibold text-sm">{member.name}</p>
                                     <p className="text-xs text-gray-600 dark:text-gray-400">
@@ -4004,8 +4012,8 @@ const MajorConcertModal = () => {
                                     <option value="all">All</option>
                                     <optgroup label="Teams">{(teams || []).map(team => (<option key={`team-${team.id}`} value={`team-${team.id}`}>{team.name}</option>))}</optgroup>
                                     <optgroup label="Groups">
-                                        <option key="main" value="main">{groupName}</option>
-                                        {sisterGroups.map(sg => (<option key={sg.id} value={`sg-${sg.id}`}>{sg.name}</option>))}
+                                        <option value="main">{groupName}</option>
+                                        {sisterGroups.map(sg => (<option key={`sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>))}
                                     </optgroup>
                                     {mainGroupGenerations.length > 0 && <optgroup label={`${groupName} Gen`}>{mainGroupGenerations.map(gen => (<option key={`main-gen-${gen}`} value={`main-gen-${gen}`}>{gen}</option>))}</optgroup>}
                                     {sisterGroupDetails.map(sg => (sg.generations.length > 0 && (<optgroup key={`sg-gen-group-${sg.id}`} label={`${sg.name} Gen`}>{sg.generations.map(gen => (<option key={`sg-${sg.id}-gen-${gen}`} value={`sg-${sg.id}-gen-${gen}`}>{gen}</option>))}</optgroup>)))}
@@ -4017,7 +4025,7 @@ const MajorConcertModal = () => {
                             </div>
                             <div className="space-y-1 max-h-60 overflow-y-auto border-t border-b dark:border-gray-700 p-1">
                                 {filteredMembers.map(member => (
-                                    <div key={member.rosterId} className={`flex items-center justify-between p-2 rounded ${selectedMembers.includes(member.id) ? 'bg-blue-200 dark:bg-blue-800' : 'bg-white dark:bg-gray-800/50'}`}>
+                                    <div key={member.id} className={`flex items-center justify-between p-2 rounded ${selectedMembers.includes(member.id) ? 'bg-blue-200 dark:bg-blue-800' : 'bg-white dark:bg-gray-800/50'}`}>
                                         <div>
                                             <p className="font-semibold text-sm">{member.name}</p>
                                             <p className="text-xs text-gray-600 dark:text-gray-400">Vo: {member.singing} Da: {member.dancing} Fans: {getTotalFansForMember(member).toLocaleString()}</p>
@@ -4030,8 +4038,8 @@ const MajorConcertModal = () => {
                         <div className="border p-2 rounded-lg bg-gray-50 dark:bg-gray-900">
                             <h4 className="font-semibold mb-2 dark:text-gray-100">Announcements</h4>
                             <div className='grid grid-cols-2 gap-4'>
-                                <div><label className="block text-sm font-medium dark:text-gray-300">Kage-ana</label><select value={kageAna} onChange={e => setKageAna(e.target.value)} className="w-full p-2 border rounded bg-white dark:bg-gray-800 dark:text-gray-200"><option key="ana-none" value="">None</option>{selectedMembers.map(id => { const m = getMemberById(id); return m && <option key={id} value={id}>{m.name}</option>})}</select></div>
-                                <div><label className="block text-sm font-medium dark:text-gray-300">Shime-ana</label><select value={shimeAna} onChange={e => setShimeAna(e.target.value)} className="w-full p-2 border rounded bg-white dark:bg-gray-800 dark:text-gray-200"><option key="ana-none" value="">None</option>{selectedMembers.map(id => { const m = getMemberById(id); return m && <option key={id} value={id}>{m.name}</option>})}</select></div>
+                                <div><label className="block text-sm font-medium dark:text-gray-300">Kage-ana</label><select value={kageAna} onChange={e => setKageAna(e.target.value)} className="w-full p-2 border rounded bg-white dark:bg-gray-800 dark:text-gray-200"><option value="">None</option>{selectedMembers.map(id => { const m = getMemberById(id); return m && <option key={id} value={id}>{m.name}</option>})}</select></div>
+                                <div><label className="block text-sm font-medium dark:text-gray-300">Shime-ana</label><select value={shimeAna} onChange={e => setShimeAna(e.target.value)} className="w-full p-2 border rounded bg-white dark:bg-gray-800 dark:text-gray-200"><option value="">None</option>{selectedMembers.map(id => { const m = getMemberById(id); return m && <option key={id} value={id}>{m.name}</option>})}</select></div>
                             </div>
                         </div>
                     </div>
@@ -4706,7 +4714,7 @@ const ShuffleResultModal = () => {
                 </div>
                 <div className="space-y-1 max-h-[400px] overflow-y-auto border-t border-b dark:border-gray-700 p-1 mb-4">
                     {availableMembers.map(member => (
-                        <div key={member.rosterId} className={`flex items-center justify-between p-2 rounded cursor-pointer ${selectedMemberIds.includes(member.id) ? 'bg-blue-100 dark:bg-blue-800' : 'bg-white dark:bg-gray-700/50 hover:bg-gray-50'}`} onClick={() => toggleMember(member.id)}>
+                        <div key={member.id} className={`flex items-center justify-between p-2 rounded cursor-pointer ${selectedMemberIds.includes(member.id) ? 'bg-blue-100 dark:bg-blue-800' : 'bg-white dark:bg-gray-700/50 hover:bg-gray-50'}`} onClick={() => toggleMember(member.id)}>
                             <div>
                                 <p className="font-semibold text-sm">{member.name}</p>
                                 <p className="text-xs text-gray-500 dark:text-gray-400">Fans: {getTotalFansForMember(member).toLocaleString()}</p>
@@ -4784,7 +4792,7 @@ const ShuffleResultModal = () => {
                     
                     <div className="flex justify-center items-end gap-4 my-6 h-32">
                         {(members || []).slice(0, 5).map((member, index) => (
-                            <Chibi key={member.rosterId} index={index} />
+                            <Chibi key={member.id} index={index} />
                         ))}
                     </div>
 
@@ -5236,33 +5244,29 @@ const SaveGameModal = () => {
     };
 
     const LoadGameModal = () => {
-        const [loadUsername, setLoadUsername] = useState('');
-
-        const handleLoad = () => {
-            if (loadUsername.trim()) {
-                loadGame(loadUsername.trim());
-            } else {
-                setMessage("Please enter the username of the save file to load.");
+        const handleFileChange = (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const fileContent = e.target.result;
+                    loadGame(fileContent); // This calls the new loadGame function from the hook
+                };
+                reader.readAsText(file);
             }
         };
 
         return (
-            <ModalWrapper title={<span className="flex items-center"><Upload size={20} className="mr-2"/> Load Game</span>}>
-                <p className="text-sm text-gray-600 mb-4">Load a previously saved game using the username associated with it.</p>
-                <h4 className="font-semibold mb-1">Load Username (Case Sensitive)</h4>
+            <ModalWrapper title={<span className="flex items-center"><Upload size={20} className="mr-2"/> Load Game from File</span>}>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Select a previously saved `.json` game file to load your progress.</p>
                 <input 
-                    type="text" 
-                    value={loadUsername} 
-                    onChange={(e) => setLoadUsername(e.target.value)}
-                    className="w-full p-2 border rounded mb-4"
-                    placeholder="Enter the save username"
+                    type="file" 
+                    accept=".json"
+                    onChange={handleFileChange}
+                    className="w-full p-2 border rounded mb-4 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                 />
-                
                 <div className="flex justify-end gap-2 mt-4">
                     <button onClick={() => setShowModal(null)} className="p-2 bg-gray-300 rounded">Cancel</button>
-                    <button onClick={handleLoad} disabled={!loadUsername.trim()} className="p-2 bg-green-500 text-white rounded disabled:bg-gray-400">
-                        Confirm Load
-                    </button>
                 </div>
             </ModalWrapper>
         );
@@ -5734,19 +5738,34 @@ const TeamManagementModal = ({ isEditing = false, team = null }) => {
     }));
 
     // CORRECTED: Use rosterId for all operations
-    const handleAddMemberClick = (member) => {
-        if (selectedMembers.some(m => m.id === member.rosterId)) return;
-        
-        const memberHomeGroupId = member.isSisterMember ? String(member.groupId) : 'main';
-        const isCrossGroupAssignment = String(memberHomeGroupId) !== String(groupId);
-        const isAlreadyInAnotherTeam = !!member.teamId;
+        // REVISED: This function now understands Kennin assignments
+        const handleAddMemberClick = (member) => {
+            if (selectedMembers.some(m => m.id === member.rosterId)) return;
+            
+            const memberHomeGroupId = member.isSisterMember ? String(member.groupId) : 'main';
+            const isCrossGroupAssignment = String(memberHomeGroupId) !== String(groupId);
+            const isAlreadyInAnotherTeam = !!member.teamId;
 
-        if (isCrossGroupAssignment || isAlreadyInAnotherTeam) {
-            setPendingDecision({ ...member, isCrossGroupAssignment });
-        } else {
-            setSelectedMembers(prev => [...prev, { id: member.rosterId, type: 'add' }]);
-        }
-    };
+            // SPECIAL CASE: A Rival member being added to a main group team is ALWAYS a Kennin assignment. No decision needed.
+            if (member.isRivalKennin && String(groupId) === 'main') {
+                setSelectedMembers(prev => [...prev, { id: member.rosterId, type: 'kennin' }]);
+                return;
+            }
+
+            // If a member is already in a team and you're adding them to another, this implies a KENNIN position.
+            if (isAlreadyInAnotherTeam && !isCrossGroupAssignment) {
+                 // Open the decision modal to ask: "Assign as Kennin?"
+                 // This allows the user to confirm they want a concurrent position.
+                 setPendingDecision({ ...member, assignmentType: 'kennin' });
+            } else if (isCrossGroupAssignment) {
+                // If it's a cross-group assignment (e.g., sister member to main team), ask "Transfer or Kennin?"
+                setPendingDecision({ ...member, assignmentType: 'transfer_or_kennin' });
+            }
+            else {
+                // This is a clean assignment (e.g., a trainee to their first team).
+                setSelectedMembers(prev => [...prev, { id: member.rosterId, type: 'add' }]);
+            }
+        };
     
     // CORRECTED: Use rosterId from pendingDecision
     const resolveDecision = (decisionType) => {
@@ -5912,44 +5931,35 @@ const TeamManagementModal = ({ isEditing = false, team = null }) => {
     );
 };
 
-const AssignmentDecisionModal = ({ member, onResolve }) => {
-    const isCrossGroup = member.isCrossGroupAssignment;
-
-    return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl text-center max-w-sm mx-4">
-                <h3 className="text-lg font-bold mb-2">Assignment for {member.name}</h3>
-                {isCrossGroup ? (
-                    <>
-                        <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">This member is from a different group. How do you want to add them?</p>
-                        <div className="flex justify-center gap-4">
-                            <button onClick={() => onResolve('transfer')} className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 font-semibold">Transfer</button>
-                            <button onClick={() => onResolve('kennin')} className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 font-semibold">Give Kennin</button>
-                            <button onClick={() => onResolve(null)} className="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500">Cancel</button>
-                        </div>
-                        <div className="text-left text-xs text-gray-500 dark:text-gray-400 mt-4 bg-gray-50 dark:bg-gray-700 p-2 rounded-md">
-                            <p><b>Transfer:</b> Permanently moves the member to the new group. This is a big decision.</p>
-                            <p className="mt-1"><b>Give Kennin:</b> The member holds a concurrent position in both groups.</p>
-                        </div>
-                    </>
-                ) : (
-                    <>
-                        <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">This member is already in <b>Team {member.teamName}</b>. How do you want to assign them to the new team?</p>
-                        <div className="flex justify-center gap-4">
-                            <button onClick={() => onResolve('shuffle')} className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-semibold">Shuffle</button>
-                            <button onClick={() => onResolve('concurrent')} className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 font-semibold">Add Concurrent</button>
-                            <button onClick={() => onResolve(null)} className="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500">Cancel</button>
-                        </div>
-                        <div className="text-left text-xs text-gray-500 dark:text-gray-400 mt-4 bg-gray-50 dark:bg-gray-700 p-2 rounded-md">
-                           <p><b>Shuffle:</b> Moves the member. They will leave their old team and join this new one.</p>
-                           <p className="mt-1"><b>Add Concurrent:</b> The member will be active in both teams within the same group.</p>
-                       </div>
-                    </>
-                )}
+    const AssignmentDecisionModal = ({ member, onResolve }) => {
+        const assignmentType = member.assignmentType || (member.isCrossGroupAssignment ? 'transfer_or_kennin' : 'kennin');
+        
+        return (
+            <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl max-w-sm w-full">
+                    <h3 className="text-lg font-bold mb-4">Confirm Assignment</h3>
+                    <p className="mb-4 text-sm">
+                        <span className="font-semibold">{member.name}</span> is already assigned to another team or group. How do you want to add them?
+                    </p>
+                    <div className="flex flex-col gap-3">
+                        {assignmentType.includes('kennin') && (
+                            <button onClick={() => onResolve('kennin')} className="w-full p-3 bg-purple-600 text-white rounded font-semibold text-left">
+                                <p className="font-bold">Assign as Kennin (Concurrent)</p>
+                                <p className="text-xs font-normal">Member will belong to both teams.</p>
+                            </button>
+                        )}
+                        {assignmentType.includes('transfer') && (
+                             <button onClick={() => onResolve('transfer')} className="w-full p-3 bg-blue-600 text-white rounded font-semibold text-left">
+                                <p className="font-bold">Transfer Member</p>
+                                <p className="text-xs font-normal">Member will leave their old team/group.</p>
+                            </button>
+                        )}
+                        <button onClick={() => onResolve(null)} className="w-full p-2 bg-gray-300 dark:bg-gray-600 rounded mt-2">Cancel</button>
+                    </div>
+                </div>
             </div>
-        </div>
-    );
-};
+        );
+    };
 
 const TeamDetailsModal = ({ team }) => {
     const fullRoster = getMainGroupRoster();
@@ -6157,82 +6167,85 @@ const allGroups = isRival
         const originalHomeGroup = allPlayerGroups.find(g => String(g.id) === String(initialHomeGroupId));
         const wasTransferred = finalNewHomeGroup.id !== originalHomeGroup.id;
 
-            const addedKennins = kenninStatus.filter(name => !initialKenninGroupNames.includes(name));
-            const removedKennins = initialKenninGroupNames.filter(name => !kenninStatus.includes(name));
-            let historyEvents = [];
+        const addedKennins = kenninStatus.filter(name => !initialKenninGroupNames.includes(name));
+        const removedKennins = initialKenninGroupNames.filter(name => !kenninStatus.includes(name));
+        let historyEvents = [];
 
-            if (wasTransferred) historyEvents.push({ week: week, event: `Transferred from ${originalHomeGroup.name} to ${finalNewHomeGroup.name}` });
-            addedKennins.forEach(name => historyEvents.push({ week: week, event: `Given a Concurrent Position in ${name}` }));
-            removedKennins.forEach(name => historyEvents.push({ week: week, event: `Concurrent Position in ${name} canceled` }));
+        if (wasTransferred) historyEvents.push({ week: week, event: `Transferred from ${originalHomeGroup.name} to ${finalNewHomeGroup.name}` });
+        addedKennins.forEach(name => historyEvents.push({ week: week, event: `Given a Concurrent Position in ${name}` }));
+        removedKennins.forEach(name => historyEvents.push({ week: week, event: `Concurrent Position in ${name} canceled` }));
 
-            if (historyEvents.length === 0) {
-                setMessage("No changes were made.");
-                return setShowModal(null);
-            }
+        if (historyEvents.length === 0) {
+            setMessage("No changes were made.");
+            return setShowModal(null);
+        }
 
-            // Create deep copies to modify safely
-            let nextMembers = JSON.parse(JSON.stringify(members));
-            let nextSisterGroups = JSON.parse(JSON.stringify(sisterGroups));
-            let memberToMove = JSON.parse(JSON.stringify(member));
+        // Create deep copies to modify safely
+        let nextMembers = JSON.parse(JSON.stringify(members));
+        let nextSisterGroups = JSON.parse(JSON.stringify(sisterGroups));
+        let memberToMove = JSON.parse(JSON.stringify(member));
 
-            // Part 1: Remove the member from their original group if a transfer occurred
-            if (wasTransferred) {
-                if (originalHomeGroup.id === 'main') {
-                    nextMembers = nextMembers.filter(m => String(m.id) !== String(memberToMove.id));
-                } else {
-                    const sgIndex = nextSisterGroups.findIndex(sg => String(sg.id) === String(originalHomeGroup.id));
-                    if (sgIndex > -1) {
-                        nextSisterGroups[sgIndex].members = (nextSisterGroups[sgIndex].members || []).filter(m => String(m.id) !== String(memberToMove.id));
-                    }
+        // Part 1: Remove the member from their original group if a transfer occurred
+        if (wasTransferred) {
+            if (originalHomeGroup.id === 'main') {
+                nextMembers = nextMembers.filter(m => String(m.id) !== String(memberToMove.id));
+            } else {
+                const sgIndex = nextSisterGroups.findIndex(sg => String(sg.id) === String(originalHomeGroup.id));
+                if (sgIndex > -1) {
+                    nextSisterGroups[sgIndex].members = (nextSisterGroups[sgIndex].members || []).filter(m => String(m.id) !== String(memberToMove.id));
                 }
             }
-            
-            // Part 2: Prepare the final member object with updated properties
-            const finalUpdatedMember = {
-                ...memberToMove,
-                homeGroup: finalNewHomeGroup.name,
-                kenninGroups: kenninStatus,
-                teamHistory: [...(memberToMove.teamHistory || []), ...historyEvents],
-                teamId: wasTransferred ? null : memberToMove.teamId,
-            };
-            // Clean up temporary properties that shouldn't be saved on the member object itself
-            delete finalUpdatedMember.rosterId;
-            delete finalUpdatedMember.isSisterMember;
-            delete finalUpdatedMember.displayGroupName;
+        }
+        
+// Part 2: Prepare the final member object with updated properties
+const finalUpdatedMember = {
+    ...memberToMove,
+    homeGroup: finalNewHomeGroup.name,
+    kenninGroups: kenninStatus,
+    teamHistory: [...(memberToMove.teamHistory || []), ...historyEvents],
+    teamId: wasTransferred ? null : memberToMove.teamId, // If transferred, they become a trainee of the new home group.
+    teamName: wasTransferred ? null : memberToMove.teamName, // Also reset team name on transfer.
+};
+// Clean up temporary properties that shouldn't be saved on the member object itself
+delete finalUpdatedMember.rosterId;
+delete finalUpdatedMember.isSisterMember;
+delete finalUpdatedMember.displayGroupName;
 
-            // Part 3: Add or Update the member in their final location
-            if (finalNewHomeGroup.id === 'main') {
-                if (wasTransferred) {
-                    const newMainId = (nextMembers.length > 0 ? Math.max(0, ...nextMembers.map(m => m.id)) : 0) + 1;
-                    finalUpdatedMember.id = newMainId;
-                    nextMembers.push(finalUpdatedMember);
-                } else {
-                    // This is a Kennin-only update for a member already in the main group
-                    nextMembers = nextMembers.map(m => String(m.id) === String(memberToMove.id) ? finalUpdatedMember : m);
-                }
-            } else { // Destination is a sister group
-                const destSgIndex = nextSisterGroups.findIndex(sg => String(sg.id) === String(finalNewHomeGroup.id));
-                if (destSgIndex > -1) {
-                    if (wasTransferred) {
-                        const destSgMembers = nextSisterGroups[destSgIndex].members || [];
-                        const newSisterId = (destSgMembers.length > 0 ? Math.max(0, ...destSgMembers.map(m => m.id)) : 0) + 1;
-                        finalUpdatedMember.id = newSisterId;
-                        nextSisterGroups[destSgIndex].members.push(finalUpdatedMember);
-                    } else {
-                        // This is a Kennin-only update for a member already in this sister group
-                        nextSisterGroups[destSgIndex].members = (nextSisterGroups[destSgIndex].members || []).map(m => String(m.id) === String(memberToMove.id) ? finalUpdatedMember : m);
-                    }
-                }
-            }
+// Part 3: Add or Update the member in their final location
+if (finalNewHomeGroup.id === 'main') {
+    if (wasTransferred) {
+        // Find the highest existing ID in the main group to prevent collisions.
+        const newMainId = (nextMembers.length > 0 ? Math.max(0, ...nextMembers.map(m => m.id)) : 0) + 1;
+        finalUpdatedMember.id = newMainId;
+        nextMembers.push(finalUpdatedMember);
+    } else {
+        // This is a Kennin-only update for a member already in the main group.
+        nextMembers = nextMembers.map(m => String(m.id) === String(memberToMove.id) ? finalUpdatedMember : m);
+    }
+} else { // Destination is a sister group
+    const destSgIndex = nextSisterGroups.findIndex(sg => String(sg.id) === String(finalNewHomeGroup.id));
+    if (destSgIndex > -1) {
+        if (wasTransferred) {
+            const destSgMembers = nextSisterGroups[destSgIndex].members || [];
+            // Find the highest existing ID in the destination sister group.
+            const newSisterId = (destSgMembers.length > 0 ? Math.max(0, ...destSgMembers.map(m => m.id)) : 0) + 1;
+            finalUpdatedMember.id = newSisterId;
+            nextSisterGroups[destSgIndex].members.push(finalUpdatedMember);
+        } else {
+            // This is a Kennin-only update for a member already in this sister group
+            nextSisterGroups[destSgIndex].members = (nextSisterGroups[destSgIndex].members || []).map(m => String(m.id) === String(memberToMove.id) ? finalUpdatedMember : m);
+        }
+    }
+}
 
-            // Part 4: Commit all state changes
-            setMembers(nextMembers);
-            setSisterGroups(nextSisterGroups);
+// Part 4: Commit all state changes
+setMembers(nextMembers);
+setSisterGroups(nextSisterGroups);
 
-            setMessage(`${member.name}'s placement was updated.`);
-            addNotification({ type: 'Management', message: `${member.name}'s placement was updated.` });
-            setShowModal(null);
-            setSelectedMember(null); // Deselect to force UI refresh
+setMessage(`${member.name}'s placement was updated.`);
+addNotification({ type: 'Management', message: `${member.name}'s placement was updated.` });
+setShowModal(null);
+setSelectedMember(null); // Deselect to force UI refresh
         };
     
         // --- The Unified UI ---
@@ -6342,11 +6355,11 @@ const allGroups = isRival
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Member Selection List */}
                   <div className="space-y-1 max-h-[400px] overflow-y-auto border rounded p-1 bg-gray-50 dark:bg-gray-900">
-                      {availableMembers.map(member => (
+                      {availableMembers.map((member, index) => (
                           <div
-                          key={member.rosterId}
-                              className={`flex items-center justify-between p-2 rounded cursor-pointer ${selectedMemberId === member.rosterId ? 'bg-blue-200 dark:bg-blue-800 shadow' : 'bg-white dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-700'}`}
-                              onClick={() => setSelectedMemberId(member.rosterId)}
+                              key={`${member.id}-${index}`}
+                              className={`flex items-center justify-between p-2 rounded cursor-pointer ${selectedMemberId === member.id ? 'bg-blue-200 dark:bg-blue-800 shadow' : 'bg-white dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-700'}`}
+                              onClick={() => setSelectedMemberId(member.id)}
                           >
                               <div>
                                   <p className="font-semibold text-sm">{member.name}</p>
@@ -6549,7 +6562,7 @@ const allGroups = isRival
                     {/* --- MODIFIED: Now maps over 'filteredMembers' --- */}
                     <div className="space-y-1 max-h-[400px] overflow-y-auto border-t border-b dark:border-gray-700 p-1">
                         {filteredMembers.map(member => (
-                            <div key={member.rosterId} className={`flex items-center justify-between p-2 rounded cursor-pointer ${selectedMemberIds.includes(member.id) ? 'bg-blue-100 dark:bg-blue-800' : 'bg-white dark:bg-gray-700/50 hover:bg-gray-50'}`} onClick={() => toggleMember(member.id)}>
+                            <div key={member.id} className={`flex items-center justify-between p-2 rounded cursor-pointer ${selectedMemberIds.includes(member.id) ? 'bg-blue-100 dark:bg-blue-800' : 'bg-white dark:bg-gray-700/50 hover:bg-gray-50'}`} onClick={() => toggleMember(member.id)}>
                                 <div>
                                     <p className="font-semibold text-sm">{member.name} {member.isSisterMember && <span className="text-xs text-gray-500">({member.displayGroupName})</span>}</p>
                                     <p className="text-xs text-gray-500 dark:text-gray-400">Fans: {getTotalFansForMember(member).toLocaleString()}</p>
@@ -6587,7 +6600,7 @@ const allGroups = isRival
         const titleTrack = single.tracks.find(t => t.type === 'title');
         if (!titleTrack) return null;
 
-        const senbatsuMembers = (titleTrack.members || []).map(m => getMemberById(String(m.id))).filter(Boolean);
+        const senbatsuMembers = titleTrack.members || [];
         const kami7Ids = (titleTrack.lineup ? Object.entries(titleTrack.lineup)
             .filter(([, row]) => row === '1st Row' || row === '2nd Row' || row === '3rd Row')
             .map(([id]) => id) : []).slice(0, 7);        
@@ -7118,36 +7131,60 @@ const HistoryDetailModal = () => {
 if (type === 'election') {
         title = `General Election #${electionHistory.findIndex(e => e.week === week) + 1}`;
 
-        // Helper to get detailed status string, now used by history
         const getMemberStatusString = (member) => {
             if (!member) return '...';
-            
-            const { isSisterMember, displayGroupName, generation, id } = member;
-
-            if (typeof id === 'undefined') {
-                return member.teamName ? `Team ${member.teamName}` : (member.group || 'Unknown Group');
-            }
-
-            let teamStatus = '';
-            const allMemberTeams = teams.filter(t => (t.members || []).map(String).includes(String(id)));
-
-            if (allMemberTeams.length > 0) {
-                teamStatus = allMemberTeams.map(team => {
-                    let parentGroupName;
-                    if (team.groupId === 'main') {
-                        parentGroupName = groupName;
-                    } else {
-                        const parentGroup = sisterGroups.find(sg => String(sg.id) === String(team.groupId));
-                        parentGroupName = parentGroup ? parentGroup.name : '';
-                    }
-                    return `${parentGroupName} Team ${team.name}`;
-                }).join(' / ');
+    
+            // 1. Determine Primary Assignment from historical data
+            let primaryGroup;
+            if (member.isRivalKennin || member.isExchangeStudent) {
+                primaryGroup = member.homeGroup;
             } else {
-                teamStatus = isSisterMember ? displayGroupName : groupName;
+                primaryGroup = member.displayGroupName || groupName;
             }
-
-            const generationStatus = generation ? `${generation}` : null;
-            return [teamStatus, generationStatus].filter(Boolean).join(' | ');
+            const primaryTeam = member.teamName ? `Team ${member.teamName}` : 'Kenkyuusei';
+            const primaryPart = `${primaryGroup} | ${primaryTeam}`;
+    
+            // 2. Collect all Concurrent Assignments from historical data
+            const kenninParts = [];
+            if (member.kennin && member.kennin.teamName) {
+                const kenninGroupName = member.kennin.groupId === 'main' 
+                    ? groupName 
+                    : (sisterGroups.find(sg => String(sg.id) === String(member.kennin.groupId))?.name || 'Unknown');
+                const partString = `${kenninGroupName} Team ${member.kennin.teamName}`;
+                if (!kenninParts.includes(partString)) kenninParts.push(partString);
+            }
+            if (member.kenninGroups && member.kenninGroups.length > 0) {
+                member.kenninGroups.forEach(kgName => {
+                    if (!kenninParts.some(part => part.includes(kgName))) {
+                        kenninParts.push(kgName);
+                    }
+                });
+            }
+            if (member.rivalKennin) {
+                if (!kenninParts.includes(member.rivalKennin.rivalName)) {
+                    kenninParts.push(member.rivalKennin.rivalName);
+                }
+            }
+            if ((member.isRivalKennin || member.isExchangeStudent) && member.kenninInfo) {
+                if (!kenninParts.includes(member.kenninInfo.groupName)) {
+                    kenninParts.push(member.kenninInfo.groupName);
+                }
+            }
+    
+            // 3. Assemble the final, unified string
+            let finalString;
+            if (kenninParts.length > 0) {
+                finalString = `${primaryPart.replace(' | ', ' ')} / ${kenninParts.join(' / ')}`;
+            } else {
+                finalString = primaryPart;
+            }
+            
+            // 4. Append generation
+            if (member.generation) {
+                finalString += ` | ${member.generation}`;
+            }
+    
+            return finalString;
         };
 
         const RankChangeArrow = ({ member, electionWeek }) => {
@@ -7293,7 +7330,7 @@ if (type === 'election') {
                             <div className="col-span-3">Elimination Round</div>
                             <div className="col-span-4">Details</div>
                         </div>
-                        {senbatsu && senbatsu.map((member) => ( <MemberRow key={member.rosterId} member={member} isSenbatsu={true} /> ))}
+                        {senbatsu && senbatsu.map((member) => ( <MemberRow key={member.id} member={member} isSenbatsu={true} /> ))}
                     </div>
                 </div>
                 <div>
@@ -7307,7 +7344,7 @@ if (type === 'election') {
                             <div className="col-span-3">Elimination Round</div>
                             <div className="col-span-4">Details</div>
                         </div>
-                        {unplaced && unplaced.map((member) => ( <MemberRow key={member.rosterId} member={member} /> ))}
+                        {unplaced && unplaced.map((member) => ( <MemberRow key={member.id} member={member} /> ))}
                     </div>
                 </div>
             </div>
@@ -7368,7 +7405,7 @@ const JankenResultModal = () => {
                             <div className="col-span-4">Details</div>
                         </div>
                         {senbatsu && senbatsu.map((member) => (
-                            <MemberRow key={member.rosterId} member={member} isSenbatsu={true} />
+                            <MemberRow key={member.id} member={member} isSenbatsu={true} />
                         ))}
                     </div>
                 </div>
@@ -7386,7 +7423,7 @@ const JankenResultModal = () => {
                             <div className="col-span-4">Details</div>
                         </div>
                         {unplaced && unplaced.map((member) => (
-                            <MemberRow key={member.rosterId} member={member} />
+                            <MemberRow key={member.id} member={member} />
                         ))}
                     </div>
                 </div>
@@ -8223,7 +8260,7 @@ const DraftKaigiModal = () => {
          const jankenHistory = (member.jankenHistory || []);
          const albumTrackHistory = songHistory.filter(s => s.type === 'album');
          const bSideTrackHistory = songHistory.filter(s => s.type === 'b-side'); // This is the new line
-         const memberPerformances = performanceHistory.filter(p => p.members.map(String).includes(String(member.id)));
+         const memberPerformances = performanceHistory.filter(p => (p.members || []).map(String).includes(String(member.rosterId || member.id)));
          const titleTrackHistory = songHistory.filter(s => s.type === 'title');
          const majorConcertHistory = memberPerformances.filter(p => p.category === "Major Concert");
          const otherPerformanceHistory = memberPerformances.filter(p => p.category !== "Major Concert");
@@ -8447,80 +8484,83 @@ const TabButton = ({ id, label, icon: Icon }) => (
 );
 
     // --- MAIN UI ---
-if (!gameStarted) {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 p-4 sm:p-6 lg:p-8">
-      <div className="w-full max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Saved Games Column */}
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700">
-          <h2 className="text-2xl font-bold mb-4 text-center text-gray-800 dark:text-gray-200">Load Production</h2>
-          <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
-            {savedGames.length > 0 ? (
-              savedGames.map((game) => (
-                <button
-                  key={game.username}
-                  onClick={() => loadGame(game.username)}
-                  className="w-full text-left p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-blue-100 dark:hover:bg-gray-700 hover:shadow-md transition-all border dark:border-gray-600"
-                >
-                  <p className="font-bold text-lg text-blue-600 dark:text-blue-400">{game.groupName}</p>
-                  <p className="text-sm text-gray-700 dark:text-gray-300">Producer: {game.username}</p>
-                  <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    <span>Week: {game.week}</span>
-                    <span>Money: ¥{game.money.toLocaleString()}</span>
-                  </div>
-                </button>
-              ))
-            ) : (
-              <div className="text-center p-8 text-gray-500">
-                <p>No saved games found.</p>
-                <p className="text-xs mt-1">Start a new production to create a save file!</p>
-              </div>
-            )}
-          </div>
-        </div>
+    if (!gameStarted) {
+      const handleFileLoad = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const fileContent = e.target.result;
+            loadGame(fileContent);
+          };
+          reader.readAsText(file);
+        }
+      };
 
-        {/* New Game Column */}
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-xl border-2 border-blue-500">
-          <h2 className="text-2xl font-bold mb-4 text-center text-gray-800 dark:text-gray-200 flex items-center justify-center gap-2">
-            <Plus size={24} />
-            Start New Production
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400 text-center mb-6">Enter your Producer Name and Group Name to begin.</p>
-          <input
-            type="text"
-            value={startUsername}
-            onChange={(e) => setStartUsername(e.target.value)}
-            className="w-full p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg mb-4 text-center focus:ring-2 focus:ring-blue-400 focus:outline-none"
-            placeholder="Producer Name (e.g., Aki-P)"
-          />
-          <div className="flex w-full gap-2 mb-5">
-            <input
-              type="text"
-              value={startGroupName}
-              onChange={(e) => setStartGroupName(e.target.value)}
-              className="flex-1 p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg text-center focus:ring-2 focus:ring-blue-400 focus:outline-none"
-              placeholder="Group Name (e.g., AKB48)"
-            />
-            <button
-              onClick={generateRandomGroupName}
-              className="p-3 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition-colors flex items-center justify-center"
-              title="Generate Random Name"
-            >
-              <Shuffle size={20} />
-            </button>
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 p-4 sm:p-6 lg:p-8">
+          <div className="w-full max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Load from File Column */}
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700">
+              <h2 className="text-2xl font-bold mb-4 text-center text-gray-800 dark:text-gray-200">Load Production</h2>
+              <div className="text-center p-8 text-gray-500">
+                <p className="mb-4">Load a game from a <code>.json</code> file.</p>
+                <input
+                  type="file"
+                  accept=".json"
+                  onChange={handleFileLoad}
+                  className="w-full text-sm text-slate-500
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded-full file:border-0
+                    file:text-sm file:font-semibold
+                    file:bg-blue-50 file:text-blue-700
+                    hover:file:bg-blue-100"
+                />
+              </div>
+            </div>
+    
+            {/* New Game Column */}
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-xl border-2 border-blue-500">
+              <h2 className="text-2xl font-bold mb-4 text-center text-gray-800 dark:text-gray-200 flex items-center justify-center gap-2">
+                <Plus size={24} />
+                Start New Production
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400 text-center mb-6">Enter your Producer Name and Group Name to begin.</p>
+              <input
+                type="text"
+                value={startUsername}
+                onChange={(e) => setStartUsername(e.target.value)}
+                className="w-full p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg mb-4 text-center focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                placeholder="Producer Name (e.g., Aki-P)"
+              />
+              <div className="flex w-full gap-2 mb-5">
+                <input
+                  type="text"
+                  value={startGroupName}
+                  onChange={(e) => setStartGroupName(e.target.value)}
+                  className="flex-1 p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg text-center focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                  placeholder="Group Name (e.g., AKB48)"
+                />
+                <button
+                  onClick={generateRandomGroupName}
+                  className="p-3 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition-colors flex items-center justify-center"
+                  title="Generate Random Name"
+                >
+                  <Shuffle size={20} />
+                </button>
+              </div>
+              <button
+                onClick={handleStartGame}
+                disabled={!startUsername.trim() || !startGroupName.trim()}
+                className="w-full p-3 bg-blue-500 text-white rounded-lg font-bold text-lg hover:bg-blue-600 transition-colors disabled:bg-gray-400"
+              >
+                Begin
+              </button>
+            </div>
           </div>
-          <button
-            onClick={handleStartGame}
-            disabled={!startUsername.trim() || !startGroupName.trim()}
-            className="w-full p-3 bg-blue-500 text-white rounded-lg font-bold text-lg hover:bg-blue-600 transition-colors disabled:bg-gray-400"
-          >
-            Begin
-          </button>
         </div>
-      </div>
-    </div>
-  );
-}
+      );
+    }
 
     return (
       <div className="flex flex-col lg:flex-row h-screen bg-gray-100 dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-sans transition-colors duration-300">
@@ -8676,6 +8716,7 @@ if (!gameStarted) {
                                                         <div key={m.rosterId || m.id}
                                                             className={`bg-white dark:bg-gray-900 rounded-lg shadow-md overflow-hidden cursor-pointer focus:outline-none transition-all duration-300
                                                                 ${!m.isAvailable ? 'opacity-60' : ''}
+                                                                ${m.isExchangeStudent ? 'border-2 border-purple-500' : ''}
                                                                 ${(m.kenninGroups || []).length > 0 ? 'border-2 border-yellow-400 dark:border-yellow-500' : ''}
                                                                 ${selectedMember && (selectedMember.rosterId || selectedMember.id) === (m.rosterId || m.id) ? 'border-2 border-blue-500 ring-2 ring-blue-200' : 'hover:shadow-lg'}`}
                                                             onClick={() => setSelectedMember(m)}>
@@ -8698,11 +8739,12 @@ if (!gameStarted) {
                                                                     }
 
                                                                 <div className="flex justify-between items-start mb-1">
-                                                    <h3 className="text-base font-bold flex items-center">
-                                                        {m.name}
-                                                        {m.isCurrentCenter && <Trophy size={16} className="ml-2 text-yellow-500" title="Current Center" />}
-                                                        {(Object.values(groupRoles).includes(m.id) || (m.teamId && groupRoles[m.teamId] === m.id)) && <Shield size={16} className="ml-2 text-purple-500" title="Captain" />}
-                                                    </h3>
+                                                                    <h3 className="text-base font-bold flex items-center">
+                                                                        {m.name}
+                                                                        {m.isExchangeStudent && <span className="text-xs font-semibold bg-purple-200 text-purple-800 px-1.5 py-0.5 rounded-full ml-2">Exchange</span>}
+                                                                        {m.isCurrentCenter && <Trophy size={16} className="ml-2 text-yellow-500" title="Current Center" />}
+                                                                        {(Object.values(groupRoles).includes(m.id) || (m.teamId && groupRoles[m.teamId] === m.id)) && <Shield size={16} className="ml-2 text-purple-500" title="Captain" />}
+                                                                    </h3>
                                                                     <span className={`text-xs font-semibold px-1.5 py-0.5 rounded-full ${m.position === 'center' ? 'bg-yellow-200 text-yellow-800' : 'bg-gray-200 text-gray-700'}`}>
                                                                         #{allMembers.findIndex(r => (r.rosterId || r.id) === (m.rosterId || m.id)) + 1}
                                                                     </span>
@@ -8860,7 +8902,7 @@ if (!gameStarted) {
             onChange={(e) => appointCaptain('main', e.target.value)}
             className="w-full p-1.5 text-sm border rounded bg-white dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
         >
-<option key="captain-none" value="">-- Appoint a Captain --</option>
+            <option value="">-- Appoint a Captain --</option>
         {members.filter(m => m.isAvailable && !m.isSisterMember).sort((a,b) => (b.charisma + b.intelligence) - (a.charisma + a.intelligence)).map(member => (
             <option key={member.id} value={member.id}>{member.name}</option>
         ))}
@@ -8876,8 +8918,7 @@ if (!gameStarted) {
                 onChange={(e) => appointCaptain(sg.id, e.target.value)}
                 className="w-full p-1.5 text-sm border rounded bg-white dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
             >
-                <option key="sg-captain-none" value="">-- Appoint a Captain --</option>
-
+                <option value="">-- Appoint a Captain --</option>
                 {(sg.members || [])
                     .filter(m => m.isAvailable)
                     .sort((a,b) => (b.charisma + b.intelligence) - (a.charisma + a.intelligence))
@@ -9716,6 +9757,8 @@ if (!gameStarted) {
       </div>
     </div>
   </div>
+
+
 )}
 
             {/* ----- RIVALS TAB ----- */}
@@ -9985,7 +10028,7 @@ if (!gameStarted) {
     <h4 className="font-semibold mb-2">Actions</h4>
 <div className="grid grid-cols-2 gap-2 mb-4">
     <button 
-    onClick={() => trainMember(selectedMember.realId || selectedMember.id, "singing")} 
+    onClick={() => trainMember(selectedMember.rosterId, "singing")} 
     className="p-2 bg-blue-100 text-blue-700 rounded text-sm"
     disabled={!selectedMember.isAvailable}
     >
@@ -9993,7 +10036,7 @@ if (!gameStarted) {
     </button>
 
     <button 
-    onClick={() => trainMember(selectedMember.realId || selectedMember.id, "dancing")} 
+    onClick={() => trainMember(selectedMember.rosterId, "dancing")} 
     className="p-2 bg-green-100 text-green-700 rounded text-sm"
     disabled={!selectedMember.isAvailable}
     >
@@ -10001,19 +10044,19 @@ if (!gameStarted) {
     </button>
 
     <button 
-    onClick={() => trainMember(selectedMember.realId || selectedMember.id, "variety")} 
+    onClick={() => trainMember(selectedMember.rosterId, "variety")} 
     className="p-2 bg-pink-100 text-pink-700 rounded text-sm"
     disabled={!selectedMember.isAvailable}
     >
     Train Variety (¥500)
     </button>
     
-    <button onClick={() => trainMember(selectedMember.id, 'visual')} className="p-2 bg-cyan-100 text-cyan-700 rounded text-sm" disabled={!selectedMember.isAvailable}>Train Visual (¥500)</button>
-    <button onClick={() => trainMember(selectedMember.id, 'charisma')} className="p-2 bg-rose-100 text-rose-700 rounded text-sm" disabled={!selectedMember.isAvailable}>Train Charisma (¥500)</button>
-    <button onClick={() => trainMember(selectedMember.id, 'intelligence')} className="p-2 bg-orange-100 text-orange-700 rounded text-sm" disabled={!selectedMember.isAvailable}>Train Intelligence (¥500)</button>
+    <button onClick={() => trainMember(selectedMember.rosterId, 'visual')} className="p-2 bg-cyan-100 text-cyan-700 rounded text-sm" disabled={!selectedMember.isAvailable}>Train Visual (¥500)</button>
+    <button onClick={() => trainMember(selectedMember.rosterId, 'charisma')} className="p-2 bg-rose-100 text-rose-700 rounded text-sm" disabled={!selectedMember.isAvailable}>Train Charisma (¥500)</button>
+    <button onClick={() => trainMember(selectedMember.rosterId, 'intelligence')} className="p-2 bg-orange-100 text-orange-700 rounded text-sm" disabled={!selectedMember.isAvailable}>Train Intelligence (¥500)</button>
 
     <button 
-    onClick={() => restMember(selectedMember.realId || selectedMember.id)} 
+    onClick={() => restMember(selectedMember.rosterId)} 
     className="p-2 bg-gray-200 text-gray-700 rounded text-sm"
     disabled={!selectedMember.isAvailable}
     >
@@ -10317,6 +10360,7 @@ if (!gameStarted) {
         {showModal === 'customSetlist' && <CustomSetlistModal />}
         {showModal === 'setlistDetails' && modalData && <SetlistDetailsModal setlist={modalData} allTheaterSongs={theaterSongs} getFormattedDateForWeek={getFormattedDateForWeek} />}
         {showModal === 'sisterGroupDisband' && modalData && <SisterGroupDisbandModal />}
+        {showModal === 'exchangeStudent' && <ExchangeStudentModal />}
         {showModal === 'editGroupName' && modalData && <EditGroupNameModal />}
         {showModal === 'performancePrep' && <PerformanceModal />}
         {showModal === 'majorConcert' && (
