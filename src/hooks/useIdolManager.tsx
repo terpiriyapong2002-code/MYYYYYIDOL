@@ -455,9 +455,171 @@ export const hometowns = [
     'Tokushima', 'Kagawa', 'Ehime', 'Kochi', 'Fukuoka', 'Saga', 'Nagasaki',
     'Kumamoto', 'Oita', 'Miyazaki', 'Kagoshima', 'Okinawa'
   ];
- export const generateRandomHometown = () => {
-    return hometowns[Math.floor(Math.random() * hometowns.length)];
+
+// --- PASTE THE FOLLOWING CODE BLOCK ---
+const chineseHometowns = [
+    'Shanghai', 'Beijing', 'Chongqing', 'Tianjin', 'Guangzhou', 'Shenzhen', 
+    'Chengdu', 'Hangzhou', 'Wuhan', 'Nanjing', 'Qingdao', 'Dalian',
+    'Suzhou', 'Fuzhou', 'Harbin', 'Changsha', 'Kunming', 'Zhengzhou', 'Jinan'
+];
+
+const thaiHometowns = [
+    'Bangkok', 'Chiang Mai', 'Phuket', 'Pattaya', 'Nakhon Ratchasima', 'Khon Kaen', 
+    'Udon Thani', 'Surat Thani', 'Hat Yai', 'Nonthaburi', 'Chiang Rai', 'Songkhla',
+    'Rayong', 'Ayutthaya', 'Kanchanaburi', 'Krabi', 'Nakhon Si Thammarat'
+];
+// --- END OF NEW BLOCK ---
+
+
+  // --- NEW: International Name Lists ---
+  const chineseLastNames = [
+    // Original 20
+    'Chen', 'Li', 'Zhang', 'Liu', 'Wang', 'Yang', 'Huang', 'Zhao', 'Wu', 'Zhou', 
+    'Xu', 'Sun', 'Ma', 'Zhu', 'Hu', 'Guo', 'He', 'Gao', 'Lin', 'Luo',
+    
+    // 300 New Surnames
+    'Zheng', 'Liang', 'Xie', 'Song', 'Tang', 'Xu', 'Han', 'Cao', 'Feng', 'Deng', 
+    'Zeng', 'Peng', 'Xiao', 'Tian', 'Dong', 'Yuan', 'Pan', 'Yu', 'Ye', 'Jiang', 
+    'Du', 'Su', 'Wei', 'Cheng', 'Shao', 'Meng', 'Fan', 'Jin', 'Fang', 'Cai', 
+    'Shi', 'Bai', 'Kong', 'Cui', 'Kang', 'Mao', 'Qiu', 'Qin', 'Jiang', 'Shi', 
+    'Gu', 'Hou', 'Liao', 'Zou', 'Xiong', 'Meng', 'Qin', 'Bai', 'Yin', 'Yan', 
+    'Duan', 'Long', 'Wan', 'Duan', 'Hao', 'Kong', 'Shao', 'Cui', 'Mo', 'Qian', 
+    'Lu', 'Tang', 'Niu', 'Qi', 'Gu', 'Xue', 'Lei', 'Xing', 'An', 'Ge', 
+    'Yi', 'Ai', 'Ba', 'Bi', 'Bian', 'Bu', 'Cai', 'Cang', 'Chai', 'Chang', 
+    'Chao', 'Che', 'Chi', 'Chu', 'Cong', 'Dai', 'Dang', 'Di', 'Ding', 'Duan', 
+    'En', 'Fa', 'Fei', 'Fu', 'Gan', 'Geng', 'Gong', 'Gou', 'Guan', 'Gui', 
+    'Hai', 'Hang', 'Hao', 'Hong', 'Hua', 'Huan', 'Huo', 'Ji', 'Jia', 'Jian', 
+    'Jiang', 'Jiao', 'Jin', 'Jing', 'Ju', 'Jun', 'Kai', 'Kan', 'Ke', 'Kou', 
+    'Kuai', 'Kuang', 'Lan', 'Lang', 'Lao', 'Le', 'Leng', 'Li', 'Lian', 'Liang', 
+    'Liao', 'Lin', 'Ling', 'Liu', 'Lou', 'Lu', 'Luan', 'Lun', 'Luo', 'Lv', 
+    'Ma', 'Mai', 'Man', 'Mang', 'Mao', 'Mei', 'Meng', 'Mi', 'Miao', 'Min', 
+    'Ming', 'Miu', 'Mo', 'Mou', 'Mu', 'Na', 'Nan', 'Neng', 'Ni', 'Nian', 
+    'Nie', 'Ning', 'Niu', 'Nong', 'Ou', 'Pan', 'Pang', 'Pei', 'Peng', 'Pi', 
+    'Ping', 'Pu', 'Qi', 'Qian', 'Qiang', 'Qiao', 'Qin', 'Qing', 'Qiu', 'Qu', 
+    'Quan', 'Que', 'Ran', 'Rao', 'Ren', 'Rong', 'Ru', 'Ruan', 'Rui', 'Sha', 
+    'Shan', 'Shang', 'Shao', 'She', 'Shen', 'Sheng', 'Shi', 'Shou', 'Shu', 'Shuang', 
+    'Shui', 'Si', 'Song', 'Su', 'Sui', 'Sun', 'Tai', 'Tan', 'Tang', 'Tao', 
+    'Teng', 'Tian', 'Tong', 'Tu', 'Wan', 'Wang', 'Wei', 'Wen', 'Weng', 'Wo', 
+    'Wu', 'Xi', 'Xia', 'Xian', 'Xiang', 'Xiao', 'Xie', 'Xin', 'Xing', 'Xiong', 
+    'Xiu', 'Xu', 'Xuan', 'Xue', 'Yan', 'Yang', 'Yao', 'Ye', 'Yi', 'Yin', 
+    'Ying', 'Yo', 'Yong', 'You', 'Yu', 'Yuan', 'Yue', 'Yun', 'Zai', 'Zang', 
+    'Zeng', 'Zha', 'Zhai', 'Zhan', 'Zhang', 'Zhao', 'Zhen', 'Zheng', 'Zhi', 'Zhong', 
+    'Zhou', 'Zhu', 'Zhuang', 'Zhuo', 'Zi', 'Zong', 'Zou', 'Zu', 'Zuo', 'A-Yuan'
+  ];
+  const chineseFirstNames = [
+    // Original 20
+  'Jia', 'Ling', 'Fei', 'Mei', 'Ying', 'Wei', 'Ting', 'Hui', 'Xin', 'Yuan', 
+  'Ai', 'Bao', 'Fang', 'Jing', 'Li', 'Na', 'Ping', 'Qiu', 'Rong', 'Shan',
+  
+  // 300 New Female Names
+  'Yan', 'Lan', 'Qing', 'Ya', 'Wan', 'Xi', 'Xiao', 'Yun', 'Ran', 'Meng', 
+  'Lu', 'Qi', 'Dan', 'Shuang', 'Yue', 'Lin', 'Han', 'Qian', 'Chen', 'Yu', 
+  'Yi', 'Zhen', 'Xue', 'Mo', 'Lian', 'Tao', 'Ju', 'Rui', 'Xuan', 'Zi', 
+  'Tong', 'Yao', 'Chun', 'Xia', 'Dong', 'He', 'Xing', 'Cui', 'Fen', 'Hong', 
+  'Hua', 'Jin', 'Lan', 'Li', 'Lian', 'Mei', 'Ning', 'Qi', 'Qin', 'Qiong', 
+  'Su', 'Wan', 'Wei', 'Wen', 'Xiang', 'Xiu', 'Yan', 'Ye', 'Yi', 'Yin', 
+  'Yue', 'Yun', 'Zhen', 'Zhu', 'An', 'Bei', 'Bi', 'Cai', 'Chan', 'Chang', 
+  'Chao', 'Chen', 'Cheng', 'Chi', 'Chong', 'Chu', 'Chun', 'Ci', 'Cong', 'Cui', 
+  'Dai', 'Dan', 'Di', 'Dian', 'Ding', 'Dong', 'Du', 'Duan', 'En', 'Er', 
+  'Fan', 'Fang', 'Fei', 'Fen', 'Feng', 'Fu', 'Gai', 'Gan', 'Gao', 'Ge', 
+  'Geng', 'Gong', 'Gou', 'Gu', 'Guan', 'Gui', 'Guo', 'Hai', 'Han', 'Hao',
+
+    'Meiling', 'Xuehua', 'Xiaoyu', 'Jingwen', 'Zihan', 'Ruoxi', 'Jiaqi', 'Yiran', 'Xinyi', 'Shiyuan',
+    'Yunting', 'Peizhi', 'Lihua', 'Chunxia', 'Dongmei', 'Haiyan', 'Yufeng', 'Meiqi', 'Zixuan', 'Yuxin',
+    'Siyu', 'Mengqi', 'Kexin', 'Xiaoxuan', 'Yinuo', 'Muxi', 'Shuhan', 'Yingzi', 'Wanyi', 'Zhiruo',
+    'Feifei', 'Nana', 'Lulu', 'Yanyan', 'Tingting', 'Jingjing', 'Lingling', 'Sisi', 'Mimi', 'Beibei',
+    'Huiling', 'Yufen', 'Guixian', 'Xiulan', 'Yinghua', 'Suyan', 'Meifeng', 'Yuzhen', 'Ailian', 'Baochai',
+    'Daiyu', 'Xueyan', 'Zhenzhu', 'Caihong', 'Xiaofeng', 'Lanying', 'Yumei', 'Shaohua', 'Ruoan', 'Xinyuan',
+    'Ziqing', 'Lanfen', 'Huiying', 'Shufen', 'Yueqin', 'Yingchun', 'Xiaoqing', 'Yaxuan', 'Yuhan', 'Mengyao',
+    'Shuyuan', 'Qianqian', 'Yuanyuan', 'Tiantian', 'Manman', 'Yiyi', 'Xinxin', 'Anqi', 'Bingbing', 'Chenxi',
+    'Dandan', 'Enxi', 'Fangfang', 'Guoguo', 'Huanhuan', 'Jiajia', 'Keke', 'Lele', 'Miaomiao', 'Nannan',
+    'Panpan', 'Qiqi', 'Ranran', 'Shanshan', 'Taotao', 'Wanwan', 'Xixi', 'Yuanyuan', 'Zezé', 'Ailin',
+    'Biyun', 'Chengcheng', 'Dieyu', 'Enyu', 'Fanrong', 'Gongyu', 'Hehui', 'Icyi', 'Jianuo', 'Kaili',
+    'Linxi', 'Meiyu', 'Ningxin', 'Ouyang', 'Peipei', 'Qingya', 'Ruolan', 'Shuman', 'Tianyu', 'Unyu',
+    'Vivi', 'Wenwen', 'Xiaoxiao', 'Yuyu', 'Zizi', 'Aimei', 'Baoer', 'Chunlan', 'Duoduo', 'Ermao',
+    'Fangfei', 'Guanxin', 'Hanhan', 'Inyi', 'Junlan', 'Kongyu', 'Liwei', 'Meixi', 'Niuniu', 'Ounuo',
+    'Pingping', 'Qiaomei', 'Ruoxi', 'Shuxian', 'Tangyan', 'Ura', 'Weiling', 'Xinyi', 'Yueyue', 'Zhaozhao',
+    'Aiqi', 'Bingqing', 'Chunyan', 'Dongni', 'Enge', 'Fengmian', 'Guimei', 'Hehe', 'Inruo', 'Jiayi',
+    'Kaiming', 'Lanxin', 'Meixia', 'Nuonuo', 'Peiqin', 'Qiaoling', 'Ruomei', 'Shuying', 'Tingran', 'Uwa',
+    'Weiran', 'Xiaoman', 'Yujie', 'Zhiying', 'Anran', 'Baofei', 'Chunyi', 'Dora', 'Enling', 'Fanfei',
+    'Geyu', 'Hongyan', 'Inlan', 'Jianing', 'Kewen', 'Liqin', 'Mengyan', 'Niannian', 'Peishan', 'Qingxuan',
+    'Ruonan', 'Siqi', 'Tianan', 'Uyi', 'Wenjing', 'Xiaoxuan', 'Yuning', 'Zhixuan', 'Anyu', 'Biyu',
+    'Chunzi', 'Diyu', 'Enni', 'Fanyun', 'Guanling', 'Huifang', 'Inmian', 'Jingyi', 'Keyu', 'Lixia',
+    'Mengzhu', 'Nuoya', 'Peiyu', 'Qingyi', 'Ruoyun', 'Siyuan', 'Tianyin', 'Vina', 'Wenqi', 'Xiaoyun',
+    'Yuran', 'Ziyu', 'Baojin', 'Cailing', 'Dewen', 'Ermei', 'Fenghua', 'Guanru', 'Huijun', 'Inling',
+    'Jingya', 'Kongling', 'Liying', 'Minmin', 'Piaopiao', 'Qingyun', 'Ruozhu', 'Songling', 'Tingyu', 'Wanrong',
+    'Wenyu', 'Xinyue', 'Yuling', 'Ziyue', 'Baoli', 'Caiwei', 'Deyu', 'Eryu', 'Fengping', 'Guoyu',
+    'Huimei', 'Inruo', 'Jiayu', 'Lanruo', 'Liyu', 'Mulan', 'Peiling', 'Qiwen', 'Shiyi', 'Suyi',
+    'Tongtong', 'Weiwei', 'Xiaomei', 'Yingying', 'Ziyi', 'Bingru', 'Chengxi', 'Difei', 'Fanxing', 'Guixin',
+    'Huiru', 'Inran', 'Jiexi', 'Lanyue', 'Meiruo', 'Nanxi', 'Peixuan', 'Qiuxia', 'Shuyun', 'Tianxin',
+    'Wanqi', 'Wuxuan', 'Xiaoran', 'Yunyao', 'Zhuyu', 'Caixia', 'Dongxue', 'Fanghua', 'Hanyi', 'Jingzhi',
+    'Lanfang', 'Meijun', 'Peiran', 'Qiaoxi', 'Ruoting', 'Shuxuan', 'Tianyi', 'Wenxi', 'Xinyan', 'Yuxuan'
+  ];
+  const thaiNicknames = [
+    // Original 20
+    'Ploy', 'Fern', 'May', 'Mint', 'Bam', 'Aom', 'Noon', 'Fah', 'Mind', 'Pim', 
+    'Kate', 'Jane', 'New', 'Joy', 'Earn', 'Tangmo', 'Kaew', 'Mook', 'Orn', 'Pun',
+    
+    // 300 New Female Names
+    'Alice', 'Angie', 'Apple', 'April', 'Ariel', 'Baibua', 'Baimon', 'Baitong', 'Barbie', 'Bebe', 
+    'Bella', 'Belle', 'Benz', 'Berry', 'Bew', 'Bia', 'Biew', 'Bua', 'Bumbim', 'Bunny', 
+    'Cake', 'Candy', 'Cartoon', 'Cat', 'Chaba', 'Champagne', 'Charelle', 'Chelsea', 'Cher', 'Cher-aim', 
+    'Cherry', 'Chicha', 'Chilli', 'Chloe', 'Chom', 'Chompoo', 'Choux', 'Cindy', 'Claire', 'Cookie', 
+    'Coral', 'Cream', 'Crystal', 'Cupid', 'Da', 'Daisy', 'Dao', 'Darling', 'Dear', 'Dee', 
+    'Deer', 'Delta', 'Dew', 'Diamond', 'Diana', 'Doll', 'Dolly', 'Donut', 'Dream', 'Duang', 
+    'Ease', 'Egg', 'Elle', 'Elsa', 'Emmy', 'Eve', 'Eye', 'Fai', 'Fair', 'Fairy', 
+    'Fang', 'Fay', 'Ferny', 'Fib', 'Film', 'Fin', 'Fine', 'Fiona', 'Fizzy', 'Flute', 
+    'Focus', 'Fon', 'Fuji', 'Fuyu', 'Gabby', 'Gale', 'Gam', 'Gamsai', 'Garnet', 'Gauze', 
+    'Gel', 'Gem', 'Gen', 'Gia', 'Gift', 'Gigi', 'Ginger', 'Ginny', 'Glass', 'Glow', 
+    'Goldie', 'Grace', 'Grape', 'Green', 'Gumball', 'Gung', 'Ha-na', 'Harp', 'Hazel', 'Heart', 
+    'Hello', 'Hemp', 'Hing', 'Honey', 'Hong', 'Hope', 'Ice', 'Idea', 'Ink', 'Iny', 
+    'Irene', 'Iris', 'Ivy', 'Ja', 'Jaa', 'Jade', 'Jasmine', 'Jean', 'Jeeb', 'Jelly', 
+    'Jen', 'Jenni', 'Jess', 'Jia', 'Jib', 'Jid', 'Jin', 'Jing', 'Jom', 'Joom', 
+    'Joon', 'Juice', 'July', 'June', 'Junior', 'Juno', 'Kae', 'Kai', 'Kaimook', 'Kan', 
+    'Kanom', 'Kao', 'Kapook', 'Kay', 'Keng', 'Kha-na', 'Khaomao', 'Khing', 'Khum', 'Kie', 
+    'King', 'Kirin', 'Kiss', 'Kitty', 'Kiwi', 'Koi', 'Kong', 'Korya', 'Koy', 'Kratai', 
+    'Krystal', 'Kung', 'Kwan', 'Kwang', 'Lace', 'Lady', 'Latte', 'Leaf', 'Lego', 'Lek', 
+    'Lemon', 'Lert', 'Lexie', 'Libby', 'Lilly', 'Lim', 'Lira', 'Lisa', 'Look-In', 'Look-Kaew', 
+    'Look-Mhee', 'Look-Nam', 'Look-Ped', 'Look-Pla', 'Look-Tarn', 'Look-Yee', 'Lotto', 'Love', 'Lovely', 'Lucy', 
+    'Lulu', 'Luna', 'Lychee', 'Maddie', 'Magic', 'Mail', 'Mali', 'Mang-Po', 'Mango', 'Maple', 
+    'Marie', 'Marine', 'Mary', 'Matcha', 'Maya', 'Med', 'Mee', 'Melody', 'Mew', 'Mi', 
+    'Mia', 'Mickey', 'Mild', 'Milk', 'Mille', 'Mimi', 'Min', 'Mina', 'Mini', 'Minnie', 
+    'Mirabel', 'Mo', 'Mod', 'Moira', 'Molly', 'Momay', 'Mona', 'Money', 'Mon-Mean', 'Music', 
+    'My', 'Naam', 'Nam-Fon', 'Nam-Khang', 'Nam-Neung', 'Nam-Phung', 'Nam-Prik', 'Nam-Tan', 'Nam-Wan', 'Nana', 
+    'Nano', 'Nan-Nan', 'Nara', 'Nat', 'Na-Ya', 'Ne-Ne', 'Nemo', 'Neon', 'Net', 'Ngao', 
+    'Nia', 'Nice', 'Night', 'Nikki', 'Nila', 'Nile', 'Nina', 'Nink', 'Nite', 'Niya', 
+    'Noo', 'Noo-Dee', 'Noo-Lek', 'Noo-Na', 'Nook', 'Nook-Nik', 'Note', 'Noun', 'Nut', 'Olive', 
+    'Omelet', 'On', 'Opal', 'Orange', 'Orchid', 'Origami', 'Oun', 'Pa', 'Pae', 'Pai', 
+    'Pair', 'Palm', 'Pam', 'Pan', 'Panda', 'Pang', 'Paper', 'Paris', 'Pat', 'Paula', 
+    'Peach', 'Pear', 'Pearl', 'Petch', 'Pie', 'Pin', 'Pine', 'Ping', 'Pink', 'Pinky', 
+    'Pla', 'Plum', 'Pluto', 'Poly', 'Pond', 'Poom', 'Pop', 'Porshe', 'Prang', 'Preme', 
+    'Prim', 'Princess', 'Proud', 'Puff', 'Pui', 'Pukpik', 'Pum', 'Puna', 'Puy', 'Pye', 
+    'Queen', 'Rain', 'Ranya', 'Renee', 'Risa', 'Rose', 'Rosie', 'Ruby', 'Rung', 'Sa', 
+    'Saba', 'Sai', 'Saimai', 'Sand', 'Sanyi', 'Satang', 'Say', 'Scene', 'Sea', 'Selina', 
+    'Shine', 'Silk', 'Sky', 'Smile', 'Soda', 'Som', 'Som-O', 'Song', 'Sophia', 'Star', 
+    'Sugar', 'Sun', 'Suri', 'Susie', 'Sweet', 'Tae', 'Talay', 'Tan', 'Tarn', 'Tay', 
+    'Tea', 'Tender', 'Thara', 'Tiwa', 'Toby', 'Toey', 'Tofu', 'Ton-Horm', 'Toon', 'Toy', 
+    'Tulip', 'Tyne', 'Umi', 'Usa', 'Vee', 'View', 'Vine', 'Vivi', 'Waan', 'Wade', 
+    'Wa-wa', 'Wave', 'Way', 'Whale', 'Whan', 'White', 'Wila', 'Wine', 'Wink', 'Yacht', 
+    'Yam', 'Yaya', 'Yen', 'Yim', 'Ying', 'Yogurt', 'Yoyo', 'Yu', 'Yui', 'Yuki', 
+    'Yum', 'Yus', 'Yut', 'Zen', 'Zeus', 'Ziggy', 'Zinc', 'Zoe', 'Zola', 'Zun'
+  ];
+  // --- END NEW ---
+
+// --- REPLACE THE OLD FUNCTION WITH THIS ---
+export const generateRandomHometown = (location = 'Japan') => {
+    switch (location) {
+        case 'China':
+        case 'Shanghai':
+            return chineseHometowns[Math.floor(Math.random() * chineseHometowns.length)];
+        case 'Thailand':
+        case 'Bangkok':
+            return thaiHometowns[Math.floor(Math.random() * thaiHometowns.length)];
+        default:
+            return hometowns[Math.floor(Math.random() * hometowns.length)];
+    }
 };
+// --- END OF REPLACEMENT ---
 
 export const electionSpeechTemplates = {
     center: [
@@ -803,7 +965,7 @@ const [pendingMerch, setPendingMerch] = useState([]);
     const [groupRoles, setGroupRoles] = useState({});
     const [annualAwardsHistory, setAnnualAwardsHistory] = useState([]);
     const [activeChart, setActiveChart] = useState(null)
-    const [exchangeStudent, setExchangeStudent] = useState(null); // { rivalId, member, startWeek, endWeek }
+    const [exchangeStudents, setExchangeStudents] = useState([]); // Array of { rivalId, member, startWeek, endWeek }
 
     // START/LOAD/SAVE FUNCTIONS
 
@@ -888,7 +1050,7 @@ const [pendingMerch, setPendingMerch] = useState([]);
                 photoBooks: JSON.stringify(photoBooks),
                 documentaries: JSON.stringify(documentaries),
                 collaborations: JSON.stringify(collaborations),
-                exchangeStudent: JSON.stringify(exchangeStudent),
+                exchangeStudents: JSON.stringify(exchangeStudents),
                 scandals: JSON.stringify(scandals),
                 statistics: JSON.stringify(statistics),
                 merchInventory: JSON.stringify(merchInventory),
@@ -1049,7 +1211,7 @@ const [pendingMerch, setPendingMerch] = useState([]);
 
             setRivalGroups(JSON.parse(data.rivalGroups || "[]"));
             setActiveChart(JSON.parse(data.activeChart || "null"));
-            setExchangeStudent(JSON.parse(data.exchangeStudent || "null"));
+            setExchangeStudents(JSON.parse(data.exchangeStudents || "null"));
             setAchievements(JSON.parse(data.achievements || "[]"));
             setHallOfFame(JSON.parse(data.hallOfFame || "[]"));
             setJankenTournament(JSON.parse(data.jankenTournament || "null"));
@@ -1107,74 +1269,96 @@ const [pendingMerch, setPendingMerch] = useState([]);
 
     // --- MEMBER/GROUP UTILITIES ---
 
-    const generateRandomMemberName = () => {
-        const firstNames = [
-            'Yui', 'Sakura', 'Miku', 'Haruka', 'Rina', 'Nana', 'Akari', 'Yuki', 'Aoi', 'Hana', 
-            'Karin', 'Miyu', 'Saki', 'Hinata', 'Riko', 'Ayaka', 'Mei', 'Eri', 'Mio', 'Yuna', 
-            'Kotone', 'Sumire', 'Reina', 'Noa', 'Tomomi', 'Hiyori', 'Ami', 'Nao', 'Sayaka', 'Asuka', 
-            'Chihiro', 'Emi', 'Kokona', 'Misaki', 'Saeko', 'Nanami', 'Shiori', 'Aya', 'Kazumi', 'Arisa', 
-            'Marina', 'Kanna', 'Azusa', 'Rin', 'Fumika', 'Suzuka', 'Nene', 'Akane', 'Mai', 'Yuuri', 
-            'Seira', 'Momoka', 'Rei', 'Tsukasa', 'Ichika', 'Mafuyu', 'Yume', 'Kyouka', 'Maho', 'Sena', 
-            'Tsumugi', 'Yurina', 'Himari', 'Mirei', 'Honoka', 'Ririka', 'Natsuki', 'Hikaru', 'Aina', 'Shizuku', 
-            'Ryou', 'Kaho', 'Minori', 'Mariya', 'Ayame', 'Kokoro', 'Misao', 'Rion', 'Moeka', 'Haruna', 
-            'Yuuna', 'Mizuki', 'Kanako', 'Ema', 'Suzu', 'Kotoha', 'Nagisa', 'Ayumi', 'Riona', 'Yuzuki', 
-            'Mina', 'Chiaki', 'Nozomi', 'Miharu', 'Haruno', 'Risa', 'Saaya', 'Airu', 'Koharu', 'Rio', 
-            'Fuka', 'Ruka', 'Hina', 'Sana', 'Mana', 'Kiri', 'Miki', 'Aira', 'Kiyomi', 'Satomi', 
-            'Chisato', 'Miho', 'Yua', 'Meisa', 'Natsumi', 'Yuka', 'Sora', 'Riho', 'Ena', 'Kanon', 
-            'Yuzuka', 'Moka', 'Himeka', 'Rika', 'Shio', 'Chiharu', 'Kumi', 'Aika', 'Natsue', 'Sae', 
-            'Mikoto', 'Manami', 'Yoshino', 'Asumi', 'Sayo', 'Reika', 'Miyabi', 'Kaede', 'Aiko', 'Akiko', 
-            'Atsuko', 'Ayano', 'Emiko', 'Eriko', 'Fujiko', 'Fumiko', 'Haruko', 'Hideko', 'Hiroko', 'Hitomi', 
-            'Izumi', 'Junko', 'Katsumi', 'Kayoko', 'Keiko', 'Kimiko', 'Kumiko', 'Kyoko', 'Machiko', 'Madoka', 
-            'Maiko', 'Makiko', 'Mariko', 'Masako', 'Mayu', 'Mayumi', 'Michiko', 'Midori', 'Mieko', 'Miya', 
-            'Miyoko', 'Momoko', 'Nagako', 'Namiko', 'Naoko', 'Naomi', 'Narumi', 'Noriko', 'Reiko', 'Rie', 
-            'Rikako', 'Rumiko', 'Ryoko', 'Sachiko', 'Sakiko', 'Satoko', 'Setsuko', 'Shigeko', 'Shizuka', 'Sumiko', 
-            'Takako', 'Tamiko', 'Teruko', 'Tomoko', 'Toshiko', 'Wakana', 'Yasuko', 'Yayoi', 'Yoko', 'Yoshiko',
-            'Yumiko', 'Yuriko', 'Kozue', 'Natsuko', 'Sachi', 'Shino', 'Mitsu', 'Ruriko', 'Kiyoko', 'Tomi', 
-            'Fumi', 'Michi', 'Hisako', 'Kazuko', 'Maki', 'Mari', 'Yuko', 'Akemi', 'Asako', 'Atsumi', 
-            'Chie', 'Chieko', 'Chika', 'Chiyo', 'Etsuko', 'Harue', 'Hiroe', 'Ikuko', 'Itsumi', 'Kanade', 
-            'Kayo', 'Kazue', 'Kiwa', 'Koto', 'Kumie', 'Kyomi', 'Machie', 'Masae', 'Masami', 'Michie', 
-            'Mikiho', 'Minao', 'Mineko', 'Misako', 'Mitsue', 'Mitsuki', 'Miyae', 'Miyuki', 'Motoko', 'Mutsumi', 
-            'Nadeshiko', 'Nae', 'Naoe', 'Narue', 'Natsuhiko', 'Natsuyo', 'Nobuko', 'Norie', 'Ran', 'Reiichi', 
-            'Rimiko', 'Ritsuko', 'Rurika', 'Sachie', 'Sadako', 'Saori', 'Sayoko', 'Sayuri', 'Shigemi', 'Shizue', 
-            'Sumie', 'Taeko', 'Takami', 'Tamaki', 'Tamao', 'Terue', 'Terumi', 'Tokiko', 'Tomie', 'Tomoe', 
-            'Toyoko', 'Tsuki', 'Tsuru', 'Ume', 'Utako', 'Waka', 'Yae', 'Yaeko', 'Yasue', 'Yemi', 
-            'Yone', 'Yoshie', 'Yuiho', 'Yukako', 'Yukari', 'Yukie', 'Yukiko', 'Yumi', 'Yurika', 'Yuzue'
-          ];
-          const lastNames = [
-            'Tanaka', 'Sato', 'Suzuki', 'Takahashi', 'Watanabe', 'Yamamoto', 'Kobayashi', 'Nakamura', 'Ito', 'Kato', 
-            'Yoshida', 'Yamada', 'Sasaki', 'Yamaguchi', 'Matsumoto', 'Inoue', 'Kimura', 'Shimizu', 'Hayashi', 'Saito', 
-            'Abe', 'Fujita', 'Okada', 'Goto', 'Kondo', 'Ishikawa', 'Nakajima', 'Harada', 'Otsuka', 'Hasegawa', 
-            'Murakami', 'Kojima', 'Takagi', 'Kuroda', 'Takeda', 'Imai', 'Ando', 'Fukuda', 'Miyazaki', 'Ueda', 
-            'Shibata', 'Kawai', 'Nagano', 'Hirano', 'Mizuno', 'Ono', 'Fujii', 'Sugiyama', 'Kishida', 'Endo', 
-            'Noguchi', 'Oshima', 'Sakurai', 'Mochizuki', 'Tsukada', 'Aoki', 'Morimoto', 'Tamura', 'Oda', 'Matsuda', 
-            'Azuma', 'Nishida', 'Sugimoto', 'Kubota', 'Kawamura', 'Ishii', 'Nakano', 'Kanda', 'Morita', 'Nagata', 
-            'Ogawa', 'Kinoshita', 'Mori', 'Yoshikawa', 'Kawasaki', 'Higuchi', 'Suenaga', 'Kaneko', 'Miyamoto', 'Shinozaki', 
-            'Kawaguchi', 'Hosoda', 'Koga', 'Okamoto', 'Kamei', 'Tsutsui', 'Arakawa', 'Imamura', 'Furukawa', 'Nishimura', 
-            'Kubo', 'Okumura', 'Masuda', 'Ishida', 'Asano', 'Fukumoto', 'Sakai', 'Matsui', 'Iwasaki', 'Nakagawa', 
-            'Haruna', 'Ueno', 'Fujiwara', 'Seki', 'Nojima', 'Hoshino', 'Chiba', 'Kikuchi', 'Tanimoto', 'Fukui', 
-            'Ota', 'Umezu', 'Ohashi', 'Yano', 'Katayama', 'Maki', 'Kuroki', 'Hatta', 'Koike', 'Mogi', 
-            'Inagaki', 'Mita', 'Sano', 'Yoshioka', 'Komatsu', 'Sogabe', 'Horii', 'Tsuchiya', 'Kurata', 'Sugawara', 
-            'Tsuji', 'Ishizuka', 'Amano', 'Takeuchi', 'Nakata', 'Honma', 'Kitamura', 'Enomoto', 'Sawada', 'Uchida', 
-            'Yura', 'Hamada', 'Nishio', 'Shima', 'Hada', 'Kishimoto', 'Sakamoto', 'Nomura', 'Ishibashi', 'Taki', 
-            'Kurokawa', 'Morinaga', 'Oishi', 'Uchiyama', 'Nishino', 'Hiraoka', 'Yashiro', 'Kamada', 'Mizutani', 'Yagisawa', 
-            'Kawashima', 'Ogasawara', 'Terada', 'Inaba', 'Shiraishi', 'Nishiura', 'Sugisaki', 'Katsura', 'Yamazaki', 'Horiguchi', 
-            'Murota', 'Fujino', 'Nishikori', 'Miyake', 'Miyata', 'Shimada', 'Okazaki', 'Miyashiro', 'Fujimori', 'Nagasawa', 
-            'Takada', 'Yamane', 'Nishitani', 'Asada', 'Hamasaki', 'Matsuno', 'Onozawa', 'Takano', 'Kitagawa', 'Nakahara', 
-            'Shiba', 'Yoda', 'Kanamori', 'Umeda', 'Irie', 'Kurihara', 'Hirasawa', 'Kawahara', 'Nagai', 'Tsujimura', 
-            'Horikawa', 'Nishikawa', 'Murata', 'Miyagi', 'Shibasaki', 'Miyamura', 'Yamanaka', 'Hosokawa', 'Ichikawa', 'Kajiwara', 
-            'Obara', 'Suga', 'Nagahama', 'Katsumata', 'Nishimori', 'Fujisawa', 'Numata', 'Hirai', 'Nakamoto', 'Okabe', 
-            'Matsubara', 'Hino', 'Oshita', 'Shioya', 'Takaoka', 'Inui', 'Nishi', 'Nagao', 'Kumagai', 'Tashiro', 
-            'Kawano', 'Eto', 'Fukuzawa', 'Kawade', 'Ogiwara', 'Hirose', 'Asai', 'Yusa', 'Shintani', 'Mitsuoka', 
-            'Sone', 'Tsuda', 'Okuyama', 'Miyoshi', 'Furusawa', 'Kurosu', 'Nishimaki', 'Toba', 'Kase', 'Mizuguchi', 
-            'Teramoto', 'Hanyu', 'Sawamura', 'Okura', 'Kusano', 'Mizushima', 'Arima', 'Fujimoto', 'Iidaka', 'Kido',
-            'Nanba', 'Omiya', 'Shimamura', 'Takase', 'Uehara', 'Yajima', 'Asahina', 'Fukuyama', 'Inami', 'Komiya',
-            'Matsuyama', 'Nishio', 'Okino', 'Shirai', 'Takei', 'Yoshimatsu', 'Eguchi', 'Hoshina', 'Iwanaga', 'Kasai',
-            'Mizoguchi', 'Ogata', 'Sano', 'Tachibana', 'Uchiumi', 'Wakabayashi', 'Yokoyama', 'Aizawa', 'Iidaka', 'Kusaka',
-            'Miyakoshi', 'Okuda', 'Senda', 'Tanabe', 'Uematsu', 'Yasuoka', 'Fujimaki', 'Ikeda', 'Koshino', 'Makino'
-          ];
-      const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
-      const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
-      return `${firstName} ${lastName}`;
+    const generateRandomMemberName = (location = 'Japan') => {
+        // --- NEW: International Name Generators ---
+        const generateChineseMemberName = () => {
+            const firstName = chineseFirstNames[Math.floor(Math.random() * chineseFirstNames.length)];
+            const lastName = chineseLastNames[Math.floor(Math.random() * chineseLastNames.length)];
+            return `${firstName} ${lastName}`;
+        };
+
+        const generateThaiMemberName = () => {
+            return thaiNicknames[Math.floor(Math.random() * thaiNicknames.length)];
+        };
+        // --- END NEW ---
+
+        // --- NEW: Location-based switch ---
+        switch (location) {
+            case 'China':
+            case 'Shanghai':
+                return generateChineseMemberName();
+            case 'Thailand':
+            case 'Bangkok':
+                return generateThaiMemberName();
+            default: // Fallback to Japanese names
+            const firstNames = [
+                'Yui', 'Sakura', 'Miku', 'Haruka', 'Rina', 'Nana', 'Akari', 'Yuki', 'Aoi', 'Hana', 
+                'Karin', 'Miyu', 'Saki', 'Hinata', 'Riko', 'Ayaka', 'Mei', 'Eri', 'Mio', 'Yuna', 
+                'Kotone', 'Sumire', 'Reina', 'Noa', 'Tomomi', 'Hiyori', 'Ami', 'Nao', 'Sayaka', 'Asuka', 
+                'Chihiro', 'Emi', 'Kokona', 'Misaki', 'Saeko', 'Nanami', 'Shiori', 'Aya', 'Kazumi', 'Arisa', 
+                'Marina', 'Kanna', 'Azusa', 'Rin', 'Fumika', 'Suzuka', 'Nene', 'Akane', 'Mai', 'Yuuri', 
+                'Seira', 'Momoka', 'Rei', 'Tsukasa', 'Ichika', 'Mafuyu', 'Yume', 'Kyouka', 'Maho', 'Sena', 
+                'Tsumugi', 'Yurina', 'Himari', 'Mirei', 'Honoka', 'Ririka', 'Natsuki', 'Hikaru', 'Aina', 'Shizuku', 
+                'Ryou', 'Kaho', 'Minori', 'Mariya', 'Ayame', 'Kokoro', 'Misao', 'Rion', 'Moeka', 'Haruna', 
+                'Yuuna', 'Mizuki', 'Kanako', 'Ema', 'Suzu', 'Kotoha', 'Nagisa', 'Ayumi', 'Riona', 'Yuzuki', 
+                'Mina', 'Chiaki', 'Nozomi', 'Miharu', 'Haruno', 'Risa', 'Saaya', 'Airu', 'Koharu', 'Rio', 
+                'Fuka', 'Ruka', 'Hina', 'Sana', 'Mana', 'Kiri', 'Miki', 'Aira', 'Kiyomi', 'Satomi', 
+                'Chisato', 'Miho', 'Yua', 'Meisa', 'Natsumi', 'Yuka', 'Sora', 'Riho', 'Ena', 'Kanon', 
+                'Yuzuka', 'Moka', 'Himeka', 'Rika', 'Shio', 'Chiharu', 'Kumi', 'Aika', 'Natsue', 'Sae', 
+                'Mikoto', 'Manami', 'Yoshino', 'Asumi', 'Sayo', 'Reika', 'Miyabi', 'Kaede', 'Aiko', 'Akiko', 
+                'Atsuko', 'Ayano', 'Emiko', 'Eriko', 'Fujiko', 'Fumiko', 'Haruko', 'Hideko', 'Hiroko', 'Hitomi', 
+                'Izumi', 'Junko', 'Katsumi', 'Kayoko', 'Keiko', 'Kimiko', 'Kumiko', 'Kyoko', 'Machiko', 'Madoka', 
+                'Maiko', 'Makiko', 'Mariko', 'Masako', 'Mayu', 'Mayumi', 'Michiko', 'Midori', 'Mieko', 'Miya', 
+                'Miyoko', 'Momoko', 'Nagako', 'Namiko', 'Naoko', 'Naomi', 'Narumi', 'Noriko', 'Reiko', 'Rie', 
+                'Rikako', 'Rumiko', 'Ryoko', 'Sachiko', 'Sakiko', 'Satoko', 'Setsuko', 'Shigeko', 'Shizuka', 'Sumiko', 
+                'Takako', 'Tamiko', 'Teruko', 'Tomoko', 'Toshiko', 'Wakana', 'Yasuko', 'Yayoi', 'Yoko', 'Yoshiko',
+                'Yumiko', 'Yuriko', 'Kozue', 'Natsuko', 'Sachi', 'Shino', 'Mitsu', 'Ruriko', 'Kiyoko', 'Tomi', 
+                'Fumi', 'Michi', 'Hisako', 'Kazuko', 'Maki', 'Mari', 'Yuko', 'Akemi', 'Asako', 'Atsumi', 
+                'Chie', 'Chieko', 'Chika', 'Chiyo', 'Etsuko', 'Harue', 'Hiroe', 'Ikuko', 'Itsumi', 'Kanade', 
+                'Kayo', 'Kazue', 'Kiwa', 'Koto', 'Kumie', 'Kyomi', 'Machie', 'Masae', 'Masami', 'Michie', 
+                'Mikiho', 'Minao', 'Mineko', 'Misako', 'Mitsue', 'Mitsuki', 'Miyae', 'Miyuki', 'Motoko', 'Mutsumi', 
+                'Nadeshiko', 'Nae', 'Naoe', 'Narue', 'Natsuhiko', 'Natsuyo', 'Nobuko', 'Norie', 'Ran', 'Reiichi', 
+                'Rimiko', 'Ritsuko', 'Rurika', 'Sachie', 'Sadako', 'Saori', 'Sayoko', 'Sayuri', 'Shigemi', 'Shizue', 
+                'Sumie', 'Taeko', 'Takami', 'Tamaki', 'Tamao', 'Terue', 'Terumi', 'Tokiko', 'Tomie', 'Tomoe', 
+                'Toyoko', 'Tsuki', 'Tsuru', 'Ume', 'Utako', 'Waka', 'Yae', 'Yaeko', 'Yasue', 'Yemi', 
+                'Yone', 'Yoshie', 'Yuiho', 'Yukako', 'Yukari', 'Yukie', 'Yukiko', 'Yumi', 'Yurika', 'Yuzue'
+              ];
+              const lastNames = [
+                'Tanaka', 'Sato', 'Suzuki', 'Takahashi', 'Watanabe', 'Yamamoto', 'Kobayashi', 'Nakamura', 'Ito', 'Kato', 
+                'Yoshida', 'Yamada', 'Sasaki', 'Yamaguchi', 'Matsumoto', 'Inoue', 'Kimura', 'Shimizu', 'Hayashi', 'Saito', 
+                'Abe', 'Fujita', 'Okada', 'Goto', 'Kondo', 'Ishikawa', 'Nakajima', 'Harada', 'Otsuka', 'Hasegawa', 
+                'Murakami', 'Kojima', 'Takagi', 'Kuroda', 'Takeda', 'Imai', 'Ando', 'Fukuda', 'Miyazaki', 'Ueda', 
+                'Shibata', 'Kawai', 'Nagano', 'Hirano', 'Mizuno', 'Ono', 'Fujii', 'Sugiyama', 'Kishida', 'Endo', 
+                'Noguchi', 'Oshima', 'Sakurai', 'Mochizuki', 'Tsukada', 'Aoki', 'Morimoto', 'Tamura', 'Oda', 'Matsuda', 
+                'Azuma', 'Nishida', 'Sugimoto', 'Kubota', 'Kawamura', 'Ishii', 'Nakano', 'Kanda', 'Morita', 'Nagata', 
+                'Ogawa', 'Kinoshita', 'Mori', 'Yoshikawa', 'Kawasaki', 'Higuchi', 'Suenaga', 'Kaneko', 'Miyamoto', 'Shinozaki', 
+                'Kawaguchi', 'Hosoda', 'Koga', 'Okamoto', 'Kamei', 'Tsutsui', 'Arakawa', 'Imamura', 'Furukawa', 'Nishimura', 
+                'Kubo', 'Okumura', 'Masuda', 'Ishida', 'Asano', 'Fukumoto', 'Sakai', 'Matsui', 'Iwasaki', 'Nakagawa', 
+                'Haruna', 'Ueno', 'Fujiwara', 'Seki', 'Nojima', 'Hoshino', 'Chiba', 'Kikuchi', 'Tanimoto', 'Fukui', 
+                'Ota', 'Umezu', 'Ohashi', 'Yano', 'Katayama', 'Maki', 'Kuroki', 'Hatta', 'Koike', 'Mogi', 
+                'Inagaki', 'Mita', 'Sano', 'Yoshioka', 'Komatsu', 'Sogabe', 'Horii', 'Tsuchiya', 'Kurata', 'Sugawara', 
+                'Tsuji', 'Ishizuka', 'Amano', 'Takeuchi', 'Nakata', 'Honma', 'Kitamura', 'Enomoto', 'Sawada', 'Uchida', 
+                'Yura', 'Hamada', 'Nishio', 'Shima', 'Hada', 'Kishimoto', 'Sakamoto', 'Nomura', 'Ishibashi', 'Taki', 
+                'Kurokawa', 'Morinaga', 'Oishi', 'Uchiyama', 'Nishino', 'Hiraoka', 'Yashiro', 'Kamada', 'Mizutani', 'Yagisawa', 
+                'Kawashima', 'Ogasawara', 'Terada', 'Inaba', 'Shiraishi', 'Nishiura', 'Sugisaki', 'Katsura', 'Yamazaki', 'Horiguchi', 
+                'Murota', 'Fujino', 'Nishikori', 'Miyake', 'Miyata', 'Shimada', 'Okazaki', 'Miyashiro', 'Fujimori', 'Nagasawa', 
+                'Takada', 'Yamane', 'Nishitani', 'Asada', 'Hamasaki', 'Matsuno', 'Onozawa', 'Takano', 'Kitagawa', 'Nakahara', 
+                'Shiba', 'Yoda', 'Kanamori', 'Umeda', 'Irie', 'Kurihara', 'Hirasawa', 'Kawahara', 'Nagai', 'Tsujimura', 
+                'Horikawa', 'Nishikawa', 'Murata', 'Miyagi', 'Shibasaki', 'Miyamura', 'Yamanaka', 'Hosokawa', 'Ichikawa', 'Kajiwara', 
+                'Obara', 'Suga', 'Nagahama', 'Katsumata', 'Nishimori', 'Fujisawa', 'Numata', 'Hirai', 'Nakamoto', 'Okabe', 
+                'Matsubara', 'Hino', 'Oshita', 'Shioya', 'Takaoka', 'Inui', 'Nishi', 'Nagao', 'Kumagai', 'Tashiro', 
+                'Kawano', 'Eto', 'Fukuzawa', 'Kawade', 'Ogiwara', 'Hirose', 'Asai', 'Yusa', 'Shintani', 'Mitsuoka', 
+                'Sone', 'Tsuda', 'Okuyama', 'Miyoshi', 'Furusawa', 'Kurosu', 'Nishimaki', 'Toba', 'Kase', 'Mizuguchi', 
+                'Teramoto', 'Hanyu', 'Sawamura', 'Okura', 'Kusano', 'Mizushima', 'Arima', 'Fujimoto', 'Iidaka', 'Kido',
+                'Nanba', 'Omiya', 'Shimamura', 'Takase', 'Uehara', 'Yajima', 'Asahina', 'Fukuyama', 'Inami', 'Komiya',
+                'Matsuyama', 'Nishio', 'Okino', 'Shirai', 'Takei', 'Yoshimatsu', 'Eguchi', 'Hoshina', 'Iwanaga', 'Kasai',
+                'Mizoguchi', 'Ogata', 'Sano', 'Tachibana', 'Uchiumi', 'Wakabayashi', 'Yokoyama', 'Aizawa', 'Iidaka', 'Kusaka',
+                'Miyakoshi', 'Okuda', 'Senda', 'Tanabe', 'Uematsu', 'Yasuoka', 'Fujimaki', 'Ikeda', 'Koshino', 'Makino'
+              ];
+                  const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+              const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+              return `${firstName} ${lastName}`;
+        }
     };
 
     
@@ -1253,41 +1437,52 @@ const [pendingMerch, setPendingMerch] = useState([]);
         // Use the robust getMemberById to resolve the unique list of IDs into member objects.
         // This prevents any possibility of duplicate objects in the final array.
         const mainRoster = Array.from(allIds).map(id => getMemberById(id)).filter(Boolean);
-        if (exchangeStudent) {
-            mainRoster.push(exchangeStudent.member);
-        }
+if (exchangeStudents && exchangeStudents.length > 0) {
+    exchangeStudents.forEach(ex => mainRoster.push(ex.member));
+}
         return mainRoster;
     };
 
-    const getAllAvailableMembers = (includeSisterGroups = false) => {
-      let all = [...members];
-      if (includeSisterGroups) {
-          (sisterGroups || []).forEach(sg => { 
-              if (sg.members) {
-                  (sg.members || []).forEach(m => { 
-                      all.push({
-                          ...m, 
-                          id: `sg-${sg.id}-${m.id}`, 
-                          name: `${m.name} (${sg.name})`,
-                          homeGroup: sg.name, 
-                          isSister: true,
-                          groupId: sg.id 
-                      });
-                  });
-              }
-          });
-      }
-      return all.filter(m => m.isAvailable);
-    };
+const getAllAvailableMembers = (includeSisters = false) => {
+    let allMembers = [...members.map(m => ({
+        ...m,
+        rosterId: String(m.id),
+        isSisterMember: false,
+        displayGroupName: groupName
+    }))];
+
+    if (includeSisters) {
+        sisterGroups.forEach(sg => {
+            if (sg.members) {
+                const sisterMembers = sg.members.map(m => ({
+                    ...m,
+                    rosterId: `sg-${sg.id}-${m.id}`,
+                    isSisterMember: true,
+                    displayGroupName: sg.name,
+                    groupId: sg.id // Important for filtering
+                }));
+                allMembers.push(...sisterMembers);
+            }
+        });
+        // THIS IS THE FIX: Add exchange students to the list
+if (exchangeStudents && exchangeStudents.length > 0) {
+    exchangeStudents.forEach(ex => {
+        allMembers.push(ex.member);
+    });
+}
+    }
+    return allMembers;
+};
     
 const getMemberById = (memberId) => {
     const memberIdStr = String(memberId);
 
-    // --- NEW: Check for the exchange student FIRST ---
-    if (exchangeStudent && (String(exchangeStudent.member.id) === memberIdStr || String(exchangeStudent.member.rosterId) === memberIdStr)) {
-        return exchangeStudent.member;
-    }
-    // --- END NEW ---
+// --- NEW: Check for the exchange student FIRST ---
+const foundExchangeStudent = (exchangeStudents || []).find(ex => ex.member && (String(ex.member.id) === memberIdStr || String(ex.member.rosterId) === memberIdStr));
+if (foundExchangeStudent) {
+    return foundExchangeStudent.member;
+}
+// --- END NEW ---
 
     // If a unique roster ID is provided, use it for a direct lookup.
     if (memberIdStr.startsWith('sg-')) {
@@ -1444,6 +1639,11 @@ const getMemberGroupStatus = (member) => {
     }
 
     // 3. Assemble the final, unified string
+    if (member.isRivalKennin && kenninParts.length > 0) {
+        const teamPart = member.teamName ? ` Team ${member.teamName}` : '';
+        return `${primaryGroup} / ${kenninParts.join(' / ')}${teamPart}`;
+    }
+
     if (kenninParts.length > 0) {
         // This new format applies to ALL members with a concurrent position
         return `${primaryPart.replace(' | ', ' ')} / ${kenninParts.join(' / ')}`;
@@ -1836,7 +2036,7 @@ const hireStaff = (staffType) => {
         // Create deep copies of the state to modify safely
         let nextMembers = JSON.parse(JSON.stringify(members));
         let nextSisterGroups = JSON.parse(JSON.stringify(sisterGroups));
-        let nextExchangeStudent = JSON.parse(JSON.stringify(exchangeStudent));
+        let nextExchangeStudents = JSON.parse(JSON.stringify(exchangeStudents));
         // --- Part 1: Prepare Team History & ID mapping ---
         let teamHistory = [];
         const idChangeMap = new Map(); // Maps old selection ID to the NEW ID after transfer
@@ -1912,10 +2112,11 @@ const hireStaff = (staffType) => {
                 if (originalMIndex === -1) return;
                 memberToProcess = nextSisterGroups[originalSgIndex].members[originalMIndex];
                 originalLocation = 'sister';
-                } else if (nextExchangeStudent && String(memberId) === String(nextExchangeStudent.member.rosterId)) {
-                    memberToProcess = nextExchangeStudent.member;
-                    originalLocation = 'rival';
-                } else {
+                    } else if (nextExchangeStudents.some(ex => String(ex.member.rosterId) === String(memberId))) {
+                        const student = nextExchangeStudents.find(ex => String(ex.member.rosterId) === String(memberId));
+                        memberToProcess = student.member;
+                        originalLocation = 'rival';
+                    } else {
                     originalMIndex = nextMembers.findIndex(m => String(m.id) === String(memberId));
                     if (originalMIndex === -1) return; // This member might have been removed in a previous step, which is ok.
                     memberToProcess = nextMembers[originalMIndex];
@@ -1998,16 +2199,24 @@ const hireStaff = (staffType) => {
                     nextMembers[originalMIndex] = updateFn(memberToProcess);
                 } else if (originalLocation === 'sister') {
                     nextSisterGroups[originalSgIndex].members[originalMIndex] = updateFn(memberToProcess);
-                } else if (originalLocation === 'rival') {
-                    // A Rival Kennin member can only be added to a team. No complex logic needed.
-                    const historyEvent = `Assigned to Team ${teamName}`;
-                    nextExchangeStudent.member = {
-                        ...memberToProcess,
-                        teamId: newTeamId,
-                        teamName: teamName,
-                        teamHistory: [...(memberToProcess.teamHistory || []), { event: historyEvent, week: week + 1 }]
+        } else if (originalLocation === 'rival') {
+            // A Rival Kennin member can only be added to a team. No complex logic needed.
+            const historyEvent = `Assigned to Team ${teamName}`;
+            nextExchangeStudents = nextExchangeStudents.map(ex => {
+                if (String(ex.member.rosterId) === String(memberId)) {
+                    return {
+                        ...ex,
+                        member: {
+                            ...memberToProcess,
+                            teamId: newTeamId,
+                            teamName: teamName,
+                            teamHistory: [...(memberToProcess.teamHistory || []), { event: historyEvent, week: week + 1 }]
+                        }
                     };
                 }
+                return ex;
+            });
+        }
                 idChangeMap.set(memberId, memberId); // No ID change for non-transfers
             }
         });
@@ -2066,7 +2275,7 @@ const hireStaff = (staffType) => {
         setSisterGroups(nextSisterGroups);
         setTeams(nextTeams);
         setAllSetlists(nextAllSetlists); // Now setting it here with the other states
-        setExchangeStudent(nextExchangeStudent);
+        setExchangeStudents(nextExchangeStudents);
 
         setShowModal(null);
         addNotification({ type: "Management", message: `Team "${teamName}" saved successfully.` });
@@ -2138,153 +2347,170 @@ const deleteTeam = (teamId) => {
       setShowModal('confirm');
     };
 
-    const executeShuffle = (mode, manualAssignments = null) => {
-        // This is a complex operation. We create deep copies to manipulate safely.
-        let membersCopy = JSON.parse(JSON.stringify(members));
-        let sisterGroupsCopy = JSON.parse(JSON.stringify(sisterGroups));
-        let teamsCopy = JSON.parse(JSON.stringify(teams));
-        let exchangeStudentForUpdate = JSON.parse(JSON.stringify(exchangeStudent));
-        const getTeamById = (id) => teamsCopy.find(t => t.id === id);
-    
-        // Helper to get formatted team/group string for the shuffle result modal
-        const getFormattedFromLocation = (member) => {
-            if (!member) return 'N/A';
-            const fromTeam = getTeamById(member.teamId);
-            const fromGroup = member.homeGroup || 'N/A';
-            
-            if (fromTeam) {
-                return `${fromGroup} Team "${fromTeam.name}"`;
-            }
-            
-            if (member.isKenkyuusei || !member.teamId) {
-                return `${fromGroup} Trainee`;
-            }
-    
-            return fromGroup; // Fallback for transfers
-        };
-    
-        const finalAssignments = {};
-        const shuffleResultData = teamsCopy.reduce((acc, team) => {
-            const groupForTeam = team.groupId === 'main' ? { name: groupName } : sisterGroupsCopy.find(sg => String(sg.id) === String(team.groupId));
-            return { ...acc, [team.id]: { id: team.id, name: team.name, groupName: groupForTeam?.name, retained: [], shuffledIn: [], transferredIn: [], kenninIn: [] } };
-        }, {});
-    
-        // Master roster for easy lookup
-        const masterRoster = [
+const executeShuffle = (shuffleType, mode, manualAssignments = null) => {
+    // This is a complex operation. We create deep copies to manipulate safely.
+    let membersCopy = JSON.parse(JSON.stringify(members));
+    let sisterGroupsCopy = JSON.parse(JSON.stringify(sisterGroups));
+    let teamsCopy = JSON.parse(JSON.stringify(teams));
+    let exchangeStudentsForUpdate = JSON.parse(JSON.stringify(exchangeStudents)); // FIX 1
+    const getTeamById = (id) => teamsCopy.find(t => t.id === id);
+
+    // Helper to get formatted team/group string for the shuffle result modal
+    const getFormattedFromLocation = (member) => {
+        if (!member) return 'N/A';
+        const fromTeam = getTeamById(member.teamId);
+        const fromGroup = member.homeGroup || 'N/A';
+        
+        if (fromTeam) {
+            return `${fromGroup} Team "${fromTeam.name}"`;
+        }
+        
+        if (member.isKenkyuusei || !member.teamId) {
+            return `${fromGroup} Trainee`;
+        }
+
+        return fromGroup; // Fallback for transfers
+    };
+
+    const finalAssignments = {};
+    const shuffleResultData = teamsCopy.reduce((acc, team) => {
+        const groupForTeam = team.groupId === 'main' ? { name: groupName } : sisterGroupsCopy.find(sg => String(sg.id) === String(team.groupId));
+        return { ...acc, [team.id]: { id: team.id, name: team.name, groupName: groupForTeam?.name, retained: [], shuffledIn: [], transferredIn: [], kenninIn: [] } };
+    }, {});
+
+    // Master roster for easy lookup
+        let masterRoster;
+        const allMembers = [
             ...membersCopy.map(m => ({ ...m, rosterId: String(m.id), isSisterMember: false, groupId: 'main', homeGroup: groupName })),
             ...sisterGroupsCopy.flatMap(sg => (sg.members || []).map(m => ({ ...m, rosterId: `sg-${sg.id}-${m.id}`, isSisterMember: true, groupId: sg.id, homeGroup: sg.name })))
         ];
 
-            // --- NEW: Add the exchange student to the roster so they can be shuffled ---
-    if (exchangeStudent) {
-        masterRoster.push({
-            ...exchangeStudent.member,
-            // Treat them as part of the main group for team assignment purposes during the shuffle
-            groupId: 'main' 
-        });
+        if (shuffleType === 'world') {
+            masterRoster = allMembers;
+        } else { // 'normal' shuffle
+            const overseasGroupNames = new Set(sisterGroupsCopy.filter(sg => sg.type === 'overseas').map(sg => sg.name));
+            masterRoster = allMembers.filter(m => !overseasGroupNames.has(m.homeGroup));
+        }
+
+    // --- NEW: Add the exchange students to the roster so they can be shuffled ---
+    if (exchangeStudentsForUpdate && exchangeStudentsForUpdate.length > 0) { // FIX 2.1
+        exchangeStudentsForUpdate.forEach(ex => { // FIX 2.2
+            masterRoster.push({
+                ...ex.member,
+                // Treat them as part of the main group for team assignment purposes during the shuffle
+                groupId: 'main' 
+            });
+        }); // FIX 2.3
     }
     // --- END NEW ---
 
-        const memberMap = new Map(masterRoster.map(m => [m.rosterId, m]));
-        const acesAndCaptains = Object.values(groupRoles);
-    
-        if (mode === 'auto') {
-            const teamSlots = teamsCopy.map(t => ({ id: t.id, groupId: t.groupId, capacity: t.members.length, filled: 0 }));
-    
-            const unassignedMembers = [];
-            // Pass 1: Determine who stays and who gets shuffled
-            masterRoster.forEach(member => {
-                const isProtected = acesAndCaptains.includes(member.rosterId) || getTotalFansForMember(member) > 250000;
-                const stayChance = isProtected ? 0.95 : 0.60;
-                const teamSlot = teamSlots.find(s => s.id === member.teamId);
-    
-                if (teamSlot && Math.random() < stayChance) {
-                    finalAssignments[member.rosterId] = { primaryTeamId: member.teamId };
-                    teamSlot.filled++;
-                    shuffleResultData[member.teamId].retained.push({ memberName: member.name });
-                } else {
-                    unassignedMembers.push(member);
-                }
-            });
-    
-            // Event-based chances for cross-group moves
-            const chanceOfSisterToMainTransfer = 0.50;
-            const chanceOfMainToSisterTransfer = 0.05;
-            const chanceOfSisterToMainKennin = 0.80;
-            const chanceOfMainToSisterKennin = 0.50;
-            let crossGroupMoves = 0;
-            const MAX_CROSS_GROUP_MOVES = 5;
-    
-            let unassignedMain = unassignedMembers.filter(m => !m.isSisterMember);
-            let unassignedSister = unassignedMembers.filter(m => m.isSisterMember);
-    
-                // --- Step A: Cross-Group TRANSFERS ---
-                
-                // Sister to Main Transfer Event
-                if (crossGroupMoves < MAX_CROSS_GROUP_MOVES && Math.random() < chanceOfSisterToMainTransfer && unassignedSister.length > 0) {
-                    const memberIndex = Math.floor(Math.random() * unassignedSister.length);
-                    const memberToTransfer = unassignedSister.splice(memberIndex, 1)[0];
-                    const potentialTeams = teamsCopy.filter(t => t.groupId === 'main');
-                    if (potentialTeams.length > 0) {
-                        const targetTeam = potentialTeams[Math.floor(Math.random() * potentialTeams.length)];
-                        finalAssignments[memberToTransfer.rosterId] = { primaryTeamId: targetTeam.id };
-                        teamSlots.find(s => s.id === targetTeam.id).filled++;
-                        const fromText = getFormattedFromLocation(memberToTransfer);
-                        shuffleResultData[targetTeam.id].shuffledIn.push({ memberName: memberToTransfer.name, fromTeam: fromText, moveType: 'transfer' });
-                        crossGroupMoves++;
-                    }
-                }
+    const memberMap = new Map(masterRoster.map(m => [m.rosterId, m]));
+    const acesAndCaptains = Object.values(groupRoles);
 
-                // Main to Sister Transfer Event
-                if (crossGroupMoves < MAX_CROSS_GROUP_MOVES && Math.random() < chanceOfMainToSisterTransfer && unassignedMain.length > 0) {
-                    const memberIndex = Math.floor(Math.random() * unassignedMain.length);
-                    const memberToTransfer = unassignedMain.splice(memberIndex, 1)[0];
-                    const potentialTeams = teamsCopy.filter(t => t.groupId !== 'main');
-                    if (potentialTeams.length > 0) {
-                        const targetTeam = potentialTeams[Math.floor(Math.random() * potentialTeams.length)];
-                        finalAssignments[memberToTransfer.rosterId] = { primaryTeamId: targetTeam.id };
-                        teamSlots.find(s => s.id === targetTeam.id).filled++;
-                        const fromText = getFormattedFromLocation(memberToTransfer);
-                        shuffleResultData[targetTeam.id].shuffledIn.push({ memberName: memberToTransfer.name, fromTeam: fromText, moveType: 'transfer' });
-                        crossGroupMoves++;
-                    }
-                }
-    
-            // --- Step B: Cross-Group KENNIN (Event-based) ---
-            const retainedMembers = masterRoster.filter(m => finalAssignments[m.rosterId] && !acesAndCaptains.includes(m.rosterId));
-            const retainedMain = retainedMembers.filter(m => !m.isSisterMember);
-            const retainedSister = retainedMembers.filter(m => m.isSisterMember);
-    
-            // Main to Sister Kennin Event
-            if (crossGroupMoves < MAX_CROSS_GROUP_MOVES && Math.random() < chanceOfMainToSisterKennin && retainedMain.length > 0) {
-                const memberToHold = retainedMain[Math.floor(Math.random() * retainedMain.length)];
-                const potentialTeams = teamsCopy.filter(t => t.groupId !== 'main');
-                if (potentialTeams.length > 0) {
-                    const targetTeam = potentialTeams[Math.floor(Math.random() * potentialTeams.length)];
-                    finalAssignments[memberToHold.rosterId].kenninTeamId = targetTeam.id;
-                    teamSlots.find(s => s.id === targetTeam.id).filled++;
-                    shuffleResultData[targetTeam.id].kenninIn.push({ memberName: memberToHold.name, fromGroup: memberToHold.homeGroup });
-                    crossGroupMoves++;
-                }
+    if (mode === 'auto') {
+        const teamSlots = teamsCopy.map(t => ({ id: t.id, groupId: t.groupId, capacity: t.members.length, filled: 0 }));
+
+        const unassignedMembers = [];
+        masterRoster.forEach(member => {
+            const isProtected = acesAndCaptains.includes(member.rosterId) || getTotalFansForMember(member) > 250000;
+            const stayChance = isProtected ? 0.95 : 0.60;
+            const teamSlot = teamSlots.find(s => s.id === member.teamId);
+
+            if (teamSlot && Math.random() < stayChance) {
+                finalAssignments[member.rosterId] = { primaryTeamId: member.teamId };
+                teamSlot.filled++;
+                shuffleResultData[member.teamId].retained.push({ memberName: member.name });
+            } else {
+                unassignedMembers.push(member);
             }
+        });
+
+        const chanceOfSisterToMainTransfer = 0.50;
+        const chanceOfMainToSisterTransfer = 0.05;
+        const chanceOfSisterToMainKennin = 0.80;
+        const chanceOfMainToSisterKennin = 0.50;
+        let crossGroupMoves = 0;
+        const MAX_CROSS_GROUP_MOVES = 5;
+
+        let unassignedMain = unassignedMembers.filter(m => !m.isSisterMember);
+        let unassignedSister = unassignedMembers.filter(m => m.isSisterMember);
+
+        if (crossGroupMoves < MAX_CROSS_GROUP_MOVES && Math.random() < chanceOfSisterToMainTransfer && unassignedSister.length > 0) {
+            const memberIndex = Math.floor(Math.random() * unassignedSister.length);
+            const memberToTransfer = unassignedSister.splice(memberIndex, 1)[0];
+            const potentialTeams = teamsCopy.filter(t => t.groupId === 'main');
+            if (potentialTeams.length > 0) {
+                const targetTeam = potentialTeams[Math.floor(Math.random() * potentialTeams.length)];
+                finalAssignments[memberToTransfer.rosterId] = { primaryTeamId: targetTeam.id };
+                teamSlots.find(s => s.id === targetTeam.id).filled++;
+                const fromText = getFormattedFromLocation(memberToTransfer);
+                shuffleResultData[targetTeam.id].shuffledIn.push({ memberName: memberToTransfer.name, fromTeam: fromText, moveType: 'transfer' });
+                crossGroupMoves++;
+            }
+        }
+
+        if (crossGroupMoves < MAX_CROSS_GROUP_MOVES && Math.random() < chanceOfMainToSisterTransfer && unassignedMain.length > 0) {
+        const overseasTeams = teamsCopy.filter(t => {
+            const sg = sisterGroupsCopy.find(sg => String(sg.id) === String(t.groupId));
+            return sg && sg.type === 'overseas';
+        });
+
+        if (shuffleType === 'world' && crossGroupMoves < MAX_CROSS_GROUP_MOVES && Math.random() < 0.02 && unassignedMain.length > 0 && overseasTeams.length > 0) { // 2% chance
+            const memberIndex = Math.floor(Math.random() * unassignedMain.length);
+            const memberToTransfer = unassignedMain.splice(memberIndex, 1)[0];
+            const targetTeam = overseasTeams[Math.floor(Math.random() * overseasTeams.length)];
             
-            // Sister to Main Kennin Event
-            if (crossGroupMoves < MAX_CROSS_GROUP_MOVES && Math.random() < chanceOfSisterToMainKennin && retainedSister.length > 0) {
-                const memberToHold = retainedSister[Math.floor(Math.random() * retainedSister.length)];
-                const potentialTeams = teamsCopy.filter(t => t.groupId === 'main');
-                if (potentialTeams.length > 0) {
-                    const targetTeam = potentialTeams[Math.floor(Math.random() * potentialTeams.length)];
-                    finalAssignments[memberToHold.rosterId].kenninTeamId = targetTeam.id;
-                    teamSlots.find(s => s.id === targetTeam.id).filled++;
-                    shuffleResultData[targetTeam.id].kenninIn.push({ memberName: memberToHold.name, fromGroup: memberToHold.homeGroup });
-                    crossGroupMoves++;
-                }
+            finalAssignments[memberToTransfer.rosterId] = { primaryTeamId: targetTeam.id };
+            teamSlots.find(s => s.id === targetTeam.id).filled++;
+            const fromText = getFormattedFromLocation(memberToTransfer);
+            shuffleResultData[targetTeam.id].shuffledIn.push({ memberName: memberToTransfer.name, fromTeam: fromText, moveType: 'transfer' });
+            crossGroupMoves++;
+        }
+
+
+            const memberIndex = Math.floor(Math.random() * unassignedMain.length);
+            const memberToTransfer = unassignedMain.splice(memberIndex, 1)[0];
+            const potentialTeams = teamsCopy.filter(t => t.groupId !== 'main');
+            if (potentialTeams.length > 0) {
+                const targetTeam = potentialTeams[Math.floor(Math.random() * potentialTeams.length)];
+                finalAssignments[memberToTransfer.rosterId] = { primaryTeamId: targetTeam.id };
+                teamSlots.find(s => s.id === targetTeam.id).filled++;
+                const fromText = getFormattedFromLocation(memberToTransfer);
+                shuffleResultData[targetTeam.id].shuffledIn.push({ memberName: memberToTransfer.name, fromTeam: fromText, moveType: 'transfer' });
+                crossGroupMoves++;
             }
-    
-// --- Step C: PROMOTIONS & SHUFFLES (for remaining unassigned members) ---
-const remainingUnassigned = [...unassignedMain, ...unassignedSister];
+        }
+
+        const retainedMembers = masterRoster.filter(m => finalAssignments[m.rosterId] && !acesAndCaptains.includes(m.rosterId));
+        const retainedMain = retainedMembers.filter(m => !m.isSisterMember);
+        const retainedSister = retainedMembers.filter(m => m.isSisterMember);
+
+        if (crossGroupMoves < MAX_CROSS_GROUP_MOVES && Math.random() < chanceOfMainToSisterKennin && retainedMain.length > 0) {
+            const memberToHold = retainedMain[Math.floor(Math.random() * retainedMain.length)];
+            const potentialTeams = teamsCopy.filter(t => t.groupId !== 'main');
+            if (potentialTeams.length > 0) {
+                const targetTeam = potentialTeams[Math.floor(Math.random() * potentialTeams.length)];
+                finalAssignments[memberToHold.rosterId].kenninTeamId = targetTeam.id;
+                teamSlots.find(s => s.id === targetTeam.id).filled++;
+                shuffleResultData[targetTeam.id].kenninIn.push({ memberName: memberToHold.name, fromGroup: memberToHold.homeGroup });
+                crossGroupMoves++;
+            }
+        }
+        
+        if (crossGroupMoves < MAX_CROSS_GROUP_MOVES && Math.random() < chanceOfSisterToMainKennin && retainedSister.length > 0) {
+            const memberToHold = retainedSister[Math.floor(Math.random() * retainedSister.length)];
+            const potentialTeams = teamsCopy.filter(t => t.groupId === 'main');
+            if (potentialTeams.length > 0) {
+                const targetTeam = potentialTeams[Math.floor(Math.random() * potentialTeams.length)];
+                finalAssignments[memberToHold.rosterId].kenninTeamId = targetTeam.id;
+                teamSlots.find(s => s.id === targetTeam.id).filled++;
+                shuffleResultData[targetTeam.id].kenninIn.push({ memberName: memberToHold.name, fromGroup: memberToHold.homeGroup });
+                crossGroupMoves++;
+            }
+        }
+
+        const remainingUnassigned = [...unassignedMain, ...unassignedSister];
         remainingUnassigned.forEach(member => {
-            // Case 1: The member is a trainee and needs to be promoted.
             if (!member.teamId) {
                 const homeGroupTeams = teamsCopy.filter(t => String(t.groupId) === String(member.groupId));
                 if (homeGroupTeams.length > 0) {
@@ -2294,202 +2520,208 @@ const remainingUnassigned = [...unassignedMain, ...unassignedSister];
                     const fromText = getFormattedFromLocation(member);
                     shuffleResultData[targetTeam.id].shuffledIn.push({ memberName: member.name, fromTeam: fromText, moveType: 'promotion' });
                 }
-                // If a trainee has no teams in their group to be promoted to, they will remain a trainee.
             } else {
-                // Case 2: The member is already in a team and is up for a shuffle.
-
-                // Find potential teams to shuffle to, EXCLUDING the member's current team.
                 const potentialShuffleTargets = teamsCopy.filter(t => String(t.groupId) === String(member.groupId) && t.id !== member.teamId);
-
-                // If there are other teams available in the same group...
                 if (potentialShuffleTargets.length > 0) {
-                    // ...then shuffle the member to one of those teams.
                     const targetTeam = potentialShuffleTargets[Math.floor(Math.random() * potentialShuffleTargets.length)];
                     finalAssignments[member.rosterId] = { primaryTeamId: targetTeam.id };
                     teamSlots.find(s => s.id === targetTeam.id).filled++;
                     const fromText = getFormattedFromLocation(member);
                     shuffleResultData[targetTeam.id].shuffledIn.push({ memberName: member.name, fromTeam: fromText, moveType: 'shuffle' });
                 } else {
-                    // ...otherwise, there's nowhere to shuffle to, so the member is RETAINED.
                     finalAssignments[member.rosterId] = { primaryTeamId: member.teamId };
                     shuffleResultData[member.teamId].retained.push({ memberName: member.name });
                 }
             }
         });
-        }
-    
-// --- FINAL STATE RECONSTRUCTION ---
-        Object.keys(finalAssignments).forEach(rosterId => {
-            const assignment = finalAssignments[rosterId];
+    } else if (mode === 'manual' && manualAssignments) {
+        Object.keys(manualAssignments).forEach(rosterId => {
+            const teamId = manualAssignments[rosterId];
+            finalAssignments[rosterId] = { primaryTeamId: teamId };
+
             const member = memberMap.get(rosterId);
-            if (!member || !assignment) return; 
-
-            const newPrimaryTeam = getTeamById(assignment.primaryTeamId);
-            const newKenninTeam = assignment.kenninTeamId ? getTeamById(assignment.kenninTeamId) : null;
-            if (!newPrimaryTeam) return; 
-
-            let memberObjectInState;
-            if (member.isExchangeStudent) {
-                // If the current member is the exchange student, we use their specific state object.
-                memberObjectInState = exchangeStudentForUpdate.member;
-            } else if (member.isSisterMember) {
-                const sg = sisterGroupsCopy.find(sg => String(sg.id) === String(member.groupId));
-                if (sg) memberObjectInState = sg.members.find(m => m.id === member.id);
-            } else {
-                memberObjectInState = membersCopy.find(m => String(m.id) === String(member.id));
-            }
-            if (!memberObjectInState) return;
-
-            memberObjectInState.teamHistory = memberObjectInState.teamHistory || [];
-            const wasKenninObject = memberObjectInState.kennin;
-
-            // *** BUGFIX 2: Ensure team history is updated immutably to trigger state change ***
-            const addHistoryToTeam = (teamId, eventText) => {
-                const teamIndex = teamsCopy.findIndex(t => t.id === teamId);
-                if (teamIndex > -1) {
-                    const teamToUpdate = teamsCopy[teamIndex];
-                    const newHistory = [...(teamToUpdate.history || []), { week, event: eventText }];
-                    teamsCopy[teamIndex] = { ...teamToUpdate, history: newHistory }; // Create new object
+            if (member) {
+                const fromText = getFormattedFromLocation(member);
+                if (member.teamId === teamId) {
+                    if (shuffleResultData[teamId]) {
+                        shuffleResultData[teamId].retained.push({ memberName: member.name });
+                    }
+                } else {
+                    if (shuffleResultData[teamId]) {
+                        shuffleResultData[teamId].shuffledIn.push({ 
+                            memberName: member.name, 
+                            fromTeam: fromText, 
+                            moveType: 'shuffle' 
+                        });
+                    }
                 }
-            };
-            
-            if (member.teamId !== newPrimaryTeam.id) {
-    const newTeamGroupId = newPrimaryTeam.groupId;
-    const newTeamGroupName = newTeamGroupId === 'main' ? groupName : (sisterGroupsCopy.find(sg => String(sg.id) === String(newTeamGroupId))?.name || 'N/A');
-
-    const isPromotion = !member.teamId;
-    // A transfer is a move between different home groups. This is a more reliable check.
-    const isTransfer = !isPromotion && (member.homeGroup !== newTeamGroupName);
-
-    // --- Generate the complete "from" location text ---
-    const fromTeam = getTeamById(member.teamId);
-    let fromLocationText = 'Trainees'; // Default for promotions
-    if (fromTeam) {
-        // Correctly combine the member's original group and team for the "from" string.
-        fromLocationText = `${member.homeGroup} Team "${fromTeam.name}"`;
-    } else if (!isPromotion) {
-        // Fallback for members who have a group but no team (e.g., sister group trainees)
-        fromLocationText = member.homeGroup;
-    }
-    // ---
-
-    let memberEventText;
-    if (isPromotion) {
-       memberEventText = `Promoted to Team ${newPrimaryTeam.name} via Shuffle`;
-    } else {
-       memberEventText = isTransfer ? `Transferred to Team ${newPrimaryTeam.name} via Shuffle` : `Shuffled to Team ${newPrimaryTeam.name}`;
-    }
-    memberObjectInState.teamHistory.push({ week, event: memberEventText });
-
-    // Use the new fromLocationText and the reliable isTransfer flag for the team's history log.
-    const teamEventText = `Member ${isPromotion ? 'Promoted' : (isTransfer ? 'Transferred In' : 'Shuffled In')}: ${member.name} (from ${fromLocationText})`;
-    addHistoryToTeam(newPrimaryTeam.id, teamEventText);
-
-    memberObjectInState.teamId = newPrimaryTeam.id;
-    memberObjectInState.teamName = newPrimaryTeam.name;
-}
-
-            if (newKenninTeam) {
-                const kenninGroupName = newKenninTeam.groupId === 'main' ? groupName : (sisterGroupsCopy.find(sg => String(sg.id) === String(newKenninTeam.groupId))?.name || 'N/A');
-                memberObjectInState.kennin = { teamId: newKenninTeam.id, teamName: newKenninTeam.name, groupId: newKenninTeam.groupId };
-                
-                const existingKenninGroups = memberObjectInState.kenninGroups || [];
-                if (!existingKenninGroups.includes(kenninGroupName)) {
-                    memberObjectInState.kenninGroups = [...existingKenninGroups, kenninGroupName];
-                }
-
-                if (!wasKenninObject) { 
-                    memberObjectInState.teamHistory.push({ week, event: `Concurrent position added in Team ${newKenninTeam.name} (${kenninGroupName}) via Shuffle` });
-                    const eventText = `Kennin Member Joined: ${member.name} (from ${member.homeGroup})`;
-                    addHistoryToTeam(newKenninTeam.id, eventText);
-                }
-            } else if (wasKenninObject) { 
-                const oldKenninGroupName = wasKenninObject.groupId === 'main' ? groupName : (sisterGroupsCopy.find(sg => String(sg.id) === String(wasKenninObject.groupId))?.name || 'N/A');
-                delete memberObjectInState.kennin;
-                memberObjectInState.kenninGroups = (memberObjectInState.kenninGroups || []).filter(gName => gName !== oldKenninGroupName);
-                memberObjectInState.teamHistory.push({ week, event: `Concurrent position ended via Shuffle` });
             }
         });
+    }
 
-        teamsCopy.forEach(team => { team.members = []; });
+    Object.keys(finalAssignments).forEach(rosterId => {
+        const assignment = finalAssignments[rosterId];
+        const member = memberMap.get(rosterId);
+        if (!member || !assignment) return; 
 
-        Object.keys(finalAssignments).forEach(rosterId => {
-            const assignment = finalAssignments[rosterId];
-            const member = memberMap.get(rosterId);
-            if (!assignment || !member) return;
-            
-            const newPrimaryTeam = getTeamById(assignment.primaryTeamId);
-            const newGroupId = newPrimaryTeam.groupId;
-            let finalRosterId = rosterId;
+        const newPrimaryTeam = getTeamById(assignment.primaryTeamId);
+        const newKenninTeam = assignment.kenninTeamId ? getTeamById(assignment.kenninTeamId) : null;
+        if (!newPrimaryTeam) return; 
 
-            if (member.groupId !== newGroupId) {
-                let memberObjectRef;
-                 if (member.isSisterMember) {
-                    const sg = sisterGroupsCopy.find(sg => String(sg.id) === String(member.groupId));
-                    if (sg && sg.members) {
-                        const idx = sg.members.findIndex(m => m.id === member.id);
-                        if (idx > -1) memberObjectRef = sg.members.splice(idx, 1)[0];
-                    }
-                 } else {
-                    const idx = membersCopy.findIndex(m => String(m.id) === String(member.id));
-                    if (idx > -1) memberObjectRef = membersCopy.splice(idx, 1)[0];
-                 }
-
-                 if (memberObjectRef) {
-                    if (newGroupId === 'main') {
-                        const newId = (membersCopy.length > 0 ? Math.max(0, ...membersCopy.map(m => m.id)) : 0) + 1;
-                        memberObjectRef.id = newId;
-                        memberObjectRef.homeGroup = groupName;
-                        membersCopy.push(memberObjectRef);
-                        finalRosterId = String(newId);
-                    } else {
-                        const destSg = sisterGroupsCopy.find(sg => String(sg.id) === String(newGroupId));
-                        if (destSg) {
-                            if (!destSg.members) destSg.members = [];
-                            const newId = (destSg.members.length > 0 ? Math.max(0, ...destSg.members.map(m => m.id)) : 0) + 1;
-                            memberObjectRef.id = newId;
-                            memberObjectRef.homeGroup = destSg.name;
-                            destSg.members.push(memberObjectRef);
-                            finalRosterId = `sg-${destSg.id}-${newId}`;
-                        }
-                    }
-                 }
+        let memberObjectInState;
+        if (member.isExchangeStudent) {
+            // FIX 3: Find the correct student in the array
+            const studentIndex = exchangeStudentsForUpdate.findIndex(ex => ex.member.rosterId === member.rosterId);
+            if (studentIndex > -1) {
+                memberObjectInState = exchangeStudentsForUpdate[studentIndex].member;
             }
+        } else if (member.isSisterMember) {
+            const sg = sisterGroupsCopy.find(sg => String(sg.id) === String(member.groupId));
+            if (sg) memberObjectInState = sg.members.find(m => m.id === member.id);
+        } else {
+            memberObjectInState = membersCopy.find(m => String(m.id) === String(member.id));
+        }
+        if (!memberObjectInState) return;
+
+        memberObjectInState.teamHistory = memberObjectInState.teamHistory || [];
+        const wasKenninObject = memberObjectInState.kennin;
+
+        const addHistoryToTeam = (teamId, eventText) => {
+            const teamIndex = teamsCopy.findIndex(t => t.id === teamId);
+            if (teamIndex > -1) {
+                const teamToUpdate = teamsCopy[teamIndex];
+                const newHistory = [...(teamToUpdate.history || []), { week, event: eventText }];
+                teamsCopy[teamIndex] = { ...teamToUpdate, history: newHistory };
+            }
+        };
+        
+        if (member.teamId !== newPrimaryTeam.id) {
+            const newTeamGroupId = newPrimaryTeam.groupId;
+            const newTeamGroupName = newTeamGroupId === 'main' ? groupName : (sisterGroupsCopy.find(sg => String(sg.id) === String(newTeamGroupId))?.name || 'N/A');
+
+            const isPromotion = !member.teamId;
+            const isTransfer = !isPromotion && (member.homeGroup !== newTeamGroupName);
+
+            const fromTeam = getTeamById(member.teamId);
+            let fromLocationText = 'Trainees';
+            if (fromTeam) {
+                fromLocationText = `${member.homeGroup} Team "${fromTeam.name}"`;
+            } else if (!isPromotion) {
+                fromLocationText = member.homeGroup;
+            }
+
+            let memberEventText;
+            if (isPromotion) {
+                memberEventText = `Promoted to Team ${newPrimaryTeam.name} via Shuffle`;
+            } else {
+                memberEventText = isTransfer ? `Transferred to Team ${newPrimaryTeam.name} via Shuffle` : `Shuffled to Team ${newPrimaryTeam.name}`;
+            }
+            memberObjectInState.teamHistory.push({ week, event: memberEventText });
+
+            const teamEventText = `Member ${isPromotion ? 'Promoted' : (isTransfer ? 'Transferred In' : 'Shuffled In')}: ${member.name} (from ${fromLocationText})`;
+            addHistoryToTeam(newPrimaryTeam.id, teamEventText);
+
+            memberObjectInState.teamId = newPrimaryTeam.id;
+            memberObjectInState.teamName = newPrimaryTeam.name;
+        }
+
+        if (newKenninTeam) {
+            const kenninGroupName = newKenninTeam.groupId === 'main' ? groupName : (sisterGroupsCopy.find(sg => String(sg.id) === String(newKenninTeam.groupId))?.name || 'N/A');
+            memberObjectInState.kennin = { teamId: newKenninTeam.id, teamName: newKenninTeam.name, groupId: newKenninTeam.groupId };
             
+            const existingKenninGroups = memberObjectInState.kenninGroups || [];
+            if (!existingKenninGroups.includes(kenninGroupName)) {
+                memberObjectInState.kenninGroups = [...existingKenninGroups, kenninGroupName];
+            }
+
+            if (!wasKenninObject) { 
+                memberObjectInState.teamHistory.push({ week, event: `Concurrent position added in Team ${newKenninTeam.name} (${kenninGroupName}) via Shuffle` });
+                const eventText = `Kennin Member Joined: ${member.name} (from ${member.homeGroup})`;
+                addHistoryToTeam(newKenninTeam.id, eventText);
+            }
+        } else if (wasKenninObject) { 
+            const oldKenninGroupName = wasKenninObject.groupId === 'main' ? groupName : (sisterGroupsCopy.find(sg => String(sg.id) === String(wasKenninObject.groupId))?.name || 'N/A');
+            delete memberObjectInState.kennin;
+            memberObjectInState.kenninGroups = (memberObjectInState.kenninGroups || []).filter(gName => gName !== oldKenninGroupName);
+            memberObjectInState.teamHistory.push({ week, event: `Concurrent position ended via Shuffle` });
+        }
+    });
+
+    teamsCopy.forEach(team => { team.members = []; });
+
+    Object.keys(finalAssignments).forEach(rosterId => {
+        const assignment = finalAssignments[rosterId];
+        const member = memberMap.get(rosterId);
+        if (!assignment || !member) return;
+        
+        const newPrimaryTeam = getTeamById(assignment.primaryTeamId);
+        const newGroupId = newPrimaryTeam.groupId;
+        let finalRosterId = rosterId;
+
+        if (member.groupId !== newGroupId) {
+            let memberObjectRef;
+             if (member.isSisterMember) {
+                const sg = sisterGroupsCopy.find(sg => String(sg.id) === String(member.groupId));
+                if (sg && sg.members) {
+                    const idx = sg.members.findIndex(m => m.id === member.id);
+                    if (idx > -1) memberObjectRef = sg.members.splice(idx, 1)[0];
+                }
+             } else {
+                const idx = membersCopy.findIndex(m => String(m.id) === String(member.id));
+                if (idx > -1) memberObjectRef = membersCopy.splice(idx, 1)[0];
+             }
+
+             if (memberObjectRef) {
+                if (newGroupId === 'main') {
+                    const newId = (membersCopy.length > 0 ? Math.max(0, ...membersCopy.map(m => m.id)) : 0) + 1;
+                    memberObjectRef.id = newId;
+                    memberObjectRef.homeGroup = groupName;
+                    membersCopy.push(memberObjectRef);
+                    finalRosterId = String(newId);
+                } else {
+                    const destSg = sisterGroupsCopy.find(sg => String(sg.id) === String(newGroupId));
+                    if (destSg) {
+                        if (!destSg.members) destSg.members = [];
+                        const newId = (destSg.members.length > 0 ? Math.max(0, ...destSg.members.map(m => m.id)) : 0) + 1;
+                        memberObjectRef.id = newId;
+                        memberObjectRef.homeGroup = destSg.name;
+                        destSg.members.push(memberObjectRef);
+                        finalRosterId = `sg-${destSg.id}-${newId}`;
+                    }
+                }
+             }
+        }
+        
         if (assignment.primaryTeamId) {
             const team = teamsCopy.find(t => t.id === assignment.primaryTeamId);
-            // This safeguard prevents adding a member to a team if they are already in the list.
             if(team && !team.members.includes(finalRosterId)) {
                 team.members.push(finalRosterId);
             }
         }
         if (assignment.kenninTeamId) {
             const team = teamsCopy.find(t => t.id === assignment.kenninTeamId);
-            // Apply the same safeguard for kennin assignments.
             if(team && !team.members.includes(finalRosterId)) {
                 team.members.push(finalRosterId);
             }
         }
-        });
+    });
 
-        // --- SAVE TO HISTORY ---
-        const shuffleHistoryEvent = {
-            week,
-            type: 'Grand Shuffle',
-            event: 'A grand shuffle was conducted, resulting in new team formations.',
-            data: shuffleResultData,
-        };
-        setGameHistory(prev => [shuffleHistoryEvent, ...prev]);
-        // --- END HISTORY SAVE ---
-
-        setMembers(membersCopy);
-        setSisterGroups(sisterGroupsCopy);
-        setTeams(teamsCopy);
-        setExchangeStudent(exchangeStudentForUpdate);
-        setModalData({ result: shuffleResultData });
-        setShowModal('shuffleResult');
-        addNotification({ type: 'Management', message: 'The Grand Shuffle is complete!' });
+    const shuffleHistoryEvent = {
+        week,
+        type: 'Grand Shuffle',
+        event: 'A grand shuffle was conducted, resulting in new team formations.',
+        data: shuffleResultData,
     };
+    setGameHistory(prev => [shuffleHistoryEvent, ...prev]);
+
+    setMembers(membersCopy);
+    setSisterGroups(sisterGroupsCopy);
+    setTeams(teamsCopy);
+    setExchangeStudents(exchangeStudentsForUpdate); // FIX 4
+    setModalData({ result: shuffleResultData });
+    setShowModal('shuffleResult');
+    addNotification({ type: 'Management', message: 'The Grand Shuffle is complete!' });
+};
 
     const startTheaterShowPrep = () => {
       if (theaters.length === 0) return setMessage("Build a theater first!");
@@ -3155,10 +3387,42 @@ const agencyProfit = Math.floor(netProfit * 0.6);
         };
 
 
-const holdElection = () => {
-    if (money < 1000000) return setMessage('Elections cost ¥1M!');
+const holdElection = (type = 'main', options = {}) => {
+        let cost = 1000000; // Default for main election
+        let electionName = 'General Election';
+        let participantsPool = [];
+        const domesticGroups = sisterGroups.filter(sg => sg.type === 'domestic');
 
-    const allMembers = getMainGroupRoster();
+        switch (type) {
+            case 'world':
+                cost = 5000000;
+                electionName = 'World General Election';
+                participantsPool = getMainGroupRoster(); // This already gets all members
+                break;
+            case 'overseas':
+                cost = 500000;
+                const sg = sisterGroups.find(g => String(g.id) === String(options.groupId));
+                if (sg) {
+                    electionName = `${sg.name} General Election`;
+                    // We need to use getMemberById to get the full member object with its unique rosterId
+                    participantsPool = (sg.members || []).map(m => getMemberById(`sg-${sg.id}-${m.id}`)).filter(Boolean);
+                }
+                break;
+            case 'main':
+            default:
+                cost = 1000000;
+                electionName = 'General Election';
+                const mainAndDomesticMembers = [
+                    ...members,
+                    ...domesticGroups.flatMap(sg => (sg.members || []).map(m => getMemberById(`sg-${sg.id}-${m.id}`)).filter(Boolean))
+                ];
+                participantsPool = mainAndDomesticMembers;
+                break;
+        }
+
+        if (money < cost) return setMessage(`${electionName} costs ¥${cost.toLocaleString()}!`);
+
+        const allMembers = participantsPool;
     const participatingMembers = [];
     const nonParticipatingMembers = [];
     const sixMonthsInWeeks = 24; // 6 months * 4 weeks
@@ -3209,12 +3473,12 @@ const holdElection = () => {
     setModalData({
         participating: participatingMembers,
         nonParticipating: nonParticipatingMembers,
-        onConfirm: (spots) => runElectionLogic(participatingMembers, spots),
+        onConfirm: (spots) => runElectionLogic(participatingMembers, spots, type),
     });
     setShowModal('electionSummary');
 };
 
-const runElectionLogic = (participants, numberOfSpots = 80) => {
+const runElectionLogic = (participants, numberOfSpots = 80, type = 'main') => {
 if (money < 1000000) return;
 setMoney(prev => prev - 1000000);
 
@@ -3359,9 +3623,10 @@ setMoney(prev => prev - 1000000);
         ...sg,
         members: (sg.members || []).map(m => updateMemberWithResults(m, true, sg.id))
     })));
-    // --- NEW LOGIC TO UPDATE THE EXCHANGE STUDENT ---
-    if (exchangeStudent) {
-        const exchangeStudentId = String(exchangeStudent.member.rosterId || exchangeStudent.member.id);
+// --- NEW LOGIC TO UPDATE EXCHANGE STUDENTS ---
+if (exchangeStudents && exchangeStudents.length > 0) {
+    setExchangeStudents(prevStudents => prevStudents.map(ex => {
+        const exchangeStudentId = String(ex.member.rosterId || ex.member.id);
         const result = resultMap.get(exchangeStudentId);
 
         if (result) {
@@ -3375,22 +3640,24 @@ setMoney(prev => prev - 1000000);
             else if (newRank <= 16) newPosition = 'back';
             else newPosition = 'under';
 
-            setExchangeStudent(prev => ({
-                ...prev,
+            return {
+                ...ex,
                 member: {
-                    ...prev.member,
+                    ...ex.member,
                     rank: newRank,
-                    position: newPosition, // This might not be used on rivals, but good to have
-                    electionHistory: [...(prev.member.electionHistory || []), newHistoryEntry],
-                    morale: Math.max(0, Math.min(100, (prev.member.morale || 80) + moraleChange)),
-                    stress: Math.max(0, Math.min(100, (prev.member.stress || 0) + stressChange)),
+                    position: newPosition,
+                    electionHistory: [...(ex.member.electionHistory || []), newHistoryEntry],
+                    morale: Math.max(0, Math.min(100, (ex.member.morale || 80) + moraleChange)),
+                    stress: Math.max(0, Math.min(100, (ex.member.stress || 0) + stressChange)),
                     isCurrentCenter: newRank === 1,
                     chemistry: newChemistry,
                 }
-            }));
+            };
         }
-    }
-    // --- END NEW LOGIC ---
+        return ex; // Return unchanged if no result
+    }));
+}
+// --- END NEW LOGIC ---
 
         // --- ELECTION TRIVIA GENERATION ---
         const electionTrivia = [];
@@ -3710,6 +3977,86 @@ setMoney(prev => prev - 1000000);
                 electionTrivia.push(`Generational Decline: A sign of a changing era, as the veteran ${gen} saw a majority of its members fail to rank.`);
             }
         });
+
+// --- World Election & International Trivia ---
+const overseasGroups = sisterGroups.filter(sg => sg.type === 'overseas');
+const overseasGroupNames = new Set(overseasGroups.map(sg => sg.name));
+const rankedOverseasMembers = rankedMembers.filter(m => overseasGroupNames.has(m.homeGroup));
+
+if (type === 'world' && rankedOverseasMembers.length > 0) {
+    const highestForeigner = rankedOverseasMembers.sort((a, b) => a.rank - b.rank)[0];
+if (highestForeigner) {
+    electionTrivia.push(`The World Queen: ${highestForeigner.name} from ${highestForeigner.homeGroup} becomes the highest-ranking international member at #${highestForeigner.rank}!`);
+}
+const senbatsu = rankedMembers.slice(0, 16);
+const countriesInSenbatsu = new Set(senbatsu.map(m => {
+    const sg = sisterGroups.find(sg => sg.name === m.homeGroup);
+    return sg ? sg.location : 'Japan'; // Assumes main group is Japan
+}));
+if (countriesInSenbatsu.size > 1) {
+    electionTrivia.push(`A Global Senbatsu: This year's Senbatsu features members from ${countriesInSenbatsu.size} different countries!`);
+}
+const membersPerCountry = rankedOverseasMembers.reduce((acc, member) => {
+    const sg = sisterGroups.find(g => g.name === member.homeGroup);
+    const country = sg ? sg.location : 'Unknown';
+    acc[country] = (acc[country] || 0) + 1;
+    return acc;
+}, {});
+
+const topCountry = Object.entries(membersPerCountry).sort((a, b) => b[1] - a[1])[0];
+if (topCountry && topCountry[1] > 2) {
+    electionTrivia.push(`${topCountry[0]}'s Pride: ${topCountry[0]} proves its idol power, with ${topCountry[1]} members ranking in this year's election!`);
+}
+const previousRankedCountries = new Set(electionHistory.flatMap(e => e.results.map(r => {
+    const sg = sisterGroups.find(g => g.name === r.homeGroup);
+    return sg ? sg.location : 'Japan';
+})));
+
+for (const member of rankedOverseasMembers) {
+    const sg = sisterGroups.find(g => g.name === member.homeGroup);
+    const country = sg ? sg.location : null;
+    if (country && !previousRankedCountries.has(country)) {
+        electionTrivia.push(`A National First: ${member.name} becomes the first idol from ${country} to ever rank in a World General Election!`);
+        previousRankedCountries.add(country); // Prevent multiple announcements for the same country
+    }
+}
+
+}
+
+if (lastElection) {
+    const lastYearRankedIds = new Set(lastElection.results.map(m => m.rosterId || m.id));
+    const twoYearsAgoElection = electionHistory[electionHistory.length - 2];
+    if (twoYearsAgoElection) {
+        const twoYearsAgoRankedIds = new Set(twoYearsAgoElection.results.map(m => m.rosterId || m.id));
+        const phoenixes = rankedMembersThisYear.filter(m => 
+            !lastYearRankedIds.has(m.rosterId || m.id) && twoYearsAgoRankedIds.has(m.rosterId || m.id)
+        );
+        if (phoenixes.length > 0) {
+            electionTrivia.push(`The Phoenix: After falling from the ranks last year, ${phoenixes[0].name} makes a dramatic comeback to claim rank #${phoenixes[0].rank}!`);
+        }
+    }
+}
+
+const kami7 = rankedMembers.slice(0, 7);
+if (kami7.length === 7) {
+    const avgAge = kami7.reduce((sum, m) => sum + m.age, 0) / 7;
+    const lastElectionAvgAge = lastElection ? lastElection.results.slice(0, 7).reduce((sum, m) => sum + m.age, 0) / 7 : 22; // Assume 22 if no history
+    if (avgAge < lastElectionAvgAge - 1.5) {
+         electionTrivia.push(`A New Generation: The average age of the Kami 7 has dropped to ${avgAge.toFixed(1)}, signaling a major shift.`);
+    }
+}
+
+universallySortedMembers.forEach(member => {
+    const senbatsuStreak = (member.electionHistory || []).reduce((streak, entry) => {
+        if (entry.rank >= 10 && entry.rank <= 16) {
+            return streak + 1;
+        }
+        return 0; // Reset streak
+    }, 0);
+    if (senbatsuStreak >= 4) {
+         electionTrivia.push(`The Unmovable Wall: ${member.name} has become the gatekeeper of Senbatsu, ranking within it for ${senbatsuStreak} consecutive elections.`);
+    }
+});
 
         setModalData({
             rankedMembers: universallySortedMembers,
@@ -4376,6 +4723,73 @@ const createSong = () => {
                 });
             }
 
+// --- 5B. OVERSEAS & KENNIN TRIVIA ---
+
+// This will only run for Main Group singles, which is the context we want.
+if (releasingGroupNameForTrivia === groupName) {
+    const overseasMembersInSenbatsu = trivia_senbatsuMembers.filter(
+        m => m.isSisterMember && sisterGroups.find(sg => sg.name === m.homeGroup)?.type === 'overseas'
+    );
+
+    if (overseasMembersInSenbatsu.length > 0) {
+        // Find if an overseas member is the center
+        const overseasCenter = overseasMembersInSenbatsu.find(m => (titleTrack.center || []).includes(m.rosterId));
+        if (overseasCenter) {
+            triviaItems.push(`An International Center: ${overseasCenter.name} from ${overseasCenter.homeGroup} takes the prestigious center position for this single!`);
+        }
+
+        // Find how many different overseas groups are represented
+        const representedGroups = [...new Set(overseasMembersInSenbatsu.map(m => m.homeGroup))];
+        if (representedGroups.length > 1) {
+            triviaItems.push(`A Global Senbatsu: This lineup features members from ${representedGroups.length} different international sister groups.`);
+        }
+
+        // Find first-time participants from overseas groups in a main single
+        const firstTimersOverseas = overseasMembersInSenbatsu.filter(member => {
+            const participationsInMainGroup = (member.singlesParticipation || []).filter(p => p.group === groupName && p.isTitleTrackSenbatsu);
+            // It's their first time if they have no prior senbatsu participations in the main group
+            return participationsInMainGroup.length === 0;
+        });
+
+        if (firstTimersOverseas.length > 0) {
+            triviaItems.push(`Bridging Cultures: ${formatNames(firstTimersOverseas.map(m => m.name))} make their main group Senbatsu debut, representing ${[...new Set(firstTimersOverseas.map(m => m.homeGroup))].join(', ')}.`);
+        }
+
+        // Check for Kennin members specifically
+        const kenninMembers = overseasMembersInSenbatsu.filter(m => (m.kenninGroups || []).includes(groupName));
+        if (kenninMembers.length > 0) {
+             triviaItems.push(`Successful Exchange: Kennin member(s) ${formatNames(kenninMembers.map(m => m.name))} from ${[...new Set(kenninMembers.map(m => m.homeGroup))].join(', ')} have successfully entered the Senbatsu.`);
+        }
+    }
+    // --- NEW: Check for B-side only overseas members ---
+// Find ALL overseas members in the single (including B-sides)
+const allOverseasInSingle = allParticipatingMembers.filter(
+    m => m.isSisterMember && sisterGroups.find(sg => sg.name === m.homeGroup)?.type === 'overseas'
+);
+
+// Get IDs of those already mentioned in Senbatsu trivia to avoid duplicates
+const senbatsuOverseasIds = new Set(overseasMembersInSenbatsu.map(m => m.rosterId));
+
+// Filter for members who are ONLY in B-sides
+const bSideOnlyOverseas = allOverseasInSingle.filter(m => !senbatsuOverseasIds.has(m.rosterId));
+
+if (bSideOnlyOverseas.length > 0) {
+    // Of those, find who has never been on any main group single before
+    const firstTimeBsideParticipants = bSideOnlyOverseas.filter(member => {
+        const participationsInMainGroup = (member.singlesParticipation || []).filter(p => p.group === groupName);
+        return participationsInMainGroup.length === 0;
+    });
+
+    if (firstTimeBsideParticipants.length > 0) {
+        triviaItems.push(
+            `International Debut: ${formatNames(firstTimeBsideParticipants.map(m => m.name))} from ${[...new Set(firstTimeBsideParticipants.map(m => m.homeGroup))].join(', ')} make their first appearance on a B-side track.`
+        );
+    }
+}
+
+}
+
+
             // --- 6. EXPANDED TRIVIA (SALES, CENTER, COMPOSITION) ---
             const allSinglesForGroup = songListOfGroup.filter(s => s.type === 'single');
             const bestSellingSingle = [...allSinglesForGroup].sort((a, b) => (b.totalSales || 0) - (a.totalSales || 0))[0];
@@ -4482,8 +4896,85 @@ const createSong = () => {
             if (ironWomen.length > 0) {
                 triviaItems.push(`The Ever-Present! ${formatNames(ironWomen.map(m => m.name))} continue a legendary streak, having appeared on every single the group has ever released.`);
             }
+// --- START OF NEW TRIVIA CODE ---
 
-            // --- 7. GRADUATION TRIVIA ---
+// --- 7. EXCHANGE & RIVALRY TRIVIA ---
+const exchangeMembersInSenbatsu = trivia_senbatsuMembers.filter(m => m.isExchangeStudent || m.isRivalKennin);
+
+if (exchangeMembersInSenbatsu.length > 0) {
+    if (exchangeMembersInSenbatsu.length > 2) {
+        triviaItems.push(`International Flavor: This senbatsu features ${exchangeMembersInSenbatsu.length} members from rival groups, a sign of strong diplomatic ties.`);
+    }
+
+    const exchangeCenter = exchangeMembersInSenbatsu.find(m => (titleTrack.center || []).includes(m.rosterId));
+    if (exchangeCenter) {
+        triviaItems.push(`Center Stage Diplomacy: In a landmark decision, ${exchangeCenter.name} from ${exchangeCenter.homeGroup} has been chosen as the center!`);
+    }
+
+    const firstTimeExchangeMembers = exchangeMembersInSenbatsu.filter(m => {
+        const participations = (m.singlesParticipation || []).filter(p => p.group === releasingGroupNameForTrivia);
+        return participations.length === 0;
+    });
+    if (firstTimeExchangeMembers.length > 0) {
+        triviaItems.push(`A Rival's Debut: ${formatNames(firstTimeExchangeMembers.map(m => m.name))} make their first appearance in a ${releasingGroupNameForTrivia} single.`);
+    }
+}
+
+const ambassadorsInSenbatsu = trivia_senbatsuMembers.filter(m => m.rivalKennin);
+if (ambassadorsInSenbatsu.length > 0) {
+    triviaItems.push(`An Ambassador's Role: ${formatNames(ambassadorsInSenbatsu.map(m => m.name))}, currently on loan to ${ambassadorsInSenbatsu[0].rivalKennin.rivalName}, return to participate in this single.`);
+}
+
+
+// --- 8. COMPOSITION TRIVIA (TEAMS & GENERATIONS) ---
+// Team Dominance
+const teamCounts = trivia_senbatsuMembers.reduce((acc, member) => {
+    if (member.teamId) {
+        const teamName = teams.find(t => t.id === member.teamId)?.name;
+        if(teamName) acc[teamName] = (acc[teamName] || 0) + 1;
+    }
+    return acc;
+}, {});
+
+for (const teamName in teamCounts) {
+    if (teamCounts[teamName] / trivia_senbatsuMembers.length > 0.4) { // If a team makes up > 40% of senbatsu
+        triviaItems.push(`Team ${teamName} Dominates: A staggering ${teamCounts[teamName]} members from Team ${teamName} made it into the senbatsu line-up.`);
+    }
+}
+
+// Generation Power
+const generationCounts = trivia_senbatsuMembers.reduce((acc, member) => {
+    if (member.generation) {
+        acc[member.generation] = (acc[member.generation] || 0) + 1;
+    }
+    return acc;
+}, {});
+
+for (const gen in generationCounts) {
+    if (generationCounts[gen] / trivia_senbatsuMembers.length > 0.4) {
+        triviaItems.push(`The ${gen} Rises: The senbatsu is heavily represented by the ${gen}, showing their growing influence.`);
+    }
+}
+
+// Rookie Streak
+const rookieStreakMembers = trivia_senbatsuMembers.filter(m => {
+    const participations = (m.singlesParticipation || []).filter(p => p.group === releasingGroupNameForTrivia);
+    const joinEvent = (m.teamHistory || []).find(e => e.event.includes('Joined'));
+    if (!joinEvent) return false;
+    
+    const totalSinglesForGen = allSinglesForGroup.filter(s => s.releaseWeek >= joinEvent.week).length + 1;
+    // A member is on a rookie streak if they have participated in every single since they joined
+    return participations.length + 1 === totalSinglesForGen && totalSinglesForGen > 1;
+});
+
+if (rookieStreakMembers.length > 0) {
+    triviaItems.push(`Rookie Streak: ${formatNames(rookieStreakMembers.map(m => m.name))} continue their perfect streak, appearing in every single since their debut.`);
+}
+
+
+// --- END OF NEW TRIVIA CODE ---
+
+// --- 7. GRADUATION TRIVIA ---
             if (songData.isGraduationSingle && titleTrack?.center?.length > 0) {
                 const gradMember = getTriviaMember(titleTrack.center[0]);
                 if (gradMember) {
@@ -6136,7 +6627,12 @@ let updatedRivalGroups = rivalGroups ? JSON.parse(JSON.stringify(rivalGroups)) :
             "Struggles with confidence but has immense talent."
         ];
         
+// --- REPLACE THE OLD 'prospects' BLOCK WITH THIS ---
+        const locations = ['Japan', 'China', 'Thailand']; // All possible locations
+
         const prospects = Array.from({ length: 20 }, (_, i) => {
+            const randomLocation = locations[Math.floor(Math.random() * locations.length)];
+            
             const potential = Math.floor(Math.random() * 60) + 40; // 40-100
             let potentialGrade = 'C';
             if (potential >= 95) potentialGrade = 'S';
@@ -6147,8 +6643,8 @@ let updatedRivalGroups = rivalGroups ? JSON.parse(JSON.stringify(rivalGroups)) :
 
             return {
                 id: `prospect_${i}`,
-                name: generateRandomMemberName(),
-                hometown: generateRandomHometown(),
+                name: generateRandomMemberName(randomLocation),
+                hometown: generateRandomHometown(randomLocation),
                 vocal: Math.floor(Math.random() * 40) + 30,
                 dance: Math.floor(Math.random() * 40) + 30,
                 visual: Math.floor(Math.random() * 40) + 30,
@@ -6159,9 +6655,10 @@ let updatedRivalGroups = rivalGroups ? JSON.parse(JSON.stringify(rivalGroups)) :
                 personality: personalities[Math.floor(Math.random() * personalities.length)],
                 scoutingComment: comments[Math.floor(Math.random() * comments.length)],
                 competingInterest,
-                nominatedBy: [], // To be filled in the nomination stage
+                nominatedBy: [], 
             };
         });
+// --- END OF REPLACEMENT ---
 
         setDraftProspects(prospects);
 
@@ -6269,6 +6766,7 @@ let updatedRivalGroups = rivalGroups ? JSON.parse(JSON.stringify(rivalGroups)) :
 
                 const isMainGroup = teamId === 'main';
                 const targetGroupId = isMainGroup ? 'main' : parseInt(teamId, 10);
+                const joinEvent = { week: week, event: `Joined ${isMainGroup ? groupName : (sisterGroups.find(g => g.id === targetGroupId)?.name || 'a group')} as ${generationName}` };
                 confirmRecruitment(prospectsForTeam.map(p => ({...p, vocal: p.vocal, dance: p.dance, visual: p.visual, charisma: p.charisma, intelligence: p.intelligence})), {targetGroup: targetGroupId, generationName, contractFee: 10000});
             });
             addNotification({ type: 'Recruitment', message: `Successfully drafted ${playerPicks.length} new members!` });
@@ -6621,7 +7119,7 @@ if ((newWeek - 1) % 52 === 49) { // Trigger at the end of Week 49
         let graduatingIdsThisWeek = [];
         let hallOfFameForUpdate = JSON.parse(JSON.stringify(hallOfFame)); // <--- ADD THIS LINE
         let collaborationsForUpdate = JSON.parse(JSON.stringify(collaborations));
-        let exchangeStudentForUpdate = exchangeStudent;
+        let exchangeStudentsForUpdate = [...exchangeStudents];
         // --- MERCH FIX: Initialize draft inventories ONCE ---
         let tempMerchInv = JSON.parse(JSON.stringify(merchInventory));
         let tempIdolMerchInv = JSON.parse(JSON.stringify(idolMerchInventory));
@@ -7335,16 +7833,18 @@ if (requestHourStatus && requestHourStatus.isActive && newWeek > requestHourStat
 
         // --- 7. PROCESS WEEKLY MEMBER UPDATES (Training, Stats, etc.) ---
 // --- Handle end of a RIVAL's concurrent position in YOUR group ---
-if (exchangeStudentForUpdate && newWeek >= exchangeStudentForUpdate.endWeek) {
-    addNotificationInLoop({ type: 'Info', message: `${exchangeStudentForUpdate.member.name} has returned to ${exchangeStudentForUpdate.rivalName}, ending their concurrent position.` });
-    
-    // Also remove them from any teams they might have been in
-    teamsForUpdate = teamsForUpdate.map(team => ({
-        ...team,
-        members: team.members.filter(id => id !== exchangeStudentForUpdate.member.id)
-    }));
-
-    exchangeStudentForUpdate = null; // Remove the rival member from your group
+const graduatingExchanges = exchangeStudentsForUpdate.filter(ex => newWeek >= ex.endWeek);
+if (graduatingExchanges.length > 0) {
+    graduatingExchanges.forEach(ex => {
+        addNotificationInLoop({ type: 'Info', message: `${ex.member.name} has returned to ${ex.rivalName}, ending their concurrent position.` });
+        // Also remove them from any teams they might have been in
+        teamsForUpdate = teamsForUpdate.map(team => ({
+            ...team,
+            members: team.members.filter(id => id !== ex.member.id && id !== ex.member.rosterId)
+        }));
+    });
+    // Filter out the graduated exchange students
+    exchangeStudentsForUpdate = exchangeStudentsForUpdate.filter(ex => newWeek < ex.endWeek);
 }
 
         let campMessage = '';
@@ -7389,6 +7889,27 @@ for (const [groupId, captainId] of Object.entries(groupRoles)) {
         allMembersForWeeklyUpdate.forEach(member => {
             if (!member.rosterId) return;
 
+            // --- NEW: Handle Kennin Expiration ---
+            if (member.kennin && newWeek >= member.kennin.endWeek) {
+                const endedKenninTeamName = member.kennin.teamName;
+                addNotificationInLoop({ type: 'Info', message: `${member.name}'s concurrent position with ${endedKenninTeamName} has ended.` });
+
+                // Remove member from the team
+                teamsForUpdate = teamsForUpdate.map(team => {
+                    if (String(team.id) === String(member.kennin.teamId)) {
+                        return { ...team, members: team.members.filter(id => String(id) !== String(member.rosterId)) };
+                    }
+                    return team;
+                });
+                
+                // Remove kennin status from the member
+                localUpdateMemberState(member.rosterId, m => {
+                    const { kennin, ...rest } = m;
+                    return { ...rest, teamHistory: [...(m.teamHistory || []), { week: newWeek, event: `Concurrent position with ${endedKenninTeamName} ended` }] };
+                });
+            }
+            // --- END NEW ---
+
             // Handle members finishing activities
             if (!member.isAvailable && member.currentActivity && newWeek >= member.activityEnd) {
                 if (member.currentActivity === 'design_merch') {
@@ -7407,14 +7928,37 @@ for (const [groupId, captainId] of Object.entries(groupRoles)) {
                 member.isAvailable = true;
             }
 
-// --- ADD THE NEW BLOCK HERE ---
 if (!member.isAvailable && member.exchangeProgram && newWeek >= member.exchangeProgram.endWeek) {
-    addNotificationInLoop({ type: 'Info', message: `${member.name} has returned from their exchange program with ${member.exchangeProgram.rivalName}!` });
+    const isStudyAbroad = member.exchangeProgram.isStudyAbroad;
+    const destinationName = member.exchangeProgram.rivalName;
+
+    const message = isStudyAbroad
+        ? `${member.name} has returned from studying abroad in ${destinationName}!`
+        : `${member.name} has returned from their exchange program with ${destinationName}!`;
+    addNotificationInLoop({ type: 'Info', message });
+
     localUpdateMemberState(member.rosterId, m => {
-        const { exchangeProgram, ...rest } = m; // This removes the exchangeProgram property
-        return { ...rest, isAvailable: true, morale: Math.min(100, m.morale + 20) };
+        const { exchangeProgram, ...rest } = m;
+
+        // Apply different rewards based on the program type
+        const fanGain = isStudyAbroad ? 50000 : 15000;
+        const skillBoost = isStudyAbroad ? 10 : 5;
+        const moraleBoost = isStudyAbroad ? 30 : 20;
+
+        return { 
+            ...rest, 
+            isAvailable: true, 
+            morale: Math.min(100, (m.morale || 0) + moraleBoost),
+            fans: {
+                ...m.fans,
+                casual: (m.fans.casual || 0) + fanGain
+            },
+            singing: Math.min(100, (m.singing || 0) + skillBoost),
+            dancing: Math.min(100, (m.dancing || 0) + skillBoost),
+            charisma: Math.min(100, (m.charisma || 0) + skillBoost),
+        };
     });
-    member.isAvailable = true; // Make sure the rest of the weekly update loop knows they are back
+    member.isAvailable = true;
 }
 // --- END OF NEW BLOCK ---
 
@@ -7671,7 +8215,7 @@ newStress += chemistryStressEffect;
                 chemistry: member.chemistry
             }));
         });
-
+        sisterGroupsForUpdate = simulateSisterGroupActions(sisterGroupsForUpdate, newWeek, addNotificationInLoop);
         rivalsForUpdate = simulateRivalActions(rivalsForUpdate, newWeek, addNotificationInLoop);
 
         // --- 8. FINAL MESSAGES & STATE COMMIT ---
@@ -7717,7 +8261,7 @@ newStress += chemistryStressEffect;
         setIdolMerchInventory(tempIdolMerchInv);
         setElectionVotePool(tempElectionVotePool);
         setVotingTickets(tempVotingTickets);
-        setExchangeStudent(exchangeStudentForUpdate);
+        setExchangeStudents(exchangeStudentsForUpdate);
         // If a new member is announcing graduation, pause the game to show the modal.
         if (graduatingMember) {
             setModalData(graduatingMember);
@@ -7726,8 +8270,8 @@ newStress += chemistryStressEffect;
         }
     };
     
-    const startRequestHour = () => {
-        const cost = 500000;
+    const startRequestHour = (scope = 'domestic', size = 100) => {
+        const cost = scope === 'world' ? 750000 : 500000;
         if (money < cost) {
             return setMessage(`Hosting the Request Hour costs ¥${cost.toLocaleString()}.`);
         }
@@ -7740,25 +8284,37 @@ newStress += chemistryStressEffect;
 
         setMoney(prev => prev - cost);
 
-        // Collect all songs from all groups and initialize their vote counts to 0
-        const allSongIds = [
-            ...songs.flatMap(s => (s.tracks || []).map(t => `${s.id}-${t.name}`)),
-            ...sisterGroups.flatMap(sg => (sg.songs || []).flatMap(s => (s.tracks || []).map(t => `sg-${sg.id}-${s.id}-${t.name}`))),
-            ...theaterSongs.map(ts => `theater-${ts.id}`)
-        ];
-        const initialVotes = allSongIds.reduce((acc, id) => {
+        // Collect songs based on the event's scope
+        let songIdsForVoting;
+        if (scope === 'world') {
+            songIdsForVoting = [
+                ...songs.flatMap(s => (s.tracks || []).map(t => `${s.id}-${t.name}`)),
+                ...sisterGroups.flatMap(sg => (sg.songs || []).flatMap(s => (s.tracks || []).map(t => `sg-${sg.id}-${s.id}-${t.name}`))),
+                ...theaterSongs.map(ts => `theater-${ts.id}`)
+            ];
+        } else { // domestic
+            songIdsForVoting = [
+                ...songs.flatMap(s => (s.tracks || []).map(t => `${s.id}-${t.name}`)),
+                ...sisterGroups.filter(sg => sg.type !== 'overseas').flatMap(sg => (sg.songs || []).flatMap(s => (s.tracks || []).map(t => `sg-${sg.id}-${s.id}-${t.name}`))),
+                ...theaterSongs.map(ts => `theater-${ts.id}`)
+            ];
+        }
+
+        // THIS MUST BE OUTSIDE THE IF/ELSE BLOCK
+        const initialVotes = songIdsForVoting.reduce((acc, id) => {
             acc[id] = 0;
             return acc;
         }, {});
 
-
         setRequestHourStatus({
             isActive: true,
             endWeek: week + 4,
-            votes: initialVotes
+            votes: initialVotes, // Now it can be found
+            scope: scope,
+            size: size
         });
 
-        const notifMessage = "Request Hour voting has begun! For the next 4 weeks, fans will vote for their favorite songs.";
+        const notifMessage = `Request Hour voting has begun! For the next 4 weeks, fans will vote for their favorite songs. Scope: ${scope}`;
         addNotification({ type: 'Event', message: notifMessage });
         setMessage(notifMessage);
     };
@@ -7798,23 +8354,32 @@ newStress += chemistryStressEffect;
 const executeRequestHourConcert = () => {
     if (!requestHourStatus) return;
 
-    const { votes } = requestHourStatus;
+    const { votes, scope, size } = requestHourStatus;
 
-    // --- 1. Get all songs and their data ---
-    const allSongs = [
+    // Filter songs based on the event's scope
+    const domesticSongs = [
         ...songs.flatMap(s => (s.tracks || []).map(t => ({...t, id: `${s.id}-${t.name}`, artist: s.artist || s.targetGroup, singleName: s.name}))),
+        ...sisterGroups.filter(sg => sg.type !== 'overseas').flatMap(sg => (sg.songs || []).flatMap(s => (s.tracks || []).map(t => ({...t, id: `sg-${sg.id}-${s.id}-${t.name}`, artist: sg.name, singleName: s.name})))),
+        ...theaterSongs.map(ts => ({...ts, id: `theater-${ts.id}`, artist: groupName, singleName: "Theater Stage"}))
+    ];
+
+    const worldSongs = [
+         ...songs.flatMap(s => (s.tracks || []).map(t => ({...t, id: `${s.id}-${t.name}`, artist: s.artist || s.targetGroup, singleName: s.name}))),
         ...sisterGroups.flatMap(sg => (sg.songs || []).flatMap(s => (s.tracks || []).map(t => ({...t, id: `sg-${sg.id}-${s.id}-${t.name}`, artist: sg.name, singleName: s.name})))),
         ...theaterSongs.map(ts => ({...ts, id: `theater-${ts.id}`, artist: groupName, singleName: "Theater Stage"}))
     ];
+    
+    const allSongs = scope === 'world' ? worldSongs : domesticSongs;
+
+
     const songMap = new Map(allSongs.map(s => [s.id, s]));
 
     // --- 2. Rank the songs by votes ---
     const rankedSongs = Object.entries(votes)
         .map(([songId, voteCount]) => ({ songId, voteCount }))
-        .filter(v => v.voteCount > 0)
         .sort((a, b) => b.voteCount - a.voteCount)
-        .slice(0, 100) // Take the Top 100
-        .map((v, index) => {
+        .slice(0, size || 100) // Take the Top songs
+        .map((v, index) => {            
             const songData = songMap.get(v.songId);
             return {
                 rank: index + 1,
@@ -7878,8 +8443,9 @@ const executeRequestHourConcert = () => {
     // --- 4. Save history, set latest result, and clean up ---
     const historyEntry = {
         week: week,
-        results: rankedSongs
-    };
+        results: rankedSongs,
+        size: size || 100
+    };    
     setRequestHourHistory(prev => [historyEntry, ...prev]);
     setLastRequestHourResult(historyEntry); // Store the latest results for the concert modal
     setRequestHourStatus(null); // End the event
@@ -7906,6 +8472,9 @@ const executeRequestHourConcert = () => {
           members: [], // Start with 0 members
           songs: [],
           income: 0, // No income without members
+          isAutonomous: groupData.type === 'overseas',
+          money: groupData.type === 'overseas' ? 50000 : 0,
+          licensedSongs: [],
       };
       
       setSisterGroups(prev => [...(prev || []), newSisterGroup]);
@@ -7915,7 +8484,107 @@ const executeRequestHourConcert = () => {
       setGroupRoles(prev => ({ ...prev, [newId]: null }));
     };
 
-      const startAudition = (targetGroup, tier, generationName) => {
+    const licenseSongToGroup = (songId, groupId) => {
+        const licenseFee = 250000;
+        if (money < licenseFee) {
+            setMessage("Not enough money to license this song.");
+            return;
+        }
+
+        const songToLicense = songs.find(s => s.id === songId);
+        if (!songToLicense) {
+            setMessage("Could not find the song to license.");
+            return;
+        }
+
+        setSisterGroups(prevSGs => prevSGs.map(sg => {
+            if (String(sg.id) === String(groupId)) {
+                // Prevent duplicate licensing
+                if (sg.licensedSongs && sg.licensedSongs.some(s => s.originalId === songId)) {
+                    setMessage(`${sg.name} has already licensed this song.`);
+                    return sg; // Return unchanged
+                }
+                
+                const licensedSong = {
+                    ...songToLicense,
+                    originalId: songId, // Keep track of the original
+                    id: `licensed-${sg.id}-${songId}` // Create a new unique ID for the licensed version
+                };
+
+                const updatedSg = {
+                    ...sg,
+                    licensedSongs: [...(sg.licensedSongs || []), licensedSong]
+                };
+
+                setMoney(prev => prev - licenseFee);
+                addNotification({ type: 'Management', message: `Licensed "${songToLicense.name}" to ${sg.name} for ¥${licenseFee.toLocaleString()}.` });
+                setMessage(`Successfully licensed "${songToLicense.name}" to ${sg.name}.`);
+
+                return updatedSg;
+            }
+            return sg;
+        }));
+
+        setShowModal(null);
+    };
+
+    const assignConcurrentPosition = (memberId, targetTeamId) => {
+        const cost = 100000;
+        const targetTeam = teams.find(t => String(t.id) === String(targetTeamId));
+        if (!targetTeam) {
+            setMessage("Target team not found.");
+            return;
+        }
+
+        // Add the member to the team's member list
+        setTeams(prevTeams => prevTeams.map(t => 
+            String(t.id) === String(targetTeamId) 
+                ? { ...t, members: [...t.members, memberId] }
+                : t
+        ));
+
+        // Update the member's state with the kennin info
+        updateMemberState(memberId, m => ({
+            ...m,
+            kennin: {
+                teamId: targetTeam.id,
+                teamName: targetTeam.name,
+                groupId: 'main',
+                endWeek: week + 52
+            },
+            teamHistory: [...(m.teamHistory || []), { week: week, event: `Started concurrent position with ${targetTeam.name}` }]
+        }));
+
+        setMoney(prev => prev - cost);
+        setMessage(`${getMemberById(memberId).name} will hold a concurrent position in ${targetTeam.name} for 52 weeks.`);
+        setShowModal(null);
+    };
+    const startStudyAbroad = (memberId, destinationGroupId) => {
+        const cost = 50000;
+        const destinationGroup = sisterGroups.find(sg => String(sg.id) === String(destinationGroupId));
+
+        if (!destinationGroup) {
+            setMessage("Destination group not found.");
+            return;
+        }
+
+        updateMemberState(memberId, m => ({
+            ...m,
+            isAvailable: false,
+            exchangeProgram: {
+                isStudyAbroad: true,
+                rivalName: destinationGroup.name, // Using rivalName field for consistency
+                endWeek: week + 24
+            }
+        }));
+
+        setMoney(prev => prev - cost);
+        setMessage(`${getMemberById(memberId).name} has departed to study abroad in ${destinationGroup.name}! They will return in 24 weeks.`);
+        setShowModal(null);
+    };
+
+
+    const startAudition = (targetGroup, tier, generationName, auditionLocation) => {
 
         const selectedTier = tiers.find(t => t.id === tier);
 
@@ -7948,18 +8617,44 @@ const executeRequestHourConcert = () => {
             'Motherly',         // Someone with a very soothing, motherly vibe
             'Bookworm'       // Intelligent, quiet, usually has glasses
           ];
-        const candidates = Array.from({ length: selectedTier.poolSize }, (_, i) => ({
-            id: `candidate-${i}`,
-            name: generateRandomMemberName(),
-            hometown: generateRandomHometown(),
-            vocal: generateStat(selectedTier.statMin, selectedTier.statMax),
-            dance: generateStat(selectedTier.statMin, selectedTier.statMax),
-            visual: generateStat(selectedTier.statMin, selectedTier.statMax),
-            charisma: generateStat(selectedTier.statMin, selectedTier.statMax),
-            intelligence: generateStat(selectedTier.statMin, selectedTier.statMax),
-            potential: generateStat(selectedTier.potentialMin, selectedTier.potentialMax),
-            personality: personalities[Math.floor(Math.random() * personalities.length)],
-        }));
+        const isMainGroup = targetGroup === 'main';
+        const finalAuditionLocation = isMainGroup 
+    ? auditionLocation 
+    : sisterGroups.find(g => String(g.id) === String(targetGroup))?.location;
+
+        const candidates = Array.from({ length: selectedTier.poolSize }, (_, i) => {
+            let varietyBonus = 0;
+            let danceBonus = 0;
+            let visualBonus = 0;
+
+                // Example bonuses based on location
+                if (finalAuditionLocation === 'Osaka') {
+                    varietyBonus = 10;
+                } else if (finalAuditionLocation === 'Shanghai') {
+                    danceBonus = 10;
+                } else if (finalAuditionLocation === 'Bangkok') {
+                    visualBonus = 10;
+                } else if (finalAuditionLocation === 'Taipei') {
+                    visualBonus = 10;
+                } else if (finalAuditionLocation === 'Manila') {
+                    varietyBonus = 5;
+                    danceBonus = 5;
+                }
+
+            return {
+                id: `candidate-${i}`,
+                name: generateRandomMemberName(finalAuditionLocation),
+                hometown: generateRandomHometown(finalAuditionLocation),
+                vocal: generateStat(selectedTier.statMin, selectedTier.statMax),
+                dance: generateStat(selectedTier.statMin + danceBonus, selectedTier.statMax + danceBonus),
+                visual: generateStat(selectedTier.statMin + visualBonus, selectedTier.statMax + visualBonus),
+                charisma: generateStat(selectedTier.statMin, selectedTier.statMax),
+                intelligence: generateStat(selectedTier.statMin, selectedTier.statMax),
+                variety: generateStat(selectedTier.statMin + varietyBonus, selectedTier.statMax + varietyBonus), // Make sure variety is generated
+                potential: generateStat(selectedTier.potentialMin, selectedTier.potentialMax),
+                personality: personalities[Math.floor(Math.random() * personalities.length)],
+            };
+        });
         
         setAuditionCandidates(candidates);
         setModalData({ 
@@ -7980,17 +8675,17 @@ const executeRequestHourConcert = () => {
 
         setMoney(prev => prev - totalFee);
 
-        let startingId;
+        // --- THIS IS THE FIX ---
+        // Find the absolute maximum ID across all members in the entire game.
+        const allMemberIds = [
+            ...members.map(m => m.id),
+            ...sisterGroups.flatMap(sg => (sg.members || []).map(m => m.id))
+        ];
+        const startingId = allMemberIds.length > 0 ? Math.max(...allMemberIds) : 0;
+        // --- END OF FIX ---
         const isMainGroup = targetGroup === 'main';
         const targetGroupId = isMainGroup ? 'main' : parseInt(targetGroup, 10);
         const joinEvent = { week: week, event: `Joined ${isMainGroup ? groupName : (sisterGroups.find(g => g.id === targetGroupId)?.name || 'a group')} as ${generationName}` };
-
-        if (isMainGroup) {
-            startingId = members.length > 0 ? Math.max(...members.map(m => m.id)) : 0;
-        } else {
-            const sg = sisterGroups.find(g => g.id === targetGroupId);
-            startingId = (sg?.members && sg.members.length > 0) ? Math.max(...sg.members.map(m => m.id)) : 0;
-        }
 
         const newMembers = selectedCandidates.map((c, index) => {
             const newId = startingId + 1 + index;
@@ -8356,54 +9051,63 @@ const executeKouhakuPerformance = (membersForUpdate, sisterGroupsForUpdate) => {
 };
 
 
-        const startJankenTournament = () => {
-            const cost = 75000;
+        const startJankenTournament = (includeOverseas = false) => {
+    const baseCost = 75000;
+    const overseasCost = includeOverseas ? 250000 : 0;
+    const cost = baseCost + overseasCost;
             if (money < cost) {
                 return setMessage("Not enough money to host a Janken Tournament.");
             }
         
-            const availableMembers = getAllAvailableMembers(true);
-            if (availableMembers.length < 16) {
-                return setMessage("You need at least 16 available members to host a Janken Tournament.");
+        let availableMembers = getAllAvailableMembers(true).filter(m => m.isAvailable);
+
+        if (!includeOverseas) {
+            const overseasGroupNames = new Set(sisterGroups.filter(sg => sg.type === 'overseas').map(sg => sg.name));
+            availableMembers = availableMembers.filter(m => {
+                if (!m.isSisterMember) return true;
+                return !overseasGroupNames.has(m.homeGroup);
+            });
+        }
+            if (availableMembers.length < 8) {
+                return setMessage("You need at least 8 available members to host a Janken Tournament.");
             }
         
             setMoney(prev => prev - cost);
-        
+
             const shuffled = [...availableMembers].sort(() => 0.5 - Math.random());
-    
-            // Distribute participants into 4 blocks as evenly as possible
-            const blocks = { 'A': [], 'B': [], 'C': [], 'D': [] };
-            const blockNames = Object.keys(blocks);
-    
+
+            // --- NEW: Dynamically determine block size ---
+            const numBlocks = availableMembers.length >= 32 ? 4 : 2;
+            const blockNames = numBlocks === 4 ? ['A', 'B', 'C', 'D'] : ['A', 'B'];
+            const blocks = blockNames.reduce((acc, name) => ({ ...acc, [name]: [] }), {});
+
+            // Distribute participants into the determined number of blocks
             shuffled.forEach((participant, index) => {
-                blocks[blockNames[index % 4]].push(participant);
+                blocks[blockNames[index % numBlocks]].push(participant);
             });
+            // --- END NEW ---
     
-            // For each block, create 4 matchup groups to produce 4 winners
-            const initialBlockBrackets = {};
-            for (const blockName of blockNames) {
-                const blockParticipants = blocks[blockName];
-                const numParticipants = blockParticipants.length;
-                if (numParticipants === 0) {
-                    initialBlockBrackets[blockName] = [];
-                    continue;
-                }
+// Create pairs for the initial round of each block, handling odd numbers
+const initialBlockBrackets = {};
+for (const blockName of blockNames) {
+    const blockParticipants = blocks[blockName];
+    const pairs = [];
+    let i = 0;
 
-                // This is the core of the new grouping logic
-                const groupSizeBase = Math.floor(numParticipants / 4);
-                const numLargerGroups = numParticipants % 4;
-                const finalGroups = [];
-                let currentIndex = 0;
+    // If the total number of participants in the block is odd and we have more than 2 people,
+    // create one group of 3 first to resolve the odd number.
+    if (blockParticipants.length % 2 === 1 && blockParticipants.length > 2) {
+        pairs.push(blockParticipants.slice(0, 3));
+        i = 3; // Start the rest of the pairing from the 4th person
+    }
 
-                for (let i = 0; i < 4; i++) {
-                    const size = i < numLargerGroups ? groupSizeBase + 1 : groupSizeBase;
-                    if (size > 0) {
-                        finalGroups.push(blockParticipants.slice(currentIndex, currentIndex + size));
-                        currentIndex += size;
-                    }
-                }
-                initialBlockBrackets[blockName] = finalGroups;
-            }
+    // Create standard pairs of 2 for the remaining participants.
+    // If only one person is left, they will get a bye.
+    for (; i < blockParticipants.length; i += 2) {
+        pairs.push(blockParticipants.slice(i, i + 2));
+    }
+    initialBlockBrackets[blockName] = pairs;
+}
     
             setJankenTournament({
                 participants: availableMembers,
@@ -8415,7 +9119,7 @@ const executeKouhakuPerformance = (membersForUpdate, sisterGroupsForUpdate) => {
                 winner: null,
                 senbatsu: [],
                 isFinished: false,
-                blockWinners: { 'A': null, 'B': null, 'C': null, 'D': null },
+                blockWinners: blockNames.reduce((acc, name) => ({ ...acc, [name]: null }), {}),
             });
     
             addNotification({ type: 'Event', message: 'The Janken Tournament has begun!' });
@@ -8598,6 +9302,55 @@ const executeKouhakuPerformance = (membersForUpdate, sisterGroupsForUpdate) => {
                 const finalElims = [...eliminations, ...newEliminations];
     
                 const senbatsuRanked = createFinalSenbatsu(finalWinner, finalElims, jankenTournament.participants);
+                                // --- JANKEN TRIVIA GENERATION ---
+                                const jankenTrivia = [];
+                                const senbatsu = senbatsuRanked; // Top 16
+                
+                                // 1. Team Dominance
+                                const teamCounts = senbatsu.reduce((acc, member) => {
+                                    const team = teams.find(t => t.id === member.teamId);
+                                    if (team) {
+                                        const teamName = team.name;
+                                        acc[teamName] = (acc[teamName] || 0) + 1;
+                                    }
+                                    return acc;
+                                }, {});
+                
+                                const topTeam = Object.entries(teamCounts).sort((a, b) => b[1] - a[1])[0];
+                                if (topTeam && topTeam[1] > 4) { // If a team has more than 4 members in senbatsu
+                                    jankenTrivia.push(`Team ${topTeam[0]} dominated the tournament, securing ${topTeam[1]} spots in the senbatsu!`);
+                                }
+                
+                                // 2. Generation Dominance
+                                const genCounts = senbatsu.reduce((acc, member) => {
+                                    if (member.generation) {
+                                        acc[member.generation] = (acc[member.generation] || 0) + 1;
+                                    }
+                                    return acc;
+                                }, {});
+                
+                                const topGen = Object.entries(genCounts).sort((a, b) => b[1] - a[1])[0];
+                                if (topGen && topGen[1] > 4) {
+                                    jankenTrivia.push(`The ${topGen[0]} proves its strength, with ${topGen[1]} members making it into the senbatsu.`);
+                                }
+                
+                                // 3. Winner Milestones
+                                const winner = finalWinner;
+                                const winnerHistory = winner.singlesParticipation || [];
+                                const winnerJankenHistory = (winner.jankenHistory || []).filter(e => e.rank <= 16);
+                                const hasBeenSenbatsu = winnerHistory.some(p => p.isTitleTrackSenbatsu) || winnerJankenHistory.length > 0;
+                
+                                if (!hasBeenSenbatsu) {
+                                    jankenTrivia.push(`A Cinderella Story! This is ${winner.name}'s first-ever senbatsu appearance, and they won it all!`);
+                                }
+                
+                                const hasBeenCenter = (winner.centerHistory || []).length > 0;
+                                if (!hasBeenCenter) {
+                                    jankenTrivia.push(`A new star is born! ${winner.name} claims their first-ever center position by winning the Janken tournament.`);
+                                }
+                
+                                // --- END TRIVIA GENERATION ---
+                
                 const memberIdToNameMap = new Map(jankenTournament.participants.map(m => [m.id, m.name]));
                 const eliminationMap = new Map(finalElims.map(e => [e.loserId, e]));
                 const senbatsuIds = new Set(senbatsuRanked.map(m => m.id));
@@ -8622,7 +9375,7 @@ const executeKouhakuPerformance = (membersForUpdate, sisterGroupsForUpdate) => {
                     })
                     .sort((a,b) => a.name.localeCompare(b.name));
     
-                const finalResults = { winner: finalWinner, senbatsu: detailedSenbatsu, unplaced: unplacedMembers };
+                
                 
                 // --- THIS IS THE FIX ---
                 // Combine all results and update every participant's personal history
@@ -8645,7 +9398,8 @@ const executeKouhakuPerformance = (membersForUpdate, sisterGroupsForUpdate) => {
                 updateMemberState(finalWinner.id, m => ({ ...m, morale: 100, stress: 0 }));
                 
                 setJankenTournament(prev => ({ ...prev, isFinished: true, winner: finalWinner, senbatsu: detailedSenbatsu, eliminations: finalElims, roundResults: null }));
-                
+                const finalResults = { winner: finalWinner, senbatsu: detailedSenbatsu, unplaced: unplacedMembers, trivia: jankenTrivia };
+               
                 setJankenHistory(prev => [...prev, { 
                     week: week, 
                     ...finalResults,
@@ -8674,14 +9428,24 @@ const executeKouhakuPerformance = (membersForUpdate, sisterGroupsForUpdate) => {
         }
     };
 
-const startSportsFestival = () => {
-    const cost = 150000;
+const startSportsFestival = (includeOverseas = false) => {
+    const baseCost = 150000;
+    const overseasCost = includeOverseas ? 500000 : 0;
+    const cost = baseCost + overseasCost;
     if (money < cost) {
         setMessage("Not enough money to hold a Sports Festival.");
         return;
     }
 
-    const availableMembers = getAllAvailableMembers(true).filter(m => m.isAvailable);
+    let availableMembers = getAllAvailableMembers(true).filter(m => m.isAvailable);
+
+if (!includeOverseas) {
+    const overseasGroupNames = new Set(sisterGroups.filter(sg => sg.type === 'overseas').map(sg => sg.name));
+    availableMembers = availableMembers.filter(m => {
+        if (!m.isSisterMember) return true; // Keep all main group members
+        return !overseasGroupNames.has(m.homeGroup);
+    });
+}
     if (availableMembers.length < 4) {
         setMessage("Not enough members for a Sports Festival.");
         return;
@@ -8791,8 +9555,8 @@ const finishSportsFestival = () => {
         week,
         winningTeam: winningTeamName,
         mvp: {id: mvp.id, name: mvp.name},
-        teamRed: { members: teamRed.members.map(m => ({id: m.id, name: m.name})), score: teamRed.score },
-        teamWhite: { members: teamWhite.members.map(m => ({id: m.id, name: m.name})), score: teamWhite.score },
+        teamRed: { members: teamRed.members.map(m => ({id: m.id, name: m.name, rosterId: m.rosterId})), score: teamRed.score },
+        teamWhite: { members: teamWhite.members.map(m => ({id: m.id, name: m.name, rosterId: m.rosterId})), score: teamWhite.score },
         events: eventLog
     };
 
@@ -8801,6 +9565,170 @@ const finishSportsFestival = () => {
     setShowModal('sportsFestivalResult');
     setLiveSportsFestival(null); // Clean up the live state
 };
+
+    const simulateSisterGroupActions = (sisterGroups, week, addNotificationInLoop) => {
+        return sisterGroups.map(sg => {
+            // Only run automation for groups marked as autonomous
+            if (!sg.isAutonomous) {
+                return sg;
+            }
+
+            let newSg = { ...sg };
+            if (!newSg.money) newSg.money = 0;
+            if (!newSg.fans) newSg.fans = 0;
+            if (!newSg.members) newSg.members = [];
+
+            // 1. Chance to hold a theater show
+            if (newSg.members.length > 0 && Math.random() < 0.5) { // 50% chance per week
+                const performanceScore = newSg.members.reduce((sum, m) => sum + (m.singing || 0) + (m.dancing || 0), 0) / (newSg.members.length || 1);
+                const revenue = Math.floor(performanceScore * 50);
+                const fanGain = Math.floor(performanceScore * 0.5);
+
+                newSg.money += revenue;
+                newSg.fans += fanGain;
+                
+                addNotificationInLoop({
+                    type: 'Sister Group',
+                    message: `${newSg.name} held a local show, earning ¥${revenue.toLocaleString()} and gaining ${fanGain.toLocaleString()} fans.`
+                });
+            }
+
+            // 2. Passive fan growth
+            const passiveFanGain = Math.floor(newSg.fans * 0.01) + 10;
+            newSg.fans += passiveFanGain;
+
+            // 3. Pay salaries monthly (every 4 weeks)
+            if (week % 4 === 0 && newSg.members.length > 0) {
+                const totalSalaries = newSg.members.length * 5000; // Simple flat salary
+                newSg.money -= totalSalaries;
+
+                addNotificationInLoop({
+                    type: 'Sister Group',
+                    message: `${newSg.name} paid member salaries of ¥${totalSalaries.toLocaleString()}.`
+                });
+            }
+            // 4. Chance to release a single from licensed songs
+            const singleReleaseChance = 0.1; // 10% chance per week
+            if (Math.random() < singleReleaseChance && newSg.licensedSongs && newSg.licensedSongs.length > 0) {
+                const releasedSongOriginalIds = new Set((newSg.songs || []).map(s => s.originalId));
+                const songToRelease = newSg.licensedSongs.find(s => !releasedSongOriginalIds.has(s.originalId));
+
+if (songToRelease && newSg.members.length >= 16) {
+    // 1. SETUP
+    const locationToVersion = {
+        'Shanghai': 'CN VER.',
+        'Bangkok': 'TH VER.',
+        'Taipei': 'TW VER.',
+        'Manila': 'PH VER.'
+    };
+    const versionTag = locationToVersion[newSg.location] || 'OS VER.';
+    const senbatsu = [...newSg.members].sort((a, b) => getTotalFansForMember(b) - getTotalFansForMember(a)).slice(0, 16);
+    const center = senbatsu[0];
+
+    // 2. GENERATE LINEUP USING ORIGINAL IDs FIRST
+    const originalIdLineup = {};
+    if (center) {
+        originalIdLineup[center.id] = '1st Row';
+    }
+    senbatsu.forEach((member, index) => {
+        if (member.id === center?.id) return;
+        if (index < 5) originalIdLineup[member.id] = '2nd Row';
+        else if (index < 10) originalIdLineup[member.id] = '3rd Row';
+        else originalIdLineup[member.id] = '4th Row';
+    });
+
+    // 3. TRIVIA GENERATION
+    const triviaItems = [];
+    const formatNames = (nameArray) => {
+        if (nameArray.length === 0) return '';
+        if (nameArray.length === 1) return nameArray[0];
+        if (nameArray.length === 2) return nameArray.join(' and ');
+        return nameArray.slice(0, -1).join(', ') + ', and ' + nameArray.slice(-1);
+    };
+    if (center && !(center.centerHistory || []).some(h => h.type === 'title')) {
+        triviaItems.push(`First A-Side Center: ${center.name}.`);
+    }
+    const firstTimeSenbatsu = senbatsu.filter(member => !(member.singlesParticipation || []).some(p => p.isTitleTrackSenbatsu));
+    if (firstTimeSenbatsu.length > 0) {
+        triviaItems.push(`First Time Senbatsu: ${formatNames(firstTimeSenbatsu.map(m => m.name))}.`);
+    }
+
+    // 4. CREATE THE TRACK AND SINGLE OBJECTS WITH UNIQUE IDs
+    const newSingleTrack = {
+        name: songToRelease.name,
+        unitName: 'Senbatsu',
+        type: 'title',
+        members: senbatsu.map(m => ({ ...m, id: `sg-${newSg.id}-${m.id}`, rosterId: `sg-${newSg.id}-${m.id}` })),
+        center: center ? [`sg-${newSg.id}-${center.id}`] : [],
+        lineup: Object.entries(originalIdLineup).reduce((acc, [key, value]) => {
+            acc[`sg-${newSg.id}-${key}`] = value;
+            return acc;
+        }, {})
+    };
+    
+    const fanSales = senbatsu.reduce((sum, m) => sum + getTotalFansForMember(m), 0);
+    const baseSalesPotential = fanSales * 0.5;
+
+    const newSingle = {
+        id: `sg-${newSg.id}-song-${Date.now()}`,
+        originalId: songToRelease.originalId,
+        name: `${songToRelease.name} (${versionTag})`,
+        type: 'single',
+        targetGroup: newSg.name,
+        releaseWeek: week,
+        tracks: [newSingleTrack],
+        baseSalesPotential: baseSalesPotential,
+        totalSales: 0,
+        chartWeeksLeft: 8,
+        salesHistory: [],
+        rankHistory: [],
+        production: songToRelease.production,
+        trivia: triviaItems,
+    };
+    
+    newSg.songs = [...(newSg.songs || []), newSingle];
+
+    // 5. UPDATE MEMBER HISTORY (Using original IDs and the new lineup)
+    senbatsu.forEach(member => {
+        const memberIndex = newSg.members.findIndex(m => m.id === member.id);
+        if (memberIndex > -1) {
+            const participationEntry = {
+                singleId: newSingle.id,
+                singleName: newSingle.name,
+                tracks: [newSingleTrack.name],
+                week: week,
+                isCenter: center && member.id === center.id,
+                isTitleTrackSenbatsu: true,
+                group: newSg.name,
+                type: 'title',
+                row: originalIdLineup[member.id] || 'N/A' // Use the generated row
+            };
+            
+            let centerEntry = [];
+            if (center && member.id === center.id) {
+                centerEntry.push({
+                    week: week, singleName: newSingle.name, songName: newSingleTrack.name,
+                    group: newSg.name, type: 'title'
+                });
+            }
+            
+            const currentMember = newSg.members[memberIndex];
+            currentMember.singlesParticipation = [...(currentMember.singlesParticipation || []), participationEntry];
+            currentMember.songsParticipation = [...(currentMember.songsParticipation || []), { ...participationEntry, songName: newSingleTrack.name }];
+            currentMember.centerHistory = [...(currentMember.centerHistory || []), ...centerEntry];
+        }
+    });
+
+    addNotificationInLoop({
+        type: 'Sister Group',
+        message: `${newSg.name} has released their own version of "${newSingle.name}"!`
+    });
+}
+            }
+
+            return newSg;
+        });
+    };
 
 const simulateRivalActions = (currentRivals, currentWeek, addNotificationInLoop) => {
     let updatedRivals = currentRivals.map(rival => {
@@ -8978,63 +9906,69 @@ const startCollaboration = (rivalId, cost = 250000) => {
     }
 };
 
-const confirmExchangeStudent = (rival, chosenRivalMember, chosenPlayerMemberId) => {
-    const playerMember = getMemberById(chosenPlayerMemberId);
-    if (!playerMember) return;
+const confirmExchangeStudent = (rival, chosenRivalMembers, chosenPlayerMemberIds) => {
+    const playerMembers = chosenPlayerMemberIds.map(id => getMemberById(id)).filter(Boolean);
+    if (playerMembers.length !== chosenPlayerMemberIds.length || chosenRivalMembers.length === 0) {
+        setMessage("Error: One or more selected members could not be found.");
+        return;
+    }
 
-    // --- 1. SET UP THE INCOMING RIVAL MEMBER'S KENNIN ---
-    const exchangeMemberObject = {
-        id: `rival-${rival.id}-${Date.now()}`,
-        rosterId: `rival-${rival.id}-${Date.now()}`,
-        name: `${chosenRivalMember.name} (${rival.name})`,
-        age: chosenRivalMember.age,
-        singing: chosenRivalMember.singing,
-        dancing: chosenRivalMember.dancing,
-        visual: chosenRivalMember.visual,
-        variety: chosenRivalMember.variety,
-        charisma: chosenRivalMember.charisma,
-        intelligence: chosenRivalMember.intelligence,
-        stamina: 100, morale: 100, stress: 0,
-        fans: chosenRivalMember.fans,
-        isAvailable: true,
-        homeGroup: rival.name,
-        // Flags to identify this special member
-        isExchangeStudent: true,
-        isRivalKennin: true, 
-        // Kennin info for UI display
-        kenninInfo: { groupName: groupName, endWeek: week + 52 },
-        hometown: chosenRivalMember.hometown,
-        personality: chosenRivalMember.personality,
-        nickname: chosenRivalMember.nickname,
-        graduationWindow: { min: 99, max: 99 },
-        ambition: "Exchange Program",
-        teamHistory: [{ week: week, event: `Concurrent position with ${groupName} started` }],
-        singlesParticipation: [], songsParticipation: [], centerHistory: [], chemistry: {}, isGraduating: false, graduationUrgency: 0,
-        generation: 'Exchange',
-    };
+    const newExchangeStudents = chosenRivalMembers.map((rivalMember, index) => {
+        const exchangeMemberObject = {
+            id: `rival-${rival.id}-${Date.now()}-${index}`,
+            rosterId: `rival-${rival.id}-${Date.now()}-${index}`,
+            name: `${rivalMember.name} (${rival.name})`,
+            age: rivalMember.age,
+            singing: rivalMember.singing,
+            dancing: rivalMember.dancing,
+            visual: rivalMember.visual,
+            variety: rivalMember.variety,
+            charisma: rivalMember.charisma,
+            intelligence: rivalMember.intelligence,
+            stamina: 100, morale: 100, stress: 0,
+            fans: rivalMember.fans,
+            isAvailable: true,
+            homeGroup: rival.name,
+            isExchangeStudent: true,
+            isRivalKennin: true, 
+            kenninInfo: { groupName: groupName, endWeek: week + 52 },
+            hometown: rivalMember.hometown,
+            personality: rivalMember.personality,
+            nickname: rivalMember.nickname,
+            graduationWindow: { min: 99, max: 99 },
+            ambition: "Exchange Program",
+            teamHistory: [{ week: week, event: `Concurrent position with ${groupName} started` }],
+            singlesParticipation: [], songsParticipation: [], centerHistory: [], chemistry: {}, isGraduating: false, graduationUrgency: 0,
+            generation: 'Exchange',
+        };
 
-    setExchangeStudent({
-        rivalId: rival.id,
-        rivalName: rival.name,
-        member: exchangeMemberObject,
-        startWeek: week,
-        endWeek: week + 52,
-    });
-
-    // --- 2. SET UP THE OUTGOING PLAYER MEMBER'S KENNIN ---
-    // The member remains AVAILABLE
-    updateMemberState(chosenPlayerMemberId, m => ({
-        ...m,
-        rivalKennin: { // NEW property to track the concurrent position with a rival
+        return {
             rivalId: rival.id,
             rivalName: rival.name,
+            member: exchangeMemberObject,
+            startWeek: week,
             endWeek: week + 52,
-        },
-        teamHistory: [...(m.teamHistory || []), { week, event: `Concurrent position with ${rival.name} started` }]
-    }));
+        };
+    });
 
-    // --- 3. FINALIZE AND CLOSE ---
-    const messageText = `SUCCESS! ${chosenRivalMember.name} from ${rival.name} will hold a concurrent position in your group, and ${playerMember.name} will hold one in theirs!`;
+    setExchangeStudents(prev => [...(prev || []), ...newExchangeStudents]);
+
+
+    // --- SET UP THE OUTGOING PLAYER MEMBERS' KENNIN ---
+    playerMembers.forEach(playerMember => {
+        updateMemberState(playerMember.rosterId, m => ({
+            ...m,
+            rivalKennin: {
+                rivalId: rival.id,
+                rivalName: rival.name,
+                endWeek: week + 52,
+            },
+            teamHistory: [...(m.teamHistory || []), { week, event: `Concurrent position with ${rival.name} started` }]
+        }));
+    });
+
+    // --- FINALIZE AND CLOSE ---
+    const messageText = `SUCCESS! An exchange program with ${rival.name} has begun.`;
     setMessage(messageText);
     addNotification({ type: 'Special', message: messageText });
     setShowModal(null);
@@ -9084,12 +10018,12 @@ const memberFans = isAce ? rival.ace.fans : 100000 + Math.floor(Math.random() * 
 
 return {
     // State
-    exchangeStudent, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
+    exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
     // Firebase/Persistence
-    saveGame, loadGame,
+    getSavedGames, saveGame, loadGame,
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
-    startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent,  startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining
+    startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent,  startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining
     };
     };

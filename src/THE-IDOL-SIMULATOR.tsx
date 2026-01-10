@@ -31,13 +31,13 @@ const App = () => {
     // Destructure everything from the custom hook
     const {
     // State
-    exchangeStudent, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory,  merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
+    exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory,  merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
     // Firebase/Persistence
-    saveGame, loadGame,
+    getSavedGames, saveGame, loadGame,
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
-    startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference,  completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining
+    startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference,  completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining
 
     } = useIdolManager();
 
@@ -63,12 +63,21 @@ const App = () => {
     const toggleDarkMode = () => {
         setIsDarkMode(!isDarkMode);
     };
+        useEffect(() => {
+        if (!gameStarted) {
+            const games = getSavedGames();
+            console.log("Saved games found on load:", games);
+            setSavedGames(games);
+        }
+    }, [gameStarted, showModal]);
+
 
     // --- NEW STATE FOR SORT/FILTER ---
     const [memberSort, setMemberSort] = useState({ key: 'rank', asc: true });
     const [memberFilter, setMemberFilter] = useState('all');
     const [selectedSingleForPromo, setSelectedSingleForPromo] = useState(null);
 
+    
     useEffect(() => {
         const allChartingSingles = [
             ...songs.filter(s => s.type === 'single' && s.chartWeeksLeft > 0),
@@ -93,8 +102,9 @@ const App = () => {
     useEffect(() => {
         const mainFans = (members || []).reduce((sum, m) => sum + getTotalFansForMember(m), 0);
         const sisterFans = (sisterGroups || []).flatMap(sg => sg.members || []).reduce((sum, m) => sum + getTotalFansForMember(m), 0);
-        setTotalFans(mainFans + sisterFans);
-    }, [members, sisterGroups]);
+        const exchangeFans = (exchangeStudents || []).reduce((sum, ex) => sum + getTotalFansForMember(ex.member), 0);
+        setTotalFans(mainFans + sisterFans + exchangeFans);
+    }, [members, sisterGroups, exchangeStudents]);
 
 
     // Utility function to generate a random name for the startup screen
@@ -142,7 +152,6 @@ const generateRandomTheaterSongName = () => {
     // Pass local state to the hook's startGame function
     const handleStartGame = () => startGame(startUsername, startGroupName);
     
-
     // --- MODAL COMPONENTS (Remain in App for clean state access) ---
 
 const MemberSelectionList = ({ members, selectedIds, toggleMember, disabled = false, teams, sisterGroups, groupName }) => {
@@ -193,7 +202,7 @@ const MemberSelectionList = ({ members, selectedIds, toggleMember, disabled = fa
             <div className="max-h-40 overflow-y-auto border p-2 rounded bg-gray-50 dark:bg-gray-900">
                 {(filteredMembers).map(member => (
                   <div
-                    key={member.id}
+                    key={member.rosterId}
                     className={`p-1 text-sm flex justify-between items-center cursor-pointer rounded
                     bg-white dark:bg-gray-800
                     text-gray-800 dark:text-gray-100
@@ -417,14 +426,14 @@ const CustomSetlistModal = () => {
       const [targetGroup, setTargetGroup] = useState('main');
       const [tier, setTier] = useState(2);
       const [generationName, setGenerationName] = useState('');
-  
+        const [location, setLocation] = useState('Japan');
       const handleConfirm = () => {
           if (!generationName.trim()) {
               // In a future step, we should show an error message here.
               // For now, just prevent the audition.
               return; 
           }
-          startAudition(targetGroup, tier, generationName);
+          startAudition(targetGroup, tier, generationName, location);
       };
   
       const tiers = [
@@ -440,10 +449,20 @@ const CustomSetlistModal = () => {
               
               <h4 className="font-semibold mb-1 text-gray-800 dark:text-gray-200">Target Group</h4>
               <select value={targetGroup} onChange={(e) => setTargetGroup(e.target.value)} className="w-full p-2 border rounded mb-3 bg-white dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">
-                  <option value="main">{groupName} (Main Group)</option>
+                  <option key="main" value="main">{groupName} (Main Group)</option>
                   {(sisterGroups || []).map(sg => <option key={sg.id} value={sg.id}>{sg.name}</option>)}
               </select>
-              
+
+ {targetGroup === 'main' && (
+  <>
+    <h4 className="font-semibold mb-1 text-gray-800 dark:text-gray-200">Audition Location</h4>
+    <select value={location} onChange={(e) => setLocation(e.target.value)} className="w-full p-2 border rounded mb-3 bg-white dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">
+      <option value="Japan">Japan</option>
+      {[...new Set((sisterGroups || []).filter(sg => sg.type === 'overseas').map(sg => sg.location))].map(loc => <option key={loc} value={loc}>{loc}</option>)}
+    </select>
+  </>
+)}
+             
               <h4 className="font-semibold mb-1 text-gray-800 dark:text-gray-200">Generation Name</h4>
               <input 
                   type="text" 
@@ -631,7 +650,10 @@ const ElectionSummaryModal = ({ modalData, onHide, getMemberGroupStatus, groupNa
     return (
         <div className="fixed inset-0 bg-pink-300/10 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in">
             <div className="bg-gradient-to-br from-white via-pink-50 to-blue-50 dark:from-gray-800 dark:via-gray-800 dark:to-slate-900 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col text-gray-800 dark:text-gray-100 border-2 border-white dark:border-slate-700">
-                <div className="p-6 border-b border-pink-200/80 dark:border-slate-700/80">
+                <div className="relative p-6 border-b border-pink-200/80 dark:border-slate-700/80">
+                        <button onClick={onHide} className="absolute top-4 right-4 text-pink-400/70 hover:text-pink-500 transition-colors">
+                            <X size={24} />
+                        </button>
                     <h2 className="text-3xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-blue-500 tracking-tight">General Election Summary</h2>
                     <p className="text-center text-pink-400/90 dark:text-pink-300/90 mt-1">Confirm members and settings before starting the election!</p>
                 </div>
@@ -860,7 +882,7 @@ const ElectionResultModal = () => {
                                             <RankChangeArrow member={currentMember} />
                                         </div>
                                     </div>
-<span className="text-[11px] sm:text-xs font-bold text-gray-500 dark:text-gray-400 tracking-widest">
+<span className="text-[5.5px] sm:text-xs font-bold text-gray-500 dark:text-gray-400 tracking-widest">
     {currentMember ? getMemberGroupStatus(currentMember) : '...'}
 </span>
                                 </div>
@@ -1079,7 +1101,7 @@ const AnnualAwardsResultModal = () => {
     
                     const members = [...track.members];
                     const centerId = track.center;
-                    const nonCenterMembers = members.filter(id => String(id) !== String(centerId));
+                    const nonCenterMembers = members.filter(id => !(centerId || []).includes(String(id)));
                     const shuffled = nonCenterMembers.sort(() => 0.5 - Math.random());
                     const newLineup = {};
                     if (centerId) newLineup[centerId] = '1st Row';
@@ -1101,7 +1123,7 @@ const AnnualAwardsResultModal = () => {
                 const allTracks = releaseType === 'album' ? albumTracks : tracks;
                 
                 const allChosenMemberIds = new Set(allTracks.flatMap(t => t.members.map(String)));
-                const unchosenPool = visibleRoster.filter(m => !allChosenMemberIds.has(String(m.id)));
+                const unchosenPool = visibleRoster.filter(m => !allChosenMemberIds.has(String(m.rosterId)));
 
                 if (unchosenPool.length === 0) return;
 
@@ -1112,7 +1134,7 @@ const AnnualAwardsResultModal = () => {
                 );
 
                 const num = Math.min(numToSelect, unchosenPool.length);
-                const selectedIds = unchosenPool.slice(0, num).map(m => String(m.id));
+                const selectedIds = unchosenPool.slice(0, num).map(m => String(m.rosterId));
 
                 const updateFn = (prevTracks) => prevTracks.map((track, index) => {
                     if (index !== currentIndex) return track;
@@ -1139,14 +1161,15 @@ const AnnualAwardsResultModal = () => {
             const allTracks = releaseType === 'album' ? albumTracks : tracks;
             
             const allChosenMemberIds = new Set(allTracks.flatMap(t => t.members.map(String)));
-            const unchosenPool = visibleRoster.filter(m => !allChosenMemberIds.has(String(m.id)));
+            const unchosenPool = visibleRoster.filter(m => !allChosenMemberIds.has(String(m.rosterId)));
 
             if (unchosenPool.length === 0) return;
 
             unchosenPool.sort((a, b) => getTotalFansForMember(b) - getTotalFansForMember(a));
 
             const num = Math.min(numToSelect, unchosenPool.length);
-            const selectedIds = unchosenPool.slice(0, num).map(m => String(m.id));
+            const selectedIds = unchosenPool.slice(0, num).map(m => String(m.rosterId));
+
 
             const updateFn = (prevTracks) => prevTracks.map((track, index) => {
                 // We use the REAL current index to find the correct track to modify.
@@ -1167,9 +1190,9 @@ const AnnualAwardsResultModal = () => {
         const updateFn = (prevTracks) => prevTracks.map((track, index) => {
             if (index !== currentIndex || !track.members || track.members.length === 0) return track;
 
-            const trackMembers = track.members.map(id => selectableMembers.find(m => String(m.id) === String(id))).filter(Boolean);
-            const centerId = track.center ? String(track.center) : null;
-            const membersToRank = trackMembers.filter(m => String(m.rosterId || m.id) !== centerId);
+            const trackMembers = track.members.map(id => selectableMembers.find(m => String(m.rosterId) === String(id))).filter(Boolean);
+            const centerIds = Array.isArray(track.center) ? track.center.map(String) : (track.center ? [String(track.center)] : []);
+            const membersToRank = trackMembers.filter(m => !centerIds.includes(String(m.rosterId || m.id)));
 
             // Sort by the average of singing and dancing skill
             membersToRank.sort((a, b) =>
@@ -1189,7 +1212,9 @@ const AnnualAwardsResultModal = () => {
                 else newLineup[memberIdStr] = '4th Row';
             });
             
-            if (centerId) newLineup[centerId] = '1st Row';
+            centerIds.forEach(id => {
+            newLineup[id] = '1st Row';
+        });
 
             return { ...track, lineup: newLineup };
         });
@@ -1206,10 +1231,10 @@ const AnnualAwardsResultModal = () => {
         const updateFn = (prevTracks) => prevTracks.map((track, index) => {
             if (index !== currentIndex || !track.members || track.members.length === 0) return track;
 
-            const trackMembers = track.members.map(id => selectableMembers.find(m => String(m.id) === String(id))).filter(Boolean);
+            const trackMembers = track.members.map(id => selectableMembers.find(m => String(m.rosterId) === String(id))).filter(Boolean);
 
-            const centerId = track.center ? String(track.center) : null;
-            const membersToRank = trackMembers.filter(m => String(m.rosterId || m.id) !== centerId);
+            const centerIds = Array.isArray(track.center) ? track.center.map(String) : (track.center ? [String(track.center)] : []);
+            const membersToRank = trackMembers.filter(m => !centerIds.includes(String(m.rosterId || m.id)));
 
             membersToRank.sort((a, b) => getTotalFansForMember(b) - getTotalFansForMember(a));
 
@@ -1225,7 +1250,9 @@ const AnnualAwardsResultModal = () => {
                 else newLineup[memberIdStr] = '4th Row';
             });
             
-            if (centerId) newLineup[centerId] = '1st Row';
+            centerIds.forEach(id => {
+    newLineup[id] = '1st Row';
+});
 
             return { ...track, lineup: newLineup };
         });
@@ -1502,9 +1529,9 @@ const AnnualAwardsResultModal = () => {
     };
 
     const DraggableMemberRow = memo(({ member, track, trackIndex }) => {
-        const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: member.id });
+        const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: member.rosterId });
         const style = { transform: CSS.Transform.toString(transform), transition };
-        const isCenter = String(track?.center) === String(member.id);
+        const isCenter = (track?.center || []).includes(String(member.rosterId));
         const lineupChangeHandler = releaseType === 'album' ? handleAlbumLineupChange : handleLineupChange;
         const centerHandler = releaseType === 'album' ? setAlbumCenter : setCenter;
         const radioName = releaseType === 'album' ? `center-radio-album-${trackIndex}` : `center-radio-${trackIndex}`;
@@ -1516,7 +1543,7 @@ const AnnualAwardsResultModal = () => {
                 </td>
                 <td className="p-2 font-medium dark:text-gray-200">{member.name}</td>
                 <td className="p-2">
-                    <select value={track?.lineup[String(member.id)] || '5th Row'} onChange={(e) => lineupChangeHandler(member.id, e.target.value)} className="w-full p-1 border rounded text-xs bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
+                <select value={track?.lineup[String(member.rosterId)] || '5th Row'} onChange={(e) => lineupChangeHandler(member.rosterId, e.target.value)} className="w-full p-1 border rounded text-xs bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
                         <option>1st Row</option><option>2nd Row</option><option>3rd Row</option><option>4th Row</option><option>5th Row</option>
                     </select>
                 </td>
@@ -1524,8 +1551,8 @@ const AnnualAwardsResultModal = () => {
                             <input 
                                 type="checkbox" 
                                 name={radioName} 
-                                checked={(track?.center || []).includes(String(member.id))} 
-                                onChange={() => centerHandler(member.id)} 
+                                checked={(track?.center || []).includes(String(member.rosterId))} 
+                                onChange={() => centerHandler(member.rosterId)} 
                                 className="form-checkbox h-4 w-4 text-blue-600" 
                             />
                 </td>
@@ -1583,7 +1610,8 @@ const setAlbumCenter = (memberId) => {
     }));
 };
     const handleAlbumLineupChange = (memberId, row) => setAlbumTracks(prev => prev.map((track, index) => index === selectedAlbumTrackIndex ? { ...track, lineup: { ...track.lineup, [String(memberId)]: row } } : track));
-    const toggleMember = (memberId) => setTracks(prev => prev.map((track, index) => { if (index !== selectedTrackIndex) return track; const memberIdStr = String(memberId); const isMemberSelected = track.members.map(String).includes(memberIdStr); let newMembers; let newLineup = { ...track.lineup }; if (isMemberSelected) { newMembers = track.members.filter(id => String(id) !== memberIdStr); delete newLineup[memberIdStr]; } else { newMembers = [...track.members.map(String), memberIdStr]; newLineup[memberIdStr] = '5th Row'; } let newCenter = track.center; if (!newMembers.includes(String(track.center))) newCenter = null; return { ...track, members: newMembers, center: newCenter, lineup: newLineup }; }));
+    const toggleMember = (memberId) => setTracks(prev => prev.map((track, index) => { if (index !== selectedTrackIndex) return track; const memberIdStr = String(memberId); const isMemberSelected = track.members.map(String).includes(memberIdStr); let newMembers; let newLineup = { ...track.lineup }; if (isMemberSelected) { newMembers = track.members.filter(id => String(id) !== memberIdStr); delete newLineup[memberIdStr]; } else { newMembers = [...track.members.map(String), memberIdStr]; newLineup[memberIdStr] = '5th Row'; } let newCenter = (track.center || []).filter(centerId => newMembers.includes(String(centerId)));
+ return { ...track, members: newMembers, center: newCenter, lineup: newLineup }; }));
     const setCenter = (memberId) => {
         setTracks(prev => prev.map((track, index) => {
             if (index !== selectedTrackIndex) return track;
@@ -1609,7 +1637,7 @@ const setAlbumCenter = (memberId) => {
     if (!currentTrack) return;
 
     const allMemberIdsInRelease = (releaseType === 'album' ? albumTracks : tracks).flatMap(t => t.members);
-    const availablePool = selectableMembers.filter(m => !allMemberIdsInRelease.includes(String(m.id)));
+    const availablePool = selectableMembers.filter(m => !allMemberIdsInRelease.includes(String(m.rosterId)));
     
     if (availablePool.length === 0) {
         setMessage("No unchosen members available to randomize.");
@@ -1618,7 +1646,7 @@ const setAlbumCenter = (memberId) => {
 
     const num = Math.min(numToSelect, availablePool.length);
     const shuffled = [...availablePool].sort(() => 0.5 - Math.random());
-    const selected = shuffled.slice(0, num).map(m => String(m.id));
+    const selected = shuffled.slice(0, num).map(m => String(m.rosterId));
     
     const updateFn = (prevTracks) => prevTracks.map((track, index) => {
         if (index !== trackIndex) return track;
@@ -1692,19 +1720,28 @@ const setAlbumCenter = (memberId) => {
         rivalMembers = [rivalAce, ...otherRivalMembers];
     }
 
-    let selectableMembers = [];
-    if (targetGroup === 'main') {
-        const mainMembers = members.filter(m => m.homeGroup === 'main' && m.isAvailable);
-        const sgMembers = getAllAvailableMembers(true).filter(m => m.isSister && m.isAvailable);
-        selectableMembers = [...mainMembers, ...sgMembers];
-    } else {
-        const sg = sisterGroups.find(s => s.name === targetGroup);
-        if (sg) {
-            selectableMembers = (sg.members || []).map(m => ({ ...m, id: `sg-${sg.id}-${m.id}`, name: `${m.name} (${sg.name})`, homeGroup: sg.name, isSister: true, groupId: sg.id })).filter(m => m.isAvailable);
-            const mainGroupKennin = members.filter(m => (m.kenninGroups || []).includes(targetGroup) && m.isAvailable).map(m => ({ ...m, isKennin: true }));
-            selectableMembers = [...selectableMembers, ...mainGroupKennin];
-        }
+let selectableMembers = [];
+// First, get the single source of truth for all members, which now includes exchange students.
+const allAvailableForSong = getAllAvailableMembers(true);
+
+if (targetGroup === 'main') {
+    // If the target is the main group, filter for members who are:
+    // 1. Not a sister member (i.e., they are a main group member)
+    // 2. Are an exchange student
+    // 3. Have a concurrent position (Kennin) in the main group
+    selectableMembers = allAvailableForSong.filter(m => m.isAvailable);
+} else {
+    // If the target is a sister group
+    const sg = sisterGroups.find(s => s.name === targetGroup);
+    if (sg) {
+        // Filter for members who are:
+        // 1. Part of that sister group
+        // 2. Have a concurrent position (Kennin) in that sister group
+        selectableMembers = allAvailableForSong.filter(m => 
+            m.isAvailable && (String(m.groupId) === String(sg.id) || (m.kenninGroups || []).includes(sg.name))
+        );
     }
+}
 
     // Add rival members to the selectable pool if it's a collaboration
     if (isCollaboration) {
@@ -1715,7 +1752,7 @@ const setAlbumCenter = (memberId) => {
 
 
     const currentTrack = tracks[selectedTrackIndex];
-    const selectableSenbatsu = selectableMembers.filter(m => (currentTrack?.members || []).map(String).includes(String(m.id)));
+    const selectableSenbatsu = selectableMembers.filter(m => (currentTrack?.members || []).map(String).includes(String(m.rosterId)));
 
 
 // --- NEW: Generate structured data for the new filter ---
@@ -1787,7 +1824,7 @@ if (memberFilter !== 'all') {
         if (!currentTrack) return;
         
         // This now correctly uses the 'visibleRoster' variable defined above
-        const visibleIds = visibleRoster.map(m => String(m.id));
+        const visibleIds = visibleRoster.map(m => String(m.rosterId));
         const allCurrentlySelected = visibleIds.every(id => currentTrack.members.map(String).includes(id));
         
         setTracks(prev => prev.map((track, index) => {
@@ -1893,19 +1930,19 @@ const handleSchedule = () => {
                 unitName: t.unitName,
                 type: t.type,
                 popularity: 1.0,
-                        members: trackMembers.map(member => ({
-                            ...member,
-                            id: member.rosterId || member.id,
-                            name: member.name,
-                            teamName: member.teamName,
-                            displayGroupName: member.isSisterMember ? member.displayGroupName : groupName,
-                            isSisterMember: member.isSisterMember,
-                            generation: member.generation,
-                            isKenkyuusei: !member.teamName,
-                            isKennin: member.isKennin || (member.kenninGroups && member.kenninGroups.length > 0),
-                            kenninGroups: member.kenninGroups || [],
-                            homeGroup: member.homeGroup || (member.isSisterMember ? member.displayGroupName : groupName)
-                        })),
+                members: trackMembers.map(member => ({
+                    ...member,
+                    id: member.rosterId || member.id,
+                    name: member.name,
+                    teamName: member.teamName,
+                    displayGroupName: member.isSisterMember ? member.displayGroupName : groupName,
+                    isSisterMember: member.isSisterMember,
+                    generation: member.generation,
+                    isKenkyuusei: !member.teamName,
+                    isKennin: member.isKennin || (member.kenninGroups && member.kenninGroups.length > 0),
+                    kenninGroups: member.kenninGroups || [],
+                    homeGroup: member.homeGroup || (member.isSisterMember ? member.displayGroupName : groupName)
+                })),
                 center: t.center,
                 lineup: t.lineup,
                 cdType: t.cdType
@@ -1986,7 +2023,7 @@ const handleSchedule = () => {
         };
 
         const rows = { '1st Row': [], '2nd Row': [], '3rd Row': [], '4th Row': [], '5th Row': [] };
-        members.forEach(member => { const row = lineup[String(member.id)]; if (rows[row]) rows[row].push(member); });
+        members.forEach(member => { const row = lineup[String(member.rosterId)]; if (rows[row]) rows[row].push(member); });
         Object.keys(rows).forEach(row => rows[row].sort((a, b) => (b.fans || 0) - (a.fans || 0)));
 
         return (
@@ -1996,7 +2033,7 @@ const handleSchedule = () => {
                     <div key={rowName} className="flex flex-col items-center w-full">
                         <DroppableRow rowName={rowName}>
                             <div className="flex justify-center flex-wrap gap-2">
-                                {rows[rowName].length > 0 ? (rows[rowName].map(member => (<DraggableChip key={member.id} member={member} />))) : (<p className="text-xs text-gray-400">Drop members here</p>)}
+                                {rows[rowName].length > 0 ? (rows[rowName].map(member => (<DraggableChip key={member.rosterId} member={member} />))) : (<p className="text-xs text-gray-400">Drop members here</p>)}
                             </div>
                         </DroppableRow>
                         <p className="text-xs text-gray-500 mt-1">{rowName} ({rows[rowName].length})</p>
@@ -2063,7 +2100,7 @@ const renderSelectGraduatingMemberStep = () => {
             <p className="text-center text-gray-600 dark:text-gray-400 mb-6">Choose the member who will be the center of this graduation single.</p>
             <div className="max-h-[60vh] overflow-y-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {potentialGraduates.map(member => (
-                    <div key={member.id} onClick={() => handleGraduatingMemberConfirm(member)} className="p-4 border rounded-lg text-center cursor-pointer hover:bg-yellow-100 dark:hover:bg-gray-700 dark:border-gray-600">
+                    <div key={member.rosterId} onClick={() => handleGraduatingMemberConfirm(member)} className="p-4 border rounded-lg text-center cursor-pointer hover:bg-yellow-100 dark:hover:bg-gray-700 dark:border-gray-600">
                         <div className="w-16 h-16 bg-gray-300 rounded-full mx-auto mb-2"></div>
                         <p className="font-bold dark:text-gray-200">{member.name}</p>
                         <p className="text-xs text-gray-500 dark:text-gray-400">Fans: {getTotalFansForMember(member).toLocaleString()}</p>
@@ -2097,8 +2134,8 @@ const renderSelectGraduatingMemberStep = () => {
     )}
                         <div>
                             <h4 className="font-semibold mb-1 dark:text-gray-200">Target Group</h4>
-                            <select value={targetGroup} onChange={(e) => { setTargetGroup(e.target.value); setTracks([{ name: 'Title Track', unitName: 'Senbatsu', type: 'title', members: [], center: null, lineup: {} }, { name: 'B-Side 1', unitName: 'Universe Girls', type: 'b-side', members: [], center: null, lineup: {}, cdType: 'common' }]); }} className="w-full p-2 border rounded bg-white dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">
-                                <option value="main">{groupName} (Main)</option>
+                            <select value={targetGroup} onChange={(e) => { setTargetGroup(e.target.value); setFilterKey('All'); setTracks([{ name: 'Title Track', unitName: 'Senbatsu', type: 'title', members: [], center: null, lineup: {} }, { name: 'B-Side 1', unitName: 'Universe Girls', type: 'b-side', members: [], center: null, lineup: {}, cdType: 'common' }]); }} className="w-full p-2 border rounded bg-white dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">
+                                <option key="main" value="main">{groupName} (Main)</option>
                                 {(sisterGroups || []).map(sg => <option key={sg.id} value={sg.name}>{sg.name}</option>)}
                             </select>
                         </div>
@@ -2240,7 +2277,7 @@ const renderSelectGraduatingMemberStep = () => {
                                     )}
                                     
                                     <optgroup label="Groups">
-                                        <option value="main">{groupName}</option>
+                                        <option key="main" value="main">{groupName}</option>
                                         {sisterGroups.map(sg => (
                                             <option key={`sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>
                                         ))}
@@ -2281,9 +2318,9 @@ const renderSelectGraduatingMemberStep = () => {
                                                         
                             <div className="border rounded p-2 h-96 overflow-y-auto bg-gray-50 dark:bg-gray-900 text-sm">
                                 {visibleRoster.map(member => {
-                                    const isSelected = currentTrack?.members.map(String).includes(String(member.id));
+                                    const isSelected = currentTrack?.members.map(String).includes(String(member.rosterId));
                                     return (
-                                        <div key={member.id} className="flex items-center justify-between p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
+                                        <div key={member.rosterId} className="flex items-center justify-between p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
                                             <div className="flex flex-col">
                                                 <span className="font-medium dark:text-gray-200">
                                                     {member.name}
@@ -2305,7 +2342,7 @@ const renderSelectGraduatingMemberStep = () => {
                                                     {getMemberWarning(member) && <span className="text-yellow-500 ml-2 font-semibold">{getMemberWarning(member)}</span>}
                                                 </span>
                                             </div>
-                                            <button onClick={() => toggleMember(member.id)} className={`px-2 py-1 text-xs rounded ${isSelected ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`}>
+                                            <button onClick={() => toggleMember(member.rosterId)} className={`px-2 py-1 text-xs rounded ${isSelected ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`}>
                                                 {isSelected ? 'Remove' : 'Add'}
                                             </button>
                                         </div>
@@ -2331,7 +2368,7 @@ const renderSelectGraduatingMemberStep = () => {
                                             <tbody>
                                                 {selectableSenbatsu.map(member => (
                                                     <DraggableMemberRow
-                                                        key={member.id}
+                                                        key={member.rosterId}
                                                         member={member}
                                                         track={currentTrack}
                                                         trackIndex={selectedTrackIndex}
@@ -2368,7 +2405,7 @@ const renderSelectGraduatingMemberStep = () => {
 
         const renderAlbumSelectionStep = () => {
             const currentTrack = albumTracks[selectedAlbumTrackIndex];
-            const selectableSenbatsu = selectableMembers.filter(m => (currentTrack?.members || []).map(String).includes(String(m.id)));
+            const selectableSenbatsu = selectableMembers.filter(m => (currentTrack?.members || []).map(String).includes(String(m.rosterId)));
 
             return (
             <>
@@ -2571,9 +2608,9 @@ const renderSelectGraduatingMemberStep = () => {
                         return false;
                     })
             .map(member => {
-                                    const isSelected = currentTrack?.members.map(String).includes(String(member.id));
+                                    const isSelected = currentTrack?.members.map(String).includes(String(member.rosterId));
                                     return (
-                                        <div key={member.id} className="flex items-center justify-between p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
+                                        <div key={member.rosterId} className="flex items-center justify-between p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
                                             <div className="flex flex-col">
                                                 <span className="font-medium dark:text-gray-200">
                                                     {member.name}
@@ -2595,7 +2632,7 @@ const renderSelectGraduatingMemberStep = () => {
                                                     {getMemberWarning(member) && <span className="text-yellow-500 ml-2 font-semibold">{getMemberWarning(member)}</span>}
                                                 </span>
                                             </div>
-                                            <button onClick={() => toggleMember(member.id)} className={`px-2 py-1 text-xs rounded ${isSelected ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`}>
+                                            <button onClick={() => toggleMember(member.rosterId)} className={`px-2 py-1 text-xs rounded ${isSelected ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`}>
                                                 {isSelected ? 'Remove' : 'Add'}
                                             </button>
                                         </div>
@@ -2621,7 +2658,7 @@ const renderSelectGraduatingMemberStep = () => {
                                             <tbody>
                                                 {selectableSenbatsu.map(member => (
                                                     <DraggableMemberRow
-                                                        key={member.id}
+                                                        key={member.rosterId}
                                                         member={member}
                                                         track={currentTrack}
                                                         trackIndex={selectedTrackIndex}
@@ -3004,12 +3041,21 @@ const memberGroups = memberObjects.reduce((acc, member) => {
                 let groupKey;
                 const mainGroupName = groupName || 'Hoshimi01';
 
-                if (member.isSisterMember) {
+                    if (member.isExchangeStudent) {
+                        // ALWAYS group exchange students by their home group to separate them visually.
+                        groupKey = `${member.homeGroup}`;
+                    }
+                else if (member.isSisterMember) {
                     const sgName = member.displayGroupName || 'Sister Group';
-                    groupKey = member.isKenkyuusei ? `${sgName} Kenkyuusei` : `${sgName} Team ${member.teamName}`;
+                    // If a sister member has a team, show the team name. Otherwise, they are a trainee.
+                    groupKey = member.teamName 
+                        ? `${sgName} Team ${member.teamName}` 
+                        : `${sgName} Kenkyuusei`;
                 } else {
-                    groupKey = member.isKenkyuusei ? `${mainGroupName} Kenkyuusei` : `${mainGroupName} Team ${member.teamName}`;
-
+                    // If a main group member has a team, show the team name. Otherwise, they are a trainee.
+                    groupKey = member.teamName 
+                        ? `${mainGroupName} Team ${member.teamName}` 
+                        : `${mainGroupName} Kenkyuusei`;
                 }
                 
                 if (!acc[groupKey]) {
@@ -3053,11 +3099,14 @@ const memberGroups = memberObjects.reduce((acc, member) => {
                         <div key={groupKeyName} className="mt-1 text-sm">
                             <p className="font-semibold text-pink-600 dark:text-pink-400">
                                 {groupKeyName}: <span className="font-normal text-gray-700 dark:text-gray-300">
-                                    {memberGroups[groupKeyName].map(member => (
-                                        <span key={member.id} className={centerMemberIds.includes(String(member.id)) ? 'font-bold' : ''}>
+                                {memberGroups[groupKeyName].map((member, index) => (
+                                    <React.Fragment key={`${member.rosterId}-${index}`}>
+                                        <span className={centerMemberIds.includes(String(member.id)) ? 'font-bold' : ''}>
                                             {member.name}
                                         </span>
-                                    )).reduce((prev, curr) => [prev, ', ', curr])}
+                                        {index < memberGroups[groupKeyName].length - 1 && ', '}
+                                    </React.Fragment>
+                                ))}
                                 </span>
                             </p>
                         </div>
@@ -3548,9 +3597,9 @@ if (memberFilter !== 'all') {
     // --- MEMBER & EXECUTION ---
     const toggleMember = (memberId) => setSelectedMembers(prev => prev.includes(memberId) ? prev.filter(id => id !== memberId) : [...prev, memberId]);
     // MODIFIED: These now correctly use the filtered list
-    const selectAllMembers = () => setSelectedMembers(prev => [...new Set([...prev, ...filteredMembers.map(m => m.id)])]);
+    const selectAllMembers = () => setSelectedMembers(prev => [...new Set([...prev, ...filteredMembers.map(m => m.rosterId)])]);
     const deselectAllMembers = () => {
-        const filteredIds = new Set(filteredMembers.map(m => m.id));
+        const filteredIds = new Set(filteredMembers.map(m => m.rosterId));
         setSelectedMembers(prev => prev.filter(id => !filteredIds.has(id)));
     };
     
@@ -3667,7 +3716,7 @@ if (memberFilter !== 'all') {
                      <div className="space-y-1 max-h-[500px] overflow-y-auto border-t border-b dark:border-gray-700 p-1">
                         {/* MODIFIED: This now maps over 'filteredMembers' */}
                         {filteredMembers.map(member => (
-                            <div key={member.id} className={`flex items-center justify-between p-2 rounded ${selectedMembers.includes(member.id) ? 'bg-blue-200 dark:bg-blue-800' : 'bg-white dark:bg-gray-800/50'}`}>
+                            <div key={member.rosterId} className={`flex items-center justify-between p-2 rounded ${selectedMembers.includes(member.id) ? 'bg-blue-200 dark:bg-blue-800' : 'bg-white dark:bg-gray-800/50'}`}>
                                 <div>
                                     <p className="font-semibold text-sm">{member.name}</p>
                                     <p className="text-xs text-gray-600 dark:text-gray-400">
@@ -3829,9 +3878,9 @@ const MajorConcertModal = () => {
     };
 
     const toggleMember = (memberId) => setSelectedMembers(prev => prev.includes(memberId) ? prev.filter(id => id !== memberId) : [...prev, memberId]);
-    const selectAllFiltered = () => setSelectedMembers(prev => [...new Set([...prev, ...filteredMembers.map(m => m.id)])]);
+    const selectAllFiltered = () => setSelectedMembers(prev => [...new Set([...prev, ...filteredMembers.map(m => m.rosterId)])]);
     const deselectAllFiltered = () => {
-        const filteredIds = new Set(filteredMembers.map(m => m.id));
+        const filteredIds = new Set(filteredMembers.map(m => m.rosterId));
         setSelectedMembers(prev => prev.filter(id => !filteredIds.has(id)));
     };
     
@@ -3877,8 +3926,9 @@ const MajorConcertModal = () => {
         }
 
         setSetlist(finalSetlist);
-        setConcertName(`${new Date().getFullYear()} Request Hour Best 100`);
-        setMessage("Request Hour Best 100 setlist has been imported!");
+        const topCount = lastRequestHourResult?.size || 100;
+        setConcertName(`${new Date().getFullYear()} Request Hour Best ${topCount}`);
+        setMessage(`Request Hour Best ${topCount} setlist has been imported!`);    
     };
 
 
@@ -4012,8 +4062,8 @@ const MajorConcertModal = () => {
                                     <option value="all">All</option>
                                     <optgroup label="Teams">{(teams || []).map(team => (<option key={`team-${team.id}`} value={`team-${team.id}`}>{team.name}</option>))}</optgroup>
                                     <optgroup label="Groups">
-                                        <option value="main">{groupName}</option>
-                                        {sisterGroups.map(sg => (<option key={`sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>))}
+                                        <option key="main" value="main">{groupName}</option>
+                                        {sisterGroups.map(sg => (<option key={sg.id} value={`sg-${sg.id}`}>{sg.name}</option>))}
                                     </optgroup>
                                     {mainGroupGenerations.length > 0 && <optgroup label={`${groupName} Gen`}>{mainGroupGenerations.map(gen => (<option key={`main-gen-${gen}`} value={`main-gen-${gen}`}>{gen}</option>))}</optgroup>}
                                     {sisterGroupDetails.map(sg => (sg.generations.length > 0 && (<optgroup key={`sg-gen-group-${sg.id}`} label={`${sg.name} Gen`}>{sg.generations.map(gen => (<option key={`sg-${sg.id}-gen-${gen}`} value={`sg-${sg.id}-gen-${gen}`}>{gen}</option>))}</optgroup>)))}
@@ -4025,12 +4075,12 @@ const MajorConcertModal = () => {
                             </div>
                             <div className="space-y-1 max-h-60 overflow-y-auto border-t border-b dark:border-gray-700 p-1">
                                 {filteredMembers.map(member => (
-                                    <div key={member.id} className={`flex items-center justify-between p-2 rounded ${selectedMembers.includes(member.id) ? 'bg-blue-200 dark:bg-blue-800' : 'bg-white dark:bg-gray-800/50'}`}>
+                                    <div key={member.rosterId} className={`flex items-center justify-between p-2 rounded ${selectedMembers.includes(member.id) ? 'bg-blue-200 dark:bg-blue-800' : 'bg-white dark:bg-gray-800/50'}`}>
                                         <div>
                                             <p className="font-semibold text-sm">{member.name}</p>
                                             <p className="text-xs text-gray-600 dark:text-gray-400">Vo: {member.singing} Da: {member.dancing} Fans: {getTotalFansForMember(member).toLocaleString()}</p>
                                         </div>
-                                        <button onClick={() => toggleMember(member.id)} className={`px-3 py-1 text-xs rounded font-semibold ${selectedMembers.includes(member.id) ? 'bg-red-200 text-red-800' : 'bg-green-200 text-green-800'}`}>{selectedMembers.includes(member.id) ? 'Remove' : 'Add'}</button>
+                                        <button onClick={() => toggleMember(member.rosterId)} className={`px-3 py-1 text-xs rounded font-semibold ${selectedMembers.includes(member.id) ? 'bg-red-200 text-red-800' : 'bg-green-200 text-green-800'}`}>{selectedMembers.includes(member.id) ? 'Remove' : 'Add'}</button>
                                     </div>
                                 ))}
                             </div>
@@ -4038,8 +4088,8 @@ const MajorConcertModal = () => {
                         <div className="border p-2 rounded-lg bg-gray-50 dark:bg-gray-900">
                             <h4 className="font-semibold mb-2 dark:text-gray-100">Announcements</h4>
                             <div className='grid grid-cols-2 gap-4'>
-                                <div><label className="block text-sm font-medium dark:text-gray-300">Kage-ana</label><select value={kageAna} onChange={e => setKageAna(e.target.value)} className="w-full p-2 border rounded bg-white dark:bg-gray-800 dark:text-gray-200"><option value="">None</option>{selectedMembers.map(id => { const m = getMemberById(id); return m && <option key={id} value={id}>{m.name}</option>})}</select></div>
-                                <div><label className="block text-sm font-medium dark:text-gray-300">Shime-ana</label><select value={shimeAna} onChange={e => setShimeAna(e.target.value)} className="w-full p-2 border rounded bg-white dark:bg-gray-800 dark:text-gray-200"><option value="">None</option>{selectedMembers.map(id => { const m = getMemberById(id); return m && <option key={id} value={id}>{m.name}</option>})}</select></div>
+                                <div><label className="block text-sm font-medium dark:text-gray-300">Kage-ana</label><select value={kageAna} onChange={e => setKageAna(e.target.value)} className="w-full p-2 border rounded bg-white dark:bg-gray-800 dark:text-gray-200"><option key="ana-none" value="">None</option>{selectedMembers.map(id => { const m = getMemberById(id); return m && <option key={id} value={id}>{m.name}</option>})}</select></div>
+                                <div><label className="block text-sm font-medium dark:text-gray-300">Shime-ana</label><select value={shimeAna} onChange={e => setShimeAna(e.target.value)} className="w-full p-2 border rounded bg-white dark:bg-gray-800 dark:text-gray-200"><option key="ana-none" value="">None</option>{selectedMembers.map(id => { const m = getMemberById(id); return m && <option key={id} value={id}>{m.name}</option>})}</select></div>
                             </div>
                         </div>
                     </div>
@@ -4385,33 +4435,89 @@ const MajorConcertModal = () => {
         );
     };
 
-    const ShuffleModeSelectionModal = () => {
-        return (
-            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-lg text-center">
-                    <h3 className="text-2xl font-bold text-gray-800 mb-4">Choose Shuffle Mode</h3>
-                    <p className="text-gray-600 mb-6">How do you want to conduct this shuffle?</p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="border p-4 rounded-lg">
-                            <h4 className="font-bold text-lg">Automatic Shuffle</h4>
-                            <p className="text-sm text-gray-500 my-2">The fates will decide. Captains and Aces have a high chance to stay, but everyone else is fair game. Quick and chaotic.</p>
-                            <button onClick={() => executeShuffle('auto')} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded w-full mt-2">
-                                Automatic
-                            </button>
-                        </div>
-                        <div className="border p-4 rounded-lg">
-                            <h4 className="font-bold text-lg">Manual Shuffle</h4>
-                            <p className="text-sm text-gray-500 my-2">You are in full control. Drag and drop members to their new teams. Strategic, but time-consuming.</p>
-                            <button onClick={() => setShowModal('manualShuffle')} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full mt-2">
-                                Manual
-                            </button>
-                        </div>
-                    </div>
-                     <button onClick={() => setShowModal(null)} className="mt-6 text-gray-500 hover:text-gray-700">Cancel Shuffle</button>
+const ShuffleTypeSelectionModal = () => {
+    return (
+        <ModalWrapper title="Select Shuffle Type" maxWidth="max-w-lg">
+            <p className="text-gray-600 dark:text-gray-400 text-center mb-6">Choose the scope of the shuffle.</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="border p-4 rounded-lg">
+                    <h4 className="font-bold text-lg">Normal Shuffle</h4>
+                    <p className="text-sm text-gray-500 my-2">Shuffle members between your main group and domestic sister groups.</p>
+                    <p className="font-bold text-red-500">Cost: ¥1,000,000</p>
+                    <button onClick={() => { 
+                        setModalData({ shuffleType: 'normal' });
+                        setShowModal('shuffleModeSelection'); 
+                    }} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded w-full mt-2">
+                        Select Normal
+                    </button>
+                </div>
+                <div className="border p-4 rounded-lg">
+                    <h4 className="font-bold text-lg">World Shuffle</h4>
+                    <p className="text-sm text-gray-500 my-2">A massive event shuffling members between ALL groups, including overseas.</p>
+                    <p className="font-bold text-red-500">Cost: ¥3,000,000</p>
+                    <button onClick={() => {
+                        if (money < 3000000) return setMessage("Not enough money for a World Shuffle.");
+                        setModalData({ shuffleType: 'world' });
+                        setShowModal('shuffleModeSelection');
+                    }} className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded w-full mt-2 disabled:bg-gray-400"
+                       disabled={money < 3000000}
+                    >
+                        Select World
+                    </button>
                 </div>
             </div>
-        );
+            <button onClick={() => setShowModal(null)} className="mt-6 text-gray-500 hover:text-gray-700">Cancel</button>
+        </ModalWrapper>
+    );
+};
+
+
+const ShuffleModeSelectionModal = () => {
+    const { shuffleType } = modalData || { shuffleType: 'normal' };
+    const cost = shuffleType === 'world' ? 3000000 : 1000000;
+    const shuffleName = shuffleType === 'world' ? 'World Grand Shuffle' : 'Grand Shuffle';
+
+    const handleConfirm = (mode) => {
+        if (money < cost) {
+            setMessage(`Not enough money. A ${shuffleName} costs ¥${cost.toLocaleString()}`);
+            return;
+        }
+        setMoney(prev => prev - cost);
+        addNotification({ type: 'Management', message: `The ${shuffleName} is beginning!` });
+
+        if (mode === 'manual') {
+            setShowModal('manualShuffle');
+        } else {
+            executeShuffle(shuffleType, 'auto');
+        }
     };
+
+    return (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-lg text-center">
+                <h3 className="text-2xl font-bold text-gray-800 mb-4">Choose Shuffle Mode for {shuffleName}</h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-6">How do you want to conduct this shuffle?</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="border p-4 rounded-lg">
+                        <h4 className="font-bold text-lg">Automatic Shuffle</h4>
+                        <p className="text-sm text-gray-500 my-2">The fates will decide. Captains and Aces have a high chance to stay, but everyone else is fair game. Quick and chaotic.</p>
+                        <button onClick={() => handleConfirm('auto')} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded w-full mt-2">
+                            Automatic
+                        </button>
+                    </div>
+                    <div className="border p-4 rounded-lg">
+                        <h4 className="font-bold text-lg">Manual Shuffle</h4>
+                        <p className="text-sm text-gray-500 my-2">You are in full control. Drag and drop members to their new teams. Strategic, but time-consuming.</p>
+                        <button onClick={() => handleConfirm('manual')} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full mt-2">
+                            Manual
+                        </button>
+                    </div>
+                </div>
+                 <button onClick={() => setShowModal('shuffleTypeSelection')} className="mt-6 text-gray-500 hover:text-gray-700">Back</button>
+            </div>
+        </div>
+    );
+};
 
 const ShuffleResultModal = () => {
     if (!modalData || !modalData.result) return null;
@@ -4714,7 +4820,7 @@ const ShuffleResultModal = () => {
                 </div>
                 <div className="space-y-1 max-h-[400px] overflow-y-auto border-t border-b dark:border-gray-700 p-1 mb-4">
                     {availableMembers.map(member => (
-                        <div key={member.id} className={`flex items-center justify-between p-2 rounded cursor-pointer ${selectedMemberIds.includes(member.id) ? 'bg-blue-100 dark:bg-blue-800' : 'bg-white dark:bg-gray-700/50 hover:bg-gray-50'}`} onClick={() => toggleMember(member.id)}>
+                        <div key={member.rosterId} className={`flex items-center justify-between p-2 rounded cursor-pointer ${selectedMemberIds.includes(member.id) ? 'bg-blue-100 dark:bg-blue-800' : 'bg-white dark:bg-gray-700/50 hover:bg-gray-50'}`} onClick={() => toggleMember(member.id)}>
                             <div>
                                 <p className="font-semibold text-sm">{member.name}</p>
                                 <p className="text-xs text-gray-500 dark:text-gray-400">Fans: {getTotalFansForMember(member).toLocaleString()}</p>
@@ -4792,7 +4898,7 @@ const ShuffleResultModal = () => {
                     
                     <div className="flex justify-center items-end gap-4 my-6 h-32">
                         {(members || []).slice(0, 5).map((member, index) => (
-                            <Chibi key={member.id} index={index} />
+                            <Chibi key={member.rosterId} index={index} />
                         ))}
                     </div>
 
@@ -4844,21 +4950,36 @@ const ShuffleResultModal = () => {
     };
 
     const SportsFestivalModal = () => {
+const [includeOverseas, setIncludeOverseas] = useState(false);
+const baseCost = 150000;
+const overseasCost = 500000;
+const totalCost = baseCost + (includeOverseas ? overseasCost : 0);
     return (
         <ModalWrapper title="Hold Sports Festival" maxWidth="max-w-lg">
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                 Divide all available members into two teams, Red and White, for a day of athletic competitions.
                 This is a great way to boost morale for the entire group.
             </p>
+<div className="mb-4">
+    <label className="flex items-center text-sm">
+        <input
+            type="checkbox"
+            checked={includeOverseas}
+            onChange={(e) => setIncludeOverseas(e.target.checked)}
+            className="form-checkbox h-4 w-4 rounded text-blue-600 mr-2"
+        />
+        <span className="font-semibold">Include Overseas Groups (+¥500,000)</span>
+    </label>
+</div>
             <div className="p-3 bg-yellow-50 dark:bg-gray-900 rounded-lg border border-yellow-200 dark:border-gray-700 text-center mb-4">
-                <p className="font-bold text-lg text-red-600 dark:text-yellow-300">Cost: ¥150,000</p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">Covers venue rental, equipment, and prizes.</p>
+                <p className="font-bold text-lg text-red-600 dark:text-yellow-300">Total Cost: ¥{totalCost.toLocaleString()}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Base Cost: ¥{baseCost.toLocaleString()} + Overseas Fee: ¥{includeOverseas ? overseasCost.toLocaleString() : '0'}</p>
             </div>
             <div className="flex justify-end gap-2 mt-6 pt-4 border-t dark:border-gray-600">
                 <button onClick={() => setShowModal(null)} className="p-2 bg-gray-300 dark:bg-gray-600 rounded px-4">Cancel</button>
                 <button
-                    onClick={startSportsFestival}
-                    disabled={money < 150000}
+                    onClick={() => startSportsFestival(includeOverseas)}
+                    disabled={money < totalCost}
                     className="p-2 bg-red-500 text-white rounded px-4 font-bold disabled:bg-gray-400"
                 >
                     Begin Festival
@@ -4876,7 +4997,7 @@ const SportsFestivalResultModal = () => {
         <div className={`p-4 rounded-lg bg-opacity-20 ${colorClass}`}>
             <h3 className={`text-2xl font-bold mb-3 text-center`}>{teamName} Team - {score}pts</h3>
             <div className="space-y-1 max-h-60 overflow-y-auto pr-2">
-                {members.map(m => <p key={m.id} className="text-sm p-1 bg-black bg-opacity-10 rounded">{m.name}</p>)}
+                {members.map(m => <p key={m.rosterId || m.id} className="text-sm p-1 bg-black bg-opacity-10 rounded">{m.name}</p>)}
             </div>
         </div>
     );
@@ -4967,7 +5088,7 @@ const LiveSportsFestivalModal = () => {
                     <div className="md:col-span-1 p-4 rounded-lg bg-red-900/40">
                         <h3 className="text-xl font-bold mb-3 text-center text-red-200">RED TEAM</h3>
                         <div className="space-y-1 max-h-96 overflow-y-auto pr-2">
-                            {teamRed.members.map(m => <p key={m.id} className="text-sm p-1 bg-black/20 rounded truncate">{m.name}</p>)}
+                            {teamRed.members.map(m => <p key={m.rosterId || m.id} className="text-sm p-1 bg-black/20 rounded truncate">{m.name}</p>)}
                         </div>
                     </div>
 
@@ -4984,7 +5105,7 @@ const LiveSportsFestivalModal = () => {
                     <div className="md:col-span-1 p-4 rounded-lg bg-blue-900/40">
                         <h3 className="text-xl font-bold mb-3 text-center text-blue-200">WHITE TEAM</h3>
                         <div className="space-y-1 max-h-96 overflow-y-auto pr-2">
-                            {teamWhite.members.map(m => <p key={m.id} className="text-sm p-1 bg-black/20 rounded truncate">{m.name}</p>)}
+                            {teamWhite.members.map(m => <p key={m.rosterId || m.id} className="text-sm p-1 bg-black/20 rounded truncate">{m.name}</p>)}
                         </div>
                     </div>
                 </div>
@@ -5613,6 +5734,70 @@ beginGraduationProcess(member.id, finalGraduationWeek);
         );
     };
 
+    const LicenseSongModal = () => {
+        const songToLicense = modalData;
+        const [selectedGroupId, setSelectedGroupId] = useState('');
+        const licenseFee = 250000;
+    
+        const autonomousGroups = sisterGroups.filter(sg => sg.isAutonomous);
+    
+        const handleConfirm = () => {
+            if (!selectedGroupId) {
+                setMessage("You must select a group to license the song to.");
+                return;
+            }
+            if (money < licenseFee) {
+                setMessage("Not enough money to license this song.");
+                return;
+            }
+            
+            // This function will be created in the next step
+            licenseSongToGroup(songToLicense.id, selectedGroupId); 
+        };
+    
+        return (
+            <ModalWrapper title={`License Song: "${songToLicense.name}"`} maxWidth="max-w-lg">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                    License this song to an overseas group, allowing them to record and release their own version. This will cost ¥{licenseFee.toLocaleString()}.
+                </p>
+    
+                <h4 className="font-semibold mb-2 dark:text-gray-100">Select an Autonomous Group:</h4>
+                <div className="space-y-2 max-h-60 overflow-y-auto border p-2 rounded bg-gray-50 dark:bg-gray-900">
+                    {autonomousGroups.length > 0 ? autonomousGroups.map(group => (
+                        <label key={group.id} className={`flex items-center p-3 rounded-lg cursor-pointer ${String(selectedGroupId) === String(group.id) ? 'bg-blue-100 dark:bg-blue-900 border border-blue-500' : 'bg-white dark:bg-gray-800'}`}>
+                            <input
+                                type="radio"
+                                name="license_group"
+                                value={group.id}
+                                checked={String(selectedGroupId) === String(group.id)}
+                                onChange={(e) => setSelectedGroupId(e.target.value)}
+                                className="mr-3 h-4 w-4 text-blue-600"
+                            />
+                            <div>
+                                <p className="font-bold">{group.name}</p>
+                                <p className="text-xs text-gray-500">{group.location}</p>
+                            </div>
+                        </label>
+                    )) : (
+                        <p className="text-center text-gray-500 italic p-4">You have no autonomous (overseas) groups to license songs to.</p>
+                    )}
+                </div>
+    
+                <div className="flex justify-end items-center mt-6 pt-4 border-t dark:border-gray-600 gap-3">
+                     <button onClick={() => setShowModal(null)} className="px-4 py-2 bg-gray-300 dark:bg-gray-600 rounded">Cancel</button>
+                     <button 
+                        onClick={handleConfirm}
+                        disabled={!selectedGroupId || money < licenseFee || autonomousGroups.length === 0}
+                        className="px-4 py-2 bg-purple-600 text-white rounded font-bold disabled:bg-gray-400"
+                     >
+                        Confirm License
+                    </button>
+                </div>
+            </ModalWrapper>
+        );
+    };
+
+
     const RenameTheaterModal = () => {
         const theater = modalData;
         const [newName, setNewName] = useState(theater?.name || '');
@@ -5639,6 +5824,96 @@ beginGraduationProcess(member.id, finalGraduationWeek);
                     <button onClick={handleConfirm} disabled={!newName.trim()} className="p-2 bg-green-500 text-white rounded disabled:bg-gray-400">
                         Confirm Rename
                     </button>
+                </div>
+            </ModalWrapper>
+        );
+    };
+    const StudyAbroadModal = () => {
+        const member = modalData;
+        const [destinationGroupId, setDestinationGroupId] = useState('');
+        const cost = 50000;
+
+        const overseasGroups = sisterGroups.filter(sg => sg.type === 'overseas');
+
+        const handleConfirm = () => {
+            if (!destinationGroupId) {
+                setMessage("You must select a destination.");
+                return;
+            }
+            if (money < cost) {
+                setMessage("Not enough money for the study abroad fee.");
+                return;
+            }
+            startStudyAbroad(member.id, destinationGroupId);
+        };
+
+        if (!member) return null;
+
+        return (
+            <ModalWrapper title={`Study Abroad for ${member.name}`}>
+                <p className="text-sm text-gray-600 mb-4">Send {member.name} to an overseas sister group for 24 weeks to train. They will be unavailable but will return with boosted skills and new fans. Cost: ¥{cost.toLocaleString()}</p>
+                
+                <h4 className="font-semibold mb-2">Select Destination:</h4>
+                <select 
+                    value={destinationGroupId} 
+                    onChange={(e) => setDestinationGroupId(e.target.value)}
+                    className="w-full p-2 border rounded bg-white dark:bg-gray-700"
+                >
+                    <option value="">-- Select an Overseas Group --</option>
+                    {overseasGroups.map(group => (
+                        <option key={group.id} value={group.id}>{group.name} ({group.location})</option>
+                    ))}
+                </select>
+                {overseasGroups.length === 0 && <p className="text-xs text-red-500 mt-1">You have no overseas sister groups.</p>}
+
+                <div className="flex justify-end gap-2 mt-4">
+                    <button onClick={() => setShowModal(null)} className="p-2 bg-gray-300 rounded">Cancel</button>
+                    <button onClick={handleConfirm} disabled={!destinationGroupId || money < cost} className="p-2 bg-teal-500 text-white rounded disabled:bg-gray-400">Confirm (¥{cost.toLocaleString()})</button>
+                </div>
+            </ModalWrapper>
+        );
+    };
+
+    const AssignKenninModal = () => {
+        const member = modalData;
+        const [targetTeamId, setTargetTeamId] = useState('');
+        
+        if (!member) return null;
+
+        const mainGroupTeams = teams.filter(t => t.groupId === 'main');
+        const cost = 100000;
+
+        const handleConfirm = () => {
+            if (!targetTeamId) {
+                setMessage("You must select a team.");
+                return;
+            }
+            if (money < cost) {
+                setMessage("Not enough money for this assignment.");
+                return;
+            }
+            assignConcurrentPosition(member.id, targetTeamId);
+        };
+
+        return (
+            <ModalWrapper title={`Concurrent Position for ${member.name}`}>
+                <p className="text-sm text-gray-600 mb-4">Assign {member.name} to a main group team for 52 weeks. They will be available for all main group activities. Cost: ¥{cost.toLocaleString()}</p>
+                <h4 className="font-semibold mb-2">Select a Main Group Team:</h4>
+                <select 
+                    value={targetTeamId} 
+                    onChange={(e) => setTargetTeamId(e.target.value)}
+                    className="w-full p-2 border rounded bg-white dark:bg-gray-700"
+                >
+                    <option value="">-- Select a Team --</option>
+                    {mainGroupTeams.map(team => (
+                        <option key={team.id} value={team.id}>{team.name}</option>
+                    ))}
+                </select>
+                {mainGroupTeams.length === 0 && <p className="text-xs text-red-500 mt-1">You have no main group teams to assign members to.</p>}
+                
+                <div className="flex justify-end gap-2 mt-4">
+                    <button onClick={() => setShowModal(null)} className="p-2 bg-gray-300 rounded">Cancel</button>
+                    <button onClick={handleConfirm} disabled={!targetTeamId || money < cost} className="p-2 bg-purple-500 text-white rounded disabled:bg-gray-400">Confirm (¥{cost.toLocaleString()})</button>
                 </div>
             </ModalWrapper>
         );
@@ -6111,9 +6386,8 @@ const allGroups = isRival
     const getInitialKenninNames = () => {
         if (isRival) {
             // A rival's kennin is stored in their special 'kenninInfo' object.
-            return exchangeStudent && exchangeStudent.member.rosterId === member.rosterId
-                ? [exchangeStudent.member.kenninInfo.groupName]
-                : [];
+const exchangeInfo = exchangeStudents.find(ex => ex.member.rosterId === member.rosterId);
+return exchangeInfo ? [exchangeInfo.member.kenninInfo.groupName] : [];
         }
         // Your own members use the 'kenninGroups' array.
         return member.kenninGroups || [];
@@ -6126,127 +6400,157 @@ const allGroups = isRival
     const [newHomeGroup, setNewHomeGroup] = useState(String(initialHomeGroupId));
     const [kenninStatus, setKenninStatus] = useState(initialKenninGroupNames);
 
-    const handleConfirmMove = () => {
-        // --- NEW: Special Handler for Rival Members ---
-        if (isRival) {
-            const newKenninGroupName = kenninStatus.length > 0 ? kenninStatus[0] : null;
-            const oldKenninGroupName = initialKenninGroupNames.length > 0 ? initialKenninGroupNames[0] : null;
+const handleConfirmMove = () => {
+    // --- Special Handler for Rival Members ---
+    if (isRival) {
+        const newKenninGroupName = kenninStatus.length > 0 ? kenninStatus[0] : null;
+        const oldKenninGroupName = initialKenninGroupNames.length > 0 ? initialKenninGroupNames[0] : null;
 
-            if (newKenninGroupName === oldKenninGroupName) {
-                setMessage("No changes were made.");
-                return setShowModal(null);
-            }
-            if (!newKenninGroupName) {
-                 setMessage("A rival exchange member must have a concurrent position.");
-                 return; // Prevent removing their only kennin.
-            }
-
-            const historyEvent = { week: week, event: `Concurrent position moved from ${oldKenninGroupName} to ${newKenninGroupName}` };
-
-            setExchangeStudent(prev => ({
-                ...prev,
-                member: {
-                    ...prev.member,
-                    kenninInfo: { ...prev.member.kenninInfo, groupName: newKenninGroupName },
-                    teamHistory: [...(prev.member.teamHistory || []), historyEvent],
-                    // When moving kennin, they become a trainee of the new group.
-                    teamId: null, 
-                    teamName: null,
-                }
-            }));
-            
-            setMessage(`${member.name}'s concurrent position was updated to ${newKenninGroupName}.`);
-            addNotification({ type: 'Management', message: `${member.name}'s placement was updated.` });
-            setShowModal(null);
-            setSelectedMember(null); // Deselect to force UI refresh
-            return; // IMPORTANT: Stop execution here.
-        }
-
-        // --- Existing Logic for your own members ---
-        const finalNewHomeGroup = allPlayerGroups.find(g => String(g.id) === newHomeGroup);
-        const originalHomeGroup = allPlayerGroups.find(g => String(g.id) === String(initialHomeGroupId));
-        const wasTransferred = finalNewHomeGroup.id !== originalHomeGroup.id;
-
-        const addedKennins = kenninStatus.filter(name => !initialKenninGroupNames.includes(name));
-        const removedKennins = initialKenninGroupNames.filter(name => !kenninStatus.includes(name));
-        let historyEvents = [];
-
-        if (wasTransferred) historyEvents.push({ week: week, event: `Transferred from ${originalHomeGroup.name} to ${finalNewHomeGroup.name}` });
-        addedKennins.forEach(name => historyEvents.push({ week: week, event: `Given a Concurrent Position in ${name}` }));
-        removedKennins.forEach(name => historyEvents.push({ week: week, event: `Concurrent Position in ${name} canceled` }));
-
-        if (historyEvents.length === 0) {
+        if (newKenninGroupName === oldKenninGroupName) {
             setMessage("No changes were made.");
             return setShowModal(null);
         }
+        if (!newKenninGroupName) {
+             setMessage("A rival exchange member must have a concurrent position.");
+             return;
+        }
 
-        // Create deep copies to modify safely
-        let nextMembers = JSON.parse(JSON.stringify(members));
-        let nextSisterGroups = JSON.parse(JSON.stringify(sisterGroups));
-        let memberToMove = JSON.parse(JSON.stringify(member));
+        const historyEvent = { week: week, event: `Concurrent position moved from ${oldKenninGroupName} to ${newKenninGroupName}` };
 
-        // Part 1: Remove the member from their original group if a transfer occurred
-        if (wasTransferred) {
-            if (originalHomeGroup.id === 'main') {
-                nextMembers = nextMembers.filter(m => String(m.id) !== String(memberToMove.id));
-            } else {
-                const sgIndex = nextSisterGroups.findIndex(sg => String(sg.id) === String(originalHomeGroup.id));
-                if (sgIndex > -1) {
-                    nextSisterGroups[sgIndex].members = (nextSisterGroups[sgIndex].members || []).filter(m => String(m.id) !== String(memberToMove.id));
+        setExchangeStudents(prev => prev.map(ex => {
+            if (ex.member.rosterId === member.rosterId) {
+                return {
+                    ...ex,
+                    member: {
+                        ...ex.member,
+                        kenninInfo: { ...ex.member.kenninInfo, groupName: newKenninGroupName },
+                        teamHistory: [...(ex.member.teamHistory || []), historyEvent],
+                        teamId: null,
+                        teamName: null,
+                    }
+                };
+            }
+            return ex;
+        }));
+        
+        setMessage(`${member.name}'s concurrent position was updated to ${newKenninGroupName}.`);
+        addNotification({ type: 'Management', message: `${member.name}'s placement was updated.` });
+        setShowModal(null);
+        setSelectedMember(null);
+        return;
+    }
+
+    // --- Fully Corrected Logic for Player's Members ---
+    const finalNewHomeGroup = allPlayerGroups.find(g => String(g.id) === newHomeGroup);
+    const originalHomeGroup = allPlayerGroups.find(g => String(g.id) === String(initialHomeGroupId));
+    
+    let originalMemberObject;
+    if (originalHomeGroup.id === 'main') {
+        originalMemberObject = members.find(m => String(m.id) === String(member.rosterId));
+    } else {
+        const sg = sisterGroups.find(g => g.id === originalHomeGroup.id);
+        if (sg) {
+            originalMemberObject = sg.members.find(m => `sg-${sg.id}-${m.id}` === member.rosterId);
+        }
+    }
+    
+    if (!originalMemberObject) {
+        setMessage("Error: Could not find the original member to move. Please refresh.");
+        return;
+    }
+
+    const wasTransferred = finalNewHomeGroup.id !== originalHomeGroup.id;
+    const addedKennins = kenninStatus.filter(name => !initialKenninGroupNames.includes(name));
+    const removedKennins = initialKenninGroupNames.filter(name => !kenninStatus.includes(name));
+    let historyEvents = [];
+
+    if (wasTransferred) historyEvents.push({ week: week, event: `Transferred from ${originalHomeGroup.name} to ${finalNewHomeGroup.name}` });
+    addedKennins.forEach(name => historyEvents.push({ week: week, event: `Given a Concurrent Position in ${name}` }));
+    removedKennins.forEach(name => historyEvents.push({ week: week, event: `Concurrent Position in ${name} canceled` }));
+
+    if (historyEvents.length === 0) {
+        setMessage("No changes were made.");
+        return setShowModal(null);
+    }
+
+    const finalUpdatedMember = {
+        ...originalMemberObject,
+        homeGroup: finalNewHomeGroup.name,
+        kenninGroups: kenninStatus,
+        teamHistory: [...(originalMemberObject.teamHistory || []), ...historyEvents],
+        teamId: wasTransferred ? null : originalMemberObject.teamId,
+        teamName: wasTransferred ? null : originalMemberObject.teamName,
+    };
+
+    // --- Perform State Updates ---
+        setMembers(prevMembers => {
+            // Case 1: Kennin-only update for a Main Group member
+            if (!wasTransferred && originalHomeGroup.id === 'main') {
+                return prevMembers.map(m => {
+                    if (String(m.id) === member.rosterId) {
+                        return finalUpdatedMember;
+                    }
+                    return m;
+                });
+            }
+        
+            // Case 2: Transfers involving the Main Group
+            if (wasTransferred) {
+                let updatedMembers = [...prevMembers];
+                // Remove from main group if they were transferred FROM here
+                if (originalHomeGroup.id === 'main') {
+                    updatedMembers = updatedMembers.filter(m => String(m.id) !== member.rosterId);
+                }
+                // Add to main group if they were transferred TO here
+                if (finalNewHomeGroup.id === 'main') {
+                    updatedMembers.push(finalUpdatedMember);
+                }
+                return updatedMembers;
+            }
+            
+            // Otherwise, no changes to the main group, return the previous state
+            return prevMembers;
+        });
+
+    setSisterGroups(prevGroups => {
+        return prevGroups.map(sg => {
+            let groupWasModified = false;
+            let newMembers = [...sg.members];
+
+            // Member was transferred FROM this sister group
+            if (wasTransferred && sg.id === originalHomeGroup.id) {
+                newMembers = newMembers.filter(m => `sg-${sg.id}-${m.id}` !== member.rosterId);
+                groupWasModified = true;
+            }
+
+            // Member was transferred TO this sister group
+            if (wasTransferred && sg.id === finalNewHomeGroup.id) {
+                newMembers.push(finalUpdatedMember);
+                groupWasModified = true;
+            }
+
+            // Kennin position updated for a member IN this sister group
+            if (!wasTransferred && sg.id === originalHomeGroup.id) {
+                 const updated = newMembers.map(m => {
+                    const currentId = `sg-${sg.id}-${m.id}`;
+                    return currentId === member.rosterId ? finalUpdatedMember : m;
+                });
+                // Only set modified flag if the array actually changed
+                if (JSON.stringify(updated) !== JSON.stringify(newMembers)) {
+                    newMembers = updated;
+                    groupWasModified = true;
                 }
             }
-        }
-        
-// Part 2: Prepare the final member object with updated properties
-const finalUpdatedMember = {
-    ...memberToMove,
-    homeGroup: finalNewHomeGroup.name,
-    kenninGroups: kenninStatus,
-    teamHistory: [...(memberToMove.teamHistory || []), ...historyEvents],
-    teamId: wasTransferred ? null : memberToMove.teamId, // If transferred, they become a trainee of the new home group.
-    teamName: wasTransferred ? null : memberToMove.teamName, // Also reset team name on transfer.
+            
+            return groupWasModified ? { ...sg, members: newMembers } : sg;
+        });
+    });
+
+    setMessage(`${member.name}'s placement was updated.`);
+    addNotification({ type: 'Management', message: `${member.name}'s placement was updated.` });
+    setShowModal(null);
+    setSelectedMember(null);
 };
-// Clean up temporary properties that shouldn't be saved on the member object itself
-delete finalUpdatedMember.rosterId;
-delete finalUpdatedMember.isSisterMember;
-delete finalUpdatedMember.displayGroupName;
-
-// Part 3: Add or Update the member in their final location
-if (finalNewHomeGroup.id === 'main') {
-    if (wasTransferred) {
-        // Find the highest existing ID in the main group to prevent collisions.
-        const newMainId = (nextMembers.length > 0 ? Math.max(0, ...nextMembers.map(m => m.id)) : 0) + 1;
-        finalUpdatedMember.id = newMainId;
-        nextMembers.push(finalUpdatedMember);
-    } else {
-        // This is a Kennin-only update for a member already in the main group.
-        nextMembers = nextMembers.map(m => String(m.id) === String(memberToMove.id) ? finalUpdatedMember : m);
-    }
-} else { // Destination is a sister group
-    const destSgIndex = nextSisterGroups.findIndex(sg => String(sg.id) === String(finalNewHomeGroup.id));
-    if (destSgIndex > -1) {
-        if (wasTransferred) {
-            const destSgMembers = nextSisterGroups[destSgIndex].members || [];
-            // Find the highest existing ID in the destination sister group.
-            const newSisterId = (destSgMembers.length > 0 ? Math.max(0, ...destSgMembers.map(m => m.id)) : 0) + 1;
-            finalUpdatedMember.id = newSisterId;
-            nextSisterGroups[destSgIndex].members.push(finalUpdatedMember);
-        } else {
-            // This is a Kennin-only update for a member already in this sister group
-            nextSisterGroups[destSgIndex].members = (nextSisterGroups[destSgIndex].members || []).map(m => String(m.id) === String(memberToMove.id) ? finalUpdatedMember : m);
-        }
-    }
-}
-
-// Part 4: Commit all state changes
-setMembers(nextMembers);
-setSisterGroups(nextSisterGroups);
-
-setMessage(`${member.name}'s placement was updated.`);
-addNotification({ type: 'Management', message: `${member.name}'s placement was updated.` });
-setShowModal(null);
-setSelectedMember(null); // Deselect to force UI refresh
-        };
     
         // --- The Unified UI ---
         return (
@@ -6357,9 +6661,9 @@ setSelectedMember(null); // Deselect to force UI refresh
                   <div className="space-y-1 max-h-[400px] overflow-y-auto border rounded p-1 bg-gray-50 dark:bg-gray-900">
                       {availableMembers.map((member, index) => (
                           <div
-                              key={`${member.id}-${index}`}
+                          key={member.rosterId}
                               className={`flex items-center justify-between p-2 rounded cursor-pointer ${selectedMemberId === member.id ? 'bg-blue-200 dark:bg-blue-800 shadow' : 'bg-white dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-700'}`}
-                              onClick={() => setSelectedMemberId(member.id)}
+                              onClick={() => setSelectedMemberId(member.rosterId)}
                           >
                               <div>
                                   <p className="font-semibold text-sm">{member.name}</p>
@@ -6370,7 +6674,7 @@ setSelectedMember(null); // Deselect to force UI refresh
                               <input
                                   type="radio"
                                   name="selected_member"
-                                  checked={selectedMemberId === member.id}
+                                  checked={selectedMemberId === member.rosterId}
                                   readOnly
                                   className="form-radio h-4 w-4 text-blue-600"
                               />
@@ -6455,11 +6759,11 @@ setSelectedMember(null); // Deselect to force UI refresh
   
         // --- MODIFIED: selectAll and deselectAll now use the 'filteredMembers' list ---
         const selectAll = () => {
-          setSelectedMemberIds(prev => [...new Set([...prev, ...filteredMembers.map(m => m.id)])]);
+          setSelectedMemberIds(prev => [...new Set([...prev, ...filteredMembers.map(m => m.rosterId)])]);
         };
   
         const deselectAll = () => {
-            const filteredIds = new Set(filteredMembers.map(m => m.id));
+            const filteredIds = new Set(filteredMembers.map(m => m.rosterId));
             setSelectedMemberIds(prev => prev.filter(id => !filteredIds.has(id)));
         };
   
@@ -6562,7 +6866,7 @@ setSelectedMember(null); // Deselect to force UI refresh
                     {/* --- MODIFIED: Now maps over 'filteredMembers' --- */}
                     <div className="space-y-1 max-h-[400px] overflow-y-auto border-t border-b dark:border-gray-700 p-1">
                         {filteredMembers.map(member => (
-                            <div key={member.id} className={`flex items-center justify-between p-2 rounded cursor-pointer ${selectedMemberIds.includes(member.id) ? 'bg-blue-100 dark:bg-blue-800' : 'bg-white dark:bg-gray-700/50 hover:bg-gray-50'}`} onClick={() => toggleMember(member.id)}>
+                            <div key={member.rosterId} className={`flex items-center justify-between p-2 rounded cursor-pointer ${selectedMemberIds.includes(member.id) ? 'bg-blue-100 dark:bg-blue-800' : 'bg-white dark:bg-gray-700/50 hover:bg-gray-50'}`} onClick={() => toggleMember(member.rosterId)}>
                                 <div>
                                     <p className="font-semibold text-sm">{member.name} {member.isSisterMember && <span className="text-xs text-gray-500">({member.displayGroupName})</span>}</p>
                                     <p className="text-xs text-gray-500 dark:text-gray-400">Fans: {getTotalFansForMember(member).toLocaleString()}</p>
@@ -6945,7 +7249,7 @@ setSelectedMember(null); // Deselect to force UI refresh
         return (
             <div className="relative my-1.5 text-center border border-gray-300/80 dark:border-gray-600/80 rounded-md overflow-hidden">
                 {pair.map((member, index) => (
-                    <MemberCard key={member?.id || `tbd-${index}`} member={member} />
+                    <MemberCard key={member?.rosterId || member?.id || `tbd-${index}`} member={member} />
                 ))}
                 <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-red-500 text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full border-2 border-white dark:border-gray-900">
                     VS
@@ -7303,7 +7607,10 @@ if (type === 'election') {
         const MemberRow = ({ member, isSenbatsu = false }) => (
             <div className="py-2 px-3 grid grid-cols-12 gap-2 items-center border-b border-gray-200 dark:border-gray-700">
                 <div className="col-span-1 font-bold text-center">{isSenbatsu ? `#${member.rank}` : '-'}</div>
-                <div className="col-span-4 font-semibold">{member.name}</div>
+                <div className="col-span-4">
+    <p className="font-semibold text-sm text-gray-800 dark:text-gray-200">{member.name}</p>
+    <p className="text-[6.5px] text-gray-500 dark:text-gray-400 truncate" title={getMemberGroupStatus(member)}>{getMemberGroupStatus(member)}</p>
+</div>
                 <div className="col-span-3 text-sm text-gray-600 dark:text-gray-400">{member.eliminationRound}</div>
                 <div className="col-span-4 text-sm text-gray-600 dark:text-gray-400">
                     {member.lostTo ? (
@@ -7315,7 +7622,7 @@ if (type === 'election') {
             </div>
         );
 
-        const { senbatsu, unplaced } = history;
+        const { senbatsu, unplaced, trivia } = history;
 
         content = (
             <div className="p-1 bg-gray-50 dark:bg-gray-800 max-h-[70vh] overflow-y-auto">
@@ -7330,7 +7637,7 @@ if (type === 'election') {
                             <div className="col-span-3">Elimination Round</div>
                             <div className="col-span-4">Details</div>
                         </div>
-                        {senbatsu && senbatsu.map((member) => ( <MemberRow key={member.id} member={member} isSenbatsu={true} /> ))}
+                        {senbatsu && senbatsu.map((member) => ( <MemberRow key={member.rosterId || member.id} member={member} isSenbatsu={true} /> ))}
                     </div>
                 </div>
                 <div>
@@ -7344,9 +7651,19 @@ if (type === 'election') {
                             <div className="col-span-3">Elimination Round</div>
                             <div className="col-span-4">Details</div>
                         </div>
-                        {unplaced && unplaced.map((member) => ( <MemberRow key={member.id} member={member} /> ))}
+                        {unplaced && unplaced.map((member) => ( <MemberRow key={member.rosterId || member.id} member={member} /> ))}
                     </div>
                 </div>
+                            {/* --- JANKEN TRIVIA --- */}
+            {history.trivia && history.trivia.length > 0 && (
+                <div className="mt-4 p-4 bg-yellow-50 dark:bg-gray-700 rounded-lg">
+                    <h3 className="text-lg font-bold mb-2 text-yellow-800 dark:text-yellow-200">Tournament Trivia</h3>
+                    <ul className="list-disc list-inside text-sm space-y-1 text-gray-700 dark:text-gray-300">
+                        {history.trivia.map((item, index) => <li key={index}>{item}</li>)}
+                    </ul>
+                </div>
+            )}
+
             </div>
         );
     } else if (type === 'Grand Shuffle') {
@@ -7369,12 +7686,15 @@ if (type === 'election') {
 const JankenResultModal = () => {
     if (!modalData) return null;
 
-    const { senbatsu, unplaced } = modalData;
+    const { senbatsu, unplaced, trivia } = modalData;
 
     const MemberRow = ({ member, isSenbatsu = false }) => (
         <div className="py-2 px-3 grid grid-cols-12 gap-2 items-center border-b border-gray-200 dark:border-gray-700">
             <div className="col-span-1 font-bold text-center">{isSenbatsu ? `#${member.rank}` : '-'}</div>
-            <div className="col-span-4 font-semibold">{member.name}</div>
+            <div className="col-span-4">
+    <p className="font-semibold text-sm text-gray-800 dark:text-gray-200">{member.name}</p>
+    <p className="text-[10px] text-gray-500 dark:text-gray-400 truncate" title={getMemberStatusString(member)}>{getMemberStatusString(member)}</p>
+</div>
             <div className="col-span-3 text-sm text-gray-600 dark:text-gray-400">{member.eliminationRound}</div>
             <div className="col-span-4 text-sm text-gray-600 dark:text-gray-400">
                 {member.lostTo ? (
@@ -7405,7 +7725,7 @@ const JankenResultModal = () => {
                             <div className="col-span-4">Details</div>
                         </div>
                         {senbatsu && senbatsu.map((member) => (
-                            <MemberRow key={member.id} member={member} isSenbatsu={true} />
+                            <MemberRow key={member.rosterId} member={member} isSenbatsu={true} />
                         ))}
                     </div>
                 </div>
@@ -7423,11 +7743,63 @@ const JankenResultModal = () => {
                             <div className="col-span-4">Details</div>
                         </div>
                         {unplaced && unplaced.map((member) => (
-                            <MemberRow key={member.id} member={member} />
+                            <MemberRow key={member.rosterId} member={member} />
                         ))}
                     </div>
                 </div>
+            {/* --- JANKEN TRIVIA --- */}
+            {trivia && trivia.length > 0 && (
+                <div className="mt-6 p-4 bg-yellow-50 dark:bg-gray-700 rounded-lg">
+                    <h3 className="text-lg font-bold mb-2 text-yellow-800 dark:text-yellow-200">Tournament Trivia</h3>
+                    <ul className="list-disc list-inside text-sm space-y-1 text-gray-700 dark:text-gray-300">
+                        {trivia.map((item, index) => <li key={index}>{item}</li>)}
+                    </ul>
+                </div>
+            )}
+            {/* --- END OF NEW BLOCK --- */}
+            </div>
+        </ModalWrapper>
+    );
+};
 
+const JankenTournamentStartModal = () => {
+    const [includeOverseas, setIncludeOverseas] = useState(false);
+    const baseCost = 75000;
+    const overseasCost = 250000;
+    const totalCost = baseCost + (includeOverseas ? overseasCost : 0);
+
+    const handleConfirm = () => {
+        startJankenTournament(includeOverseas);
+    }
+
+    return (
+        <ModalWrapper title="Host Janken Tournament" maxWidth="max-w-lg">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                The ultimate tournament of luck! The winner becomes the center of a special single.
+            </p>
+            <div className="mb-4">
+                <label className="flex items-center text-sm">
+                    <input
+                        type="checkbox"
+                        checked={includeOverseas}
+                        onChange={(e) => setIncludeOverseas(e.target.checked)}
+                        className="form-checkbox h-4 w-4 rounded text-blue-600 mr-2"
+                    />
+                    <span className="font-semibold">Include Overseas Groups (+¥{overseasCost.toLocaleString()})</span>
+                </label>
+            </div>
+            <div className="p-3 bg-yellow-50 dark:bg-gray-900 rounded-lg border border-yellow-200 dark:border-gray-700 text-center mb-4">
+                <p className="font-bold text-lg text-red-600 dark:text-yellow-300">Total Cost: ¥{totalCost.toLocaleString()}</p>
+            </div>
+            <div className="flex justify-end gap-2 mt-6 pt-4 border-t dark:border-gray-600">
+                <button onClick={() => setShowModal(null)} className="p-2 bg-gray-300 dark:bg-gray-600 rounded px-4">Cancel</button>
+                <button
+                    onClick={handleConfirm}
+                    disabled={money < totalCost}
+                    className="p-2 bg-green-700 text-white rounded px-4 font-bold disabled:bg-gray-400"
+                >
+                    Begin Tournament
+                </button>
             </div>
         </ModalWrapper>
     );
@@ -7544,10 +7916,10 @@ const KouhakuInvitationModal = () => {
             setSelectedMemberIds(prev => prev.includes(memberId) ? prev.filter(id => id !== memberId) : [...prev, memberId]);
         };
 
-        const selectAllFiltered = () => setSelectedMemberIds(prev => [...new Set([...prev, ...filteredMembers.map(m => m.id)])]);
+        const selectAllFiltered = () => setSelectedMemberIds(prev => [...new Set([...prev, ...filteredMembers.map(m => m.rosterId)])]);
 
         const deselectAllFiltered = () => {
-            const filteredIds = new Set(filteredMembers.map(m => m.id));
+            const filteredIds = new Set(filteredMembers.map(m => m.rosterId));
             setSelectedMemberIds(prev => prev.filter(id => !filteredIds.has(id)));
         };
 
@@ -7660,10 +8032,70 @@ const KouhakuResultModal = () => {
     );
 };
 
+const RequestHourScopeModal = () => {
+    const [size, setSize] = useState(100);
+
+    const handleSelect = (scope) => {
+        startRequestHour(scope, size);
+        setShowModal(null);
+    }
+    const domesticCost = 500000;
+    const worldCost = 750000;
+
+    return (
+        <ModalWrapper title="Select Request Hour Scope" maxWidth="max-w-xl">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 text-center">Choose the scope for the fan-voted concert. A larger scope includes more songs but costs more to host.</p>
+                    
+                    <div className="my-4">
+            <h4 className="font-semibold mb-2 text-center dark:text-gray-200">Setlist Size</h4>
+            <div className="flex justify-center gap-2">
+                {[10, 25, 50, 100].map(s => (
+                    <button
+                        key={s}
+                        onClick={() => setSize(s)}
+                        className={`px-4 py-2 rounded-lg font-bold ${size === s ? 'bg-pink-500 text-white' : 'bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200'}`}
+                    >
+                        Top {s}
+                    </button>
+                ))}
+            </div>
+        </div>
+
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 border rounded-lg text-center">
+                    <h4 className="font-bold text-lg text-blue-600 dark:text-blue-400">Domestic Request Hour</h4>
+                    <p className="text-xs text-gray-500 my-2 h-12">Includes songs from your main group and all domestic sister groups.</p>
+                    <p className="font-bold text-red-500">Cost: ¥{domesticCost.toLocaleString()}</p>
+                    <button 
+                        onClick={() => handleSelect('domestic')} 
+                        disabled={money < domesticCost}
+                        className="w-full mt-3 p-2 bg-blue-500 text-white rounded font-bold disabled:bg-gray-400">
+                        Select Domestic
+                    </button>
+                </div>
+                <div className="p-4 border rounded-lg text-center">
+                    <h4 className="font-bold text-lg text-purple-600 dark:text-purple-400">World Request Hour</h4>
+                    <p className="text-xs text-gray-500 my-2 h-12">Includes every song from every group you manage, including overseas branches.</p>
+                    <p className="font-bold text-red-500">Cost: ¥{worldCost.toLocaleString()}</p>
+                     <button 
+                        onClick={() => handleSelect('world')} 
+                        disabled={money < worldCost}
+                        className="w-full mt-3 p-2 bg-purple-500 text-white rounded font-bold disabled:bg-gray-400">
+                        Select World
+                    </button>
+                </div>
+            </div>
+            <div className="flex justify-center mt-6">
+                <button onClick={() => setShowModal(null)} className="text-gray-500 hover:text-gray-700">Cancel</button>
+            </div>
+        </ModalWrapper>
+    );
+};
 
 const RequestHourVotingModal = () => {
     const allSongs = [
-        ...songs.flatMap(s => (s.tracks || []).map(t => ({...t, id: `${s.id}-${t.name}`, artist: s.artist || s.targetGroup, singleName: s.name}))),
+        ...songs.flatMap(s => (s.tracks || []).map(t => ({...t, id: `${s.id}-${t.name}`, artist: (s.artist || s.targetGroup) === 'main' ? groupName : (s.artist || s.targetGroup), singleName: s.name}))),
         ...sisterGroups.flatMap(sg => (sg.songs || []).flatMap(s => (s.tracks || []).map(t => ({...t, id: `sg-${sg.id}-${s.id}-${t.name}`, artist: sg.name, singleName: s.name})))),
         ...theaterSongs.map(ts => ({...ts, id: `theater-${ts.id}`, artist: groupName, singleName: "Theater Stage"}))
     ];
@@ -7863,59 +8295,106 @@ const TrainingCampModal = () => {
         );
     };
     
-    const CreateSisterGroupModal = () => {
-        const [sgName, setSgName] = useState('');
-        const [sgType, setSgType] = useState('domestic');
-        const [sgLocation, setSgLocation] = useState('');
-
-        const handleConfirm = () => {
-            if (!sgName.trim() || !sgLocation.trim()) {
-                return setMessage("Group name and location cannot be empty.");
+    const CreateSisterGroupModal = ({ currentGroups, onConfirm }) => {
+        const [groupData, setGroupData] = useState({
+          groupName: '',
+          location: '',
+          type: 'domestic'
+        });
+      
+        const handleChange = (e) => {
+          const { name, value } = e.target;
+      
+          setGroupData(prev => {
+            const newState = { ...prev, [name]: value };
+            // If the type changes, reset the location
+            if (name === 'type') {
+              newState.location = '';
             }
-            confirmCreateSisterGroup({ groupName: sgName.trim(), location: sgLocation.trim() });
+            return newState;
+          });
         };
-        
+      
+        const handleSubmit = () => {
+          if (!groupData.groupName.trim()) {
+            setMessage("Group name is required.");
+            return;
+          }
+          if (!groupData.location.trim()) {
+              setMessage("Base of Operations is required.");
+              return;
+          }
+          if (currentGroups.some(g => g.name.toLowerCase() === groupData.groupName.toLowerCase())) {
+            setMessage("A group with this name already exists.");
+            return;
+          }
+          // The bug was here. We must pass the correct type.
+          // The confirm function will handle making it autonomous.
+          onConfirm(groupData);
+        };
+      
+        const cost = groupData.type === 'domestic' ? 200000 : 500000;
+        const overseasLocations = {
+            'Shanghai': 'China',
+            'Bangkok': 'Thailand'
+        };
+      
         return (
-            <ModalWrapper title={<span className="flex items-center"><Globe size={20} className="mr-2"/> Establish New Sister Group</span>}>
-                <p className="text-sm text-gray-600 mb-4">Expand your empire by establishing a new sister group in a new city. Cost: ¥250,000.</p>
-                
-                <h4 className="font-semibold mb-1">New Group Name</h4>
-                <input 
-                    type="text" 
-                    value={sgName} 
-                    onChange={(e) => setSgName(e.target.value)}
-                    className="w-full p-2 border rounded mb-3"
-                    placeholder="e.g., NMB48"
-                />
-                
-                <h4 className="font-semibold mb-1">Location</h4>
-                <input 
-                    type="text" 
-                    value={sgLocation} 
-                    onChange={(e) => setSgLocation(e.target.value)}
-                    className="w-full p-2 border rounded mb-3"
-                    placeholder="e.g., Osaka"
-                />
-                            <h4 className="font-semibold mb-1">Group Type</h4>
-            <select 
-                value={sgType} 
-                onChange={(e) => setSgType(e.target.value)}
-                className="w-full p-2 border rounded mb-3"
-            >
-                <option value="domestic">Domestic</option>
-                <option value="overseas">Overseas</option>
-            </select>
-
-
-                <div className="flex justify-end gap-2 mt-4">
-                    <button onClick={() => setShowModal(null)} className="p-2 bg-gray-300 rounded">Cancel</button>
-                    <button onClick={handleConfirm} disabled={!sgName.trim() || !sgLocation.trim() || money < 250000} className="p-2 bg-red-500 text-white rounded disabled:bg-gray-400">
-                        Establish Group (¥250k)
-                    </button>
-                </div>
-            </ModalWrapper>
+          <ModalWrapper title="Found New Sister Group" maxWidth="max-w-lg">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Establish a new sister group to expand your idol empire. Domestic groups focus on synergy, while overseas groups operate autonomously in their region.</p>
+            
+            {/* Group Name */}
+            <div className="mb-4">
+              <label className="block text-sm font-bold mb-1">Group Name</label>
+              <input type="text" name="groupName" value={groupData.groupName} onChange={handleChange} className="w-full p-2 border rounded" placeholder="e.g. NMB48" />
+            </div>
+      
+            {/* Group Type */}
+            <div className="mb-4">
+              <label className="block text-sm font-bold mb-1">Group Type</label>
+              <div className="flex gap-4">
+                <label className="flex items-center">
+                  <input type="radio" name="type" value="domestic" checked={groupData.type === 'domestic'} onChange={handleChange} className="mr-2"/>
+                  Domestic (¥200,000)
+                </label>
+                <label className="flex items-center">
+                  <input type="radio" name="type" value="overseas" checked={groupData.type === 'overseas'} onChange={handleChange} className="mr-2"/>
+                  Overseas (¥500,000)
+                </label>
+              </div>
+            </div>
+      
+            {/* Location - Conditional Input */}
+            <div className="mb-4">
+              <label className="block text-sm font-bold mb-1">Base of Operations</label>
+              {groupData.type === 'domestic' ? (
+                <>
+                  <input type="text" name="location" value={groupData.location} onChange={handleChange} className="w-full p-2 border rounded" placeholder="e.g. Namba, Osaka"/>
+                  <p className="text-xs text-gray-500 mt-1">For domestic groups, this determines regional identity.</p>
+                </>
+              ) : (
+                <>
+                  <select name="location" value={groupData.location} onChange={handleChange} className="w-full p-2 border rounded bg-white dark:bg-gray-800">
+                    <option value="">-- Select a Country --</option>
+                    {Object.entries(overseasLocations).map(([city, country]) => (
+                        <option key={city} value={city}>{country} ({city})</option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-gray-500 mt-1">This determines the group's country and the language for new member names.</p>
+                </>
+              )}
+            </div>
+      
+            {/* Confirmation */}
+            <div className="flex justify-end items-center mt-6 pt-4 border-t dark:border-gray-600 gap-3">
+              <button onClick={() => setShowModal(null)} className="px-4 py-2 bg-gray-300 dark:bg-gray-600 rounded">Cancel</button>
+              <button onClick={handleSubmit} disabled={money < cost || !groupData.location} className="px-4 py-2 bg-green-600 text-white rounded font-bold disabled:bg-gray-400">
+                Establish (¥{cost.toLocaleString()})
+              </button>
+            </div>
+          </ModalWrapper>
         );
-    };
+      };
     
     const SisterGroupDisbandModal = () => {
         const sg = modalData;
@@ -7990,44 +8469,59 @@ const ExchangeStudentModal = () => {
 
     const { rival, rivalRoster } = modalData;
     const [step, setStep] = useState(1); // 1 for selecting rival, 2 for selecting player's member
-    const [selectedRivalMember, setSelectedRivalMember] = useState(null);
-    const [selectedPlayerMemberId, setSelectedPlayerMemberId] = useState(null);
+    const [selectedRivalMembers, setSelectedRivalMembers] = useState([]);
+    const [selectedPlayerMemberIds, setSelectedPlayerMemberIds] = useState([]);
 
-    const availablePlayerMembers = getMainGroupRoster().filter(m => m.isAvailable && !m.isSisterMember);
+    const availablePlayerMembers = getMainGroupRoster().filter(m => m.isAvailable);
 
-const handleNextStep = () => {
-    // The `selectedRivalMember` state already holds the chosen member object.
-    // We just need to check that it's not null before proceeding.
-    if (selectedRivalMember) {
-        setStep(2);
-    }
-};
+    const handleNextStep = () => {
+        if (selectedRivalMembers.length > 0) {
+            setStep(2);
+        }
+    };
 
     const handleConfirm = () => {
-        if (!selectedRivalMember || !selectedPlayerMemberId) return;
-        confirmExchangeStudent(rival, selectedRivalMember, selectedPlayerMemberId);
+        if (selectedRivalMembers.length === 0 || selectedPlayerMemberIds.length === 0) return;
+        if (selectedRivalMembers.length !== selectedPlayerMemberIds.length) {
+            setMessage("You must select an equal number of rival and player members to exchange.");
+            return;
+        }
+        confirmExchangeStudent(rival, selectedRivalMembers, selectedPlayerMemberIds);
     };
 
     if (step === 1) {
         return (
-            <ModalWrapper title={`Step 1: Choose Member from ${rival.name}`} maxWidth="max-w-2xl">
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Choose one rival member to join your group for one year.</p>
+            <ModalWrapper title={`Step 1: Choose Member(s) from ${rival.name}`} maxWidth="max-w-2xl">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Choose rival member(s) to join your group for one year.</p>
                 <div className="space-y-1 max-h-[400px] overflow-y-auto border-t border-b dark:border-gray-700 p-1 mb-4">
                     {rivalRoster.map(member => (
-                        <div key={member.id} className={`flex items-center justify-between p-2 rounded cursor-pointer ${selectedRivalMember?.id === member.id ? 'bg-blue-100 dark:bg-blue-800' : 'bg-white dark:bg-gray-700/50 hover:bg-gray-50'}`} onClick={() => setSelectedRivalMember({ id: member.id, name: member.name, ...member })}>
+                        <div 
+                            key={member.id}
+                            className={`flex items-center justify-between p-2 rounded cursor-pointer ${selectedRivalMembers.some(m => m.id === member.id) ? 'bg-blue-100 dark:bg-blue-800' : 'bg-white dark:bg-gray-700/50 hover:bg-gray-50'}`} 
+                            onClick={() => {
+                                setSelectedRivalMembers(prev => {
+                                    const existing = prev.find(m => m.id === member.id);
+                                    if (existing) {
+                                        return prev.filter(m => m.id !== member.id);
+                                    } else {
+                                        return [...prev, { id: member.id, name: member.name, ...member }];
+                                    }
+                                });
+                            }}
+                        >
                             <div>
                                 <p className="font-semibold text-sm">{member.name}</p>
                                 <p className="text-xs text-gray-500 dark:text-gray-400">
                                     Vo: {member.singing} Da: {member.dancing} Vi: {member.visual} | Fans: {((member.fans.hardcore || 0) + (member.fans.casual || 0)).toLocaleString()}
                                 </p>
                             </div>
-                            <input type="radio" name="exchange-student" checked={selectedRivalMember?.id === member.id} readOnly className="form-radio h-4 w-4 text-blue-600"/>
+                            <input type="checkbox" checked={selectedRivalMembers.some(m => m.id === member.id)} readOnly className="form-checkbox h-4 w-4 text-blue-600"/>
                         </div>
                     ))}
                 </div>
                 <div className="flex justify-end gap-2">
                     <button onClick={() => setShowModal(null)} className="p-2 bg-gray-300 dark:bg-gray-600 rounded px-4">Cancel</button>
-                    <button onClick={handleNextStep} disabled={!selectedRivalMember} className="p-3 bg-blue-600 text-white rounded font-bold disabled:bg-gray-400">Next: Choose Your Member</button>
+                    <button onClick={handleNextStep} disabled={selectedRivalMembers.length === 0} className="p-3 bg-blue-600 text-white rounded font-bold disabled:bg-gray-400">Next: Choose Your Member(s)</button>
                 </div>
             </ModalWrapper>
         );
@@ -8035,24 +8529,39 @@ const handleNextStep = () => {
 
     if (step === 2) {
         return (
-            <ModalWrapper title={`Step 2: Choose Your Member to Send`} maxWidth="max-w-2xl">
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Choose one of your members to send to {rival.name} for one year. They will be unavailable.</p>
+            <ModalWrapper title={`Step 2: Choose Your Member(s) to Send`} maxWidth="max-w-2xl">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                    You have selected {selectedRivalMembers.length} member(s) from {rival.name}. 
+                    You must choose an equal number of your own members to send in exchange.
+                </p>
                 <div className="space-y-1 max-h-[400px] overflow-y-auto border-t border-b dark:border-gray-700 p-1 mb-4">
                     {availablePlayerMembers.map(member => (
-                        <div key={member.id} className={`flex items-center justify-between p-2 rounded cursor-pointer ${selectedPlayerMemberId === member.id ? 'bg-blue-100 dark:bg-blue-800' : 'bg-white dark:bg-gray-700/50 hover:bg-gray-50'}`} onClick={() => setSelectedPlayerMemberId(member.id)}>
+                        <div 
+                            key={member.rosterId} 
+                            className={`flex items-center justify-between p-2 rounded cursor-pointer ${selectedPlayerMemberIds.includes(member.id) ? 'bg-blue-100 dark:bg-blue-800' : 'bg-white dark:bg-gray-700/50 hover:bg-gray-50'}`} 
+                            onClick={() => {
+                                setSelectedPlayerMemberIds(prev => {
+                                    if (prev.includes(member.rosterId)) {
+                                        return prev.filter(id => id !== member.rosterId);
+                                    } else {
+                                        return [...prev, member.rosterId];
+                                    }
+                                });
+                            }}
+                        >
                             <div>
                                 <p className="font-semibold text-sm">{member.name}</p>
                                  <p className="text-xs text-gray-500 dark:text-gray-400">
                                     Vo: {member.singing} Da: {member.dancing} Vi: {member.visual} | Fans: {getTotalFansForMember(member).toLocaleString()}
                                 </p>
                             </div>
-                            <input type="radio" name="player-exchange-student" checked={selectedPlayerMemberId === member.id} readOnly className="form-radio h-4 w-4 text-blue-600"/>
+                            <input type="checkbox" checked={selectedPlayerMemberIds.includes(member.rosterId)} readOnly className="form-checkbox h-4 w-4 text-blue-600"/>
                         </div>
                     ))}
                 </div>
                 <div className="flex justify-between gap-2">
                     <button onClick={() => setStep(1)} className="p-2 bg-gray-300 dark:bg-gray-600 rounded px-4">Back</button>
-                    <button onClick={handleConfirm} disabled={!selectedPlayerMemberId} className="p-3 bg-purple-600 text-white rounded font-bold disabled:bg-gray-400">Confirm Exchange</button>
+                    <button onClick={handleConfirm} disabled={selectedPlayerMemberIds.length !== selectedRivalMembers.length || selectedPlayerMemberIds.length === 0} className="p-3 bg-purple-600 text-white rounded font-bold disabled:bg-gray-400">Confirm Exchange</button>
                 </div>
             </ModalWrapper>
         );
@@ -8483,7 +8992,6 @@ const TabButton = ({ id, label, icon: Icon }) => (
     </button>
 );
 
-    // --- MAIN UI ---
     if (!gameStarted) {
       const handleFileLoad = (event) => {
         const file = event.target.files[0];
@@ -8573,12 +9081,13 @@ const TabButton = ({ id, label, icon: Icon }) => (
             </div>
             <div className="flex items-center gap-4">
               <button onClick={() => setShowModal('saveGame')} d className="p-2 bg-blue-100 text-blue-600 rounded-full hover:bg-blue-200 disabled:bg-gray-300 disabled:text-gray-500" title="Save Game (via Username)"><Save size={20} /></button>
-              <button onClick={() => setShowModal('loadGame')} d className="p-2 bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200 disabled:bg-gray-300 disabled:text-gray-500" title="Load Game"><Upload size={20} /></button>
+              <button onClick={() => fileInputRef.current && fileInputRef.current.click()} className="p-2 bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200" title="Load Game from File"><Upload size={20} /></button>
               <button onClick={() => setShowNotifications(!showNotifications)} className="relative p-2 bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200" title="Notifications">
                 <Bell size={20} />
                 {notifications.length > 0 && !showNotifications && <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>}
               </button>
             </div>
+
           </header>
           {message && <div className="p-1 bg-blue-100 text-blue-800 text-center text-sm">{message}</div>}
           {activeTour && <div className="p-2 bg-red-100 text-red-800 text-center text-sm font-bold flex items-center justify-center"><Plane size={16} className='mr-2'/> Active Tour: {activeTour.name} ({activeTour.weeksLeft} weeks left)</div>}
@@ -8746,7 +9255,7 @@ const TabButton = ({ id, label, icon: Icon }) => (
                                                                         {(Object.values(groupRoles).includes(m.id) || (m.teamId && groupRoles[m.teamId] === m.id)) && <Shield size={16} className="ml-2 text-purple-500" title="Captain" />}
                                                                     </h3>
                                                                     <span className={`text-xs font-semibold px-1.5 py-0.5 rounded-full ${m.position === 'center' ? 'bg-yellow-200 text-yellow-800' : 'bg-gray-200 text-gray-700'}`}>
-                                                                        #{allMembers.findIndex(r => (r.rosterId || r.id) === (m.rosterId || m.id)) + 1}
+                                                                        #{m.rank || '-'}
                                                                     </span>
                                                                 </div>
                                                                 <p className="text-xs text-gray-500 mb-0.5">{getMemberGroupStatus(m)}</p>
@@ -8902,7 +9411,7 @@ const TabButton = ({ id, label, icon: Icon }) => (
             onChange={(e) => appointCaptain('main', e.target.value)}
             className="w-full p-1.5 text-sm border rounded bg-white dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
         >
-            <option value="">-- Appoint a Captain --</option>
+<option key="captain-none" value="">-- Appoint a Captain --</option>
         {members.filter(m => m.isAvailable && !m.isSisterMember).sort((a,b) => (b.charisma + b.intelligence) - (a.charisma + a.intelligence)).map(member => (
             <option key={member.id} value={member.id}>{member.name}</option>
         ))}
@@ -8918,7 +9427,8 @@ const TabButton = ({ id, label, icon: Icon }) => (
                 onChange={(e) => appointCaptain(sg.id, e.target.value)}
                 className="w-full p-1.5 text-sm border rounded bg-white dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
             >
-                <option value="">-- Appoint a Captain --</option>
+                <option key="sg-captain-none" value="">-- Appoint a Captain --</option>
+
                 {(sg.members || [])
                     .filter(m => m.isAvailable)
                     .sort((a,b) => (b.charisma + b.intelligence) - (a.charisma + a.intelligence))
@@ -8989,14 +9499,19 @@ const TabButton = ({ id, label, icon: Icon }) => (
 
 
                 <div className="flex flex-col gap-1.5">
-                    <button onClick={holdElection} disabled={isCampaignActive || electionVotePool <= 0} className="w-full p-1.5 text-sm bg-purple-500 text-white rounded font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed">
-                        Hold Election (¥1m)
+                    <button onClick={() => holdElection('main')} disabled={isCampaignActive || electionVotePool <= 0} className="w-full p-1.5 text-sm bg-purple-500 text-white rounded font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed">
+                        Hold General Election (¥1m)
                     </button>
+
+                    <button onClick={() => holdElection('world')} disabled={isCampaignActive || electionVotePool <= 0} className="w-full p-1.5 text-sm bg-teal-600 text-white rounded font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed">
+                        Hold World General Election (¥5m)
+                    </button>
+                    
                     <p className="text-center text-xs text-gray-500 dark:text-gray-400">
                         Vote Pool: {electionVotePool.toLocaleString()}
                     </p>
 
-            <button onClick={startJankenTournament} className="w-full p-1.5 text-sm bg-green-700 text-white rounded font-semibold disabled:bg-gray-400 mt-2">
+                <button onClick={() => setShowModal('jankenTournamentStart')} className="w-full p-1.5 text-sm bg-green-700 text-white rounded font-semibold disabled:bg-gray-400 mt-2">
                 Host Janken Tournament (¥75k)
             </button>
 
@@ -9093,10 +9608,10 @@ const TabButton = ({ id, label, icon: Icon }) => (
                     Create New Team
                   </button>
 
-                    <button onClick={() => initiateShuffle()} className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-full mt-4 transition-all duration-200 ease-in-out shadow-lg border border-red-800">
-                        <Shuffle size={16} className="inline-block mr-2" />
-                        Initiate Grand Shuffle
-                    </button>
+                <button onClick={() => setShowModal('shuffleTypeSelection')} className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-full mt-4 transition-all duration-200 ease-in-out shadow-lg border border-red-800">
+                    <Shuffle size={16} className="inline-block mr-2" />
+                    Initiate Grand Shuffle
+                </button>
 
                   <button onClick={createCustomSetlist} className="flex-1 p-1.5 text-sm bg-indigo-500 text-white rounded font-semibold" disabled={theaters.length === 0}>
                     <Plus size={16} className='inline mr-1'/> Custom Setlist
@@ -9178,6 +9693,16 @@ const TabButton = ({ id, label, icon: Icon }) => (
                               className="p-1 bg-red-500 text-white rounded text-xs hover:bg-red-600">
                                 Disband
                             </button>
+                    {sg.type === 'overseas' && (
+                        <button
+                            onClick={() => holdElection('overseas', { groupId: sg.id })}
+                            className="p-1 bg-green-500 text-white rounded text-xs hover:bg-green-600"
+                            title={`Hold election for ${sg.name}`}
+                        >
+                            Election
+                        </button>
+                    )}
+                            
                           </div>
                       </div>
                   ))}
@@ -9260,6 +9785,18 @@ const TabButton = ({ id, label, icon: Icon }) => (
                     >
                         Details
                     </button>
+
+                        {/* V-- INSERT NEW BUTTON LOGIC HERE --V */}
+                        {!isAlbum && (release.targetGroup === 'main' || release.targetGroup === groupName) && (
+                            <button
+                                onClick={() => { setModalData(release); setShowModal('licenseSong'); }}
+                                className="px-4 py-2 text-sm font-semibold text-white bg-purple-600 rounded-md hover:bg-purple-700"
+                            >
+                                License
+                            </button>
+                        )}
+                        {/* ^-- END OF INSERTION --^ */}
+
                 </div>
 
                 {/* --- NEW B-SIDE PROMOTION SECTION --- */}
@@ -9562,8 +10099,8 @@ const TabButton = ({ id, label, icon: Icon }) => (
     
     {!(requestHourStatus && requestHourStatus.isActive) && (
         <div className="mt-4">
-             <button
-                onClick={startRequestHour}
+            <button
+                onClick={() => setShowModal('requestHourScope')}
                 className="w-full p-2 text-base bg-cyan-500 hover:bg-cyan-400 text-white font-bold transition-colors"
             >
                 Host Request Hour
@@ -9661,9 +10198,9 @@ const TabButton = ({ id, label, icon: Icon }) => (
                     value=""
                 >
                     <option value="">-- Select a Rival --</option>
-                    {rivalGroups.map(rival => (
-                        <option key={rival.id} value={rival.id}>{rival.name}</option>
-                    ))}
+                {rivalGroups.map(rival => (
+                    <option key={rival.id} value={rival.id}>{rival.name}</option>
+                ))}
                 </select>
             </div>
 
@@ -9686,12 +10223,12 @@ const TabButton = ({ id, label, icon: Icon }) => (
             }
         }}
         value=""
-        disabled={!!exchangeStudent}
+        disabled={exchangeStudents && exchangeStudents.length > 0}
     >
-        <option value="">{exchangeStudent ? 'Program Active' : '-- Select a Rival --'}</option>
-        {rivalGroups.map(rival => (
-            <option key={rival.id} value={rival.id}>{rival.name}</option>
-        ))}
+        <option value="">{(exchangeStudents && exchangeStudents.length > 0) ? 'Program Active' : '-- Select a Rival --'}</option>
+{rivalGroups.map(rival => (
+    <option key={rival.id} value={rival.id}>{rival.name}</option>
+))}
     </select>
 </div>
         </div>
@@ -10179,6 +10716,18 @@ const TabButton = ({ id, label, icon: Icon }) => (
         Move/Kennin
       </button>
 
+      {/* V-- KENNIN OVERSEA --V */}
+      {selectedMember.isSisterMember && (
+          <button
+              onClick={() => setShowModal('assignKennin')}
+              className="p-2 bg-purple-200 text-purple-800 rounded text-sm col-span-2"
+              disabled={!selectedMember.isAvailable || (selectedMember.kenninGroups || []).includes(groupName)}
+          >
+              Assign Concurrent Position
+          </button>
+      )}
+      {/* ^-- END OF INSERTION --^ */}
+
       <button 
         onClick={() => askAboutGraduation(selectedMember.id)}
         className="p-2 bg-yellow-200 text-yellow-800 rounded text-sm"
@@ -10194,6 +10743,18 @@ const TabButton = ({ id, label, icon: Icon }) => (
       >
         Graduate
       </button>
+
+      {/* EXCHANGE ABROAD --V */}
+      {!selectedMember.isSisterMember && (
+          <button
+              onClick={() => setShowModal('studyAbroad')}
+              className="p-2 bg-teal-200 text-teal-800 rounded text-sm col-span-2"
+              disabled={!selectedMember.isAvailable}
+          >
+              Send to Study Abroad (24 Wks)
+          </button>
+      )}
+      {/* ^-- END OF INSERTION --^ */}      
     </div>
 
 {/* Chemistry */}
@@ -10339,6 +10900,9 @@ const TabButton = ({ id, label, icon: Icon }) => (
         />}
         {showModal === 'createSong' && <CreateSongModal />}
         {showModal === 'releaseDetails' && <ReleaseDetailsModal />}
+        {showModal === 'licenseSong' && <LicenseSongModal />}
+        {showModal === 'assignKennin' && <AssignKenninModal />}
+        {showModal === 'studyAbroad' && <StudyAbroadModal />}
         {showModal === 'theaterSelection' && <TheaterSelectionModal />}
         {showModal === 'rename' && modalData && <RenameMemberModal />}
         {showModal === 'moveMember' && <MoveMemberModal member={modalData} setShowModal={setShowModal} />}
@@ -10356,7 +10920,7 @@ const TabButton = ({ id, label, icon: Icon }) => (
         {showModal === 'mediaJob' && <MediaJobModal />}
         {showModal === 'groupMediaJob' && <GroupMediaModal />}
         {showModal === 'trainingCamp' && <TrainingCampModal />}
-        {showModal === 'createSisterGroup' && <CreateSisterGroupModal />}
+        {showModal === 'createSisterGroup' && <CreateSisterGroupModal currentGroups={[{ name: groupName, id: 'main' }, ...sisterGroups]} onConfirm={confirmCreateSisterGroup} />}
         {showModal === 'customSetlist' && <CustomSetlistModal />}
         {showModal === 'setlistDetails' && modalData && <SetlistDetailsModal setlist={modalData} allTheaterSongs={theaterSongs} getFormattedDateForWeek={getFormattedDateForWeek} />}
         {showModal === 'sisterGroupDisband' && modalData && <SisterGroupDisbandModal />}
@@ -10399,16 +10963,18 @@ const TabButton = ({ id, label, icon: Icon }) => (
         {showModal === 'bsidePromotionResult' && <BsidePromotionResultModal />}
         {showModal === 'jankenTournament' && <JankenTournamentModal />}
         {showModal === 'historyDetail' && <HistoryDetailModal />}
-        {showModal === 'jankenResult' && <JankenResultModal />}
+        {showModal === 'jankenTournamentStart' && <JankenTournamentStartModal />}
         {showModal === 'kouhakuResult' && <KouhakuResultModal />}
         {showModal === 'kouhakuInvite' && <KouhakuInvitationModal />}
         {showModal === 'kouhakuPrep' && <KouhakuPreparationModal />}
         {showModal === 'senbatsuPromotionResult' && <SenbatsuPromotionResultModal />}
         {showModal === 'requestHourVoting' && <RequestHourVotingModal />}
         {showModal === 'requestHourResult' && <RequestHourResultModal />}
+        {showModal === 'requestHourScope' && <RequestHourScopeModal />}
         {showModal === 'sportsFestival' && <SportsFestivalModal />}
         {showModal === 'sportsFestivalResult' && <SportsFestivalResultModal />}
         {showModal === 'liveSportsFestival' && <LiveSportsFestivalModal />}
+        {showModal === 'shuffleTypeSelection' && <ShuffleTypeSelectionModal />}
         {showModal === 'draftKaigi' && (
             <DraftKaigiModal 
                 draftKaigi={draftKaigi} 
