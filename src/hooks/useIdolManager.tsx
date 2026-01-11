@@ -1360,6 +1360,22 @@ const [pendingMerch, setPendingMerch] = useState([]);
               return `${firstName} ${lastName}`;
         }
     };
+const generateUnitCandidates = (count = 5) => {
+    const personalities = ['Cheerful', 'Shy', 'Confident', 'Ambitious', 'Easygoing', 'Energetic', 'Quiet'];
+    return Array.from({ length: count }, (_, i) => ({
+        id: `unit-candidate-${Date.now()}-${i}`,
+        name: generateRandomMemberName(),
+        hometown: generateRandomHometown(),
+        vocal: Math.floor(Math.random() * 40) + 30,
+        dance: Math.floor(Math.random() * 40) + 30,
+        visual: Math.floor(Math.random() * 40) + 30,
+        charisma: Math.floor(Math.random() * 40) + 30,
+        intelligence: Math.floor(Math.random() * 40) + 30,
+        variety: Math.floor(Math.random() * 40) + 30,
+        potential: Math.floor(Math.random() * 50) + 40,
+        personality: personalities[Math.floor(Math.random() * personalities.length)],
+    }));
+};
 
     
     const startGame = (startUsername, startGroupName) => {
@@ -4157,6 +4173,74 @@ const createSong = () => {
         addNotification({ type: 'Production', message: `Setlist "${name}" created with ${newSongsCount} new and ${reusedSongsCount} reused songs.` });
     };
 
+const createUnit = (unitName, membersToProcess) => {
+    if (!unitName.trim() || !membersToProcess || membersToProcess.length === 0) {
+        return setMessage("Unit creation failed: Name and members are required.");
+    }
+
+    const newMemberIds = [];
+    const existingMemberIds = [];
+
+    // Separate existing members from new candidates
+    membersToProcess.forEach(item => {
+        if (typeof item === 'string') {
+            existingMemberIds.push(item);
+        } else {
+            // This is a candidate object, let's create a real member from it
+            const newId = (members.length > 0 ? Math.max(...members.map(m => m.id)) : 0) + newMemberIds.length + 1;
+            const newMember = {
+                id: newId,
+                name: item.name,
+                hometown: item.hometown,
+                nickname: item.name.split(' ')[0],
+                singing: item.vocal,
+                dancing: item.dance,
+                visual: item.visual,
+                charisma: item.charisma,
+                intelligence: item.intelligence,
+                variety: item.variety,
+                stamina: 100,
+                morale: 100,
+                stress: 0,
+                fans: { hardcore: 0, casual: 0 },
+                potential: item.potential,
+                personality: item.personality,
+                age: Math.floor(Math.random() * 5) + 14,
+                yearsActive: 0,
+                isAvailable: true,
+                generation: `${unitName} Original Member`,
+                teamHistory: [{ week: week, event: `Joined via unit audition for ${unitName}` }],
+                homeGroup: 'main',
+                // Add default empty values for other properties
+                position: 'under', graduated: false, isGraduating: false, trainingFocus: 'none', singlesParticipation: [], songsParticipation: [], centerHistory: [], kenninGroups: [], electionHype: 0, isCurrentCenter: false, chemistry: {}, graduationWindow: { min: 4, max: 8 }, graduationUrgency: 0, ambition: 'Pursue a Solo Dream'
+            };
+            setMembers(prev => [...prev, newMember]);
+            newMemberIds.push(String(newId)); // Add the new member's ID to our list
+        }
+    });
+
+    const finalMemberIds = [...existingMemberIds, ...newMemberIds];
+
+    const newUnit = {
+        id: `unit-${Date.now()}`,
+        name: unitName.trim(),
+        members: finalMemberIds,
+        creationWeek: week,
+    };
+
+    setUnits(prev => [...prev, newUnit]);
+    addNotification({ type: 'Management', message: `Special unit "${unitName}" has been formed!` });
+    setMessage(`Unit "${unitName}" formed with ${finalMemberIds.length} members.`);
+};
+
+const disbandUnit = (unitId) => {
+    const unit = units.find(u => u.id === unitId);
+    if (!unit) return;
+    
+    setUnits(prev => prev.filter(u => u.id !== unitId));
+    addNotification({ type: 'Management', message: `The special unit "${unit.name}" has been disbanded.` });
+    setMessage(`Unit "${unit.name}" was disbanded.`);
+};
     const scheduleNewSingle = ({ songData, productionData, releaseWeek, physicalVersions, includeHandshakeTickets }) => {
         // ---- START: Existing Cost Logic ----
         const baseCostPerVersion = 100000;
@@ -5446,33 +5530,114 @@ if (rookieStreakMembers.length > 0) {
     
 
     
-    const handleDisbandSisterGroup = (sgId, independent = false) => {
-      const sg = sisterGroups.find(g => g.id === sgId);
-      if (!sg) return;
+const handleDisbandSisterGroup = (sgId, independent = false) => {
+    const sg = sisterGroups.find(g => g.id === sgId);
+    if (!sg) return;
 
-      setMembers(prev => prev.map(m => ({
-          ...m,
-          kenninGroups: (m.kenninGroups || []).filter(gName => gName !== sg.name)
-      })));
+    // Find and update any member with a concurrent position in the disbanded group
+    const affectedMembers = getAllAvailableMembers(true).filter(m =>
+        (m.kenninGroups || []).includes(sg.name)
+    );
+    affectedMembers.forEach(member => {
+        const eventText = `Concurrent position in ${sg.name} ended due to disbandment`;
+        updateMemberState(member.rosterId, m => ({
+            ...m,
+            kenninGroups: (m.kenninGroups || []).filter(gName => gName !== sg.name),
+            teamHistory: [...(m.teamHistory || []), { week, event: eventText }]
+        }));
+    });
 
-      setGroupRoles(prev => {
-    const { [sgId]: _, ...newRoles } = prev;
-    return newRoles;
-});
+    // Remove the captain role associated with the group
+    setGroupRoles(prev => {
+        const { [sgId]: _, ...newRoles } = prev;
+        return newRoles;
+    });
 
-      if (independent) {
-          setGroupReputation(prev => prev + 5); // Reputation GAIN
-          addNotification({ type: 'Reputation', message: `${sg.name} going independent shows the strength of your brand! (+5 Rep)` });
-          setMessage(`${sg.name} has gone independent and is now a rival group.`);
-      } else {
-          setGroupReputation(prev => Math.max(0, prev - 5)); // Reputation LOSS
-          addNotification({ type: 'alert', message: `Forcibly disbanding ${sg.name} has hurt your public image. (-5 Rep)` });
-          setMessage(`${sg.name} has been disbanded. All members are now free agents.`);
-      }
-      
-      if (selectedSisterGroup === sgId) setSelectedSisterGroup(null);
-      setShowModal(null);
-    };
+    if (independent) {
+        setGroupReputation(prev => prev + 5);
+        addNotification({ type: 'Reputation', message: `${sg.name} going independent shows the strength of your brand! (+5 Rep)` });
+        setMessage(`${sg.name} has gone independent and is now a rival group.`);
+
+        let groupMembersForRival = sg.members || [];
+        if (sg.type === 'unit') {
+            const unitMemberIds = new Set(sg.members.map(String));
+            groupMembersForRival = getAllAvailableMembers(true).filter(m => unitMemberIds.has(m.rosterId));
+        }
+        
+        const newRival = {
+            id: Date.now(),
+            name: sg.name,
+            fans: sg.fans || 0,
+            membersCount: groupMembersForRival.length,
+            songs: sg.songs || [],
+            archetype: 'Fallen Angel',
+            ace: [...groupMembersForRival].sort((a,b) => getTotalFansForMember(b) - getTotalFansForMember(a))[0] || { name: 'Unknown', fans: 0 },
+            aggression: 50,
+            history: [{ week: week, event: `Went independent from ${groupName}.` }]
+        };
+        setRivalGroups(prev => [...prev, newRival]);
+    }
+
+    // Instead of filtering, we now mark the group as disbanded
+    setSisterGroups(prev => prev.map(g => {
+        if (g.id === sgId) {
+            // By marking as disbanded and emptying members, we preserve its songs
+            return { ...g, isDisbanded: true, members: [] };
+        }
+        return g;
+    }));
+
+    if (selectedSisterGroup === sgId) setSelectedSisterGroup(null);
+    setShowModal(null);
+};
+
+const confirmDisbandAndTransferMembers = (sgId, decisions) => {
+    const sg = sisterGroups.find(g => g.id === sgId);
+    if (!sg) return;
+
+    let membersToTransfer = { main: [] };
+    sisterGroups.forEach(g => { if (g.id !== sgId) membersToTransfer[g.id] = []; });
+
+    // Categorize members based on user decisions
+    sg.members.forEach(member => {
+        const decision = decisions[member.id];
+        if (decision && decision.startsWith('transfer-')) {
+            const groupId = decision.replace('transfer-', '');
+            membersToTransfer[groupId].push(member);
+        }
+        // "Fired" members are simply not added to any transfer list
+    });
+
+    // Process transfers to the Main group
+    if (membersToTransfer.main.length > 0) {
+        setMembers(prev => [...prev, ...membersToTransfer.main.map(m => ({
+            ...m,
+            homeGroup: 'main',
+            teamHistory: [...(m.teamHistory || []), { week, event: `Transferred from disbanded group ${sg.name}` }]
+        }))]);
+    }
+
+    // Process transfers to other Sister groups
+    setSisterGroups(prev => prev.map(group => {
+        if (membersToTransfer[group.id] && membersToTransfer[group.id].length > 0) {
+            return {
+                ...group,
+                members: [...group.members, ...membersToTransfer[group.id].map(m => ({
+                    ...m,
+                    homeGroup: group.name,
+                    teamHistory: [...(m.teamHistory || []), { week, event: `Transferred from disbanded group ${sg.name}` }]
+                }))]
+            };
+        }
+        return group;
+    }));
+    
+    // Finally, call the original disband logic (which now just flags the group)
+    handleDisbandSisterGroup(sgId, false);
+
+    addNotification({ type: 'Management', message: `${sg.name} has been disbanded and its members reassigned.` });
+};
+
     const handleConfirmEditGroupName = (groupToEdit, newName) => {
         const oldName = groupToEdit.name;
 
@@ -6202,6 +6367,130 @@ const beginActivity = (memberId, activityType) => {
                 modalPayload = { promoType, singleName: single.name, totalFanGain: 25000, message };
                 break;
 
+                case 'billboardCampaign':
+                    cost = 400000;
+                    if (money < cost) return setMessage("Not enough money for a billboard campaign.");
+                    
+                    const billboardUnit = senbatsuMembers.sort((a, b) => b.visual - a.visual).slice(0, 4);
+                    if (billboardUnit.length < 1) return setMessage("No senbatsu members to feature.");
+
+                    billboardUnit.forEach(member => {
+                        const fansToConvert = Math.floor((member.fans.casual || 0) * 0.1); // 10% conversion
+                        updateMemberState(member.rosterId || member.id, m => ({ 
+                            ...m,
+                            fans: {
+                                hardcore: (m.fans.hardcore || 0) + fansToConvert,
+                                casual: Math.max(0, (m.fans.casual || 0) - fansToConvert)
+                            },
+                            morale: Math.min(100, m.morale + 10)
+                        }));
+                    });
+
+                    const updateSalesForBillboard = s => s.id === singleId ? { ...s, baseSalesPotential: s.baseSalesPotential * 1.12 } : s;
+                    if (single.targetGroup === 'main' || single.targetGroup === groupName) setSongs(prev => prev.map(updateSalesForBillboard));
+                    else setSisterGroups(prev => prev.map(sg => sg.name === single.targetGroup || String(sg.id) === String(single.targetGroup) ? { ...sg, songs: (sg.songs || []).map(updateSalesForBillboard) } : sg));
+
+                    message = `A massive billboard campaign featuring ${billboardUnit.map(m => m.name).join(', ')} is running in Shibuya! It boosted sales potential and converted many of their casual fans into hardcore supporters.`;
+                    modalPayload = { promoType, singleName: single.name, members: billboardUnit, salesBoost: 12, message };
+                    break;
+
+                case 'gravureSpread':
+                    cost = 100000;
+                    if (money < cost) return setMessage("Not enough money for the magazine deal.");
+
+                    const gravureUnit = senbatsuMembers.sort((a, b) => b.visual - a.visual).slice(0, 5);
+                    if (gravureUnit.length < 3) return setMessage("Not enough high-visual members for a gravure spread.");
+                    
+                    const incomeFromGravure = 50000;
+                    cost -= incomeFromGravure; // Final cost is net
+
+                    distributeFansWithRivals(40000, gravureUnit, single);
+                    gravureUnit.forEach(member => {
+                        updateMemberState(member.rosterId || member.id, m => ({
+                            ...m,
+                            visual: Math.min(100, m.visual + 0.5) // Small permanent visual boost
+                        }));
+                    });
+
+                    message = `A stunning gravure spread in a major magazine featuring ${gravureUnit.map(m => m.name).join(', ')} has been released! It brought in ${40000 .toLocaleString()} new fans and earned the group a small fee.`;
+                    modalPayload = { promoType, singleName: single.name, members: gravureUnit, totalFanGain: 40000, income: incomeFromGravure, message };
+                    break;
+
+                case 'centerSoloRadio':
+                    cost = 30000;
+                    if (money < cost) return setMessage("Not enough money to produce a radio special.");
+                    
+                    const centerMemberId = (titleTrack.center || [])[0];
+                    if (!centerMemberId) return setMessage("This single has no center member for a solo show.");
+                    const centerMember = getMemberById(centerMemberId);
+                    if (!centerMember) return setMessage("Center member not found.");
+
+                    const fanGainForCenter = Math.floor(getTotalFansForMember(centerMember) * 0.15) + 2000;
+                    
+                    updateMemberState(centerMember.rosterId, m => ({
+                        ...m,
+                        fans: { ...m.fans, casual: (m.fans.casual || 0) + fanGainForCenter },
+                        charisma: Math.min(100, m.charisma + 1),
+                        variety: Math.min(100, m.variety + 1)
+                    }));
+                    
+                    message = `${centerMember.name} hosted a successful one-month radio special! Her charming personality gained her ${fanGainForCenter.toLocaleString()} new fans and improved her skills.`;
+                    modalPayload = { promoType, singleName: single.name, members: [centerMember], message };
+                    break;
+
+                case 'flyerHandout':
+                    cost = 10000;
+                    if (money < cost) return setMessage("Not enough money to print flyers.");
+
+                    const handoutUnit = senbatsuMembers.sort((a,b) => getTotalFansForMember(a) - getTotalFansForMember(b)).slice(0, 4);
+                    if (handoutUnit.length < 2) return setMessage("Not enough members for a handout event.");
+
+                    let handoutConverted = 0;
+                    handoutUnit.forEach(member => {
+                        const fansToConvert = Math.floor((member.fans.casual || 0) * 0.25); // 25% conversion!
+                        handoutConverted += fansToConvert;
+                        updateMemberState(member.rosterId || member.id, m => ({
+                            ...m,
+                            fans: {
+                                hardcore: (m.fans.hardcore || 0) + fansToConvert,
+                                casual: Math.max(0, (m.fans.casual || 0) - fansToConvert)
+                            },
+                            stamina: Math.max(0, m.stamina - 40),
+                            stress: Math.min(100, m.stress + 20),
+                            morale: Math.min(100, m.morale + 30) // Huge morale boost from fan interaction
+                        }));
+                    });
+
+                    message = `In a show of humility, ${handoutUnit.map(m=>m.name).join(', ')} personally handed out flyers in Akihabara. Fans were incredibly moved by their hard work, converting ${handoutConverted.toLocaleString()} casual fans to hardcore supporters!`;
+                    modalPayload = { promoType, singleName: single.name, members: handoutUnit, fansConverted: handoutConverted, message };
+                    break;
+
+                case 'mvPressConference':
+                    cost = 200000;
+                    if (money < cost) return setMessage("Not enough money to hold a press conference.");
+
+                    const pressUnit = senbatsuMembers.sort((a, b) => ((b.charisma + b.intelligence)/2) - ((a.charisma + a.intelligence)/2)).slice(0, 5);
+                    if (pressUnit.length < 3) return setMessage("Not enough suitable members for a press conference.");
+
+                    const avgPressSkill = pressUnit.reduce((sum, m) => sum + m.charisma + m.intelligence, 0) / (pressUnit.length * 2);
+                    
+                    if (avgPressSkill > 65) { // High chance of success
+                        const fanGain = 70000;
+                        distributeFansWithRivals(fanGain, pressUnit, single);
+                        const salesBoost = 1.10;
+                        const updateSalesForPress = s => s.id === singleId ? { ...s, baseSalesPotential: s.baseSalesPotential * salesBoost } : s;
+                        if (single.targetGroup === 'main' || single.targetGroup === groupName) setSongs(prev => prev.map(updateSalesForPress));
+                        else setSisterGroups(prev => prev.map(sg => sg.name === single.targetGroup ? { ...sg, songs: (sg.songs || []).map(updateSalesForPress) } : sg));
+                        
+                        message = `The press conference was a massive success! The members' witty and charming answers impressed the media, gaining ${fanGain.toLocaleString()} fans and boosting sales potential.`;
+                        modalPayload = { promoType, singleName: single.name, members: pressUnit, totalFanGain: fanGain, salesBoost: 10, message };
+                    } else {
+                        pressUnit.forEach(member => updateMemberState(member.rosterId, m => ({ ...m, morale: Math.max(0, m.morale - 15) })));
+                        message = `The press conference was awkward. The members seemed nervous and couldn't answer questions well, leading to a drop in their morale.`;
+                        modalPayload = { promoType, singleName: single.name, members: pressUnit, message };
+                    }
+                    break;
+                    
             default:
                 return setMessage("Unknown promotion type.");
         }
@@ -7158,12 +7447,20 @@ if ((newWeek - 1) % 52 === 49) { // Trigger at the end of Week 49
             if (!found) {
                 for (let i = 0; i < sisterGroupsForUpdate.length; i++) {
                     const sg = sisterGroupsForUpdate[i];
-                    // Correctly construct the sister group member's roster ID for comparison
                     const memberIndex = (sg.members || []).findIndex(m => `sg-${sg.id}-${m.id}` === String(memberId));
                     if (memberIndex !== -1) {
                         sisterGroupsForUpdate[i].members[memberIndex] = updateFn(sg.members[memberIndex]);
+                        found = true;
                         break; 
                     }
+                }
+            }
+
+            // --- NEW: Update exchange students ---
+            if (!found) {
+                const exchangeIndex = exchangeStudentsForUpdate.findIndex(ex => ex.member.rosterId === String(memberId));
+                if (exchangeIndex !== -1) {
+                    exchangeStudentsForUpdate[exchangeIndex].member = updateFn(exchangeStudentsForUpdate[exchangeIndex].member);
                 }
             }
         };
@@ -8457,32 +8754,51 @@ const executeRequestHourConcert = () => {
 };
 
 
-    const confirmCreateSisterGroup = (groupData) => {
-      const cost = 250000;
-      if (money < cost) return setMessage(`Need ¥${cost.toLocaleString()} to establish a new sister group.`);
 
-      const newId = Math.max(0, ...(sisterGroups || []).map(sg => sg.id || 0)) + 1;
-      
-      const newSisterGroup = {
-          id: newId,
-          name: groupData.groupName,
-          location: groupData.location,
-          type: groupData.type,
-          fans: 100, // Reduced initial fans as there are no members
-          members: [], // Start with 0 members
-          songs: [],
-          income: 0, // No income without members
-          isAutonomous: groupData.type === 'overseas',
-          money: groupData.type === 'overseas' ? 50000 : 0,
-          licensedSongs: [],
-      };
-      
-      setSisterGroups(prev => [...(prev || []), newSisterGroup]);
-      setMoney(prev => prev - cost);
-      setMessage(`Successfully established ${groupData.groupName} in ${groupData.location}! Hold an audition to recruit members for them.`);
-      setShowModal(null);
-      setGroupRoles(prev => ({ ...prev, [newId]: null }));
+const confirmCreateSisterGroup = (groupData, initialMemberIds = []) => {
+    let cost = 0;
+    const newGroupType = groupData.type;
+
+    if (newGroupType === 'unit') {
+        cost = 50000; // Special low cost for forming a unit
+    } else {
+        cost = newGroupType === 'domestic' ? 200000 : 500000;
+    }
+
+    if (money < cost) return setMessage(`Need ¥${cost.toLocaleString()} to establish this group.`);
+
+    const newId = Math.max(0, ...(sisterGroups || []).map(sg => sg.id || 0)) + 1;
+    
+    // Create the base group/unit object
+    const newSisterGroup = {
+        id: newId,
+        name: groupData.groupName,
+        location: groupData.location || 'Special Project',
+        type: newGroupType,
+        // A unit's 'members' array is just a list of IDs.
+        // It doesn't "own" the members, they just have a concurrent position.
+        members: initialMemberIds,
+        fans: 100, songs: [], income: 0, isAutonomous: false, money: 0, licensedSongs: []
     };
+    
+    // If we are creating a unit, we don't transfer members.
+    // Instead, we update them to add the concurrent position.
+    if (newGroupType === 'unit' && initialMemberIds.length > 0) {
+        initialMemberIds.forEach(memberId => {
+            updateMemberState(memberId, m => ({
+                ...m,
+                kenninGroups: [...(m.kenninGroups || []), newSisterGroup.name],
+                teamHistory: [...(m.teamHistory || []), { week: week, event: `Joined special unit "${newSisterGroup.name}"` }]
+            }));
+        });
+    }
+
+    setSisterGroups(prev => [...(prev || []), newSisterGroup]);
+    setMoney(prev => prev - cost);
+    setMessage(`Successfully established ${groupData.groupName}!`);
+    setShowModal(null);
+    setGroupRoles(prev => ({ ...prev, [newId]: null }));
+};
 
     const licenseSongToGroup = (songId, groupId) => {
         const licenseFee = 250000;
@@ -8681,7 +8997,9 @@ const executeRequestHourConcert = () => {
             ...members.map(m => m.id),
             ...sisterGroups.flatMap(sg => (sg.members || []).map(m => m.id))
         ];
-        const startingId = allMemberIds.length > 0 ? Math.max(...allMemberIds) : 0;
+        // Ensure all collected IDs are parsed as numbers and filter out any potential NaNs
+        const numericIds = allMemberIds.map(id => parseInt(id, 10)).filter(id => !isNaN(id));
+        const startingId = numericIds.length > 0 ? Math.max(0, ...numericIds) : 0;
         // --- END OF FIX ---
         const isMainGroup = targetGroup === 'main';
         const targetGroupId = isMainGroup ? 'main' : parseInt(targetGroup, 10);
@@ -10018,12 +10336,12 @@ const memberFans = isAce ? rival.ace.fans : 100000 + Math.floor(Math.random() * 
 
 return {
     // State
-    exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
+    generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
     // Firebase/Persistence
     getSavedGames, saveGame, loadGame,
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
-    startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent,  startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining
+    confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent,  startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining
     };
     };
