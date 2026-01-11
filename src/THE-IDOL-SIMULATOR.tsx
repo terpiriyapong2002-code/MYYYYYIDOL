@@ -31,7 +31,7 @@ const App = () => {
     // Destructure everything from the custom hook
     const {
     // State
-    generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory,  merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
+    eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory,  merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
     // Firebase/Persistence
     getSavedGames, saveGame, loadGame,
     // Utilities
@@ -1734,24 +1734,18 @@ let selectableMembers = [];
 // First, get the single source of truth for all members, which now includes exchange students.
 const allAvailableForSong = getAllAvailableMembers(true);
 
-if (targetGroup === 'main') {
-    // If the target is the main group, filter for members who are:
-    // 1. Not a sister member (i.e., they are a main group member)
-    // 2. Are an exchange student
-    // 3. Have a concurrent position (Kennin) in the main group
-    selectableMembers = allAvailableForSong.filter(m => m.isAvailable);
-} else {
-    // If the target is a sister group
-    const sg = sisterGroups.find(s => s.name === targetGroup);
-    if (sg) {
-        // Filter for members who are:
-        // 1. Part of that sister group
-        // 2. Have a concurrent position (Kennin) in that sister group
-        selectableMembers = allAvailableForSong.filter(m => 
-            m.isAvailable && (String(m.groupId) === String(sg.id) || (m.kenninGroups || []).includes(sg.name))
-        );
+    if (targetGroup === 'main') {
+        // For a main group song, ALL available members from ALL groups are selectable.
+        selectableMembers = allAvailableForSong.filter(m => m.isAvailable);
+    } else {
+        // For a sister group song, only members of that group or kennin members are selectable.
+        const sg = sisterGroups.find(s => s.name === targetGroup);
+        if (sg) {
+            selectableMembers = allAvailableForSong.filter(m => 
+                m.isAvailable && (String(m.groupId) === String(sg.id) || (m.kenninGroups || []).includes(sg.name))
+            );
+        }
     }
-}
 
     // Add rival members to the selectable pool if it's a collaboration
     if (isCollaboration) {
@@ -1796,32 +1790,37 @@ if (memberFilter !== 'all') {
     // Define the list of currently visible members based on the filter
     let visibleRoster = selectableMembers.filter(member => {
         if (filterKey === 'All') return true;
-        
+
         if (filterKey.startsWith('team-')) {
             const teamId = parseInt(filterKey.replace('team-', ''), 10);
             const selectedTeam = teams.find(t => t.id === teamId);
             if (!selectedTeam) return false;
-            if (member.teamId !== teamId) return false;
-            if (selectedTeam.groupId === 'main') return !member.isSister;
-            else return member.isSister;
+            // CORRECTED: Check if the member's unique rosterId is in the team's member list.
+            return (selectedTeam.members || []).map(String).includes(String(member.rosterId));
         }
-        if (filterKey === 'main') {
-            return !member.isSister;
-        }
+
+            // CORRECTED: This now shows ONLY main group members.
+            if (filterKey === 'main') {
+                return !member.isSisterMember;
+            }
+
         if (filterKey.startsWith('main-gen-')) {
             const gen = filterKey.replace('main-gen-', '');
-            return !member.isSister && member.generation === gen;
+            return (!member.isSisterMember || (member.kenninGroups || []).includes(groupName)) && member.generation === gen;
         }
+
         if (filterKey.startsWith('sg-')) {
+            const sgIdStr = filterKey.replace('sg-', '').split('-gen-')[0];
+            const sgId = parseInt(sgIdStr, 10);
+            
             if (filterKey.includes('-gen-')) {
-                const [sgIdStr, gen] = filterKey.replace('sg-', '').split('-gen-');
-                const sgId = parseInt(sgIdStr, 10);
+                const gen = filterKey.split('-gen-')[1];
                 return member.groupId === sgId && member.generation === gen;
             } else {
-                const sgId = parseInt(filterKey.replace('sg-', ''), 10);
                 return member.groupId === sgId;
             }
         }
+        
         return false;
     });
 
@@ -2333,7 +2332,7 @@ const renderSelectGraduatingMemberStep = () => {
                                         <div key={member.rosterId} className="flex items-center justify-between p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
                                             <div className="flex flex-col">
                                                 <span className="font-medium dark:text-gray-200">
-                                                    {member.name}
+                                                {member.name} {member.isSisterMember && `(${member.displayGroupName})`}
                                                     <span className="ml-2 text-xs text-pink-300 font-normal">
                                                         {(() => {
                                                             const otherTracks = tracks.filter(t => 
@@ -2623,7 +2622,7 @@ const renderSelectGraduatingMemberStep = () => {
                                         <div key={member.rosterId} className="flex items-center justify-between p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
                                             <div className="flex flex-col">
                                                 <span className="font-medium dark:text-gray-200">
-                                                    {member.name}
+                                                {member.name} {member.isSisterMember && `(${member.displayGroupName})`}
                                                     <span className="ml-2 text-xs text-pink-300 font-normal">
                                                         {(() => {
                                                             const otherTracks = tracks.filter(t => 
@@ -7654,7 +7653,7 @@ if (type === 'election') {
                                 <div className="col-span-1 text-center font-bold text-pink-600 dark:text-pink-400">#{member.rank}</div>
                                         <div className="col-span-7">
                                             <p className="font-semibold text-sm text-gray-800 dark:text-gray-200">{member.name}</p>
-                                            <p className="text-[10px] text-gray-500 dark:text-gray-400 truncate" title={getMemberStatusString(member)}>{getMemberStatusString(member)}</p>
+                                            <p className="text-[4.5px] text-gray-500 dark:text-gray-400 truncate" title={getMemberStatusString(member)}>{getMemberStatusString(member)}</p>
                                         </div>
                                 <div className="col-span-1 text-center text-[13px]">
                                     <RankChangeArrow member={member} electionWeek={history.week} />
@@ -7703,7 +7702,7 @@ if (type === 'election') {
                 <div className="col-span-1 font-bold text-center">{isSenbatsu ? `#${member.rank}` : '-'}</div>
                 <div className="col-span-4">
     <p className="font-semibold text-sm text-gray-800 dark:text-gray-200">{member.name}</p>
-    <p className="text-[6.5px] text-gray-500 dark:text-gray-400 truncate" title={getMemberGroupStatus(member)}>{getMemberGroupStatus(member)}</p>
+    <p className="text-[4.5px] text-gray-500 dark:text-gray-400 truncate" title={getMemberGroupStatus(member)}>{getMemberGroupStatus(member)}</p>
 </div>
                 <div className="col-span-3 text-sm text-gray-600 dark:text-gray-400">{member.eliminationRound}</div>
                 <div className="col-span-4 text-sm text-gray-600 dark:text-gray-400">
@@ -7856,6 +7855,113 @@ const JankenResultModal = () => {
     );
 };
 
+const SurvivalEliminationModal = () => {
+    if (!eliminationData) return null;
+    const { contestants, cutoffRank, title } = eliminationData;
+
+    // States for reveal logic
+    const [revealIndex, setRevealIndex] = useState(0);
+    const [revealedRanks, setRevealedRanks] = useState([]);
+    const [currentContestant, setCurrentContestant] = useState(null);
+    const [infoPanelVisible, setInfoPanelVisible] = useState(false);
+
+    // We reveal from the bottom up.
+    const contestantsToReveal = [...contestants].sort((a,b) => a.popularity - b.popularity);
+
+    const revealNext = () => {
+        if (revealIndex >= contestantsToReveal.length) return;
+
+        const contestant = contestantsToReveal[revealIndex];
+        const rank = contestants.length - revealIndex;
+
+        setCurrentContestant({ ...contestant, rank });
+        setInfoPanelVisible(false); // Hide panel for animation
+
+        setTimeout(() => {
+            // Insert at the beginning to have the newest reveal on top
+            setRevealedRanks(prev => [{ ...contestant, rank }, ...prev]);
+            setInfoPanelVisible(true); // Show panel after a delay
+        }, 300);
+
+        setRevealIndex(prev => prev + 1);
+    };
+
+    const allRevealed = revealIndex >= contestantsToReveal.length;
+    const isFinale = title === 'Grand Finale';
+
+    return (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center z-50 p-2 sm:p-4 animate-in fade-in">
+             <div className="w-full max-w-4xl h-full sm:h-auto sm:max-h-[90vh] bg-gradient-to-br from-pink-100/80 via-purple-100/80 to-blue-100/80 dark:from-pink-900/70 dark:via-purple-900/70 dark:to-slate-900/70 backdrop-blur-2xl border-2 border-white/30 dark:border-slate-700/50 rounded-2xl shadow-2xl flex flex-col z-10">
+                <div className="p-3 sm:p-4 text-center border-b-2 border-pink-200/50 dark:border-pink-800/50">
+                    <h2 className="text-2xl sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600 drop-shadow-sm">{title}</h2>
+                </div>
+
+                <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
+                    {/* Left side: Announcement & Action */}
+                    <div className="flex flex-col justify-between p-4 order-2 md:order-1 md:w-1/2 md:border-r dark:border-gray-700/50">
+                        <div>
+                            <h3 className="font-bold text-lg mb-2 text-center md:text-left text-gray-700 dark:text-gray-300">Announcement</h3>
+                            <div className="relative flex items-center justify-center p-4 min-h-[200px] md:min-h-[300px] bg-black/5 dark:bg-black/20 rounded-xl shadow-inner border border-white/20">
+                                {currentContestant && infoPanelVisible && (
+                                    <div className="transition-all duration-500 opacity-100 scale-100 text-center animate-in fade-in">
+                                        <p className="text-2xl font-bold">{currentContestant.name}</p>
+                                        <p className={`text-4xl font-black my-2 drop-shadow-md ${currentContestant.rank > cutoffRank ? 'text-red-400' : 'text-pink-400'}`}>{currentContestant.rank > cutoffRank ? 'ELIMINATED' : 'SAFE'}</p>
+                                        <p className="text-lg">Rank: #{currentContestant.rank}</p>
+                                    </div>
+                                )}
+                                {!currentContestant && <p className="text-gray-500">Click "Reveal Next" to begin...</p>}
+                            </div>
+                        </div>
+
+                        <div className="mt-4">
+                            {allRevealed ? (
+                                <button onClick={finalizeSurvivalElimination} className="w-full p-4 bg-green-500 text-white font-bold rounded-lg text-lg hover:bg-green-600 transition-all shadow-lg shadow-green-500/20">
+                                    Finalize Results & Continue
+                                </button>
+                            ) : (
+                                <button onClick={revealNext} className="w-full p-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold rounded-lg text-lg animate-pulse shadow-lg hover:shadow-xl transition-all">
+                                    Reveal Rank #{contestants.length - revealIndex}
+                                </button>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Right side: Revealed Ranks */}
+                    <div className="p-4 order-1 md:order-2 md:w-1/2 flex flex-col">
+                        <h3 className="font-bold text-lg mb-2 text-center md:text-left text-gray-700 dark:text-gray-300">Results</h3>
+                        <div className="space-y-2 overflow-y-auto p-2 border-t md:border-t-0 border-gray-200/80 dark:border-gray-700/50 max-h-[25vh] md:max-h-full flex-1">
+                            {isFinale && revealedRanks.some(c => c.rank <= cutoffRank) && <p className="font-bold text-center text-pink-500 bg-pink-200/50 dark:bg-pink-900/50 p-2 rounded-lg mb-2 shadow-inner border border-pink-500/10">-- DEBUT ZONE --</p>}
+                            {revealedRanks.filter(c => c.rank <= cutoffRank).map(c => (
+                                <div key={c.id} className="p-2 rounded-lg flex justify-between items-center transition-all duration-300 bg-pink-100/50 dark:bg-pink-900/30 border border-pink-500/20">
+                                    <div>
+                                        <span className="font-bold text-lg w-12 inline-block text-pink-600 dark:text-pink-300">#{c.rank}</span>
+                                        <span className="font-semibold">{c.name}</span>
+                                        <span className="text-xs text-gray-500 ml-2">({c.group})</span>
+                                    </div>
+                                    <span className="text-sm font-bold text-pink-500">SAFE</span>
+                                </div>
+                            ))}
+                             {revealedRanks.some(c => c.rank > cutoffRank) && <p className="font-bold text-center text-gray-500 bg-gray-200/50 dark:bg-gray-800/50 p-2 rounded-lg my-2">-- ELIMINATED --</p>}
+                            {revealedRanks.filter(c => c.rank > cutoffRank).map(c => (
+                                <div key={c.id} className="p-2 rounded-lg flex justify-between items-center transition-all duration-300 bg-gray-200/50 dark:bg-gray-800/30 opacity-80">
+                                    <div>
+                                        <span className="font-bold text-lg w-12 inline-block text-gray-500/80">#{c.rank}</span>
+                                        <span className="font-semibold text-gray-700/80 dark:text-gray-300/80">{c.name}</span>
+                                        <span className="text-xs text-gray-500/80 ml-2">({c.group})</span>
+                                    </div>
+                                    <span className="text-sm font-bold text-gray-500/80">ELIMINATED</span>
+                                </div>
+                            ))}
+                             {revealedRanks.length === 0 && <p className="text-center text-gray-500 italic p-4">Ranks will appear here as they are revealed.</p>}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+
 const JankenTournamentStartModal = () => {
     const [includeOverseas, setIncludeOverseas] = useState(false);
     const baseCost = 75000;
@@ -7896,6 +8002,197 @@ const JankenTournamentStartModal = () => {
                 </button>
             </div>
         </ModalWrapper>
+    );
+};
+
+const SurvivalShowStartModal = () => {
+    const [selectedMemberIds, setSelectedMemberIds] = useState([]);
+    const availableMembers = getAllAvailableMembers(true).filter(m => m.isAvailable);
+
+    const toggleMember = (memberId) => {
+        setSelectedMemberIds(prev =>
+            prev.includes(memberId)
+                ? prev.filter(id => id !== memberId)
+                : [...prev, memberId]
+        );
+    };
+
+    const handleConfirm = () => {
+        if (selectedMemberIds.length > 15) {
+            setMessage("You can send a maximum of 15 members.");
+            return;
+        }
+        startSurvivalShow(selectedMemberIds);
+    }
+
+    return (
+        <ModalWrapper title="Participate in Idol Survival Show" maxWidth="max-w-2xl">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Select up to 15 members to send to the 12-week show. They will be unavailable during this time. Cost: ¥2,000,000.</p>
+            <div className="space-y-1 max-h-[400px] overflow-y-auto border-t border-b dark:border-gray-700 p-1 mb-4">
+                {availableMembers.map(member => (
+                    <div key={member.rosterId} className={`flex items-center justify-between p-2 rounded cursor-pointer ${selectedMemberIds.includes(member.rosterId) ? 'bg-blue-100 dark:bg-blue-800' : 'bg-white dark:bg-gray-700/50 hover:bg-gray-50'}`} onClick={() => toggleMember(member.rosterId)}>
+                        <div>
+                            <p className="font-semibold text-sm">{member.name}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">{getMemberGroupStatus(member)}</p>
+                        </div>
+                        <input type="checkbox" checked={selectedMemberIds.includes(member.rosterId)} readOnly className="form-checkbox h-4 w-4 text-blue-600"/>
+                    </div>
+                ))}
+            </div>
+             <div className="flex justify-between items-center mt-6 pt-4 border-t dark:border-gray-600">
+                <p className={`font-bold text-lg ${selectedMemberIds.length > 15 ? 'text-red-500' : ''}`}>{selectedMemberIds.length} / 15 Selected</p>
+                <div className="flex gap-2">
+                    <button onClick={() => setShowModal(null)} className="p-2 bg-gray-300 dark:bg-gray-600 rounded px-4">Cancel</button>
+                    <button onClick={handleConfirm} disabled={selectedMemberIds.length === 0 || money < 2000000 || selectedMemberIds.length > 15} className="p-3 bg-purple-600 text-white rounded font-bold disabled:bg-gray-400">
+                        Confirm Entry (¥2,000,000)
+                    </button>
+                </div>
+            </div>
+        </ModalWrapper>
+    );
+};
+
+const LiveSurvivalShowModal = () => {
+    if (!survivalShow) return null;
+    const { name, week, contestants, log } = survivalShow;
+
+    const sortedContestants = [...contestants].sort((a,b) => b.popularity - a.popularity);
+    
+    return (
+        <div className="fixed inset-0 bg-gray-900 flex items-center justify-center z-50 p-4 font-sans">
+            <div className="w-full max-w-6xl h-[95vh] flex flex-col bg-gradient-to-b from-pink-50 to-blue-100 dark:from-gray-900 dark:to-slate-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700">
+                <div className="p-4 text-center border-b-2 border-pink-200 dark:border-pink-800">
+                    <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">{name}</h2>
+                    <p className="text-xl font-semibold text-gray-700 dark:text-gray-300">EPISODE {week}</p>
+                </div>
+
+                <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4 p-4 overflow-hidden">
+                    <div className="md:col-span-2 overflow-y-auto pr-2">
+                        <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-2">Current Rankings</h3>
+                        {sortedContestants.map((c, index) => {
+                            const isTop12 = index < 12;
+                            const rank = index + 1;
+                            let rankStyle = 'bg-white/50 dark:bg-gray-800/50';
+                            if (isTop12) rankStyle = 'bg-blue-200/50 dark:bg-blue-900/40';
+                            if (c.isPlayer) rankStyle = 'bg-pink-200/60 dark:bg-pink-800/50 border-2 border-pink-400';
+
+                            return (
+                                <div key={c.id} className={`p-2 rounded-lg mb-1.5 flex items-center justify-between text-sm transition-all duration-300 ${rankStyle}`}>
+                                    <div className="flex items-center">
+                                        <div className="relative w-12 h-12 flex items-center justify-center mr-3">
+                                            <svg className="absolute w-full h-full text-gray-300 dark:text-gray-600" viewBox="0 0 100 100" fill="currentColor"><polygon points="50,0 100,100 0,100" /></svg>
+                                            <span className="relative font-black text-lg text-white dark:text-gray-200 drop-shadow-md">{rank}</span>
+                                        </div>
+                                        <div className={`w-8 text-center font-black text-xl ${c.grade === 'A' ? 'text-pink-500' : 'text-gray-400'}`}>{c.grade}</div>
+                                        <div>
+                                            <p className="font-semibold text-gray-800 dark:text-gray-100">{c.name}</p>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400">{c.group}</p>
+                                        </div>
+                                    </div>
+                                    <span className="font-mono text-cyan-600 dark:text-cyan-400 font-semibold w-24 text-right">{Math.round(c.popularity).toLocaleString()} pts</span>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <div className="md:col-span-1 bg-black/5 dark:bg-black/20 p-4 rounded-lg overflow-y-auto">
+                        <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-2">Episode Summary</h3>
+                        <div className="space-y-3 text-sm">
+                            {log.slice().reverse().map((entry, index) => (<p key={index} className="text-gray-600 dark:text-gray-300 pb-2 border-b border-gray-200 dark:border-gray-700 last:border-b-0">{entry}</p>))}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="p-4 border-t border-pink-200 dark:border-pink-800 flex justify-end">
+                    <button onClick={() => setShowModal(null)} className="px-8 py-3 bg-pink-500 text-white font-bold rounded-lg hover:bg-pink-600 shadow-lg transition-all">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const SurvivalShowResultModal = () => {
+    if (!modalData) return null;
+    const { name, winners, allPlayerPerformances, playerWinners, totalPrizeMoney, totalRepGain } = modalData;
+
+    return (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="w-full max-w-3xl rounded-2xl bg-gradient-to-br from-pink-300 to-purple-300 dark:from-pink-900 dark:to-purple-800 border-2 border-white/30 shadow-2xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-5 text-white max-h-[90vh]">
+                <div className="p-4 text-center">
+                    <h3 className="text-lg font-semibold text-white/80">The Final Results Are In For</h3>
+                    <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-yellow-200 mb-2 drop-shadow-lg">{name}</h2>
+                </div>
+                
+                <div className="p-3 bg-black/20">
+                    <h3 className="text-lg font-bold text-center text-yellow-200 mb-2">THE DEBUT GROUP</h3>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 max-h-48 overflow-y-auto p-1">
+                        {winners.map(winner => (
+                            <div key={winner.name} className={`p-2 rounded-lg text-center border-2 transition-all duration-300 ${winner.isPlayer ? 'bg-yellow-400/20 border-yellow-300' : 'bg-black/20 border-transparent'}`}>
+                                <p className={`font-black text-xl ${winner.isPlayer ? 'text-yellow-200' : 'text-white'}`}>#{winner.rank}</p>
+                                <p className="font-bold text-xs truncate">{winner.name}</p>
+                                <p className="text-[10px] text-white/60 truncate">{winner.group}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="p-4 flex-1 overflow-y-auto">
+                    <h4 className="font-semibold text-lg text-center mb-2">Your Agency's Performance</h4>
+                    
+                    {allPlayerPerformances && allPlayerPerformances.length > 0 ? (
+                        <div className="space-y-2">
+                            <div className="max-h-40 overflow-y-auto p-2 rounded-lg bg-black/20">
+                                {allPlayerPerformances.map(p => {
+                                    let outcome, outcomeColor, topText;
+                                    if (p.finalRank <= 12) {
+                                        outcome = `DEBUTED`;
+                                        outcomeColor = 'text-yellow-300';
+                                        topText = `Final Rank: #${p.finalRank}`;
+                                    } else {
+                                        outcome = `Eliminated in Ep. ${p.eliminatedWeek}`;
+                                        outcomeColor = 'text-gray-400';
+                                        if (p.finalRank <= 20) topText = 'Made it to the Finale (Top 20)';
+                                        else if (p.finalRank <= 30) topText = 'Made it to Top 30';
+                                        else if (p.finalRank <= 60) topText = 'Made it to Top 60';
+                                        else topText = 'Made it to Top 96';
+                                    }
+
+                                    return (
+                                        <div key={p.id} className="p-2 mb-1 bg-black/30 rounded-lg flex justify-between items-center text-left">
+                                            <div>
+                                                <p className="font-bold text-sm">{p.name}</p>
+                                                <p className={`text-xs font-semibold ${outcomeColor}`}>{outcome}</p>
+                                                <p className="text-[10px] text-gray-400">{topText}</p>
+                                            </div>
+                                            <div className="text-right">
+                                                <p className="font-mono">Grade: <span className={`font-bold ${p.grade === 'A' ? 'text-pink-400' : ''}`}>{p.grade}</span></p>
+                                                <p className="text-xs text-gray-500">Last Rank: {p.finalRank}</p>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
+                            {(playerWinners && playerWinners.length > 0) && (
+                                <div className="mt-2 p-2 bg-green-500/20 border border-green-400/50 rounded-lg text-center text-sm">
+                                    <p className="font-bold text-green-200">Total Rewards:</p>
+                                    <p>Prize Money: <span className="font-bold text-yellow-300">¥{totalPrizeMoney.toLocaleString()}</span></p>
+                                    <p>Reputation Gain: <span className="font-bold text-yellow-300">+{totalRepGain}</span></p>
+                                </div>
+                            )}
+
+                        </div>
+                    ) : (
+                        <p className="text-center text-gray-300 mt-2">You did not enter any members into the show.</p>
+                    )}
+                </div>
+
+                <div className="flex justify-end p-3 bg-black/20 flex-shrink-0">
+                    <button onClick={() => setShowModal(null)} className="px-6 py-2 bg-pink-500 text-white font-semibold rounded-lg hover:bg-pink-600 transition-all shadow-lg">AMAZING!</button>
+                </div>
+            </div>
+        </div>
     );
 };
 
@@ -10191,6 +10488,30 @@ const TabButton = ({ id, label, icon: Icon }) => (
             </div>
         </div>
 
+        {/* Survival Show History */}
+        <div>
+            <h3 className="text-xl font-semibold mb-3 border-b-2 pb-2">Survival Show History</h3>
+            <div className="space-y-2 max-h-[60vh] overflow-y-auto">
+                {survivalShowHistory.length > 0 ? (
+                    [...survivalShowHistory].reverse().map((event, index) => (
+                        <button 
+                            key={`survival-${index}`}
+                            onClick={() => {
+                                setModalData(event);
+                                setShowModal('survivalShowResult');
+                            }}
+                            className="w-full text-left p-3 bg-purple-100 dark:bg-gray-700 rounded-lg shadow hover:bg-purple-200 dark:hover:bg-gray-600 transition-colors"
+                        >
+                            <span className="font-bold">Week {event.week}:</span> {event.name}
+                        </button>
+                    ))
+                ) : (
+                    <p className="text-gray-500 italic">No survival show history yet.</p>
+                )}
+            </div>
+        </div>
+
+
             {/* Shuffle History */}
             <div>
                 <h3 className="text-xl font-semibold mb-3 border-b-2 pb-2">Shuffle History</h3>
@@ -10523,6 +10844,55 @@ const TabButton = ({ id, label, icon: Icon }) => (
             {groupMediaJobDoneThisWeek ? '(Available next week)' : '(¥20,000) - High impact, high member requirement.'}
           </span>
         </button>
+
+            {survivalShow && survivalShow.isActive ? (
+              <div className="p-4 rounded-lg bg-pink-50 dark:bg-pink-900/40 border-2 border-pink-200 dark:border-pink-800/60">
+                <div className="flex justify-between items-center mb-3">
+                  <div>
+                    <h4 className="text-lg font-bold text-pink-600 dark:text-pink-300">{survivalShow.name}</h4>
+                    <p className="text-sm">Episode {survivalShow.week} is in progress.</p>
+                  </div>
+                  <button onClick={() => setShowModal('liveSurvivalShow')} className="px-4 py-2 bg-pink-500 text-white font-semibold rounded-lg hover:bg-pink-600">
+                    View Rankings
+                  </button>
+                </div>
+                
+                {survivalShowVote.isActive ? (
+                  <div className="p-3 rounded-md bg-pink-100 dark:bg-pink-800/50">
+                    <h5 className="font-bold text-center text-pink-700 dark:text-pink-200 animate-pulse">VOTING IS NOW OPEN!</h5>
+                    <p className="text-xs text-center mb-2">You have {survivalShowVote.votesLeft} votes remaining. (Cost: ¥{survivalShowVote.cost.toLocaleString()})</p>
+                    <div className="space-y-1 my-2">
+                        {survivalShow.contestants.filter(c => c.isPlayer).map(member => (
+                            <div key={member.id} className="flex justify-between items-center bg-white/50 dark:bg-black/20 p-2 rounded">
+                                <span className="font-semibold text-sm">{member.name}</span>
+                                <button 
+                                    onClick={() => castSurvivalShowVote(member.id)}
+                                    disabled={survivalShowVote.votesLeft <= 0 || money < survivalShowVote.cost}
+                                    className="px-3 py-1 text-xs font-bold bg-pink-500 text-white rounded hover:bg-pink-600 disabled:bg-gray-400"
+                                >
+                                    VOTE
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                    <button onClick={proceedAfterVoting} className="w-full mt-2 px-4 py-2 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600">
+                      Finish Voting
+                    </button>
+                  </div>
+                ) : (
+                   <p className="text-center text-sm p-2 bg-gray-100 dark:bg-gray-700/50 rounded-md">
+                     The show is ongoing. The next episode will be simulated when you click "Next Week".
+                   </p>
+                )}
+              </div>
+            ) : (
+              <button onClick={() => setShowModal('startSurvivalShow')} className="w-full p-2 text-sm bg-pink-500 text-white rounded font-semibold">
+                <div className="flex justify-center items-center gap-1 font-semibold"><Tv size={16} /> Participate in Survival Show</div>
+                <span className="text-xs font-normal">(¥2,000,000) - A 12-week high-stakes event.</span>
+              </button>
+            )}
+
+
         <button 
           onClick={() => setShowModal('mediaJob')} 
           disabled={mediaJobDoneThisWeek}
@@ -11218,6 +11588,10 @@ const TabButton = ({ id, label, icon: Icon }) => (
         {showModal === 'kouhakuResult' && <KouhakuResultModal />}
         {showModal === 'kouhakuInvite' && <KouhakuInvitationModal />}
         {showModal === 'kouhakuPrep' && <KouhakuPreparationModal />}
+        {showModal === 'startSurvivalShow' && <SurvivalShowStartModal />}
+        {showModal === 'liveSurvivalShow' && <LiveSurvivalShowModal />}
+        {showModal === 'survivalElimination' && <SurvivalEliminationModal />}
+        {showModal === 'survivalShowResult' && <SurvivalShowResultModal />}
         {showModal === 'senbatsuPromotionResult' && <SenbatsuPromotionResultModal />}
         {showModal === 'requestHourVoting' && <RequestHourVotingModal />}
         {showModal === 'requestHourResult' && <RequestHourResultModal />}

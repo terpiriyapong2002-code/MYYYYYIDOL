@@ -462,6 +462,10 @@ const chineseHometowns = [
     'Chengdu', 'Hangzhou', 'Wuhan', 'Nanjing', 'Qingdao', 'Dalian',
     'Suzhou', 'Fuzhou', 'Harbin', 'Changsha', 'Kunming', 'Zhengzhou', 'Jinan'
 ];
+    const koreanHometowns = [
+      'Seoul', 'Busan', 'Incheon', 'Daegu', 'Daejeon', 'Gwangju', 'Ulsan', 'Suwon', 'Changwon', 'Goyang',
+      'Jeju', 'Pohang', 'Gyeongju', 'Jeonju', 'Cheongju', 'Mokpo', 'Gangneung'
+    ];
 
 const thaiHometowns = [
     'Bangkok', 'Chiang Mai', 'Phuket', 'Pattaya', 'Nakhon Ratchasima', 'Khon Kaen', 
@@ -604,6 +608,58 @@ const thaiHometowns = [
     'Yam', 'Yaya', 'Yen', 'Yim', 'Ying', 'Yogurt', 'Yoyo', 'Yu', 'Yui', 'Yuki', 
     'Yum', 'Yus', 'Yut', 'Zen', 'Zeus', 'Ziggy', 'Zinc', 'Zoe', 'Zola', 'Zun'
   ];
+  const koreanLastNames = [
+    'Kim', 'Lee', 'Park', 'Choi', 'Jeong', 'Kang', 'Jo', 'Yoon', 'Jang', 'Im', 
+    'Han', 'Oh', 'Seo', 'Shin', 'Kwon', 'Hwang', 'Ahn', 'Song', 'Ryu', 'Hong',
+    'Moon', 'Son', 'Bae', 'Baek', 'Heo', 'Nam', 'Shim', 'Yoo', 'Ko', 'Cha'
+  ];
+  const koreanFirstNames = [
+    // --- Original Generic List ---
+    'Seo-yeon', 'Ji-woo', 'Ha-eun', 'Ji-yoo', 'Soo-ah', 'Ji-ah', 'Seo-ah', 'Da-eun', 'Chae-won', 'Eun-seo',
+    'Seo-yun', 'Min-seo', 'Ji-min', 'Ji-yoon', 'Ha-yoon', 'Ye-eun', 'Yoon-seo', 'Ji-won', 'Soo-bin', 'Hyun-ah',
+    'Young-shin', 'Hye-won', 'Seo-hyeon', 'Min-ji', 'Sung-hee', 'Ji-hye', 'Eun-ji', 'Bo-ra', 'Chae-young', 'Da-in',
+    'Hee-jin', 'Hyo-joo', 'In-young', 'Jae-hee', 'Kyung-mi', 'Mi-so', 'Na-young', 'Ra-hee', 'So-hee', 'Ye-rin',
+    'Yoo-jin', 'Bo-young', 'Da-hee', 'Eun-bi', 'Ha-rin', 'Ju-hyun', 'Mi-rae', 'Na-eun', 'Seul-ki', 'Ye-ji',
+    'Ye-won', 'Yoon-ah', 'Ah-reum', 'Chae-yoon', 'Da-young', 'Eun-chae', 'Hye-jin', 'Ji-eun', 'Min-ah', 'So-ra',
+    'Soo-jin', 'Yu-na', 'Ga-eun', 'Hye-ri', 'Ji-soo', 'Min-kyung', 'Seo-young', 'Ye-jin', 'Yoo-na', 'Da-bin',
+  
+    // --- 150 New Generic Additions ---
+    'Seo-hui', 'Seo-eun', 'Seo-jin', 'Seo-rim', 'Seo-rin', 'Seo-woo', 'Seo-ha', 'Seo-i', 'Seo-kyung', 'Seo-ju',
+    'Ji-eul', 'Ji-hyeon', 'Ji-young', 'Ji-sun', 'Ji-yu', 'Ji-an', 'Ji-hyo', 'Ji-eun', 'Ji-su', 'Ji-won',
+    'Ha-yul', 'Ha-na', 'Ha-neul', 'Ha-yeong', 'Ha-ji', 'Ha-won', 'Ha-ram', 'Ha-eul', 'Ha-bin', 'Ha-jeong',
+    'Eun-hye', 'Eun-kyung', 'Eun-bin', 'Eun-sol', 'Eun-su', 'Eun-joo', 'Eun-chae', 'Eun-ha', 'Eun-yul', 'Eun-bi',
+    'Min-ju', 'Min-chae', 'Min-hye', 'Min-young', 'Min-kyung', 'Min-ji', 'Min-a', 'Min-seo', 'Min-ha', 'Min-hui',
+    'Ye-na', 'Ye-sol', 'Ye-bin', 'Ye-seo', 'Ye-rin', 'Ye-jin', 'Ye-ju', 'Ye-ha', 'Ye-rim', 'Ye-won',
+    'Yoon-hee', 'Yoon-ji', 'Yoon-young', 'Yoon-chae', 'Yoon-seo', 'Yoon-ah', 'Yoon-seul', 'Yoon-eun', 'Yoon-sol', 'Yoon-ha',
+    'Da-hye', 'Da-som', 'Da-kyung', 'Da-won', 'Da-yoon', 'Da-jung', 'Da-min', 'Da-ye', 'Da-hyeon', 'Da-rae',
+    'Soo-min', 'Soo-yeon', 'Soo-young', 'Soo-kyung', 'Soo-ha', 'Soo-ji', 'Soo-bin', 'Soo-ah', 'Soo-hui', 'Soo-eun',
+    'Hye-rin', 'Hye-su', 'Hye-mi', 'Hye-un', 'Hye-ji', 'Hye-joo', 'Hye-won', 'Hye-bin', 'Hye-sun', 'Hye-ra',
+    'Joo-hee', 'Joo-eun', 'Joo-ha', 'Joo-ah', 'Joo-won', 'Joo-yoon', 'Joo-hye', 'Joo-ri', 'Joo-yeon', 'Joo-mi',
+    'Ah-young', 'Ah-rin', 'Ah-ra', 'Ah-in', 'Ah-yeon', 'Ah-hyeon', 'Ah-ran', 'Ah-yoon', 'Ah-sol', 'Ah-jin',
+    'Chae-eun', 'Chae-ri', 'Chae-rin', 'Chae-yoon', 'Chae-min', 'Chae-eul', 'Chae-hee', 'Chae-ha', 'Chae-sol', 'Chae-a',
+    'Bo-mi', 'Bo-bae', 'Bo-ram', 'Bo-kyung', 'Bo-eun', 'Bo-min', 'Bo-ha', 'Bo-yoon', 'Bo-hye', 'Bo-seo',
+    'Na-ra', 'Na-kyung', 'Na-yoon', 'Na-hee', 'Na-rin', 'Na-eun', 'Na-yeon', 'Na-rae', 'Na-hye', 'Na-bin'
+  ];
+  const kpopCompanyNames = [
+    // --- Original List ---
+    'Starship', 'JYP', 'YG', 'SM', 'Cube', 'Pledis', 'HYBE', 'FNC', 'Woollim', 'Fantagio',
+    'Top Media', 'Jellyfish', 'Brand New Music', 'WM', 'DSP', 'Maroo', 'Source Music', 'RBW',
+    'ADOR', 'BELIFT LAB', 'IST', 'High Up', 'WakeOne',
+  
+    // --- 60 Realistic Professional Names ---
+    'VRT Entertainment', 'M-LAB', 'GLIDE Music', 'ONSET Records', 'K-CUE Media', 'A-POINT Studio', 
+    'S-TIDE Entertainment', 'N-GEN Records', 'R-PATH Media', 'L-WAVE Music', 'B-SIDE Entertainment', 
+    'J-LINE Media', 'X-PLAN Studio', 'Z-ONE Records', 'V-CORE Entertainment', 'MODAL Music', 
+    'AXIS Media', 'VOID Studio', 'NEON Records', 'MINT Entertainment', 'SALT Music', 
+    'SYNC Records', 'FLOW Entertainment', 'DRIFT Music', 'SHIFT Media', 'CREST Studio', 
+    'TONE Records', 'PHASE Entertainment', 'INDEX Music', 'CANVAS Media', 'ASPECT Studio', 
+    'ARCHIVE Records', 'SIGNAL Entertainment', 'ORIGIN Music', 'VANTAGE Media', 'PARALLEL Studio', 
+    'KINETIC Records', 'THEORY Entertainment', 'ELEMENT Music', 'SUMMIT Media', 'COMPASS Studio', 
+    'VERSE Records', 'PLOT Entertainment', 'BEACON Music', 'FRAME Media', 'BOLD Studio', 
+    'SOLID Records', 'PURE Entertainment', 'ICON Music', 'VISION Media', 'ARTISTRY Studio', 
+    'COLLECTIVE Entertainment', 'STUDIO K', 'LAB 101', 'PROJECT M', 'CREATIVE H', 
+    'HANA ENT', 'DAON Music', 'MARU Media', 'THE LABEL'
+  ];  
   // --- END NEW ---
 
 // --- REPLACE THE OLD FUNCTION WITH THIS ---
@@ -615,6 +671,8 @@ export const generateRandomHometown = (location = 'Japan') => {
         case 'Thailand':
         case 'Bangkok':
             return thaiHometowns[Math.floor(Math.random() * thaiHometowns.length)];
+        case 'Korea':
+            return koreanHometowns[Math.floor(Math.random() * koreanHometowns.length)];
         default:
             return hometowns[Math.floor(Math.random() * hometowns.length)];
     }
@@ -822,6 +880,10 @@ export const useIdolManager = () => {
     const [achievements, setAchievements] = useState([]);
     const [hallOfFame, setHallOfFame] = useState([]);
     const [events, setEvents] = useState([]);
+    const [survivalShow, setSurvivalShow] = useState(null);
+    const [survivalShowHistory, setSurvivalShowHistory] = useState([]);
+    const [survivalShowVote, setSurvivalShowVote] = useState({ isActive: false, votesLeft: 0, cost: 0 });
+    const [eliminationData, setEliminationData] = useState(null);
     const [jankenTournament, setJankenTournament] = useState(null);
     const [lastJankenResult, setLastJankenResult] = useState(null);
     const [completedPromotions, setCompletedPromotions] = useState({});
@@ -1271,6 +1333,11 @@ const [pendingMerch, setPendingMerch] = useState([]);
 
     const generateRandomMemberName = (location = 'Japan') => {
         // --- NEW: International Name Generators ---
+        const generateKoreanMemberName = () => {
+            const firstName = koreanFirstNames[Math.floor(Math.random() * koreanFirstNames.length)];
+            const lastName = koreanLastNames[Math.floor(Math.random() * koreanLastNames.length)];
+            return `${lastName} ${firstName}`;
+        };
         const generateChineseMemberName = () => {
             const firstName = chineseFirstNames[Math.floor(Math.random() * chineseFirstNames.length)];
             const lastName = chineseLastNames[Math.floor(Math.random() * chineseLastNames.length)];
@@ -1290,6 +1357,8 @@ const [pendingMerch, setPendingMerch] = useState([]);
             case 'Thailand':
             case 'Bangkok':
                 return generateThaiMemberName();
+            case 'Korea':
+                return generateKoreanMemberName();
             default: // Fallback to Japanese names
             const firstNames = [
                 'Yui', 'Sakura', 'Miku', 'Haruka', 'Rina', 'Nana', 'Akari', 'Yuki', 'Aoi', 'Hana', 
@@ -6746,23 +6815,44 @@ const beginActivity = (memberId, activityType) => {
     };
 
 
-    const executeAlbumRelease = (albumToRelease, initialMembers, initialSisterGroups) => {
+    const executeAlbumRelease = (albumToRelease, initialMembers, initialSisterGroups, initialExchangeStudents) => {
 
 let updatedMembers = initialMembers;
 let updatedSisterGroups = initialSisterGroups;
 let updatedRivalGroups = rivalGroups ? JSON.parse(JSON.stringify(rivalGroups)) : [];
+        let updatedExchangeStudents = initialExchangeStudents ? JSON.parse(JSON.stringify(initialExchangeStudents)) : [];
+
         const localUpdateMemberState = (memberId, updateFn) => {
-             if (!String(memberId).startsWith('sg-')) {
-                const memberIndex = updatedMembers.findIndex(m => String(m.id) === String(memberId));
-                if (memberIndex > -1) updatedMembers[memberIndex] = updateFn(updatedMembers[memberIndex]);
-            } else {
-                const [, sgId, mId] = String(memberId).split('-');
-                const sgIndex = updatedSisterGroups.findIndex(g => String(g.id) === sgId);
-                if (sgIndex > -1) {
-                    const memberIndex = (updatedSisterGroups[sgIndex].members || []).findIndex(m => String(m.id) === mId);
-                    if (memberIndex > -1) updatedSisterGroups[sgIndex].members[memberIndex] = updateFn(updatedSisterGroups[sgIndex].members[memberIndex]);
+            let found = false;
+            // Update main group members
+            let mainMemberIndex = updatedMembers.findIndex(m => String(m.id) === String(memberId));
+            if (mainMemberIndex !== -1) {
+                updatedMembers[mainMemberIndex] = updateFn(updatedMembers[mainMemberIndex]);
+                found = true;
+            }
+
+            // Update sister group members
+            if (!found) {
+                for (let i = 0; i < updatedSisterGroups.length; i++) {
+                    const sg = updatedSisterGroups[i];
+                    const memberIndex = (sg.members || []).findIndex(m => `sg-${sg.id}-${m.id}` === String(memberId));
+                    if (memberIndex !== -1) {
+                        updatedSisterGroups[i].members[memberIndex] = updateFn(sg.members[memberIndex]);
+                        found = true;
+                        break; 
+                    }
                 }
             }
+
+            // --- THIS IS THE FIX ---
+            // Update exchange students
+            if (!found) {
+                const exchangeIndex = updatedExchangeStudents.findIndex(ex => ex.member.rosterId === String(memberId));
+                if (exchangeIndex !== -1) {
+                    updatedExchangeStudents[exchangeIndex].member = updateFn(updatedExchangeStudents[exchangeIndex].member);
+                }
+            }
+            // --- END OF FIX ---
         };
 
         const { albumData, productionData } = albumToRelease;
@@ -6899,7 +6989,7 @@ let updatedRivalGroups = rivalGroups ? JSON.parse(JSON.stringify(rivalGroups)) :
 
         const releaseMessage = `RELEASED ALBUM: \"${albumData.name}\"! It will begin charting next week. Initial Hype: +${newFansTotal.toLocaleString()} fans.`;
         addNotification({ type: 'success', message: releaseMessage });
-        return { updatedMembers, updatedSisterGroups, releaseMessage, newAlbum };
+        return { updatedMembers, updatedSisterGroups, updatedExchangeStudents, releaseMessage, newAlbum };
     };
 
     const startDraftKaigi = () => {
@@ -7311,6 +7401,9 @@ const runAnnualAwards = () => {
     const nextWeek = () => {
 
             let rivalsForUpdate = JSON.parse(JSON.stringify(rivalGroups));
+        if (survivalShow && survivalShow.isActive) {
+            simulateSurvivalShowWeek();
+        }
 
         // --- 0. KOUHAKU EVENT CYCLE ---
         // This now runs at the START of the function to ensure it uses the CURRENT week number.
@@ -7456,7 +7549,7 @@ if ((newWeek - 1) % 52 === 49) { // Trigger at the end of Week 49
                 }
             }
 
-            // --- NEW: Update exchange students ---
+            // --- CORRECTED CODE ---
             if (!found) {
                 const exchangeIndex = exchangeStudentsForUpdate.findIndex(ex => ex.member.rosterId === String(memberId));
                 if (exchangeIndex !== -1) {
@@ -7764,13 +7857,17 @@ if (requestHourStatus && requestHourStatus.isActive && newWeek > requestHourStat
                 releasesForThisWeek.forEach(release => {
                     // We pass our DRAFT arrays into the release functions.
                     const result = release.type === 'album'
-                        ? executeAlbumRelease(release, membersForUpdate, sisterGroupsForUpdate)
-                        : executeSongRelease(release, membersForUpdate, sisterGroupsForUpdate, songsForUpdate, rivalsForUpdate);
+                        ? executeAlbumRelease(release, membersForUpdate, sisterGroupsForUpdate, exchangeStudentsForUpdate)
+                        : executeSongRelease(release, membersForUpdate, sisterGroupsForUpdate, songsForUpdate, rivalsForUpdate, exchangeStudentsForUpdate);
                     
                     if (result) {
                         // The functions return updated member/group drafts, which we accept for this loop.
                         membersForUpdate = result.updatedMembers;
                         sisterGroupsForUpdate = result.updatedSisterGroups;
+
+if (result.updatedExchangeStudents) exchangeStudentsForUpdate = result.updatedExchangeStudents;
+
+
                         if (result.updatedRivalGroups) {
                         rivalsForUpdate = result.updatedRivalGroups;
                         }
@@ -8210,12 +8307,26 @@ for (const [groupId, captainId] of Object.entries(groupRoles)) {
             // Handle members finishing activities
             if (!member.isAvailable && member.currentActivity && newWeek >= member.activityEnd) {
                 if (member.currentActivity === 'design_merch') {
-                    const bonusValue = 0.1 + ((member.charisma || 0) / 2000); // Original detailed calculation
+                    const bonusValue = 0.1 + ((member.charisma || 0) / 2000);
                     setMerchDesignBonus({ memberName: member.name, weeksLeft: 4, bonus: bonusValue });
                     addNotificationInLoop({ type: 'Good', message: `${member.name} finished designing! Production costs reduced by ${(bonusValue * 100).toFixed(1)}%.` });
+                    localUpdateMemberState(member.rosterId, m => ({ ...m, isAvailable: true, currentActivity: null, activityEnd: null }));
+                } else if (member.currentActivity.startsWith('In project group')) {
+                    const homeGroupName = member.homeGroup === 'main' ? groupName : member.homeGroup;
+                    const event = { week: newWeek, event: `Returned to ${homeGroupName} after project group activities ended.` };
+                    addNotificationInLoop({ type: 'Info', message: `${member.name} has returned from her project group activities!` });
+                    localUpdateMemberState(member.rosterId, m => ({
+                        ...m,
+                        isAvailable: true,
+                        currentActivity: null,
+                        activityEnd: null,
+                        teamHistory: [...(m.teamHistory || []), event]
+                    }));
+                } else {
+                    // Default case for any other activities
+                    localUpdateMemberState(member.rosterId, m => ({ ...m, isAvailable: true, currentActivity: null, activityEnd: null, returningWeek: undefined }));
                 }
-                localUpdateMemberState(member.rosterId, m => ({ ...m, isAvailable: true, currentActivity: null, activityEnd: null, returningWeek: undefined }));
-                member.isAvailable = true; 
+                member.isAvailable = true;
             }
 
             // Handle members returning from suspension
@@ -9367,6 +9478,340 @@ const executeKouhakuPerformance = (membersForUpdate, sisterGroupsForUpdate) => {
 
     return { performers, fanGain, reputationGain, historyEntry };
 };
+        const generateSurvivalShowName = () => {
+            const year = Math.floor(week / 52) + 2025;
+            return `Planet Idol ${year}`;
+        };
+    const castSurvivalShowVote = (contestantId) => {
+        if (money < survivalShowVote.cost || survivalShowVote.votesLeft <= 0) {
+            setMessage("Not enough money or votes remaining.");
+            return;
+        }
+
+        setMoney(prev => prev - survivalShowVote.cost);
+        setSurvivalShowVote(prev => ({...prev, votesLeft: prev.votesLeft - 1}));
+
+        // Apply a popularity boost. The boost is higher for the player's own members.
+        setSurvivalShow(prevShow => {
+            const newContestants = prevShow.contestants.map(c => {
+                if (c.id === contestantId) {
+                    const boostMultiplier = c.isPlayer ? 1.8 : 1.4;
+                    addNotification({ type: 'Good', message: `You voted for ${c.name}, significantly boosting their popularity!` });
+                    return { ...c, popularity: c.popularity * boostMultiplier + 1000 };
+                }
+                return c;
+            });
+            return { ...prevShow, contestants: newContestants };
+        });
+    };
+
+    const proceedAfterVoting = () => {
+        setSurvivalShowVote({ isActive: false, votesLeft: 0, cost: 0 });
+    };
+    const startSurvivalShow = (participantIds) => {
+        const cost = 2000000;
+        if (money < cost) {
+            setMessage("Not enough money to enter the survival show.");
+            return;
+        }
+        if (participantIds.length === 0) {
+            setMessage("You must select at least one member to participate.");
+            return;
+        }
+
+        setMoney(prev => prev - cost);
+        addNotification({ type: 'Event', message: `Your members have joined ${generateSurvivalShowName()}!`});
+        
+        // Make selected members unavailable and record history
+        const showName = generateSurvivalShowName();
+        addNotification({ type: 'Event', message: `Your members have joined ${showName}!`});
+
+        participantIds.forEach(id => {
+            updateMemberState(id, m => ({
+                ...m,
+                isAvailable: false,
+                teamHistory: [...(m.teamHistory || []), { week: week, event: `Joined survival show "${showName}"` }]
+            }));
+        });
+
+        const yourContestants = participantIds.map(id => {
+            const member = getMemberById(id);
+            return {
+                id: member.rosterId,
+                name: member.name,
+                group: getMemberGroupStatus(member).split(' | ')[0],
+                isPlayer: true,
+                vocal: member.singing,
+                dance: member.dancing,
+                visual: member.visual,
+                charisma: member.charisma,
+                popularity: getTotalFansForMember(member) / 100,
+                grade: 'F'
+            };
+        });
+
+    // Generate rival contestants
+    const rivalContestants = [];
+    const neededRivals = 96 - yourContestants.length;
+    for (let i = 0; i < neededRivals; i++) {
+        const company = kpopCompanyNames[Math.floor(Math.random() * kpopCompanyNames.length)];
+        rivalContestants.push({
+            id: `rival-${Date.now()}-${i}`,
+            name: generateRandomMemberName('Korea'),
+            group: company,
+            isPlayer: false,
+            vocal: 40 + Math.random() * 50,
+            dance: 40 + Math.random() * 50,
+            visual: 40 + Math.random() * 50,
+            charisma: 40 + Math.random() * 50,
+            popularity: 100 + Math.random() * 1000,
+            grade: 'F'
+        });
+    }
+        
+        const allContestants = [...yourContestants, ...rivalContestants];
+
+    setSurvivalShow({
+        name: showName,
+        isActive: true,
+        week: 1,
+        totalWeeks: 12,
+        contestants: allContestants,
+        log: [`Episode 1: The 96 contestants are revealed!`],
+        eliminatedPlayerMembers: [],
+    });
+
+        setShowModal('liveSurvivalShow');
+    };
+
+const simulateSurvivalShowWeek = () => {
+    if (survivalShowVote.isActive) {
+        setMessage("You must finish voting before proceeding to the next episode.");
+        return;
+    }    
+    if (!survivalShow) return;
+
+    let { week, contestants, log, name, eliminatedPlayerMembers } = survivalShow;
+    const newWeek = week + 1;
+    let newLog = [...log];
+
+    // 1. Weekly Popularity Growth & Events
+    contestants.forEach(c => {
+        c.popularity += (c.charisma * 0.5) * (0.5 + Math.random());
+        if (Math.random() < 0.1) {
+            const eventRoll = Math.random();
+            if (eventRoll < 0.5) {
+                c.popularity *= 1.2;
+                newLog.push(`✨ ${c.name} received an "Angel Edit", boosting her popularity!`);
+            } else {
+                c.popularity *= 0.85;
+                newLog.push(`👻 ${c.name} was the victim of "Evil Editing", hurting her image.`);
+            }
+        }
+    });
+
+    // 2. Main Evaluations
+    if (newWeek === 3) {
+        newLog.push("--- Theme Song Evaluation ---");
+        contestants.forEach(c => {
+            const score = (c.vocal + c.dance) / 2;
+            if (score > 90) { c.grade = 'A'; c.popularity *= 1.5; }
+            else if (score > 80) { c.grade = 'B'; c.popularity *= 1.3; }
+            else if (score > 70) { c.grade = 'C'; c.popularity *= 1.1; }
+            else if (score > 60) { c.grade = 'D'; }
+            else { c.grade = 'F'; }
+            newLog.push(`${c.name} was graded as Class ${c.grade}.`);
+        });
+    } else if (newWeek === 5) {
+        newLog.push("--- Position Battle ---");
+        for(let i=0; i < 10; i++) {
+            const winner = contestants[Math.floor(Math.random() * contestants.length)];
+            winner.popularity *= 1.5;
+            newLog.push(`🎤 ${winner.name} gave a standout performance in the Position Battle!`);
+        }
+    } else if (newWeek === 8) {
+        newLog.push("--- Concept Battle ---");
+         for(let i=0; i < 5; i++) {
+            const winner = contestants[Math.floor(Math.random() * contestants.length)];
+            winner.popularity *= 1.8;
+            newLog.push(`💖 ${winner.name}'s concept performance went viral!`);
+        }
+    }
+    // --- VOTING TRIGGER ---
+    // Check if it's a voting week (the week before an elimination)
+    if (newWeek === 4 || newWeek === 7 || newWeek === 10) {
+        newLog.push(`--- 🗳️ VOTING OPENS! --- You have been given 3 votes to support contestants. Each vote costs money.`);
+        setSurvivalShowVote({
+            isActive: true,
+            votesLeft: 3,
+            cost: 150000 + (50000 * week) // Cost increases over time
+        });
+    }
+
+    // Sort by popularity before eliminations
+    contestants.sort((a, b) => b.popularity - a.popularity);
+
+    // 3. Eliminations
+    const processEliminations = (cutoffRank, eliminationWeek) => {
+        const eliminated = contestants.slice(cutoffRank);
+        const remaining = contestants.slice(0, cutoffRank);
+        
+        eliminated.filter(c => c.isPlayer).forEach((eliminatedMember, i) => {
+            const rank = cutoffRank + i + 1;
+            eliminatedPlayerMembers.push({ ...eliminatedMember, finalRank: rank, eliminatedWeek: eliminationWeek });
+            updateMemberState(eliminatedMember.id, m => ({
+                ...m, isAvailable: true, morale: Math.max(0, m.morale - 20),
+                fans: { ...m.fans, casual: (m.fans.casual || 0) + 5000 },
+                teamHistory: [...(m.teamHistory || []), { week: week, event: `Eliminated from ${name} at rank #${rank}.` }]
+            }));
+            newLog.push(`Your member, ${eliminatedMember.name}, has been eliminated at rank ${rank}. They have returned to the agency.`);
+        });
+        
+        return remaining;
+    };
+
+    const startEliminationAnnouncement = (cutoffRank, eliminationWeek, title) => {
+        newLog.push(`--- ${title} --- The results will now be announced!`);
+        // Sort contestants by popularity to establish ranks
+        contestants.sort((a, b) => b.popularity - a.popularity);
+        setEliminationData({
+            contestants: contestants,
+            cutoffRank: cutoffRank,
+            eliminationWeek: eliminationWeek,
+            title: title
+        });
+        setShowModal('survivalElimination');
+        // Update the survival show state but PAUSE the simulation
+        setSurvivalShow({
+            ...survivalShow,
+            week: newWeek,
+            contestants: contestants,
+            log: newLog,
+        });
+    };
+
+    if (newWeek === 5) {
+        startEliminationAnnouncement(60, newWeek, 'First Elimination');
+        return; // Stop the week from finishing
+    } else if (newWeek === 8) {
+        startEliminationAnnouncement(30, newWeek, 'Second Elimination');
+        return;
+    } else if (newWeek === 11) {
+        startEliminationAnnouncement(20, newWeek, 'Third Elimination');
+        return;
+    }
+
+    // 4. Finale
+        // 4. Finale
+        if (newWeek > 12) {
+            startEliminationAnnouncement(12, newWeek, 'Grand Finale');
+            return;
+        }
+    
+    // Update state
+    setSurvivalShow({
+        ...survivalShow,
+        week: newWeek,
+        contestants: contestants,
+        log: newLog,
+        eliminatedPlayerMembers: eliminatedPlayerMembers
+    });
+};
+
+    const finalizeSurvivalElimination = () => {
+        if (!survivalShow || !eliminationData) return;
+    
+        let { contestants, log, eliminatedPlayerMembers, name } = survivalShow;
+        const { cutoffRank, eliminationWeek, title } = eliminationData;
+    
+        // Ensure contestants are sorted by popularity
+        contestants.sort((a, b) => b.popularity - a.popularity);
+    
+        const eliminated = contestants.slice(cutoffRank);
+        const remaining = contestants.slice(0, cutoffRank);
+        
+        eliminated.filter(c => c.isPlayer).forEach((eliminatedMember, i) => {
+            const rank = cutoffRank + i + 1;
+            eliminatedPlayerMembers.push({ ...eliminatedMember, finalRank: rank, eliminatedWeek: eliminationWeek });
+            updateMemberState(eliminatedMember.id, m => ({
+                ...m, isAvailable: true, morale: Math.max(0, m.morale - 20),
+                fans: { ...m.fans, casual: (m.fans.casual || 0) + 5000 },
+                teamHistory: [...(m.teamHistory || []), { week: week, event: `Eliminated from ${name} at rank #${rank}.` }]
+            }));
+            log.push(`Your member, ${eliminatedMember.name}, has been eliminated at rank ${rank}.`);
+        });
+        
+        // Clean up the modal data
+        setEliminationData(null);
+        setShowModal(null);
+    
+        // Check if this was the finale
+        if (title === 'Grand Finale') {
+            finishSurvivalShow(remaining, eliminatedPlayerMembers); // Pass winners and all eliminated members to the final function
+        } else {
+            // If not the finale, just update the show's state and continue
+            setSurvivalShow({
+                ...survivalShow,
+                contestants: remaining,
+                log: log,
+                eliminatedPlayerMembers: eliminatedPlayerMembers
+            });
+        }
+    };
+
+
+const finishSurvivalShow = (winners, allEliminatedMembers) => {
+    if (!survivalShow) return;
+
+    const { name } = survivalShow;
+
+    // --- GATHER ALL PLAYER PERFORMANCES ---
+    const playerWinners = winners.filter(c => c.isPlayer).map((c, i) => ({ ...c, finalRank: i + 1, eliminatedWeek: 12 }));
+    const playerLosers = allEliminatedMembers.filter(c => c.isPlayer);
+    const allPlayerPerformances = [...playerWinners, ...playerLosers].sort((a, b) => a.finalRank - b.finalRank);
+
+    // --- PROCESS REWARDS AND STATE CHANGES ---
+    let totalPrizeMoney = 0;
+    let totalRepGain = 0;
+    playerWinners.forEach(winner => {
+        totalPrizeMoney += 2500000;
+        totalRepGain += 5;
+        updateMemberState(winner.id, m => ({
+            ...m,
+            activityEnd: week + 52,
+            currentActivity: `In project group from ${name}`,
+            isAvailable: false,
+            singing: Math.min(100, m.singing + 15),
+            dancing: Math.min(100, m.dancing + 15),
+            charisma: Math.min(100, m.charisma + 15),
+            fans: {
+                ...m.fans,
+                hardcore: (m.fans.hardcore || 0) + 100000,
+                casual: (m.fans.casual || 0) + 200000,
+            },
+            teamHistory: [...(m.teamHistory || []), { week: week, event: `Finished #${winner.finalRank} in ${name} and joined the project group.` }]
+        }));
+    });
+
+    setMoney(prev => prev + totalPrizeMoney);
+    setGroupReputation(prev => prev + totalRepGain);
+
+    // --- PREPARE FINAL HISTORY & MODAL ---
+    const historyEntry = {
+        week: week,
+        name: name,
+        winners: winners.map((w, index) => ({ rank: index + 1, name: w.name, group: w.group, isPlayer: w.isPlayer })),
+        allPlayerPerformances: allPlayerPerformances,
+        playerWinners: playerWinners,
+        totalPrizeMoney,
+        totalRepGain
+    };
+
+    setSurvivalShowHistory(prev => [historyEntry, ...prev]);
+    setSurvivalShow(null); // The show is officially over.
+    setModalData(historyEntry);
+    setShowModal('survivalShowResult'); // Show the final summary modal.
+};
 
 
         const startJankenTournament = (includeOverseas = false) => {
@@ -10336,7 +10781,7 @@ const memberFans = isAce ? rival.ace.fans : 100000 + Math.floor(Math.random() * 
 
 return {
     // State
-    generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
+    eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
     // Firebase/Persistence
     getSavedGames, saveGame, loadGame,
     // Utilities
