@@ -13,7 +13,7 @@ import { useIdolManager, getTotalFansForMember, getFormattedDateForWeek, product
 
 import React, { useState, useEffect, useCallback, useRef, memo } from 'react';
 import { 
-  Star, Briefcase, Paintbrush, Music, Heart, Library, TrendingUp, Users, Award, Calendar, DollarSign, Save, 
+  Crown, Mic2, ChevronRight, Star, Briefcase, Paintbrush, Music, Heart, Library, TrendingUp, Users, Award, Calendar, DollarSign, Save, 
   Upload, Building, Tv, GripVertical, Gift, Goal, Trophy, Sparkles, AlertCircle, AlertTriangle, Zap, Globe, 
   Film, Plane, GraduationCap, Shirt, Shield, Camera, BarChart3, Bell, X, Edit, Plus, Shuffle, 
   User, Check, ChevronDown, ChevronUp, ShoppingBag, Mic, Hand, Lock, Brain, Package,
@@ -31,7 +31,7 @@ const App = () => {
     // Destructure everything from the custom hook
     const {
     // State
-    eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory,  merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
+    missionResult, setMissionResult, closeMissionModal, resolveSurvivalMission, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory,  merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
     // Firebase/Persistence
     getSavedGames, saveGame, loadGame,
     // Utilities
@@ -2337,7 +2337,7 @@ const renderSelectGraduatingMemberStep = () => {
                                                         {(() => {
                                                             const otherTracks = tracks.filter(t => 
                                                                 t.name !== (currentTrack?.name || '') && 
-                                                                (t.members || []).map(String).includes(String(member.id))
+                                                                (t.members || []).map(String).includes(String(member.rosterId))
                                                             );
                                                             if (otherTracks.length > 0) {
                                                                 return `(in ${otherTracks.map(t => t.name).join(', ')})`;
@@ -7443,6 +7443,154 @@ const handleConfirmMove = () => {
     );
 };
 
+const SurvivalMissionModal = () => {
+    if (!survivalShow || !survivalShow.mission) return null;
+
+    const { mission } = survivalShow;
+
+    const renderPrepView = () => {
+        let title = "New Mission!";
+        let missionContent = <p>An unknown mission is underway.</p>;
+        
+        if (mission.type === 'group_battle') {
+            title = "Group Battle Mission";
+            missionContent = (
+                <div className="space-y-6 max-h-96 overflow-y-auto p-1 pr-2">
+                    {mission.battles.map((battle, battleIdx) => (
+                        <div key={battleIdx} className="p-4 bg-slate-100 dark:bg-slate-800 rounded-2xl">
+                            <h4 className="text-center font-black text-lg text-purple-600 dark:text-purple-400 mb-2 italic">Battle {battleIdx + 1}: "{battle.song}"</h4>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                    <p className="font-bold text-center text-sm mb-1 text-slate-600 dark:text-slate-300">Team A</p>
+                                    {battle.teamA.members.map(m => <p key={m.id} className="text-xs truncate bg-slate-200 dark:bg-slate-700 p-1.5 rounded-md text-center">{m.name}</p>)}
+                                </div>
+                                <div className="space-y-1">
+                                    <p className="font-bold text-center text-sm mb-1 text-slate-600 dark:text-slate-300">Team B</p>
+                                    {battle.teamB.members.map(m => <p key={m.id} className="text-xs truncate bg-slate-200 dark:bg-slate-700 p-1.5 rounded-md text-center">{m.name}</p>)}
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            );
+        } else if (mission.type === 'position_battle') {
+            title = "Position Evaluation";
+             missionContent = (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="p-4 bg-blue-50 dark:bg-blue-900/50 rounded-2xl">
+                        <h4 className="font-black text-xl flex items-center gap-2 text-blue-600 dark:text-blue-400"><Mic2 /> Vocalists</h4>
+                        <div className="mt-2 grid grid-cols-2 gap-1 text-sm">
+                        {mission.teams.vocalists.map(m => <p key={m.id} className="truncate">{m.name}</p>)}
+                        </div>
+                    </div>
+                    <div className="p-4 bg-pink-50 dark:bg-pink-900/50 rounded-2xl">
+                        <h4 className="font-black text-xl flex items-center gap-2 text-pink-600 dark:text-pink-400"><Sparkles /> Dancers</h4>
+                        <div className="mt-2 grid grid-cols-2 gap-1 text-sm">
+                        {mission.teams.dancers.map(m => <p key={m.id} className="truncate">{m.name}</p>)}
+                        </div>
+                    </div>
+                </div>
+            );
+        } else if (mission.type === 'concept_battle') {
+            title = "Concept Battle";
+            const colors = ["from-purple-400 to-pink-500", "from-teal-400 to-cyan-500", "from-orange-400 to-yellow-500", "from-red-500 to-rose-600"];
+            missionContent = (
+                 <div className="space-y-4">
+                    {mission.teams.map((team, idx) => (
+                        <div key={idx} className={`p-4 rounded-2xl text-white shadow-lg bg-gradient-to-r ${colors[idx % colors.length]}`}>
+                            <h4 className="font-black text-xl drop-shadow">{team.song}</h4>
+                            <p className="text-white/90 font-bold uppercase tracking-widest text-[10px] mb-2">{team.concept}</p>
+                            <div className="flex flex-wrap gap-2">
+                                {team.members.map(m => <span key={m.id} className="text-xs bg-white/20 px-2 py-1 rounded-full">{m.name}</span>)}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            );
+        }
+
+        return (
+            <div className="space-y-6">
+                <div className="text-center">
+                    <h2 className="text-3xl font-black text-slate-800 dark:text-slate-100 uppercase italic tracking-tighter">{title}</h2>
+                    <p className="text-pink-400 font-bold">The performances are over. It's time to see who won.</p>
+                </div>
+                {missionContent}
+                 <button onClick={() => resolveSurvivalMission()} className="w-full mt-6 py-4 bg-pink-500 text-white font-black uppercase rounded-2xl shadow-xl hover:bg-pink-600 transition-all flex items-center justify-center gap-3">
+                    Reveal Results <ChevronRight size={20}/>
+                </button>
+            </div>
+        );
+    };
+
+    const renderResultView = () => {
+        let resultTitle = "Results Are In!";
+        let resultContent = <p>The results have been calculated.</p>;
+
+        if (missionResult.type === 'group_battle') {
+            resultTitle = "Group Battle Results";
+            resultContent = (
+                <div className="space-y-4 max-h-96 overflow-y-auto p-1 pr-2">
+                    {missionResult.battleResults.map((res, idx) => (
+                         <div key={idx} className="p-4 bg-slate-100 dark:bg-slate-800 rounded-2xl">
+                            <h4 className="text-center font-black text-lg text-purple-600 dark:text-purple-400 mb-2 italic">Battle for "{res.song}"</h4>
+                            <div className="p-3 bg-yellow-100 dark:bg-yellow-900/50 rounded-xl border-2 border-yellow-300">
+                                <p className="font-bold text-center text-yellow-600 dark:text-yellow-300 text-sm mb-1 flex items-center justify-center gap-1"><Trophy size={14}/> WINNER</p>
+                                <div className="flex flex-wrap justify-center gap-1">
+                                    {res.winner.members.map(m => <span key={m.id} className="text-xs font-semibold bg-yellow-200 dark:bg-yellow-800 text-yellow-800 dark:text-yellow-200 px-2 py-0.5 rounded-full">{m.name}</span>)}
+                                </div>
+                            </div>
+                         </div>
+                    ))}
+                </div>
+            );
+        } else if (missionResult.type === 'position_battle') {
+            resultTitle = "Position Aces";
+            resultContent = (
+                <div className="space-y-4">
+                    <div className="text-center p-6 bg-blue-50 dark:bg-blue-900/50 rounded-2xl">
+                        <h3 className="text-2xl font-black text-blue-600 dark:text-blue-300 flex items-center justify-center gap-2"><Mic2 /> Vocal Ace</h3>
+                        <p className="text-3xl font-bold text-slate-700 dark:text-slate-200 mt-1">{missionResult.vocalWinner.name}</p>
+                    </div>
+                     <div className="text-center p-6 bg-pink-50 dark:bg-pink-900/50 rounded-2xl">
+                        <h3 className="text-2xl font-black text-pink-600 dark:text-pink-300 flex items-center justify-center gap-2"><Sparkles /> Dance Ace</h3>
+                        <p className="text-3xl font-bold text-slate-700 dark:text-slate-200 mt-1">{missionResult.danceWinner.name}</p>
+                    </div>
+                </div>
+            );
+        } else if (missionResult.type === 'concept_battle') {
+            resultTitle = "Concept Battle Winner";
+            resultContent = (
+                 <div className="text-center p-8 bg-purple-50 dark:bg-purple-900/50 rounded-3xl border-2 border-purple-300">
+                    <Crown className="mx-auto text-purple-400 w-16 h-16 mb-4 drop-shadow-lg" />
+                    <p className="font-bold text-purple-500">1st Place Concept Team</p>
+                    <h3 className="text-4xl font-black text-slate-800 dark:text-white tracking-tighter mb-2 italic">"{missionResult.winner.song}"</h3>
+                     <div className="flex justify-center gap-2 flex-wrap">
+                        {missionResult.winner.members.map(m => (
+                            <div key={m.id} className="bg-purple-100 dark:bg-purple-800 px-4 py-1 rounded-full font-bold text-purple-800 dark:text-purple-200 text-sm">{m.name}</div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        return (
+            <div className="space-y-6">
+                <h2 className="text-center text-3xl font-black text-slate-800 dark:text-slate-100 uppercase italic tracking-tighter">{resultTitle}</h2>
+                {resultContent}
+                 <button onClick={() => closeMissionModal()} className="w-full mt-6 py-4 bg-slate-700 text-white font-black uppercase rounded-2xl shadow-xl hover:bg-slate-800 transition-all flex items-center justify-center gap-3">
+                    Continue
+                </button>
+            </div>
+        )
+    };
+
+    return (
+        <ModalWrapper title={<span className="flex items-center"><Award size={20} className="mr-2"/> Survival Show</span>}>
+            {missionResult ? renderResultView() : renderPrepView()}
+        </ModalWrapper>
+    );
+};
 const ShuffleHistoryViewer = ({ data }) => {
     if (!data) return null;
 
@@ -8033,7 +8181,7 @@ const SurvivalShowStartModal = () => {
                     <div key={member.rosterId} className={`flex items-center justify-between p-2 rounded cursor-pointer ${selectedMemberIds.includes(member.rosterId) ? 'bg-blue-100 dark:bg-blue-800' : 'bg-white dark:bg-gray-700/50 hover:bg-gray-50'}`} onClick={() => toggleMember(member.rosterId)}>
                         <div>
                             <p className="font-semibold text-sm">{member.name}</p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">{getMemberGroupStatus(member)}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">Vo: {Math.round(member.singing)} Da: {Math.round(member.dancing)} Vi: {Math.round(member.visual)} | Fans: {getTotalFansForMember(member).toLocaleString()}</p>
                         </div>
                         <input type="checkbox" checked={selectedMemberIds.includes(member.rosterId)} readOnly className="form-checkbox h-4 w-4 text-blue-600"/>
                     </div>
@@ -8047,6 +8195,70 @@ const SurvivalShowStartModal = () => {
                         Confirm Entry (¥2,000,000)
                     </button>
                 </div>
+            </div>
+        </ModalWrapper>
+    );
+};
+const InternalSurvivalShowModal = () => {
+    const [showName, setShowName] = useState('');
+    const [unitName, setUnitName] = useState('');
+    const [debutCount, setDebutCount] = useState(7);
+    const [outsiderCount, setOutsiderCount] = useState(20);
+    const [selectedMemberIds, setSelectedMemberIds] = useState([]);
+    
+    const availableMembers = getAllAvailableMembers(true).filter(m => m.isAvailable);
+
+    const toggleMember = (memberId) => {
+        setSelectedMemberIds(prev =>
+            prev.includes(memberId) ? prev.filter(id => id !== memberId) : [...prev, memberId]
+        );
+    };
+
+    const handleConfirm = () => {
+        startInternalSurvivalShow(showName, unitName, debutCount, selectedMemberIds, outsiderCount);
+    }
+
+    return (
+        <ModalWrapper title="Host Internal Survival Show" maxWidth="max-w-2xl">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Create your own survival show to form a new unit. Select your own members to compete alongside new outside talent. Cost: ¥500,000.</p>
+            
+            <div className="space-y-4">
+                <input type="text" value={showName} onChange={e => setShowName(e.target.value)} placeholder="Show Name (e.g., 'THE IDOL PROJECT')" className="w-full p-2 border rounded" />
+                <input type="text" value={unitName} onChange={e => setUnitName(e.target.value)} placeholder="New Unit Name (e.g., 'Starlight-X')" className="w-full p-2 border rounded" />
+
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <label className="font-semibold text-sm">Debut Group Size</label>
+                        <input type="number" value={debutCount} onChange={e => setDebutCount(parseInt(e.target.value))} className="w-full p-2 border rounded mt-1" />
+                    </div>
+                    <div>
+                        <label className="font-semibold text-sm"># of Outside Trainees</label>
+                        <input type="number" value={outsiderCount} onChange={e => setOutsiderCount(parseInt(e.target.value))} className="w-full p-2 border rounded mt-1" />
+                    </div>
+                </div>
+
+                <div>
+                    <h4 className="font-semibold">Select Your Participants ({selectedMemberIds.length})</h4>
+                    <div className="space-y-1 max-h-[200px] overflow-y-auto border p-1 rounded mt-1">
+                        {availableMembers.map(member => (
+                            <div key={member.rosterId} className={`flex items-center justify-between p-2 rounded cursor-pointer ${selectedMemberIds.includes(member.rosterId) ? 'bg-blue-100 dark:bg-blue-800' : 'bg-white dark:bg-gray-700/50 hover:bg-gray-50'}`} onClick={() => toggleMember(member.rosterId)}>
+                                <div>
+                                    <p className="font-semibold text-sm">{member.name}</p>
+                                    <p className="text-xs text-gray-500">{getMemberGroupStatus(member)}</p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">Vo: {Math.round(member.singing)} Da: {Math.round(member.dancing)} Vi: {Math.round(member.visual)} | Fans: {getTotalFansForMember(member).toLocaleString()}</p>
+                                </div>
+                                <input type="checkbox" checked={selectedMemberIds.includes(member.rosterId)} readOnly className="form-checkbox h-4 w-4 text-blue-600"/>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            <div className="flex justify-end gap-2 mt-4 pt-4 border-t">
+                <button onClick={() => setShowModal(null)} className="p-2 bg-gray-300 rounded px-4">Cancel</button>
+                <button onClick={handleConfirm} disabled={!showName.trim() || !unitName.trim() || selectedMemberIds.length === 0 || money < 500000} className="p-3 bg-purple-600 text-white rounded font-bold disabled:bg-gray-400">
+                    Host Show (¥500,000)
+                </button>
             </div>
         </ModalWrapper>
     );
@@ -8659,7 +8871,7 @@ const TrainingCampModal = () => {
                 >
                     <option value="">-- Select Available Member --</option>
                     {availableMembers.map(m => (
-                        <option key={m.id} value={m.id}>{m.name} (Stamina: {m.stamina})</option>
+                        <option key={m.rosterId} value={m.rosterId}>{m.name} (Stamina: {m.stamina})</option>
                     ))}
                 </select>
                 
@@ -10892,6 +11104,10 @@ const TabButton = ({ id, label, icon: Icon }) => (
               </button>
             )}
 
+            <button onClick={() => setShowModal('internalSurvivalShow')} className="w-full p-2 text-sm bg-purple-600 text-white rounded font-semibold mt-1.5">
+                <div className="flex justify-center items-center gap-1 font-semibold"><Star size={16} /> Host Internal Survival Show</div>
+                <span className="text-xs font-normal">(¥500,000) - Form a new unit from your own members and new trainees.</span>
+            </button>
 
         <button 
           onClick={() => setShowModal('mediaJob')} 
@@ -11257,6 +11473,51 @@ const TabButton = ({ id, label, icon: Icon }) => (
     {/* Manage */}
     <h4 className="font-semibold mb-2">Manage</h4>
 
+    
+{selectedMember.isExchangeStudent && (
+    <div className="mb-4">
+        <button
+            onClick={() => {
+                const cost = 1000000;
+                setModalData({
+                    title: 'Extend Exchange Contract?',
+                    message: `Extending the contract for ${selectedMember.name} for another 52 weeks will cost ¥${cost.toLocaleString()}. Are you sure?`,
+                    onConfirm: () => renewExchangeContract(selectedMember.rosterId),
+                    onCancel: () => setShowModal(null)
+                });
+                setShowModal('confirm');
+            }}
+            className="w-full p-2 bg-purple-200 text-purple-800 rounded text-sm font-semibold disabled:opacity-50"
+            disabled={money < 1000000}
+        >
+            Extend Contract (52 Weeks)
+        </button>
+
+            <div className="mt-2">
+        <button
+            onClick={() => {
+                const member = selectedMember;
+                const cost = 5000000 + (getTotalFansForMember(member) * 10);
+                setModalData({
+                    title: 'Permanent Transfer?',
+                    message: `Permanently transferring ${selectedMember.name} from their original agency is a massive deal and will cost ¥${cost.toLocaleString()}. This is irreversible. Are you sure?`,
+                    onConfirm: () => transferExchangeMember(selectedMember.rosterId),
+                    onCancel: () => setShowModal(null)
+                });
+                setShowModal('confirm');
+            }}
+            className="w-full p-2 bg-red-600 text-white rounded text-sm font-bold disabled:opacity-50"
+            disabled={money < (5000000 + (getTotalFansForMember(selectedMember) * 10))}
+        >
+            Propose Permanent Transfer
+        </button>
+    </div>
+
+    </div>
+    
+)}
+
+
     {/* --- NEW: Force Graduation Button --- */}
     {selectedMember.isGraduating && selectedMember.graduationWeek < week && (
         <button
@@ -11365,7 +11626,7 @@ const TabButton = ({ id, label, icon: Icon }) => (
       {/* EXCHANGE ABROAD --V */}
       {!selectedMember.isSisterMember && (
           <button
-              onClick={() => setShowModal('studyAbroad')}
+              onClick={() => { setModalData(selectedMember); setShowModal('studyAbroad'); }}
               className="p-2 bg-teal-200 text-teal-800 rounded text-sm col-span-2"
               disabled={!selectedMember.isAvailable}
           >
@@ -11589,6 +11850,8 @@ const TabButton = ({ id, label, icon: Icon }) => (
         {showModal === 'kouhakuInvite' && <KouhakuInvitationModal />}
         {showModal === 'kouhakuPrep' && <KouhakuPreparationModal />}
         {showModal === 'startSurvivalShow' && <SurvivalShowStartModal />}
+        {showModal === 'survivalMission' && <SurvivalMissionModal />}
+        {showModal === 'internalSurvivalShow' && <InternalSurvivalShowModal />}
         {showModal === 'liveSurvivalShow' && <LiveSurvivalShowModal />}
         {showModal === 'survivalElimination' && <SurvivalEliminationModal />}
         {showModal === 'survivalShowResult' && <SurvivalShowResultModal />}

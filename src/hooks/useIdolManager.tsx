@@ -179,6 +179,42 @@ export const productionTiers = {
         "Aozora Note", "First Dream", "Kaze no Yell", "Motto Shiritai", "Pocket no Yume",
         "Hajimete no Michi", "Sunny Memory", "Ano Hi no", "Arigato no Hana", "Innocent Days"
     ],
+    Elegant: [
+        "Suishou no Orchestration", "Tasogare no Etude", "Garasu no Hodoukyo", "Piano no Shingou", "Hakubutsukan no Seijaku",
+        "Cello no Toiki", "Velvet Morning", "Antique Clock", "Moonlight Lace", "Pastel Gravity",
+        "Kimi to Boku no Heikousen", "Tooi Rinkaku", "Aoi Doa no Mukou", "Crystal Waltz", "Gin-sekai no Silhouette",
+        "Rinkaku no Nai Sora", "Meikyuu no Violin", "Hane no Prelude", "Seijaku no Aria", "Tsuki no Shizuku",
+        "Kirisaki no Monologue", "Shiroi Dress", "Tokei-dai no Kane", "Hoshi no Serenade", "Orugooru no Yume",
+        "Eien no Fragment", "Kindan no Romance", "Gekkou no Path", "Maboroshi no Frame", "Aisatsu wa Sayonara no Ato de",
+        "Suna no Glass", "Haze no Metronome", "Kimi no Inai Gallery", "Oufuku-shokan", "Yureteiru Brand-new",
+        "Namida no Prism", "Fuyu no Constellation", "Kagaribi no Waltz", "Hidarite no Ring", "Kimi no Te no Hira no Yuki",
+        "Soutaisei no Yoru", "Kohaku no Memory", "Gogo no Chime", "Kyozou no Kagami", "Kousaten no Echo",
+        "Hikari no Particle", "Bouenkyou no Saki", "Senaka-goshi no Yuuki", "Haru no Rasen", "Ashita no Prelude"
+    ],
+    School: [
+        "Seifuku no Ink", "Houkago no Monologue", "Third Library", "Chalk no Zanzou", "Koutei no Metronome",
+        "Roof Top Blue", "Tenkousei no Diary", "Eraser Magic", "Kousha no Kage", "Bicycle Bell",
+        "Mannequin no Kodoku", "Jugyou-chuu no Hikari", "Daisan-toshoshitsu no Kagi", "Natsu no Kaidan", "Kusunda Rouka",
+        "Tenkousei no Pocket", "Kyokasho no Rakugaki", "Bukatsu no Kaerimichi", "Sotsugyou no Shingou", "Taiiku-kan no Echo",
+        "Jugyou no Owari", "Kutsu-bako no Letter", "Mado-giwa no Seki", "Kimi to Jitensha", "Koutei no Himawari",
+        "Seifuku no Doyoubi", "Sakura no Namiki", "Kokuban no Message", "Hiru-yasumi no Suna", "First Locker",
+        "Tokei-hari no Gyakuten", "Kimi no Suraido", "Omoide no Kousha", "Bokura no Uniform", "Houkago no Chime",
+        "Rouka no Hashiri", "Koutei no Tasogare", "Sotsugyoushiki no Ame", "Seifuku no Button", "Arubamu no Saki",
+        "Kimi no Lesson", "Natsu no Kyoushitsu", "Yume no Kaidan", "Asa no Chime", "Bokura no Sensen",
+        "Seifuku no Silhouette", "Garasu no Madobe", "Houkago no Kaze", "Kimi no Note", "Jugyou no Monologue"
+    ],  
+    Introspective: [
+        "Kokoro no Shinkansen", "Hitorigoto no Rhythm", "Kimi ga Inai Calendar", "Namida no Heikousen", "Uso no Nai Mirror",
+        "Ame no Hi no Telescope", "Boku no Shiranai Kimi", "Kanashimi no Palette", "Digital no Namida", "Monochrome no Sekai",
+        "Sora wo Tobanai Tori", "Yoru no Curtain", "Station no Tasogare", "Tokei no Hari ga Tomaru Basho", "Kokoro no Shutter",
+        "Kimi no Shutter Chance", "Watashi no Prelude", "Inner World", "Kanjou no Wave", "Silent Message",
+        "Kimi no Inai Sekai", "Uso no Kankaku", "Kodoku no Signal", "Hontou no Watashi", "Kimi no Echo",
+        "Sora no Deep Blue", "Namida no Filter", "Kizu-tsuita Feather", "Ashita no Color", "Boku no Identity",
+        "Kimi no Inai Heya", "Kanjou no Prism", "Yume no Zanzou", "Kokoro no Frame", "Kimi no Memory",
+        "Silent Prayer", "Kimi no Shadow", "Boku no Canvas", "Kimi no Rhythm", "Namida no Texture",
+        "Kimi no Koe no Iro", "Uso no Nai Diary", "Boku no Reality", "Kimi no Resonance", "Hontou no Smile",
+        "Kimi no Gravity", "Kokoro no Silhouette", "Boku no Horizon", "Kimi no Shinkansen", "Final Monologue"
+    ],    
     Heartbreak: [
         "Sayonara no Rain", "Cold Bench", "Delete Memory", "Blue Friday", "Namida no Reason",
         "Missing Piece", "Last Message", "Glass Heart", "Ame no Stop", "Hitori no Yoru",
@@ -881,7 +917,273 @@ export const useIdolManager = () => {
     const [hallOfFame, setHallOfFame] = useState([]);
     const [events, setEvents] = useState([]);
     const [survivalShow, setSurvivalShow] = useState(null);
-    const [survivalShowHistory, setSurvivalShowHistory] = useState([]);
+    const [missionResult, setMissionResult] = useState(null);
+    const [survivalShowSongs, setSurvivalShowSongs] = useState([
+        { id: 'ss_01', name: "Into The New World", concept: "Innocent/Powerful" },
+        { id: 'ss_02', name: "Very Very Very", concept: "Cute/Energetic" },
+        { id: 'ss_03', name: "La Vie en Rose", concept: "Elegant/Chic" },
+        { id: 'ss_04', name: "Rumor", concept: "Moombahton/Sexy" },
+        { id: 'ss_05', name: "Rollin' Rollin'", concept: "Tropical/Cute" },
+        { id: 'ss_06', name: "Sorry Not Sorry", concept: "Dance/Fierce" },
+        { id: 'ss_07', name: "Boombayah", concept: "Hip-Hop/Energetic" },
+        { id: 'ss_08', name: "Dalla Dalla", concept: "Teen Crush/Confident" },
+// --- Innocent/Powerful (The "Standard" / Orchestral Pop) ---
+{ id: 'ss_09', name: "Glass Bead", concept: "Innocent/Powerful" },
+{ id: 'ss_10', name: "Rough", concept: "Innocent/Powerful" },
+{ id: 'ss_11', name: "Navillera", concept: "Innocent/Powerful" },
+{ id: 'ss_12', name: "Hi High", concept: "Innocent/Powerful" },
+{ id: 'ss_13', name: "Secret Garden", concept: "Innocent/Powerful" },
+{ id: 'ss_14', name: "The Fifth Season (SSFWL)", concept: "Innocent/Powerful" },
+{ id: 'ss_15', name: "Dreams Come True", concept: "Innocent/Powerful" },
+{ id: 'ss_16', name: "Milky Way", concept: "Innocent/Powerful" },
+{ id: 'ss_17', name: "Destiny", concept: "Innocent/Powerful" },
+{ id: 'ss_18', name: "As You Wish", concept: "Innocent/Powerful" },
+{ id: 'ss_19', name: "Secret", concept: "Innocent/Powerful" },
+{ id: 'ss_20', name: "Save Me, Save You", concept: "Innocent/Powerful" },
+{ id: 'ss_21', name: "To Heart", concept: "Innocent/Powerful" },
+{ id: 'ss_22', name: "DKDK", concept: "Innocent/Powerful" },
+{ id: 'ss_23', name: "Love Bomb", concept: "Innocent/Powerful" },
+{ id: 'ss_24', name: "Me Gustas Tu", concept: "Innocent/Powerful" },
+{ id: 'ss_25', name: "Remember", concept: "Innocent/Powerful" },
+{ id: 'ss_26', name: "April Story", concept: "Innocent/Powerful" },
+{ id: 'ss_27', name: "Journey to Atlantis", concept: "Innocent/Powerful" },
+{ id: 'ss_28', name: "Love Whisper", concept: "Innocent/Powerful" },
+{ id: 'ss_29', name: "Ah-Choo", concept: "Innocent/Powerful" },
+{ id: 'ss_30', name: "Closer", concept: "Innocent/Powerful" },
+{ id: 'ss_31', name: "Windy Day", concept: "Innocent/Powerful" },
+{ id: 'ss_32', name: "Butterfly", concept: "Innocent/Powerful" },
+{ id: 'ss_33', name: "Universe", concept: "Innocent/Powerful" },
+{ id: 'ss_34', name: "I'm Your Girl", concept: "Innocent/Powerful" },
+{ id: 'ss_35', name: "To My Boyfriend", concept: "Innocent/Powerful" },
+{ id: 'ss_36', name: "A-ing", concept: "Innocent/Powerful" },
+{ id: 'ss_37', name: "Luv", concept: "Innocent/Powerful" },
+{ id: 'ss_38', name: "Nonstop", concept: "Innocent/Powerful" },
+
+// --- Cute/Energetic (The "Bubbly" / High Energy) ---
+{ id: 'ss_39', name: "Cheer Up", concept: "Cute/Energetic" },
+{ id: 'ss_40', name: "TT", concept: "Cute/Energetic" },
+{ id: 'ss_41', name: "Gee", concept: "Cute/Energetic" },
+{ id: 'ss_42', name: "Red Flavor", concept: "Cute/Energetic" },
+{ id: 'ss_43', name: "Rookie", concept: "Cute/Energetic" },
+{ id: 'ss_44', name: "Power Up", concept: "Cute/Energetic" },
+{ id: 'ss_45', name: "Hmph!", concept: "Cute/Energetic" },
+{ id: 'ss_46', name: "Tag Me", concept: "Cute/Energetic" },
+{ id: 'ss_47', name: "After School", concept: "Cute/Energetic" },
+{ id: 'ss_48', name: "Zig Zag", concept: "Cute/Energetic" },
+{ id: 'ss_49', name: "Bingle Bangle", concept: "Cute/Energetic" },
+{ id: 'ss_50', name: "Heart Shaker", concept: "Cute/Energetic" },
+{ id: 'ss_51', name: "Pick Me", concept: "Cute/Energetic" },
+{ id: 'ss_52', name: "Yum Yum", concept: "Cute/Energetic" },
+{ id: 'ss_53', name: "Fingertips", concept: "Cute/Energetic" },
+{ id: 'ss_54', name: "Banana Allergy Monkey", concept: "Cute/Energetic" },
+{ id: 'ss_55', name: "Bar Bar Bar", concept: "Cute/Energetic" },
+{ id: 'ss_56', name: "Crayon Pop", concept: "Cute/Energetic" },
+{ id: 'ss_57', name: "Dun Dun Dance", concept: "Cute/Energetic" },
+{ id: 'ss_58', name: "Catallena", concept: "Cute/Energetic" },
+{ id: 'ss_59', name: "Lipstick", concept: "Cute/Energetic" },
+{ id: 'ss_60', name: "Magic Girl", concept: "Cute/Energetic" },
+{ id: 'ss_61', name: "Pop?", concept: "Cute/Energetic" },
+{ id: 'ss_62', name: "ASAP", concept: "Cute/Energetic" },
+{ id: 'ss_63', name: "Teddy Bear", concept: "Cute/Energetic" },
+{ id: 'ss_64', name: "Bubble", concept: "Cute/Energetic" },
+{ id: 'ss_65', name: "Chewing Gum", concept: "Cute/Energetic" },
+{ id: 'ss_66', name: "Dumb Dumb", concept: "Cute/Energetic" },
+{ id: 'ss_67', name: "Likey", concept: "Cute/Energetic" },
+{ id: 'ss_68', name: "Signal", concept: "Cute/Energetic" },
+
+// --- Elegant/Chic (The "Flower" / Sophisticated) ---
+{ id: 'ss_69', name: "Violeta", concept: "Elegant/Chic" },
+{ id: 'ss_70', name: "Fiesta", concept: "Elegant/Chic" },
+{ id: 'ss_71', name: "Panorama", concept: "Elegant/Chic" },
+{ id: 'ss_72', name: "Apple", concept: "Elegant/Chic" },
+{ id: 'ss_73', name: "Mago", concept: "Elegant/Chic" },
+{ id: 'ss_74', name: "INVU", concept: "Elegant/Chic" },
+{ id: 'ss_75', name: "Feel Special", concept: "Elegant/Chic" },
+{ id: 'ss_76', name: "I Can't Stop Me", concept: "Elegant/Chic" },
+{ id: 'ss_77', name: "Psycho", concept: "Elegant/Chic" },
+{ id: 'ss_78', name: "Feel My Rhythm", concept: "Elegant/Chic" },
+{ id: 'ss_79', name: "Queendom", concept: "Elegant/Chic" },
+{ id: 'ss_80', name: "Hann (Alone)", concept: "Elegant/Chic" },
+{ id: 'ss_81', name: "Lalalilala", concept: "Elegant/Chic" },
+{ id: 'ss_82', name: "Blue Hour", concept: "Elegant/Chic" },
+{ id: 'ss_83', name: "Loveade", concept: "Elegant/Chic" },
+{ id: 'ss_84', name: "Egotistic", concept: "Elegant/Chic" },
+{ id: 'ss_85', name: "Decalcomanie", concept: "Elegant/Chic" },
+{ id: 'ss_86', name: "Black Swan", concept: "Elegant/Chic" },
+{ id: 'ss_87', name: "Butterfly", concept: "Elegant/Chic" },
+{ id: 'ss_88', name: "Lilac", concept: "Elegant/Chic" },
+{ id: 'ss_89', name: "Palette", concept: "Elegant/Chic" },
+{ id: 'ss_90', name: "Celebrity", concept: "Elegant/Chic" },
+{ id: 'ss_91', name: "Eleven", concept: "Elegant/Chic" },
+{ id: 'ss_92', name: "Love Dive", concept: "Elegant/Chic" },
+{ id: 'ss_93', name: "After LIKE", concept: "Elegant/Chic" },
+{ id: 'ss_94', name: "Dreams Come True (aespa)", concept: "Elegant/Chic" },
+{ id: 'ss_95', name: "Pantomime", concept: "Elegant/Chic" },
+{ id: 'ss_96', name: "Glance", concept: "Elegant/Chic" },
+{ id: 'ss_97', name: "Vim", concept: "Elegant/Chic" },
+{ id: 'ss_98', name: "Wonderboy", concept: "Elegant/Chic" },
+
+// --- Moombahton/Sexy (The "Groove" / Reggaeton) ---
+{ id: 'ss_99', name: "Gashina", concept: "Moombahton/Sexy" },
+{ id: 'ss_100', name: "Siren", concept: "Moombahton/Sexy" },
+{ id: 'ss_101', name: "Heroine", concept: "Moombahton/Sexy" },
+{ id: 'ss_102', name: "Latata", concept: "Moombahton/Sexy" },
+{ id: 'ss_103', name: "Senorita", concept: "Moombahton/Sexy" },
+{ id: 'ss_104', name: "Dumdi Dumdi", concept: "Moombahton/Sexy" },
+{ id: 'ss_105', name: "Alone", concept: "Moombahton/Sexy" },
+{ id: 'ss_106', name: "Give It To Me", concept: "Moombahton/Sexy" },
+{ id: 'ss_107', name: "I Like That", concept: "Moombahton/Sexy" },
+{ id: 'ss_108', name: "Starry Night", concept: "Moombahton/Sexy" },
+{ id: 'ss_109', name: "Hip", concept: "Moombahton/Sexy" },
+{ id: 'ss_110', name: "Aya", concept: "Moombahton/Sexy" },
+{ id: 'ss_111', name: "Dingga", concept: "Moombahton/Sexy" },
+{ id: 'ss_112', name: "Hwaa", concept: "Moombahton/Sexy" },
+{ id: 'ss_113', name: "Stay Tonight", concept: "Moombahton/Sexy" },
+{ id: 'ss_114', name: "Gotta Go", concept: "Moombahton/Sexy" },
+{ id: 'ss_115', name: "Snapping", concept: "Moombahton/Sexy" },
+{ id: 'ss_116', name: "Roller Coaster", concept: "Moombahton/Sexy" },
+{ id: 'ss_117', name: "Me & You", concept: "Moombahton/Sexy" },
+{ id: 'ss_118', name: "DDD", concept: "Moombahton/Sexy" },
+{ id: 'ss_119', name: "Night Rather Than Day", concept: "Moombahton/Sexy" },
+{ id: 'ss_120', name: "Egoist", concept: "Moombahton/Sexy" },
+{ id: 'ss_121', name: "Singing in the Rain", concept: "Moombahton/Sexy" },
+{ id: 'ss_122', name: "Hush", concept: "Moombahton/Sexy" },
+{ id: 'ss_123', name: "Something", concept: "Moombahton/Sexy" },
+{ id: 'ss_124', name: "Expectation", concept: "Moombahton/Sexy" },
+{ id: 'ss_125', name: "Miniskirt", concept: "Moombahton/Sexy" },
+{ id: 'ss_126', name: "Like a Cat", concept: "Moombahton/Sexy" },
+{ id: 'ss_127', name: "Excuse Me", concept: "Moombahton/Sexy" },
+{ id: 'ss_128', name: "A", concept: "Moombahton/Sexy" },
+
+// --- Tropical/Cute (The "Summer" / Refreshing) ---
+{ id: 'ss_129', name: "Dance The Night Away", concept: "Tropical/Cute" },
+{ id: 'ss_130', name: "Alcohol-Free", concept: "Tropical/Cute" },
+{ id: 'ss_131', name: "Party", concept: "Tropical/Cute" },
+{ id: 'ss_132', name: "Touch My Body", concept: "Tropical/Cute" },
+{ id: 'ss_133', name: "Shake It", concept: "Tropical/Cute" },
+{ id: 'ss_134', name: "Loving U", concept: "Tropical/Cute" },
+{ id: 'ss_135', name: "Why", concept: "Tropical/Cute" },
+{ id: 'ss_136', name: "Weekend", concept: "Tropical/Cute" },
+{ id: 'ss_137', name: "See Sea", concept: "Tropical/Cute" },
+{ id: 'ss_138', name: "Dally", concept: "Tropical/Cute" },
+{ id: 'ss_139', name: "Island", concept: "Tropical/Cute" },
+{ id: 'ss_140', name: "Loveade", concept: "Tropical/Cute" },
+{ id: 'ss_141', name: "Wave", concept: "Tropical/Cute" },
+{ id: 'ss_142', name: "Boogie Up", concept: "Tropical/Cute" },
+{ id: 'ss_143', name: "Flip It", concept: "Tropical/Cute" },
+{ id: 'ss_144', name: "Blue Moon", concept: "Tropical/Cute" },
+{ id: 'ss_145', name: "Holiday", concept: "Tropical/Cute" },
+{ id: 'ss_146', name: "Sunny Side Up!", concept: "Tropical/Cute" },
+{ id: 'ss_147', name: "Swimming Pool", concept: "Tropical/Cute" },
+{ id: 'ss_148', name: "Baby Face", concept: "Tropical/Cute" },
+{ id: 'ss_149', name: "Surf", concept: "Tropical/Cute" },
+{ id: 'ss_150', name: "Hula Hoop", concept: "Tropical/Cute" },
+{ id: 'ss_151', name: "Up!", concept: "Tropical/Cute" },
+{ id: 'ss_152', name: "Beam Beam", concept: "Tropical/Cute" },
+{ id: 'ss_153', name: "Summer Rain", concept: "Tropical/Cute" },
+{ id: 'ss_154', name: "Sunny Summer", concept: "Tropical/Cute" },
+{ id: 'ss_155', name: "Pool", concept: "Tropical/Cute" },
+{ id: 'ss_156', name: "Hot Summer", concept: "Tropical/Cute" },
+{ id: 'ss_157', name: "Red Flavor", concept: "Tropical/Cute" },
+{ id: 'ss_158', name: "Remember", concept: "Tropical/Cute" },
+
+// --- Dance/Fierce (The "Performance" / Edgy) ---
+{ id: 'ss_159', name: "Black Dress", concept: "Dance/Fierce" },
+{ id: 'ss_160', name: "Hobgoblin", concept: "Dance/Fierce" },
+{ id: 'ss_161', name: "Me", concept: "Dance/Fierce" },
+{ id: 'ss_162', name: "No", concept: "Dance/Fierce" },
+{ id: 'ss_163', name: "Helicopter", concept: "Dance/Fierce" },
+{ id: 'ss_164', name: "Scream", concept: "Dance/Fierce" },
+{ id: 'ss_165', name: "Boca", concept: "Dance/Fierce" },
+{ id: 'ss_166', name: "Odd Eye", concept: "Dance/Fierce" },
+{ id: 'ss_167', name: "You and I", concept: "Dance/Fierce" },
+{ id: 'ss_168', name: "Piri", concept: "Dance/Fierce" },
+{ id: 'ss_169', name: "Bon Bon Chocolat", concept: "Dance/Fierce" },
+{ id: 'ss_170', name: "Adios", concept: "Dance/Fierce" },
+{ id: 'ss_171', name: "Dun Dun", concept: "Dance/Fierce" },
+{ id: 'ss_172', name: "La Di Da", concept: "Dance/Fierce" },
+{ id: 'ss_173', name: "First", concept: "Dance/Fierce" },
+{ id: 'ss_174', name: "Pirate", concept: "Dance/Fierce" },
+{ id: 'ss_175', name: "Under My Skin", concept: "Dance/Fierce" },
+{ id: 'ss_176', name: "Step Back", concept: "Dance/Fierce" },
+{ id: 'ss_177', name: "Girls", concept: "Dance/Fierce" },
+{ id: 'ss_178', name: "Savage", concept: "Dance/Fierce" },
+{ id: 'ss_179', name: "Black Mamba", concept: "Dance/Fierce" },
+{ id: 'ss_180', name: "Illusion", concept: "Dance/Fierce" },
+{ id: 'ss_181', name: "Got That Boom", concept: "Dance/Fierce" },
+{ id: 'ss_182', name: "Fire", concept: "Dance/Fierce" },
+{ id: 'ss_183', name: "Crush", concept: "Dance/Fierce" },
+{ id: 'ss_184', name: "Come Back Home", concept: "Dance/Fierce" },
+{ id: 'ss_185', name: "The Baddest Female", concept: "Dance/Fierce" },
+{ id: 'ss_186', name: "Hello Bitches", concept: "Dance/Fierce" },
+{ id: 'ss_187', name: "Spider", concept: "Dance/Fierce" },
+{ id: 'ss_188', name: "Guerilla", concept: "Dance/Fierce" },
+
+// --- Hip-Hop/Energetic (The "Baddie" / Swag) ---
+{ id: 'ss_189', name: "How You Like That", concept: "Hip-Hop/Energetic" },
+{ id: 'ss_190', name: "Kill This Love", concept: "Hip-Hop/Energetic" },
+{ id: 'ss_191', name: "Pink Venom", concept: "Hip-Hop/Energetic" },
+{ id: 'ss_192', name: "Shut Down", concept: "Hip-Hop/Energetic" },
+{ id: 'ss_193', name: "Ddu-Du Ddu-Du", concept: "Hip-Hop/Energetic" },
+{ id: 'ss_194', name: "Crazy", concept: "Hip-Hop/Energetic" },
+{ id: 'ss_195', name: "Hate", concept: "Hip-Hop/Energetic" },
+{ id: 'ss_196', name: "Volume Up", concept: "Hip-Hop/Energetic" },
+{ id: 'ss_197', name: "Mirror Mirror", concept: "Hip-Hop/Energetic" },
+{ id: 'ss_198', name: "Mic Drop", concept: "Hip-Hop/Energetic" },
+{ id: 'ss_199', name: "Money", concept: "Hip-Hop/Energetic" },
+{ id: 'ss_200', name: "Lalisa", concept: "Hip-Hop/Energetic" },
+{ id: 'ss_201', name: "Bad Boy", concept: "Hip-Hop/Energetic" },
+{ id: 'ss_202', name: "O.O", concept: "Hip-Hop/Energetic" },
+{ id: 'ss_203', name: "Dice", concept: "Hip-Hop/Energetic" },
+{ id: 'ss_204', name: "Tank", concept: "Hip-Hop/Energetic" },
+{ id: 'ss_205', name: "Zoom", concept: "Hip-Hop/Energetic" },
+{ id: 'ss_206', name: "Nunu Nana", concept: "Hip-Hop/Energetic" },
+{ id: 'ss_207', name: "What Type of X", concept: "Hip-Hop/Energetic" },
+{ id: 'ss_208', name: "Cold Blood", concept: "Hip-Hop/Energetic" },
+{ id: 'ss_209', name: "Sixth Sense", concept: "Hip-Hop/Energetic" },
+{ id: 'ss_210', name: "Wonder Woman", concept: "Hip-Hop/Energetic" },
+{ id: 'ss_211', name: "Abacadabra", concept: "Hip-Hop/Energetic" },
+{ id: 'ss_212', name: "I'm Not Cool", concept: "Hip-Hop/Energetic" },
+{ id: 'ss_213', name: "Lip & Hip", concept: "Hip-Hop/Energetic" },
+{ id: 'ss_214', name: "Bubble Pop!", concept: "Hip-Hop/Energetic" },
+{ id: 'ss_215', name: "Pop/Stars", concept: "Hip-Hop/Energetic" },
+{ id: 'ss_216', name: "More", concept: "Hip-Hop/Energetic" },
+{ id: 'ss_217', name: "Drum Go Dum", concept: "Hip-Hop/Energetic" },
+{ id: 'ss_218', name: "The Girls", concept: "Hip-Hop/Energetic" },
+
+// --- Teen Crush/Confident (The "It Girl" / High School) ---
+{ id: 'ss_219', name: "Wannabe", concept: "Teen Crush/Confident" },
+{ id: 'ss_220', name: "ICY", concept: "Teen Crush/Confident" },
+{ id: 'ss_221', name: "Not Shy", concept: "Teen Crush/Confident" },
+{ id: 'ss_222', name: "Loco", concept: "Teen Crush/Confident" },
+{ id: 'ss_223', name: "Sneakers", concept: "Teen Crush/Confident" },
+{ id: 'ss_224', name: "So What", concept: "Teen Crush/Confident" },
+{ id: 'ss_225', name: "Why Not?", concept: "Teen Crush/Confident" },
+{ id: 'ss_226', name: "PTT (Paint The Town)", concept: "Teen Crush/Confident" },
+{ id: 'ss_227', name: "Hype Boy", concept: "Teen Crush/Confident" },
+{ id: 'ss_228', name: "Attention", concept: "Teen Crush/Confident" },
+{ id: 'ss_229', name: "Cookie", concept: "Teen Crush/Confident" },
+{ id: 'ss_230', name: "Ditto", concept: "Teen Crush/Confident" },
+{ id: 'ss_231', name: "OMG", concept: "Teen Crush/Confident" },
+{ id: 'ss_232', name: "Fearless", concept: "Teen Crush/Confident" },
+{ id: 'ss_233', name: "Antifragile", concept: "Teen Crush/Confident" },
+{ id: 'ss_234', name: "Eve, Psyche & The Bluebeard’s Wife", concept: "Teen Crush/Confident" },
+{ id: 'ss_235', name: "Stereotype", concept: "Teen Crush/Confident" },
+{ id: 'ss_236', name: "So Bad", concept: "Teen Crush/Confident" },
+{ id: 'ss_237', name: "Run2U", concept: "Teen Crush/Confident" },
+{ id: 'ss_238', name: "Beautiful Liar", concept: "Teen Crush/Confident" },
+{ id: 'ss_239', name: "Gratata", concept: "Teen Crush/Confident" },
+{ id: 'ss_240', name: "Picky Picky", concept: "Teen Crush/Confident" },
+{ id: 'ss_241', name: "Tiki Taka", concept: "Teen Crush/Confident" },
+{ id: 'ss_242', name: "Oopsy", concept: "Teen Crush/Confident" },
+{ id: 'ss_243', name: "Dazzle Dazzle", concept: "Teen Crush/Confident" },
+{ id: 'ss_244', name: "Bouncy", concept: "Teen Crush/Confident" },
+{ id: 'ss_245', name: "Red Rocket", concept: "Teen Crush/Confident" },
+{ id: 'ss_246', name: "I'm So Hot", concept: "Teen Crush/Confident" },
+{ id: 'ss_247', name: "BBoom BBoom", concept: "Teen Crush/Confident" },
+{ id: 'ss_248', name: "Baam", concept: "Teen Crush/Confident" },
+]);    
+const [survivalShowHistory, setSurvivalShowHistory] = useState([]);
     const [survivalShowVote, setSurvivalShowVote] = useState({ isActive: false, votesLeft: 0, cost: 0 });
     const [eliminationData, setEliminationData] = useState(null);
     const [jankenTournament, setJankenTournament] = useState(null);
@@ -1081,6 +1383,8 @@ const [pendingMerch, setPendingMerch] = useState([]);
                 buildings: JSON.stringify(buildings),
                 sisterGroups: JSON.stringify(sisterGroups),
                 rivalGroups: JSON.stringify(rivalGroups),
+                survivalShow: JSON.stringify(survivalShow),
+                survivalShowHistory: JSON.stringify(survivalShowHistory),
                 activeChart: JSON.stringify(activeChart),
                 achievements: JSON.stringify(achievements),
                 hallOfFame: JSON.stringify(hallOfFame),
@@ -1276,6 +1580,8 @@ const [pendingMerch, setPendingMerch] = useState([]);
             setExchangeStudents(JSON.parse(data.exchangeStudents || "null"));
             setAchievements(JSON.parse(data.achievements || "[]"));
             setHallOfFame(JSON.parse(data.hallOfFame || "[]"));
+            setSurvivalShow(JSON.parse(data.survivalShow || "null"));
+            setSurvivalShowHistory(JSON.parse(data.survivalShowHistory || "[]"));
             setJankenTournament(JSON.parse(data.jankenTournament || "null"));
             setLastJankenResult(JSON.parse(data.lastJankenResult || "null"));
             setLastElectionResult(JSON.parse(data.lastElectionResult || "null"));
@@ -1528,36 +1834,45 @@ if (exchangeStudents && exchangeStudents.length > 0) {
         return mainRoster;
     };
 
-const getAllAvailableMembers = (includeSisters = false) => {
-    let allMembers = [...members.map(m => ({
-        ...m,
-        rosterId: String(m.id),
-        isSisterMember: false,
-        displayGroupName: groupName
-    }))];
-
-    if (includeSisters) {
-        sisterGroups.forEach(sg => {
-            if (sg.members) {
-                const sisterMembers = sg.members.map(m => ({
-                    ...m,
-                    rosterId: `sg-${sg.id}-${m.id}`,
-                    isSisterMember: true,
-                    displayGroupName: sg.name,
-                    groupId: sg.id // Important for filtering
-                }));
-                allMembers.push(...sisterMembers);
+    const getAllAvailableMembers = (includeSisters = false) => {
+        // 1. Start with a base list of all "owned" members from the main group.
+        let allMembers = [...members.map(m => ({
+            ...m,
+            rosterId: String(m.id),
+            isSisterMember: false,
+            displayGroupName: groupName,
+            groupId: 'main'
+        }))];
+    
+        if (includeSisters) {
+            // 2. Add members from "owned" sister groups (domestic/overseas) AND units.
+            // This now correctly includes members of units.
+            sisterGroups.forEach(sg => {
+                if (sg.members) {
+                    const sisterMembers = sg.members.map(m => ({
+                        ...m,
+                        rosterId: `sg-${sg.id}-${m.id}`,
+                        isSisterMember: true,
+                        displayGroupName: sg.name,
+                        groupId: sg.id
+                    }));
+                    allMembers.push(...sisterMembers);
+                }
+            });
+            
+            // 3. Add any active exchange students.
+            if (exchangeStudents && exchangeStudents.length > 0) {
+                exchangeStudents.forEach(ex => {
+                    allMembers.push(ex.member);
+                });
             }
-        });
-        // THIS IS THE FIX: Add exchange students to the list
-if (exchangeStudents && exchangeStudents.length > 0) {
-    exchangeStudents.forEach(ex => {
-        allMembers.push(ex.member);
-    });
-}
-    }
-    return allMembers;
-};
+        }
+        
+        // Use a Map to filter out any duplicates by rosterId, solving the root cause of the key error.
+        const uniqueMembers = Array.from(new Map(allMembers.map(m => [m.rosterId, m])).values());
+        
+        return uniqueMembers;
+    };
     
 const getMemberById = (memberId) => {
     const memberIdStr = String(memberId);
@@ -4475,7 +4790,7 @@ const disbandUnit = (unitId) => {
     };
 
 
-    const executeSongRelease = (singleToRelease, initialMembers, initialSisterGroups, initialSongs, rivalGroups) => {
+    const executeSongRelease = (singleToRelease, initialMembers, initialSisterGroups, initialSongs, rivalGroups, initialExchangeStudents) => {
         if (!singleToRelease || !singleToRelease.songData || !singleToRelease.songData.tracks) {
             console.error("Cancelling release of malformed single:", singleToRelease);
             addNotification({ type: 'alert', message: 'A corrupted single release was detected and automatically cancelled.' });
@@ -4486,20 +4801,38 @@ const disbandUnit = (unitId) => {
         let updatedMembers = initialMembers;
         let updatedSisterGroups = initialSisterGroups;
 
+        let updatedExchangeStudents = initialExchangeStudents ? JSON.parse(JSON.stringify(initialExchangeStudents)) : [];
+
         const localUpdateMemberState = (memberId, updateFn) => {
-            if (!String(memberId).startsWith('sg-')) {
-                const memberIndex = updatedMembers.findIndex(m => String(m.id) === String(memberId));
-                if (memberIndex > -1) updatedMembers[memberIndex] = updateFn(updatedMembers[memberIndex]);
-            } else {
-                const [, sgId, mId] = String(memberId).split('-');
-                const sgIndex = updatedSisterGroups.findIndex(g => String(g.id) === sgId);
-                if (sgIndex > -1) {
-                    const memberIndex = (updatedSisterGroups[sgIndex].members || []).findIndex(m => String(m.id) === mId);
-                    if (memberIndex > -1) updatedSisterGroups[sgIndex].members[memberIndex] = updateFn(updatedSisterGroups[sgIndex].members[memberIndex]);
+            let found = false;
+            // Update main group members
+            let mainMemberIndex = updatedMembers.findIndex(m => String(m.id) === String(memberId) || m.rosterId === String(memberId));
+            if (mainMemberIndex !== -1) {
+                updatedMembers[mainMemberIndex] = updateFn(updatedMembers[mainMemberIndex]);
+                found = true;
+            }
+
+            // Update sister group members
+            if (!found) {
+                for (let i = 0; i < updatedSisterGroups.length; i++) {
+                    const sg = updatedSisterGroups[i];
+                    const memberIndex = (sg.members || []).findIndex(m => `sg-${sg.id}-${m.id}` === String(memberId));
+                    if (memberIndex !== -1) {
+                        updatedSisterGroups[i].members[memberIndex] = updateFn(sg.members[memberIndex]);
+                        found = true;
+                        break; 
+                    }
+                }
+            }
+
+            // Update exchange students
+            if (!found) {
+                const exchangeIndex = updatedExchangeStudents.findIndex(ex => ex.member.rosterId === String(memberId));
+                if (exchangeIndex !== -1) {
+                    updatedExchangeStudents[exchangeIndex].member = updateFn(updatedExchangeStudents[exchangeIndex].member);
                 }
             }
         };
-
         const { songData, productionData } = singleToRelease;
         const triviaItems = [];
         let newCollaboration = null;
@@ -5231,7 +5564,7 @@ if (rookieStreakMembers.length > 0) {
         generateNewChart([newSong]);
         // --- END: Daily Chart Generation ---
 
-        return { updatedMembers, updatedSisterGroups, releaseMessage, newSong, updatedRivalGroups, newCollaboration };
+        return { updatedMembers, updatedSisterGroups, updatedExchangeStudents, releaseMessage, newSong, updatedRivalGroups, newCollaboration };
     };
     
     // --- Performance Management Logic ---
@@ -7403,6 +7736,7 @@ const runAnnualAwards = () => {
             let rivalsForUpdate = JSON.parse(JSON.stringify(rivalGroups));
         if (survivalShow && survivalShow.isActive) {
             simulateSurvivalShowWeek();
+            return;
         }
 
         // --- 0. KOUHAKU EVENT CYCLE ---
@@ -7858,8 +8192,7 @@ if (requestHourStatus && requestHourStatus.isActive && newWeek > requestHourStat
                     // We pass our DRAFT arrays into the release functions.
                     const result = release.type === 'album'
                         ? executeAlbumRelease(release, membersForUpdate, sisterGroupsForUpdate, exchangeStudentsForUpdate)
-                        : executeSongRelease(release, membersForUpdate, sisterGroupsForUpdate, songsForUpdate, rivalsForUpdate, exchangeStudentsForUpdate);
-                    
+                        : executeSongRelease(release, membersForUpdate, sisterGroupsForUpdate, songsForUpdate, rivalsForUpdate, exchangeStudentsForUpdate);                    
                     if (result) {
                         // The functions return updated member/group drafts, which we accept for this loop.
                         membersForUpdate = result.updatedMembers;
@@ -7871,9 +8204,9 @@ if (result.updatedExchangeStudents) exchangeStudentsForUpdate = result.updatedEx
                         if (result.updatedRivalGroups) {
                         rivalsForUpdate = result.updatedRivalGroups;
                         }
-                                                if (result.newCollaboration) {
-                                                                            collaborationsForUpdate.push(result.newCollaboration);
-                                                                                                    }
+                        if (result.newCollaboration) {
+                            collaborationsForUpdate.push(result.newCollaboration);
+                                                    }
                                                                                                     
                         if (result.newSong) {
                              if (result.newSong.targetGroup === 'main' || result.newSong.targetGroup === groupName) {
@@ -8866,50 +9199,53 @@ const executeRequestHourConcert = () => {
 
 
 
-const confirmCreateSisterGroup = (groupData, initialMemberIds = []) => {
-    let cost = 0;
-    const newGroupType = groupData.type;
-
-    if (newGroupType === 'unit') {
-        cost = 50000; // Special low cost for forming a unit
-    } else {
-        cost = newGroupType === 'domestic' ? 200000 : 500000;
-    }
-
-    if (money < cost) return setMessage(`Need ¥${cost.toLocaleString()} to establish this group.`);
-
-    const newId = Math.max(0, ...(sisterGroups || []).map(sg => sg.id || 0)) + 1;
+    const confirmCreateSisterGroup = (groupData, initialMemberIds = []) => {
+        let cost = 0;
+        const newGroupType = groupData.type;
     
-    // Create the base group/unit object
-    const newSisterGroup = {
-        id: newId,
-        name: groupData.groupName,
-        location: groupData.location || 'Special Project',
-        type: newGroupType,
-        // A unit's 'members' array is just a list of IDs.
-        // It doesn't "own" the members, they just have a concurrent position.
-        members: initialMemberIds,
-        fans: 100, songs: [], income: 0, isAutonomous: false, money: 0, licensedSongs: []
+        if (newGroupType === 'unit') {
+            cost = 50000; // Special low cost for forming a unit
+        } else {
+            cost = newGroupType === 'domestic' ? 200000 : 500000;
+        }
+    
+        if (money < cost) {
+            setMessage(`Need ¥${cost.toLocaleString()} to establish this group.`);
+            // **FIX 1 of 2: Explicitly return on failure**
+            return;
+        }
+    
+        const newId = Math.max(0, ...(sisterGroups || []).map(sg => sg.id || 0)) + 1;
+        
+        const newSisterGroup = {
+            id: newId,
+            name: groupData.groupName,
+            location: groupData.location || 'Special Project',
+            type: newGroupType,
+            members: initialMemberIds,
+            fans: 100, songs: [], income: 0, isAutonomous: false, money: 0, licensedSongs: []
+        };
+        
+        if (newGroupType === 'unit' && initialMemberIds.length > 0) {
+            initialMemberIds.forEach(memberId => {
+                updateMemberState(memberId, m => ({
+                    ...m,
+                    // Using the ID is more robust than the name
+                    kenninGroups: [...(m.kenninGroups || []), newSisterGroup.id], 
+                    teamHistory: [...(m.teamHistory || []), { week: week, event: `Joined special unit "${newSisterGroup.name}"` }]
+                }));
+            });
+        }
+    
+        setSisterGroups(prev => [...(prev || []), newSisterGroup]);
+        setMoney(prev => prev - cost);
+        setMessage(`Successfully established ${groupData.groupName}!`);
+        setShowModal(null);
+        setGroupRoles(prev => ({ ...prev, [newId]: null }));
+
+        // **FIX 2 of 2: Return the new ID on success**
+        return newId;
     };
-    
-    // If we are creating a unit, we don't transfer members.
-    // Instead, we update them to add the concurrent position.
-    if (newGroupType === 'unit' && initialMemberIds.length > 0) {
-        initialMemberIds.forEach(memberId => {
-            updateMemberState(memberId, m => ({
-                ...m,
-                kenninGroups: [...(m.kenninGroups || []), newSisterGroup.name],
-                teamHistory: [...(m.teamHistory || []), { week: week, event: `Joined special unit "${newSisterGroup.name}"` }]
-            }));
-        });
-    }
-
-    setSisterGroups(prev => [...(prev || []), newSisterGroup]);
-    setMoney(prev => prev - cost);
-    setMessage(`Successfully established ${groupData.groupName}!`);
-    setShowModal(null);
-    setGroupRoles(prev => ({ ...prev, [newId]: null }));
-};
 
     const licenseSongToGroup = (songId, groupId) => {
         const licenseFee = 250000;
@@ -8986,29 +9322,32 @@ const confirmCreateSisterGroup = (groupData, initialMemberIds = []) => {
         setMessage(`${getMemberById(memberId).name} will hold a concurrent position in ${targetTeam.name} for 52 weeks.`);
         setShowModal(null);
     };
-    const startStudyAbroad = (memberId, destinationGroupId) => {
-        const cost = 50000;
-        const destinationGroup = sisterGroups.find(sg => String(sg.id) === String(destinationGroupId));
 
-        if (!destinationGroup) {
-            setMessage("Destination group not found.");
-            return;
+const startStudyAbroad = (memberId, destinationGroupId) => {
+    const cost = 50000;
+    const destinationGroup = sisterGroups.find(sg => String(sg.id) === String(destinationGroupId));
+    const member = getMemberById(memberId); // Get member info BEFORE state change
+
+    if (!destinationGroup || !member) {
+        setMessage("Destination group or member not found.");
+        return;
+    }
+
+    updateMemberState(memberId, m => ({
+        ...m,
+        isAvailable: false,
+        exchangeProgram: {
+            isStudyAbroad: true,
+            rivalName: destinationGroup.name,
+            endWeek: week + 24
         }
+    }));
 
-        updateMemberState(memberId, m => ({
-            ...m,
-            isAvailable: false,
-            exchangeProgram: {
-                isStudyAbroad: true,
-                rivalName: destinationGroup.name, // Using rivalName field for consistency
-                endWeek: week + 24
-            }
-        }));
-
-        setMoney(prev => prev - cost);
-        setMessage(`${getMemberById(memberId).name} has departed to study abroad in ${destinationGroup.name}! They will return in 24 weeks.`);
-        setShowModal(null);
-    };
+    setMoney(prev => prev - cost);
+    // Use the member object we fetched earlier
+    setMessage(`${member.name} has departed to study abroad in ${destinationGroup.name}! They will return in 24 weeks.`);
+    setShowModal(null);
+};
 
 
     const startAudition = (targetGroup, tier, generationName, auditionLocation) => {
@@ -9296,7 +9635,91 @@ const confirmCreateSisterGroup = (groupData, initialMemberIds = []) => {
       }
     };
 
-const appointCaptain = (groupId, memberId) => {
+const renewExchangeContract = (rosterId) => {
+    const cost = 1000000; // 1 million for a 1-year extension
+    if (money < cost) {
+        setMessage("Not enough money to extend the contract.");
+        return;
+    }
+
+    setMoney(prev => prev - cost);
+
+    setExchangeStudents(prev => prev.map(ex => {
+        if (ex.member.rosterId === rosterId) {
+            const newEndWeek = (ex.endWeek || week) + 52; // Add 52 weeks
+            
+            // Also update the kenninInfo on the member object itself
+            const updatedMember = {
+                ...ex.member,
+                kenninInfo: {
+                    ...ex.member.kenninInfo,
+                    endWeek: newEndWeek
+                }
+            };
+
+            return { 
+                ...ex, 
+                endWeek: newEndWeek,
+                member: updatedMember 
+            };
+        }
+        return ex;
+    }));
+
+    const memberName = exchangeStudents.find(ex => ex.member.rosterId === rosterId)?.member.name || 'the exchange member';
+    const successMessage = `Successfully extended the contract for ${memberName} by one year! Cost: ¥${cost.toLocaleString()}`;
+    addNotification({ type: 'Management', message: successMessage });
+    setMessage(successMessage);
+    setShowModal(null);
+};
+const transferExchangeMember = (rosterId) => {
+    const exchangeStudentInfo = exchangeStudents.find(ex => ex.member.rosterId === rosterId);
+    if (!exchangeStudentInfo) {
+        setMessage("Could not find the exchange student to transfer.");
+        return;
+    }
+
+    const member = exchangeStudentInfo.member;
+    const cost = 5000000 + (getTotalFansForMember(member) * 10);
+
+    if (money < cost) {
+        setMessage("You cannot afford the transfer fee for this member.");
+        return;
+    }
+
+    setMoney(prev => prev - cost);
+
+    // Create the new permanent member object
+    const newPermanentMember = {
+        ...member,
+        id: (members.length > 0 ? Math.max(...members.map(m => m.id)) : 0) + 1,
+        rosterId: (members.length > 0 ? Math.max(...members.map(m => m.id)) : 0) + 1,
+        isExchangeStudent: false,
+        isRivalKennin: false,
+        kenninInfo: undefined,
+        homeGroup: groupName,
+        displayGroupName: groupName,
+        name: member.name.replace(/ \\(.+\\)/, ''), // Removes the (Rival Group) part of the name
+        teamHistory: [...(member.teamHistory || []), { week: week, event: `Permanently transferred from ${member.homeGroup}.` }],
+    };
+    
+    delete newPermanentMember.rivalName;
+
+
+    // Add the new member to the main members array
+    setMembers(prev => [...prev, newPermanentMember]);
+
+    // Remove the member from the exchange students array
+    setExchangeStudents(prev => prev.filter(ex => ex.member.rosterId !== rosterId));
+
+    const successMessage = `A historic deal! ${newPermanentMember.name} has permanently transferred from ${member.homeGroup} for ¥${cost.toLocaleString()}!`;
+    addNotification({ type: 'Management', message: successMessage });
+    setMessage(successMessage);
+    setShowModal(null);
+    setSelectedMember(newPermanentMember);
+};
+
+    const appointCaptain = (groupId, memberId) => {
     const oldCaptainId = groupRoles[groupId];
 
     // If the user selects the "Appoint" placeholder or the same captain again
@@ -9585,138 +10008,211 @@ const executeKouhakuPerformance = (membersForUpdate, sisterGroupsForUpdate) => {
     };
 
 const simulateSurvivalShowWeek = () => {
-    if (survivalShowVote.isActive) {
-        setMessage("You must finish voting before proceeding to the next episode.");
+    if (survivalShowVote.isActive || (survivalShow && survivalShow.mission)) {
+        setMessage("You must resolve the current mission or vote before proceeding.");
         return;
-    }    
+    }
     if (!survivalShow) return;
 
-    let { week, contestants, log, name, eliminatedPlayerMembers } = survivalShow;
+    let { week, contestants, log, mission, name, isInternal, debutCount } = survivalShow;
     const newWeek = week + 1;
-    let newLog = [...log];
-
-    // 1. Weekly Popularity Growth & Events
-    contestants.forEach(c => {
-        c.popularity += (c.charisma * 0.5) * (0.5 + Math.random());
-        if (Math.random() < 0.1) {
-            const eventRoll = Math.random();
-            if (eventRoll < 0.5) {
-                c.popularity *= 1.2;
-                newLog.push(`✨ ${c.name} received an "Angel Edit", boosting her popularity!`);
-            } else {
-                c.popularity *= 0.85;
-                newLog.push(`👻 ${c.name} was the victim of "Evil Editing", hurting her image.`);
-            }
-        }
-    });
-
-    // 2. Main Evaluations
-    if (newWeek === 3) {
-        newLog.push("--- Theme Song Evaluation ---");
-        contestants.forEach(c => {
-            const score = (c.vocal + c.dance) / 2;
-            if (score > 90) { c.grade = 'A'; c.popularity *= 1.5; }
-            else if (score > 80) { c.grade = 'B'; c.popularity *= 1.3; }
-            else if (score > 70) { c.grade = 'C'; c.popularity *= 1.1; }
-            else if (score > 60) { c.grade = 'D'; }
-            else { c.grade = 'F'; }
-            newLog.push(`${c.name} was graded as Class ${c.grade}.`);
-        });
-    } else if (newWeek === 5) {
-        newLog.push("--- Position Battle ---");
-        for(let i=0; i < 10; i++) {
-            const winner = contestants[Math.floor(Math.random() * contestants.length)];
-            winner.popularity *= 1.5;
-            newLog.push(`🎤 ${winner.name} gave a standout performance in the Position Battle!`);
-        }
-    } else if (newWeek === 8) {
-        newLog.push("--- Concept Battle ---");
-         for(let i=0; i < 5; i++) {
-            const winner = contestants[Math.floor(Math.random() * contestants.length)];
-            winner.popularity *= 1.8;
-            newLog.push(`💖 ${winner.name}'s concept performance went viral!`);
-        }
-    }
-    // --- VOTING TRIGGER ---
-    // Check if it's a voting week (the week before an elimination)
-    if (newWeek === 4 || newWeek === 7 || newWeek === 10) {
-        newLog.push(`--- 🗳️ VOTING OPENS! --- You have been given 3 votes to support contestants. Each vote costs money.`);
-        setSurvivalShowVote({
-            isActive: true,
-            votesLeft: 3,
-            cost: 150000 + (50000 * week) // Cost increases over time
-        });
-    }
-
-    // Sort by popularity before eliminations
-    contestants.sort((a, b) => b.popularity - a.popularity);
-
-    // 3. Eliminations
-    const processEliminations = (cutoffRank, eliminationWeek) => {
-        const eliminated = contestants.slice(cutoffRank);
-        const remaining = contestants.slice(0, cutoffRank);
-        
-        eliminated.filter(c => c.isPlayer).forEach((eliminatedMember, i) => {
-            const rank = cutoffRank + i + 1;
-            eliminatedPlayerMembers.push({ ...eliminatedMember, finalRank: rank, eliminatedWeek: eliminationWeek });
-            updateMemberState(eliminatedMember.id, m => ({
-                ...m, isAvailable: true, morale: Math.max(0, m.morale - 20),
-                fans: { ...m.fans, casual: (m.fans.casual || 0) + 5000 },
-                teamHistory: [...(m.teamHistory || []), { week: week, event: `Eliminated from ${name} at rank #${rank}.` }]
-            }));
-            newLog.push(`Your member, ${eliminatedMember.name}, has been eliminated at rank ${rank}. They have returned to the agency.`);
-        });
-        
-        return remaining;
-    };
-
-    const startEliminationAnnouncement = (cutoffRank, eliminationWeek, title) => {
-        newLog.push(`--- ${title} --- The results will now be announced!`);
-        // Sort contestants by popularity to establish ranks
-        contestants.sort((a, b) => b.popularity - a.popularity);
-        setEliminationData({
-            contestants: contestants,
-            cutoffRank: cutoffRank,
-            eliminationWeek: eliminationWeek,
-            title: title
-        });
-        setShowModal('survivalElimination');
-        // Update the survival show state but PAUSE the simulation
-        setSurvivalShow({
-            ...survivalShow,
-            week: newWeek,
-            contestants: contestants,
-            log: newLog,
-        });
-    };
-
-    if (newWeek === 5) {
-        startEliminationAnnouncement(60, newWeek, 'First Elimination');
-        return; // Stop the week from finishing
-    } else if (newWeek === 8) {
-        startEliminationAnnouncement(30, newWeek, 'Second Elimination');
-        return;
-    } else if (newWeek === 11) {
-        startEliminationAnnouncement(20, newWeek, 'Third Elimination');
-        return;
-    }
-
-    // 4. Finale
-        // 4. Finale
-        if (newWeek > 12) {
-            startEliminationAnnouncement(12, newWeek, 'Grand Finale');
-            return;
-        }
+    let newLog = [];
     
-    // Update state
-    setSurvivalShow({
-        ...survivalShow,
-        week: newWeek,
-        contestants: contestants,
-        log: newLog,
-        eliminatedPlayerMembers: eliminatedPlayerMembers
-    });
+    newLog.push(`--- Episode ${newWeek}: Start ---`);
+    contestants.forEach(c => { c.popularity += (c.charisma * 0.5) * (0.5 + Math.random()); });
+
+    // --- MISSION SETUP & PAUSE ---
+    const setupAndPause = (setupFn) => {
+        const newMission = setupFn(contestants, newLog);
+        setSurvivalShow(prev => ({ ...prev, week: newWeek, log: [...prev.log, ...newLog], mission: newMission }));
+        setShowModal('survivalMission');
+    };
+
+    if (newWeek === 3) return setupAndPause(setupGroupBattle);
+    if (newWeek === 6) return setupAndPause(setupPositionBattle);
+    if (newWeek === 9) return setupAndPause(setupConceptBattle);
+    
+    // --- VOTING TRIGGERS ---
+    if (newWeek === 4 || newWeek === 7 || newWeek === 10) {
+        newLog.push(`--- 🗳️ VOTING OPENS! --- You have been given 3 votes to support contestants.`);
+        setSurvivalShowVote({ isActive: true, votesLeft: 3, cost: 150000 + (50000 * week) });
+    }
+
+    // --- ELIMINATIONS & FINALE ---
+    const startEliminationAnnouncement = (cutoffRank, title) => {
+        newLog.push(`--- ${title} --- The results will now be announced!`);
+        contestants.sort((a, b) => b.popularity - a.popularity);
+        setEliminationData({ contestants, cutoffRank, title });
+        setShowModal('survivalElimination');
+        setSurvivalShow(prev => ({ ...prev, week: newWeek, contestants, log: [...prev.log, ...newLog] }));
+    };
+    
+    let elimLogic = { 5: 60, 8: 30, 11: 20 };
+    if (isInternal) {
+        const finaleGroupSize = Math.max(debutCount + 1, Math.floor(debutCount * 2));
+        const semiFinalGroupSize = Math.max(finaleGroupSize + 1, Math.floor(finaleGroupSize * 1.5));
+        const firstCutoff = Math.max(semiFinalGroupSize, Math.floor(contestants.length * 0.8));
+        elimLogic = { 5: firstCutoff, 8: semiFinalGroupSize, 11: finaleGroupSize };
+    }
+
+    if (newWeek === 5) return startEliminationAnnouncement(elimLogic[5], 'First Elimination');
+    if (newWeek === 8) return startEliminationAnnouncement(elimLogic[8], 'Second Elimination');
+    if (newWeek === 11) return startEliminationAnnouncement(elimLogic[11], 'Third Elimination');
+    if (newWeek > 12) return startEliminationAnnouncement(debutCount || 12, 'Grand Finale');
+
+    // Update state for a regular week
+    setSurvivalShow(prev => ({ ...prev, week: newWeek, contestants, log: [...prev.log, ...newLog] }));
 };
+
+const resolveSurvivalMission = () => {
+    if (!survivalShow || !survivalShow.mission) return;
+
+    let { contestants, mission, log } = survivalShow;
+    let newLog = [];
+    let result = {};
+
+    if (mission.type === 'group_battle') {
+        const battleResults = [];
+        mission.battles.forEach(battle => {
+            const teamAScore = battle.teamA.members.reduce((s, m) => s + m.dance + m.charisma, 0);
+            const teamBScore = battle.teamB.members.reduce((s, m) => s + m.dance + m.charisma, 0);
+            
+            const winner = teamAScore >= teamBScore ? battle.teamA : battle.teamB;
+            const loser = teamAScore < teamBScore ? battle.teamA : battle.teamB;
+            
+            newLog.push(`🏆 Battle for "${battle.song}": A winner has been decided!`);
+            
+            winner.members.forEach(m => {
+                const memberInContestants = contestants.find(c => c.id === m.id);
+                if (memberInContestants) {
+                    memberInContestants.popularity *= 1.25; // Adjusted boost for multiple winning teams
+                }
+            });
+            
+            battleResults.push({ song: battle.song, winner, loser });
+        });
+        
+        result = { battleResults, type: mission.type };
+    } 
+    else if (mission.type === 'position_battle') {
+        const vocalWinner = [...mission.teams.vocalists].sort((a,b) => b.vocal - a.vocal)[0];
+        const danceWinner = [...mission.teams.dancers].sort((a,b) => b.dance - a.dance)[0];
+        if (vocalWinner) {
+            const winnerInContestants = contestants.find(c => c.id === vocalWinner.id);
+            if(winnerInContestants) winnerInContestants.popularity *= 1.6;
+            newLog.push(`🎤 Vocal Ace: ${vocalWinner.name}`);
+        }
+        if (danceWinner) {
+            const winnerInContestants = contestants.find(c => c.id === danceWinner.id);
+            if(winnerInContestants) winnerInContestants.popularity *= 1.6;
+            newLog.push(`💃 Dance Ace: ${danceWinner.name}`);
+        }
+        result = { vocalWinner, danceWinner, type: mission.type };
+    }
+    else if (mission.type === 'concept_battle') {
+        const sortedTeams = [...mission.teams].sort((a, b) => 
+            (b.members.reduce((s, m) => s + m.visual + m.charisma, 0)) - 
+            (a.members.reduce((s, m) => s + m.visual + m.charisma, 0))
+        );
+        const winner = sortedTeams[0];
+        newLog.push(`🌟 The "${winner.concept}" team (${winner.song}) won the concept evaluation!`);
+        winner.members.forEach(m => {
+            const memberInContestants = contestants.find(c => c.id === m.id);
+            if (memberInContestants) memberInContestants.popularity *= 1.8;
+        });
+        result = { winner, type: mission.type };
+    }
+
+    setMissionResult(result);
+    setSurvivalShow(prev => ({
+        ...prev,
+        contestants,
+        log: [...prev.log, ...newLog],
+    }));
+};
+
+const closeMissionModal = () => {
+    setMissionResult(null);
+    setSurvivalShow(prev => ({
+        ...prev,
+        mission: null, 
+    }));
+    setShowModal(null);
+};
+
+const setupGroupBattle = (contestants, log) => {
+    log.push("--- Group Battle Mission ---");
+    log.push("Contestants are being drafted into multiple small, balanced teams for head-to-head battles.");
+
+    const idealTeamSize = 6;
+    let numTeams = Math.floor(contestants.length / idealTeamSize);
+    if (numTeams > 1 && numTeams % 2 !== 0) {
+        numTeams--; // We need an even number of teams to pair them up for battles.
+    }
+    if (numTeams < 2) {
+        numTeams = 2; // Fallback to a single battle if there are very few contestants.
+    }
+    const numBattles = numTeams / 2;
+
+    const rankedContestants = [...contestants].sort((a, b) => (b.dance + b.charisma) - (a.dance + a.charisma));
+    
+    const teams = Array.from({ length: numTeams }, () => []);
+    
+    // Distribute contestants using a "snake draft" method for balance.
+    let currentTeam = 0;
+    let direction = 1;
+    rankedContestants.forEach(contestant => {
+        // This check handles cases where the number of contestants isn't perfectly divisible.
+        if (teams[currentTeam]) {
+            teams[currentTeam].push(contestant);
+        }
+        currentTeam += direction;
+        if (currentTeam < 0 || currentTeam >= numTeams) {
+            direction *= -1;
+            currentTeam += direction;
+        }
+    });
+
+    const missionSongs = [...survivalShowSongs].sort(() => 0.5 - Math.random()).slice(0, numBattles);
+
+    const battles = [];
+    for (let i = 0; i < numBattles; i++) {
+        // Skip if there aren't enough songs or teams
+        if (!missionSongs[i] || !teams[i * 2 + 1]) continue; 
+        
+        battles.push({
+            song: missionSongs[i].name,
+            teamA: { id: i * 2, members: teams[i * 2] },
+            teamB: { id: i * 2 + 1, members: teams[i * 2 + 1] },
+        });
+    }
+
+    log.push(`${battles.length} battles have been set. Teams will perform the same song to see who does it better!`);
+    
+    return { battles, type: 'group_battle' };
+};
+
+const setupPositionBattle = (contestants, log) => {
+    log.push("--- Position Evaluation Mission ---");
+    const vocalists = contestants.filter(c => c.vocal > c.dance);
+    const dancers = contestants.filter(c => c.dance >= c.vocal);
+    log.push(`Contestants will now show their specialized skills in Vocal and Dance battles.`);
+    return { teams: { vocalists, dancers }, type: 'position_battle' };
+};
+
+const setupConceptBattle = (contestants, log) => {
+    log.push("--- Concept Evaluation Mission ---");
+    const missionSongs = [...survivalShowSongs].sort(() => 0.5 - Math.random()).slice(0, 4);
+    let remainingContestants = [...contestants];
+    const teams = missionSongs.map((song, index) => {
+        const teamSize = Math.floor(remainingContestants.length / (missionSongs.length - index));
+        const members = remainingContestants.splice(0, teamSize);
+        log.push(`The "${song.concept}" unit will perform "${song.name}".`);
+        return { id: index + 1, song: song.name, concept: song.concept, members: members, score: 0 };
+    });
+    return { teams: teams.filter(t => t.members.length > 0), type: 'concept_battle' };
+};
+
 
     const finalizeSurvivalElimination = () => {
         if (!survivalShow || !eliminationData) return;
@@ -9760,58 +10256,98 @@ const simulateSurvivalShowWeek = () => {
     };
 
 
-const finishSurvivalShow = (winners, allEliminatedMembers) => {
-    if (!survivalShow) return;
-
-    const { name } = survivalShow;
-
-    // --- GATHER ALL PLAYER PERFORMANCES ---
-    const playerWinners = winners.filter(c => c.isPlayer).map((c, i) => ({ ...c, finalRank: i + 1, eliminatedWeek: 12 }));
-    const playerLosers = allEliminatedMembers.filter(c => c.isPlayer);
-    const allPlayerPerformances = [...playerWinners, ...playerLosers].sort((a, b) => a.finalRank - b.finalRank);
-
-    // --- PROCESS REWARDS AND STATE CHANGES ---
-    let totalPrizeMoney = 0;
-    let totalRepGain = 0;
-    playerWinners.forEach(winner => {
-        totalPrizeMoney += 2500000;
-        totalRepGain += 5;
-        updateMemberState(winner.id, m => ({
-            ...m,
-            activityEnd: week + 52,
-            currentActivity: `In project group from ${name}`,
-            isAvailable: false,
-            singing: Math.min(100, m.singing + 15),
-            dancing: Math.min(100, m.dancing + 15),
-            charisma: Math.min(100, m.charisma + 15),
-            fans: {
-                ...m.fans,
-                hardcore: (m.fans.hardcore || 0) + 100000,
-                casual: (m.fans.casual || 0) + 200000,
-            },
-            teamHistory: [...(m.teamHistory || []), { week: week, event: `Finished #${winner.finalRank} in ${name} and joined the project group.` }]
-        }));
-    });
-
-    setMoney(prev => prev + totalPrizeMoney);
-    setGroupReputation(prev => prev + totalRepGain);
-
-    // --- PREPARE FINAL HISTORY & MODAL ---
-    const historyEntry = {
-        week: week,
-        name: name,
-        winners: winners.map((w, index) => ({ rank: index + 1, name: w.name, group: w.group, isPlayer: w.isPlayer })),
-        allPlayerPerformances: allPlayerPerformances,
-        playerWinners: playerWinners,
-        totalPrizeMoney,
-        totalRepGain
+    const finishSurvivalShow = (winners, allEliminatedMembers) => {
+        if (!survivalShow) return;
+    
+        const { name, unitName, isInternal, contestants } = survivalShow;
+    
+        // --- History & Final Display Data ---
+        const finalPerformances = [...winners, ...allEliminatedMembers]
+            .sort((a, b) => b.popularity - a.popularity)
+            .map((p, i) => {
+                const originalContestant = contestants.find(con => con.id === p.id) || p;
+                return {
+                    ...originalContestant,
+                    finalRank: i + 1,
+                    eliminatedWeek: 12
+                };
+            });
+    
+        const playerPerformances = finalPerformances.filter(p => p.isPlayer);
+    
+        // --- Internal Show Specific Logic ---
+        if (isInternal) {
+            // ** THE FIX IS HERE **
+            // We now call createUnitFromSurvival and pass it all player participants.
+            // This function will handle forming the unit AND making everyone available again.
+            createUnitFromSurvival(winners, unitName, playerPerformances);
+    
+            // Set up modal data and close out the show
+            const historyEntry = {
+                week: week,
+                name: name,
+                winners: winners.map((w, index) => ({ rank: index + 1, name: w.name, group: w.group, isPlayer: w.isPlayer })),
+                allPlayerPerformances: playerPerformances,
+                playerWinners: playerPerformances.filter(p => p.finalRank <= winners.length),
+                totalPrizeMoney: 0,
+                totalRepGain: 0
+            };
+    
+            setSurvivalShowHistory(prev => [historyEntry, ...prev]);
+            setSurvivalShow(null);
+            setModalData(historyEntry);
+            setShowModal('survivalShowResult');
+            return;
+        }
+    
+        // --- EXTERNAL Show Logic (remains unchanged) ---
+        let totalPrizeMoney = 0;
+        let totalRepGain = 0;
+        const playerWinners = playerPerformances.filter(p => p.finalRank <= 12);
+        
+        playerWinners.forEach(winner => {
+            totalPrizeMoney += 2500000;
+            totalRepGain += 5;
+            updateMemberState(winner.id, m => ({
+                ...m,
+                activityEnd: week + 52,
+                currentActivity: `In project group from ${name}`,
+                isAvailable: false,
+                singing: Math.min(100, (m.singing || 0) + 15),
+                dancing: Math.min(100, (m.dancing || 0) + 15),
+                charisma: Math.min(100, (m.charisma || 0) + 15),
+                fans: {
+                    ...m.fans,
+                    hardcore: (m.fans.hardcore || 0) + 100000,
+                    casual: (m.fans.casual || 0) + 200000,
+                },
+                teamHistory: [...(m.teamHistory || []), { week: week, event: `Finished #${winner.finalRank} in ${name} and joined the project group.` }]
+            }));
+        });
+        
+        setMoney(prev => prev + totalPrizeMoney);
+        setGroupReputation(prev => prev + totalRepGain);
+    
+        const playerLosersInFinale = playerPerformances.filter(p => p.finalRank > 12);
+        playerLosersInFinale.forEach(loser => {
+            updateMemberState(loser.id, m => ({ ...m, isAvailable: true, currentActivity: null, activityEnd: null, morale: Math.max(0, (m.morale || 0) - 5), fans: { ...m.fans, casual: (m.fans.casual || 0) + 20000 } }));
+        });
+        
+        const historyEntry = {
+            week: week,
+            name: name,
+            winners: finalPerformances.slice(0, 12).map(w => ({ rank: w.finalRank, name: w.name, group: w.group, isPlayer: w.isPlayer })),
+            allPlayerPerformances: playerPerformances,
+            playerWinners: playerWinners,
+            totalPrizeMoney,
+            totalRepGain
+        };
+    
+        setSurvivalShowHistory(prev => [historyEntry, ...prev]);
+        setSurvivalShow(null);
+        setModalData(historyEntry);
+        setShowModal('survivalShowResult');
     };
-
-    setSurvivalShowHistory(prev => [historyEntry, ...prev]);
-    setSurvivalShow(null); // The show is officially over.
-    setModalData(historyEntry);
-    setShowModal('survivalShowResult'); // Show the final summary modal.
-};
 
 
         const startJankenTournament = (includeOverseas = false) => {
@@ -10777,16 +11313,145 @@ const memberFans = isAce ? rival.ace.fans : 100000 + Math.floor(Math.random() * 
     setShowModal('exchangeStudent');
 };
 
+    const startInternalSurvivalShow = (showName, unitName, debutCount, playerParticipantIds, outsiderCount) => {
+        const cost = 500000;
+        if (money < cost) {
+            setMessage("Not enough money to host an internal survival show.");
+            return;
+        }
+        if (playerParticipantIds.length === 0) {
+            setMessage("You must select at least one of your own members to participate.");
+            return;
+        }
 
+        setMoney(prev => prev - cost);
+        addNotification({ type: 'Event', message: `Your internal survival show, "${showName}", has begun!`});
+
+        // Make selected members unavailable and record history
+        playerParticipantIds.forEach(id => {
+            updateMemberState(id, m => ({
+                ...m,
+                isAvailable: false,
+                currentActivity: `In survival show "${showName}"`,
+                activityEnd: week + 12,
+                teamHistory: [...(m.teamHistory || []), { week: week, event: `Joined internal survival show "${showName}"` }]
+            }));
+        });
+
+        const yourContestants = playerParticipantIds.map(id => {
+            const member = getMemberById(id);
+            return {
+                id: member.rosterId,
+                name: member.name,
+                group: getMemberGroupStatus(member).split(' | ')[0],
+                isPlayer: true,
+                vocal: member.singing,
+                dance: member.dancing,
+                visual: member.visual,
+                charisma: member.charisma,
+                popularity: getTotalFansForMember(member) / 100,
+                grade: 'F'
+            };
+        });
+
+        // Generate outside trainee contestants
+        const outsiderContestants = [];
+        const personalities = ['Cheerful', 'Shy', 'Confident', 'Ambitious', 'Easygoing', 'Energetic', 'Quiet'];
+        for (let i = 0; i < outsiderCount; i++) {
+            const traineeName = generateRandomMemberName();
+            outsiderContestants.push({
+                id: `outsider-${Date.now()}-${i}`,
+                name: traineeName,
+                group: "Independent Trainee",
+                isPlayer: false,
+                isOutsider: true, // Flag to identify them later
+                vocal: 30 + Math.random() * 40,
+                dance: 30 + Math.random() * 40,
+                visual: 30 + Math.random() * 40,
+                charisma: 30 + Math.random() * 40,
+                intelligence: 30 + Math.random() * 40,
+                popularity: 100 + Math.random() * 500,
+                grade: 'F',
+                // Add data needed for recruitment
+                hometown: generateRandomHometown(),
+                potential: 50 + Math.random() * 40,
+                personality: personalities[Math.floor(Math.random() * personalities.length)],
+                age: 14 + Math.floor(Math.random() * 5),
+            });
+        }
+        
+        const allContestants = [...yourContestants, ...outsiderContestants];
+
+        setSurvivalShow({
+            name: showName,
+            isActive: true,
+            isInternal: true, // Flag for internal show
+            unitName: unitName, // Store unit name
+            debutCount: debutCount, // Store debut group size
+            week: 1,
+            totalWeeks: 12,
+            contestants: allContestants,
+            log: [`Episode 1: The contestants for "${showName}" are revealed!`],
+            eliminatedPlayerMembers: [],
+        });
+
+        setShowModal('liveSurvivalShow');
+    };
+
+    const createUnitFromSurvival = (winners, unitName, allPlayerParticipants) => {
+        // 1. Create the new unit first, but keep it empty for now.
+        const newUnitId = confirmCreateSisterGroup({
+            groupName: unitName,
+            type: 'unit',
+            location: 'Special Project'
+        }, []); // Pass an empty member list
+
+        if (!newUnitId) {
+            setMessage("Error: Could not create the new unit. Please try again.");
+            return;
+        }
+
+        // 2. Recruit winning "Independent Trainees" directly into the new unit.
+        const outsiderWinners = (winners || []).filter(w => w.isOutsider);
+        if (outsiderWinners.length > 0) {
+            const newCandidates = outsiderWinners.map(c => ({
+                name: c.name, hometown: c.hometown, vocal: c.vocal, dance: c.dance,
+                visual: c.visual, charisma: c.charisma, intelligence: c.intelligence, variety: 50,
+                potential: c.potential, personality: c.personality, age: c.age,
+            }));
+            // The key change: Target the new unit's ID during recruitment.
+                confirmRecruitment(newCandidates, { targetGroup: newUnitId, generationName: '1st Generation', contractFee: 15000 });
+        }
+
+            // 3. Assign winning members a CONCURRENT position in the new unit.
+            const playerMemberWinners = (winners || []).filter(w => w.isPlayer);
+            
+            playerMemberWinners.forEach(winner => {
+                updateMemberState(winner.id, m => ({
+                    ...m,
+                    // Add the new unit's ID to the member's concurrent groups
+                    kenninGroups: [...(m.kenninGroups || []), unitName],
+                    // Add a history entry for this event
+                    teamHistory: [...(m.teamHistory || []), { week: week, event: `Joined unit "${unitName}" as a concurrent member.` }]
+                }));
+            });
+
+        addNotification({ type: 'Success', message: `The new unit "${unitName}" has been formed from the survival show winners!`});
+
+        // 4. Make all your participating members available again.
+        (allPlayerParticipants || []).forEach(p => {
+            updateMemberState(p.id, m => ({ ...m, isAvailable: true, currentActivity: null, activityEnd: null }));
+        });
+    };
 
 return {
     // State
-    eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
+    missionResult, setMissionResult, closeMissionModal, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
     // Firebase/Persistence
     getSavedGames, saveGame, loadGame,
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
-    confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent,  startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining
+    resolveSurvivalMission, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent,  startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining
     };
     };
