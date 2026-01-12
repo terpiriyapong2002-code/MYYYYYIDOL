@@ -708,6 +708,7 @@ export const generateRandomHometown = (location = 'Japan') => {
         case 'Bangkok':
             return thaiHometowns[Math.floor(Math.random() * thaiHometowns.length)];
         case 'Korea':
+        case 'Seoul':            
             return koreanHometowns[Math.floor(Math.random() * koreanHometowns.length)];
         default:
             return hometowns[Math.floor(Math.random() * hometowns.length)];
@@ -860,6 +861,120 @@ export const ambitions = {
     },
 };
 
+export const varietyShowTypes = {
+    'Game Show': {
+        description: 'A fun, chaotic show with games and challenges. Great for attracting new, casual fans.',
+        coreStats: ['variety', 'charisma'],
+        primaryReward: 'fans',
+        secondaryReward: 'variety',
+        stalenessRate: 10,
+    },
+    'Music Stage': {
+        description: 'A performance-focused show. Can be used to promote a charting single.',
+        coreStats: ['singing', 'dancing'],
+        primaryReward: 'promo',
+        secondaryReward: 'skill',
+        stalenessRate: 6,
+    },
+    'Talk Show': {
+        description: 'An interview and discussion-based show. Excellent for deepening the bond with existing fans.',
+        coreStats: ['intelligence', 'charisma'],
+        primaryReward: 'conversion',
+        secondaryReward: 'chemistry',
+        stalenessRate: 5,
+    },
+    'Documentary': {
+        description: 'A special, one-off series following the group behind the scenes. Massive impact, but can only be done once per year.',
+        coreStats: ['groupReputation'], // Special case
+        primaryReward: 'hardcore',
+        secondaryReward: 'morale',
+        stalenessRate: 100, // It's a one-off
+        isSpecial: true,
+    },
+};
+
+export const filmProjectTypes = {
+    'Indie Short Film': {
+        duration: 6,
+        cost: 75000,
+        rewards: { fanGain: 20000, repGain: 0 },
+        airingDuration: 4,
+        weeklyRevenue: 10000,
+        description: "A small, artistic project. Low impact, but a good way to get a member's feet wet."
+    },
+    'Web Drama': {
+        duration: 8,
+        cost: 150000,
+        rewards: { fanGain: 50000, repGain: 1 },
+        airingDuration: 8,
+        weeklyRevenue: 25000,
+        description: "A short series for an online platform. Decent exposure for the cost."
+    },
+    'Straight-to-DVD Movie': {
+        duration: 10,
+        cost: 250000,
+        rewards: { fanGain: 70000, repGain: 1 },
+        airingDuration: 10,
+        weeklyRevenue: 30000,
+        description: "A full-length feature that bypasses theaters. A bit old-school, but can be profitable."
+    },
+    'Supporting TV Role': {
+        duration: 12,
+        cost: 300000,
+        rewards: { fanGain: 120000, repGain: 2 },
+        airingDuration: 12,
+        weeklyRevenue: 40000,
+        description: "Secure a recurring role for an idol in a network television drama."
+    },
+    'Voice Acting (Anime)': {
+        duration: 10,
+        cost: 100000,
+        rewards: { fanGain: 80000, repGain: 1 },
+        airingDuration: 12,
+        weeklyRevenue: 20000,
+        description: "The idol will voice a character in an upcoming anime series. Taps into a new market."
+    },
+    'Stage Play / Musical': {
+        duration: 14,
+        cost: 400000,
+        rewards: { fanGain: 150000, repGain: 2 },
+        airingDuration: 8,
+        weeklyRevenue: 60000,
+        description: "A live theatrical run. Grueling for the members, but proves their live talent."
+    },
+    'Feature Film': {
+        duration: 16,
+        cost: 750000,
+        rewards: { fanGain: 200000, repGain: 3 },
+        airingDuration: 8,
+        weeklyRevenue: 120000,
+        description: "A standard theatrical movie release. The bread-and-butter of the film world."
+    },
+    'Historical Epic (Taiga)': {
+        duration: 30,
+        cost: 1500000,
+        rewards: { fanGain: 400000, repGain: 4 },
+        airingDuration: 26,
+        weeklyRevenue: 80000,
+        description: "A year-long commitment to a prestigious historical drama series. High prestige and fan gain."
+    },
+    'Major Series (Prime Time)': {
+        duration: 24,
+        cost: 2000000,
+        rewards: { fanGain: 500000, repGain: 5 },
+        airingDuration: 12,
+        weeklyRevenue: 250000,
+        description: "The lead role in a prime-time television series. A massive star-making opportunity."
+    },
+    'International Blockbuster': {
+        duration: 36,
+        cost: 5000000,
+        rewards: { fanGain: 1000000, repGain: 10 },
+        airingDuration: 10,
+        weeklyRevenue: 500000,
+        description: "A role in a Hollywood-level production. Extremely expensive and a long commitment, but with legendary rewards."
+    }
+};
 
 // --- Custom Hook for Game Logic and State Management ---
 export const useIdolManager = () => {
@@ -1209,7 +1324,9 @@ const promoMultipliers = { none: 1, tier1: 1.05, tier2: 1.1, tier3: 1.15, tier4:
     const [activeTour, setActiveTour] = useState(null);
     const [musicVideos, setMusicVideos] = useState([]);
     const [varietyShows, setVarietyShows] = useState([]);
-    const [photoBooks, setPhotoBooks] = useState([]);
+    const [filmStudio, setFilmStudio] = useState({ level: 0 });
+    const [filmProjects, setFilmProjects] = useState([]);
+    const [varietyStudio, setVarietyStudio] = useState({ level: 0 });    const [photoBooks, setPhotoBooks] = useState([]);
     const [documentaries, setDocumentaries] = useState([]);
     const [scandals, setScandals] = useState([]);
     const [statistics, setStatistics] = useState({ totalRevenue: 0, totalConcerts: 0, totalSongs: 0, revenueHistory: [] });
@@ -1413,6 +1530,7 @@ const [pendingMerch, setPendingMerch] = useState([]);
                 activeTour: JSON.stringify(activeTour),
                 musicVideos: JSON.stringify(musicVideos),
                 varietyShows: JSON.stringify(varietyShows),
+                varietyStudio: JSON.stringify(varietyStudio),
                 photoBooks: JSON.stringify(photoBooks),
                 documentaries: JSON.stringify(documentaries),
                 collaborations: JSON.stringify(collaborations),
@@ -1607,6 +1725,7 @@ const [pendingMerch, setPendingMerch] = useState([]);
             setPushedMembers(JSON.parse(data.pushedMembers || "[]"));
             setMusicVideos(JSON.parse(data.musicVideos || "[]"));
             setVarietyShows(JSON.parse(data.varietyShows || "[]"));
+            setVarietyStudio(JSON.parse(data.varietyStudio || '{"level":0}'));
             setPhotoBooks(JSON.parse(data.photoBooks || "[]"));
             setDocumentaries(JSON.parse(data.documentaries || "[]"));
             setCollaborations(JSON.parse(data.collaborations || "[]"));
@@ -1664,6 +1783,7 @@ const [pendingMerch, setPendingMerch] = useState([]);
             case 'Bangkok':
                 return generateThaiMemberName();
             case 'Korea':
+            case 'Seoul':
                 return generateKoreanMemberName();
             default: // Fallback to Japanese names
             const firstNames = [
@@ -2176,10 +2296,26 @@ const distributeFans = (amount, memberIds, conversionRate = 0.1) => {
       const skills = ['singing', 'dancing', 'variety'];
       getAllAvailableMembers(true).forEach(member => {
         const randomSkill = skills[Math.floor(Math.random() * skills.length)];
-        updateMemberState(member.id, m => ({ ...m, trainingFocus: randomSkill }));
+        updateMemberState(member.rosterId, m => ({ ...m, trainingFocus: randomSkill }));
       });
       setMessage('Assigned random training focus to all available members.');
     };
+
+const assignLowestVocalDanceTraining = () => {
+    getAllAvailableMembers(true).forEach(member => {
+    const skills = {
+        singing: member.singing || 0,
+        dancing: member.dancing || 0,
+    };
+
+    const lowestSkill = Object.keys(skills).reduce((lowest, skill) => {
+        return skills[skill] < skills[lowest] ? skill : lowest;
+    }, 'singing');
+
+    updateMemberState(member.rosterId, m => ({ ...m, trainingFocus: lowestSkill }));
+    });
+    setMessage('Assigned training focus to lowest Vocal/Dance skill for all available members.');
+};
 
     const assignLowestSkillTraining = () => {
       getAllAvailableMembers(true).forEach(member => {
@@ -2196,7 +2332,8 @@ const distributeFans = (amount, memberIds, conversionRate = 0.1) => {
           return skills[skill] < skills[lowest] ? skill : lowest;
         }, 'singing');
 
-        updateMemberState(member.id, m => ({ ...m, trainingFocus: lowestSkill }));
+        updateMemberState(member.rosterId, m => ({ ...m, trainingFocus: lowestSkill }));
+
       });
       setMessage('Assigned training focus to lowest skill for all available members.');
     };
@@ -3271,7 +3408,7 @@ const executeShuffle = (shuffleType, mode, manualAssignments = null) => {
             setShowModal('graduationTalk');
         };
        
-                const handleScandalResponse = (responseType) => {
+    const handleScandalResponse = (responseType) => {
             if (!activeScandal) return;
     
             const { member, scandal } = activeScandal;
@@ -7973,7 +8110,90 @@ if (requestHourStatus && requestHourStatus.isActive && newWeek > requestHourStat
                       baseMoraleHit: 20,
                       baseUrgency: 15,
                     },
+                    {
+                    type: 'Lazy Dancing Rumors',
+                    severity: 'Low',
+                    description: 'Video clips of a recent performance go viral showing the member missing steps or looking unmotivated.',
+                    baseFanLoss: 0.04,
+                    baseMoraleHit: 10,
+                    baseUrgency: 15,
+                    },
+                    {
+                    type: 'Accidental Live Stream Slip',
+                    severity: 'Low',
+                    description: 'The member accidentally left a live stream running, revealing a messy room or a mild complaint about a long rehearsal.',
+                    baseFanLoss: 0.02,
+                    baseMoraleHit: 10,
+                    baseUrgency: 20,
+                    },
+                    {
+                    type: 'Plagiarism of Social Media Aesthetic',
+                    severity: 'Low',
+                    description: 'Fans notice the member\'s personal posts are nearly identical to a smaller influencer\'s, leading to "copycat" accusations.',
+                    baseFanLoss: 0.03,
+                    baseMoraleHit: 12,
+                    baseUrgency: 10,
+                    },
+                    {
+                    type: 'Ignoring Fans at Airport',
+                    severity: 'Low',
+                    description: 'A video shows the member walking past fans without waving or acknowledging them, sparking "ego" debates.',
+                    baseFanLoss: 0.06,
+                    baseMoraleHit: 15,
+                    baseUrgency: 25,
+                    },
+                    {
+                    type: 'Fashion Faux Pas',
+                    severity: 'Low',
+                    description: 'The member wore a brand that is currently under boycott for ethical reasons, causing a minor stir on Twitter.',
+                    baseFanLoss: 0.04,
+                    baseMoraleHit: 10,
+                    baseUrgency: 30,
+                    },
+                    {
+                    type: 'Spoiling Group Content',
+                    severity: 'Low',
+                    description: 'The member accidentally posted a photo of a new hair color or music video set before the official teaser.',
+                    baseFanLoss: 0.01,
+                    baseMoraleHit: 20,
+                    baseUrgency: 40,
+                    },
+                    {
+                    type: 'Unpaid Sponsorship Accusation',
+                    severity: 'Low',
+                    description: 'A small brand claims the member accepted a gift but never gave the promised "shoutout."',
+                    baseFanLoss: 0.05,
+                    baseMoraleHit: 15,
+                    baseUrgency: 20,
+                    },
+                    {
+                    type: 'Mistake During National Anthem',
+                    severity: 'Low',
+                    description: 'The member fumbled the lyrics or hit a flat note during a high-profile sporting event.',
+                    baseFanLoss: 0.03,
+                    baseMoraleHit: 25,
+                    baseUrgency: 15,
+                    },
+                    {
+                    type: 'Sibling’s "Clout Chasing" Post',
+                    severity: 'Low',
+                    description: 'A sibling posted a "tell-all" vlog about living with a celebrity, annoying the core fanbase.',
+                    baseFanLoss: 0.02,
+                    baseMoraleHit: 20,
+                    baseUrgency: 10,
+                    },
+                    {
+                    type: 'Pet Neglect Rumor',
+                    severity: 'Low',
+                    description: 'A neighbor claims the member’s pet is left alone too often, leading to "bad owner" comments.',
+                    baseFanLoss: 0.07,
+                    baseMoraleHit: 30,
+                    baseUrgency: 20,
+                    },
+                    
                   ],
+
+
                   mid: [
                     {
                       type: 'Leaked Private Messages',
@@ -7999,7 +8219,88 @@ if (requestHourStatus && requestHourStatus.isActive && newWeek > requestHourStat
                       baseMoraleHit: 25,
                       baseUrgency: 25,
                     },
+                    {
+                    type: 'In-Group Cold War',
+                    severity: 'Mid',
+                    description: 'Fans notice two members refusing to look at or interact with each other during an interview. Discord rumors fly.',
+                    baseFanLoss: 0.10,
+                    baseMoraleHit: 30,
+                    baseUrgency: 30,
+                    },
+                    {
+                    type: 'Clubbing During Health Hiatus',
+                    severity: 'Mid',
+                    description: 'While on "sick leave," the member was spotted at a popular nightclub, making fans feel deceived.',
+                    baseFanLoss: 0.12,
+                    baseMoraleHit: 25,
+                    baseUrgency: 40,
+                    },
+                    {
+                    type: 'Cultural Insensitivity',
+                    severity: 'Mid',
+                    description: 'The member used a phrase or wore a garment from another culture in a way deemed mocking or offensive.',
+                    baseFanLoss: 0.14,
+                    baseMoraleHit: 20,
+                    baseUrgency: 45,
+                    },
+                    {
+                    type: '"Pick Me" Personality Edit',
+                    severity: 'Mid',
+                    description: 'A compilation of the member interrupting others or acting "fake" for the camera goes viral.',
+                    baseFanLoss: 0.09,
+                    baseMoraleHit: 30,
+                    baseUrgency: 25,
+                    },
+                    {
+                    type: 'Ghosting a Brand Deal',
+                    severity: 'Mid',
+                    description: 'The member missed a major photoshoot without notice, leading to a potential lawsuit from a sponsor.',
+                    baseFanLoss: 0.05,
+                    baseMoraleHit: 20,
+                    baseUrgency: 50,
+                    },
+                    {
+                    type: 'Hidden Luxury Lifestyle',
+                    severity: 'Mid',
+                    description: 'Photos surface of the member’s secret multi-million dollar apartment while the group is marketed as "relatable and struggling."',
+                    baseFanLoss: 0.11,
+                    baseMoraleHit: 15,
+                    baseUrgency: 20,
+                    },
+                    {
+                    type: 'Hypocrisy Allegation',
+                    severity: 'Mid',
+                    description: 'The member previously spoke out against dieting but was caught at a weight-loss clinic.',
+                    baseFanLoss: 0.08,
+                    baseMoraleHit: 25,
+                    baseUrgency: 30,
+                    },
+                    {
+                    type: 'Malicious Commenting History',
+                    severity: 'Mid',
+                    description: 'An old, anonymous account linked to the member’s email is found to have left mean comments on other idols\' posts.',
+                    baseFanLoss: 0.13,
+                    baseMoraleHit: 35,
+                    baseUrgency: 40,
+                    },
+                    {
+                    type: 'Poor Academic Record Leak',
+                    severity: 'Mid',
+                    description: 'Proof that the member cheated on exams or received special treatment in university surfaces.',
+                    baseFanLoss: 0.07,
+                    baseMoraleHit: 20,
+                    baseUrgency: 25,
+                    },
+                    {
+                    type: 'Refusal to Perform Fan Service',
+                    severity: 'Mid',
+                    description: 'A fan at a high-priced meet-and-greet claims the member was visibly disgusted by a request for a "heart" gesture.',
+                    baseFanLoss: 0.10,
+                    baseMoraleHit: 15,
+                    baseUrgency: 35,
+                    },
                   ],
+
                   high: [
                     {
                       type: 'Paparazzi Dating Photo',
@@ -8016,6 +8317,86 @@ if (requestHourStatus && requestHourStatus.isActive && newWeek > requestHourStat
                       baseFanLoss: 0.20,
                       baseMoraleHit: 40,
                       baseUrgency: 50,
+                    },
+                    {
+                    type: 'Hit-and-Run Investigation',
+                    severity: 'High',
+                    description: 'The member was involved in a minor car accident and allegedly left the scene before police arrived.',
+                    baseFanLoss: 0.25,
+                    baseMoraleHit: 45,
+                    baseUrgency: 60,
+                    },
+                    {
+                    type: 'Illegal Gambling Allegations',
+                    severity: 'High',
+                    description: 'Reports surface that the member has been frequenting high-stakes, unregulated gambling dens.',
+                    baseFanLoss: 0.22,
+                    baseMoraleHit: 40,
+                    baseUrgency: 55,
+                    },
+                    {
+                    type: 'Severe Dating Scandal (Secret Marriage)',
+                    severity: 'High',
+                    description: 'Not just a date—it turns out the member has been secretly married for two years.',
+                    baseFanLoss: 0.30,
+                    baseMoraleHit: 50,
+                    baseUrgency: 70,
+                    },
+                    {
+                    type: 'Drug Use Speculation',
+                    severity: 'High',
+                    description: 'A video from a party shows white powder on a table near the member, sparking a police inquiry.',
+                    baseFanLoss: 0.35,
+                    baseMoraleHit: 60,
+                    baseUrgency: 80,
+                    },
+                    {
+                    type: 'Workplace Harassment',
+                    severity: 'High',
+                    description: 'A former stylist or manager comes forward with documented evidence of verbal abuse and threats.',
+                    baseFanLoss: 0.18,
+                    baseMoraleHit: 50,
+                    baseUrgency: 65,
+                    },
+                    {
+                    type: 'Political Controversy',
+                    severity: 'High',
+                    description: 'The member made a statement or "liked" a post supporting a highly divisive or extremist political movement.',
+                    baseFanLoss: 0.28,
+                    baseMoraleHit: 30,
+                    baseUrgency: 75,
+                    },
+                    {
+                    type: 'Pyramid Scheme Involvement',
+                    severity: 'High',
+                    description: 'The member used their social media to promote a "get rich quick" scam that cost fans money.',
+                    baseFanLoss: 0.40,
+                    baseMoraleHit: 40,
+                    baseUrgency: 90,
+                    },
+                    {
+                    type: 'Inappropriate Content Leak',
+                    severity: 'High',
+                    description: 'A private, suggestive video intended for an ex-partner has been leaked by a hacker.',
+                    baseFanLoss: 0.20,
+                    baseMoraleHit: 70,
+                    baseUrgency: 85,
+                    },
+                    {
+                    type: 'DUI (Driving Under Influence)',
+                    severity: 'High',
+                    description: 'The member was caught by police driving over the legal limit. This is a massive blow to public trust.',
+                    baseFanLoss: 0.30,
+                    baseMoraleHit: 50,
+                    baseUrgency: 90,
+                    },
+                    {
+                    type: 'Public Altercation/Brawl',
+                    severity: 'High',
+                    description: 'Footage of the member getting into a physical fight outside a bar is circulating on all news outlets.',
+                    baseFanLoss: 0.15,
+                    baseMoraleHit: 40,
+                    baseUrgency: 50,
                     },
                   ],
                 };
@@ -8455,6 +8836,133 @@ if (result.updatedExchangeStudents) exchangeStudentsForUpdate = result.updatedEx
         if (sisterIncome > 0) { incomeBreakdown.push(`Sister Groups: ¥${sisterIncome.toLocaleString()}`); totalWeeklyIncome += sisterIncome; }
         const varietyIncome = (varietyShows || []).reduce((s, v) => s + (v.income || 0), 0);
         if (varietyIncome > 0) { incomeBreakdown.push(`Variety Shows: ¥${varietyIncome.toLocaleString()}`); totalWeeklyIncome += varietyIncome; }
+        // --- VARIETY SHOWS (ACTIVE) ---
+        const showsForUpdate = [...varietyShows];
+        let showsFinishedThisWeek = [];
+
+        showsForUpdate.forEach((show, index) => {
+            if (!show.isActive) return;
+
+            show.weeksAired += 1;
+            const showType = varietyShowTypes[show.type];
+            if (!showType) return;
+
+            // Calculate Performance
+            const castMembers = show.cast.map(id => getMemberById(id)).filter(Boolean);
+            if (castMembers.length === 0) return;
+
+            const avgCoreStat = castMembers.reduce((sum, member) => {
+                return sum + showType.coreStats.reduce((statSum, stat) => statSum + (member[stat] || 0), 0);
+            }, 0) / (castMembers.length * showType.coreStats.length);
+
+            const quality = (avgCoreStat * 0.7) + ((varietyStudio.level * 10) * 0.3); // 70% stats, 30% studio level
+            const stalenessPenalty = 1 - (show.staleness / 150); // Max penalty of ~66%
+            const weeklyPerformance = quality * stalenessPenalty * (0.8 + Math.random() * 0.4);
+
+            // Apply Rewards
+            let weeklyMessage = '';
+            if (showType.primaryReward === 'fans') {
+                const fanGain = Math.floor(500 + weeklyPerformance * 100);
+                localDistributeFans(fanGain, show.cast);
+                weeklyMessage = `gained ${fanGain.toLocaleString()} fans.`;
+            } else if (showType.primaryReward === 'conversion') {
+                let converted = 0;
+                castMembers.forEach(member => {
+                    const toConvert = Math.floor((member.fans.casual || 0) * (weeklyPerformance / 1000));
+                    localUpdateMemberState(member.rosterId, m => ({
+                        ...m,
+                        fans: {
+                            hardcore: (m.fans.hardcore || 0) + toConvert,
+                            casual: (m.fans.casual || 0) - toConvert,
+                        }
+                    }));
+                    converted += toConvert;
+                });
+                weeklyMessage = `converted ${converted.toLocaleString()} casual fans to hardcore.`;
+            }
+
+            // Apply Secondary Rewards
+            if (showType.secondaryReward === 'skill') {
+                castMembers.forEach(member => {
+                    localUpdateMemberState(member.rosterId, m => ({
+                        ...m,
+                        [showType.coreStats[0]]: Math.min(100, (m[showType.coreStats[0]] || 0) + 0.2),
+                        [showType.coreStats[1]]: Math.min(100, (m[showType.coreStats[1]] || 0) + 0.2),
+                    }));
+                });
+            }
+
+            // Update Show Stats
+            showsForUpdate[index].staleness += showType.stalenessRate;
+            showsForUpdate[index].popularity = Math.max(0, Math.min(100, show.popularity + (weeklyPerformance - 50) / 10));
+
+            addNotificationInLoop({ type: 'Variety', message: `"${show.name}" aired and ${weeklyMessage}` });
+
+            // Check for Season End
+            if (showsForUpdate[index].weeksAired >= showsForUpdate[index].seasonDuration) {
+                showsForUpdate[index].isActive = false;
+                showsFinishedThisWeek.push(showsForUpdate[index]);
+            }
+        });
+        
+        if (showsFinishedThisWeek.length > 0) {
+            priorityMessage = `The season for "${showsFinishedThisWeek.map(s => s.name).join(', ')}" has concluded! Go to the Activities tab to manage your shows.`;
+        }
+
+        setVarietyShows(showsForUpdate);
+
+        // --- FILM PROJECTS (ACTIVE) ---
+        const updatedFilmProjects = filmProjects.map(project => {
+            let currentProject = { ...project };
+
+            if (currentProject.status === 'filming') {
+                const newWeeksLeft = currentProject.weeksLeft - 1;
+                if (newWeeksLeft <= 0) {
+                    // FILMING IS COMPLETE, TRANSITION TO AIRING
+                    const projectType = filmProjectTypes[currentProject.type];
+                    const allCastIds = [...currentProject.cast.lead, ...currentProject.cast.supporting, ...currentProject.cast.general];
+                    
+                    // Distribute initial rewards (FANS and REP)
+                    localDistributeFans(projectType.rewards.fanGain, allCastIds);
+                    setGroupReputation(prev => prev + projectType.rewards.repGain);
+
+                    // Make cast available again
+                    allCastIds.forEach(memberId => {
+                        updateMemberState(memberId, m => ({
+                            ...m,
+                            isAvailable: true,
+                            currentActivity: null,
+                            activityEnd: null,
+                            teamHistory: [...(m.teamHistory || []), { week: week, event: `Finished filming "${currentProject.title}"` }]
+                        }));
+                    });
+                    
+                    addNotificationInLoop({ type: 'Success', message: `Filming for "${currentProject.title}" has wrapped! It will now begin its run, generating weekly revenue.` });
+
+                    // Transition the project to the 'airing' phase
+                    currentProject.status = 'airing';
+                    currentProject.weeksLeft = projectType.airingDuration;
+                } else {
+                    currentProject.weeksLeft = newWeeksLeft;
+                }
+            } else if (currentProject.status === 'airing') {
+                const projectType = filmProjectTypes[currentProject.type];
+                const leadCast = currentProject.cast.lead.map(id => getMemberById(id)).filter(Boolean);
+                const avgLeadCharisma = leadCast.reduce((sum, m) => sum + (m.charisma || 0), 0) / (leadCast.length || 1);
+                
+                // Calculate weekly revenue
+                const revenue = Math.floor(projectType.weeklyRevenue * (1 + avgLeadCharisma / 200));
+                totalWeeklyIncome += revenue;
+                incomeBreakdown.push(`${currentProject.title}: ¥${revenue.toLocaleString()}`);
+
+                // Decrement airing time
+                currentProject.weeksLeft -= 1;
+            }
+            
+            return currentProject;
+        }).filter(p => p.weeksLeft > 0); // Finally, remove any projects whose airing duration has ended
+
+        setFilmProjects(updatedFilmProjects);
 
         // --- COMMIT DRAFTS FOR THIS SECTION ---
         moneyForUpdate += totalWeeklyIncome;
@@ -9400,6 +9908,8 @@ const startStudyAbroad = (memberId, destinationGroupId) => {
                     danceBonus = 10;
                 } else if (finalAuditionLocation === 'Bangkok') {
                     visualBonus = 10;
+                } else if (finalAuditionLocation === 'Seoul') {
+                    visualBonus = 10;
                 } else if (finalAuditionLocation === 'Taipei') {
                     visualBonus = 10;
                 } else if (finalAuditionLocation === 'Manila') {
@@ -9506,7 +10016,7 @@ const startStudyAbroad = (memberId, destinationGroupId) => {
                 electionHype: 0,
                 isCurrentCenter: false,
                 chemistry: {},
-
+                filmHistory: [],
             };
             
             const ambitionKeys = Object.keys(ambitions);
@@ -9634,6 +10144,188 @@ const startStudyAbroad = (memberId, destinationGroupId) => {
         setMessage("Invalid cheat code.");
       }
     };
+
+    const buildVarietyStudio = () => {
+        const cost = 250000;
+        if (money < cost) return setMessage(`Need ¥${cost.toLocaleString()} to build the studio!`);
+        if (varietyStudio.level > 0) return setMessage("You already have a Variety Show Studio.");
+
+        setMoney(prev => prev - cost);
+        setVarietyStudio({ level: 1 });
+        const msg = "Built a Variety Show Studio! It will now generate weekly income and fans.";
+        setMessage(msg);
+        addNotification({ type: 'Facility', message: msg });
+    };
+
+    const upgradeVarietyStudio = () => {
+        const currentLevel = varietyStudio.level;
+        if (currentLevel === 0) return setMessage("You need to build the studio first.");
+        if (currentLevel >= 5) return setMessage("Variety Show Studio is already at max level.");
+        
+        const cost = 200000 * Math.pow(2, currentLevel);
+        if (money < cost) return setMessage(`Need ¥${cost.toLocaleString()} to upgrade the studio!`);
+
+        setMoney(prev => prev - cost);
+        setVarietyStudio({ level: currentLevel + 1 });
+        const msg = `Upgraded Variety Show Studio to Level ${currentLevel + 1}! Income and fan gain increased.`;
+        setMessage(msg);
+        addNotification({ type: 'Facility', message: msg });
+    };
+
+const createVarietyShow = (name, type, castIds) => {
+    const cost = 200000;
+    if (money < cost) {
+        setMessage("Not enough money to create a new show.");
+        return;
+    }
+
+    const newShow = {
+        id: `show-${Date.now()}`,
+        name,
+        type,
+        cast: castIds,
+        season: 1,
+        isActive: true,
+        weeksAired: 0,
+        seasonDuration: 12,
+        popularity: 50,
+        staleness: 0,
+    };
+
+    setMoney(prev => prev - cost);
+    setVarietyShows(prev => [...prev, newShow]);
+    setMessage(`Started production for new show: "${name}"!`);
+    addNotification({ type: 'Variety', message: `The first season of "${name}" has begun!` });
+};
+
+const renewVarietyShow = (showId) => {
+    const renewalCost = 50000;
+    if (money < renewalCost) {
+        setMessage("Not enough money to renew the show.");
+        return;
+    }
+
+    setMoney(prev => prev - renewalCost);
+    setVarietyShows(prev => prev.map(show => {
+        if (show.id === showId) {
+            addNotification({ type: 'Variety', message: `"${show.name}" has been renewed for Season ${show.season + 1}!` });
+            return {
+                ...show,
+                isActive: true,
+                weeksAired: 0,
+                season: show.season + 1,
+                staleness: show.staleness / 2, // Reduces staleness by half
+            };
+        }
+        return show;
+    }));
+};
+
+const recastVarietyShow = (showId, newCastIds) => {
+    const recastCost = 75000;
+     if (money < recastCost) {
+        setMessage("Not enough money to recast the show.");
+        return;
+    }
+
+    setMoney(prev => prev - recastCost);
+    setVarietyShows(prev => prev.map(show => {
+        if (show.id === showId) {
+            addNotification({ type: 'Variety', message: `The cast for "${show.name}" has been refreshed for Season ${show.season + 1}!` });
+            return {
+                ...show,
+                isActive: true,
+                weeksAired: 0,
+                season: show.season + 1,
+                staleness: 0, // Recasting completely removes staleness
+                cast: newCastIds,
+            };
+        }
+        return show;
+    }));
+};
+
+const cancelVarietyShow = (showId) => {
+    setVarietyShows(prev => prev.filter(show => show.id !== showId));
+    setMessage("The variety show has been canceled.");
+};
+const buildFilmStudio = () => {
+    const cost = 400000;
+    if (money < cost) return setMessage(`Need ¥${cost.toLocaleString()} to build the Film Studio!`);
+    if (filmStudio.level > 0) return setMessage("You already have a Film Studio.");
+
+    setMoney(prev => prev - cost);
+    setFilmStudio({ level: 1 });
+    const msg = "Built a Film Studio! You can now produce movies and series via the Activities tab.";
+    setMessage(msg);
+    addNotification({ type: 'Facility', message: msg });
+};
+
+const upgradeFilmStudio = () => {
+    const currentLevel = filmStudio.level;
+    if (currentLevel === 0) return setMessage("You need to build the studio first.");
+    if (currentLevel >= 3) return setMessage("Film Studio is already at max level.");
+    
+    const cost = 300000 * Math.pow(2, currentLevel);
+    if (money < cost) return setMessage(`Need ¥${cost.toLocaleString()} to upgrade the studio!`);
+
+    setMoney(prev => prev - cost);
+    setFilmStudio({ level: currentLevel + 1 });
+    const msg = `Upgraded Film Studio to Level ${currentLevel + 1}! Production costs are reduced.`;
+    setMessage(msg);
+    addNotification({ type: 'Facility', message: msg });
+};
+
+const startFilmProject = (title, type, cast) => {
+    const projectType = filmProjectTypes[type];
+    if (!projectType) return;
+
+    let cost = projectType.cost;
+    // Apply discount from studio level
+    if (filmStudio.level > 0) {
+        cost *= (1 - (filmStudio.level - 1) * 0.1); // 10% discount per level after 1
+    }
+
+    if (money < cost) {
+        setMessage("Not enough money to start this film project.");
+        return;
+    }
+
+    const endWeek = week + projectType.duration;
+    const newProject = {
+        id: `film-${Date.now()}`,
+        title,
+        type,
+        cast, // { lead: [...], supporting: [...], general: [...] }
+        endWeek,
+        weeksLeft: projectType.duration,
+        status: 'filming',
+    };
+
+    setMoney(prev => prev - cost);
+    setFilmProjects(prev => [...prev, newProject]);
+    
+    // Make cast unavailable and update their history
+    const allCastIds = [...cast.lead, ...cast.supporting, ...cast.general];
+    allCastIds.forEach(memberId => {
+        let role = 'General Cast';
+        if (cast.lead.includes(memberId)) role = 'Lead Role';
+        else if (cast.supporting.includes(memberId)) role = 'Supporting Role';
+        
+        updateMemberState(memberId, m => ({
+            ...m,
+            isAvailable: false,
+            activityEnd: endWeek,
+            currentActivity: `Filming: ${title}`,
+            // THIS IS THE NEW HISTORY LOGIC
+            filmHistory: [...(m.filmHistory || []), { week: week, title: title, role: role, projectType: type }],
+            teamHistory: [...(m.teamHistory || []), { week: week, event: `Cast as ${role} in "${title}"` }]
+        }));
+    });
+    
+    addNotification({ type: 'Production', message: `Started filming "${title}". It will be completed in ${projectType.duration} weeks.` });
+    setShowModal(null);
+};
 
 const renewExchangeContract = (rosterId) => {
     const cost = 1000000; // 1 million for a 1-year extension
@@ -10917,6 +11609,7 @@ if (songToRelease && newSg.members.length >= 16) {
     const locationToVersion = {
         'Shanghai': 'CN VER.',
         'Bangkok': 'TH VER.',
+        'Seoul': 'KR VER.',
         'Taipei': 'TW VER.',
         'Manila': 'PH VER.'
     };
@@ -11444,14 +12137,15 @@ const memberFans = isAce ? rival.ace.fans : 100000 + Math.floor(Math.random() * 
         });
     };
 
+    
 return {
     // State
-    missionResult, setMissionResult, closeMissionModal, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
+    filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
     // Firebase/Persistence
     getSavedGames, saveGame, loadGame,
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
-    resolveSurvivalMission, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent,  startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining
+    resolveSurvivalMission, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent,  startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
     };
     };
