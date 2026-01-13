@@ -9,16 +9,16 @@ import { CSS } from '@dnd-kit/utilities';
 
 import DailyChartModal from './DailyChartModal';
 
-import { useIdolManager, getTotalFansForMember, getFormattedDateForWeek, productionTiers, getGraduationRisk, songTitles, generateSongTitle, electionSpeechTemplates, performanceTypes, scandalResponseOptions, tiers, getTheaterCapacity, getTicketPrice, hometowns, generateRandomHometown,  warehouseTiers, staffTiers, ambitions, varietyShowTypes, filmProjectTypes } from "./hooks/useIdolManager";
+import { useIdolManager, getTotalFansForMember, getFormattedDateForWeek, productionTiers, getGraduationRisk, songTitles, generateSongTitle, electionSpeechTemplates, performanceTypes, scandalResponseOptions, tiers, getTheaterCapacity, getTicketPrice, hometowns, generateRandomHometown,  warehouseTiers, staffTiers, ambitions, varietyShowTypes, filmProjectTypes, scriptTiers, directorTiers, filmPromotionTypes, varietyWriterTiers, varietyProducerTiers } from "./hooks/useIdolManager";
 
 import React, { useState, useEffect, useCallback, useRef, memo } from 'react';
 import { 
-  Crown, Mic2, ChevronRight, Star, Briefcase, Paintbrush, Music, Heart, Library, TrendingUp, Users, Award, Calendar, DollarSign, Save, 
+  Repeat, MessageSquare, Crown, Mic2, ChevronRight, Star, Briefcase, Paintbrush, Music, Heart, Library, TrendingUp, Users, Award, Calendar, DollarSign, Save, 
   Upload, Building, Tv, GripVertical, Gift, Goal, Trophy, Sparkles, AlertCircle, AlertTriangle, Zap, Globe, 
   Film, Plane, GraduationCap, Shirt, Shield, Camera, BarChart3, Bell, X, Edit, Plus, Shuffle, 
   User, Check, ChevronDown, ChevronUp, ShoppingBag, Mic, Hand, Lock, Brain, Package,
   Minimize2, Maximize2, Trash2, MapPin, Smile, LogIn, CalendarCheck, Home, 
-  ClipboardCheck, Clock, Moon, BarChart2, FileText, Scissors, Wrench, Layers, Clipboard
+  ClipboardCheck, Clapperboard, Clock, Moon, BarChart2, FileText, Scissors, Wrench, Layers, Clipboard
 } from 'lucide-react';
 
 
@@ -31,7 +31,7 @@ const App = () => {
     // Destructure everything from the custom hook
     const {
     // State
-    filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, resolveSurvivalMission, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory,  merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
+     fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm,setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, resolveSurvivalMission, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory,  merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
     // Firebase/Persistence
     getSavedGames, saveGame, loadGame,
     // Utilities
@@ -76,6 +76,7 @@ const App = () => {
     const [memberSort, setMemberSort] = useState({ key: 'rank', asc: true });
     const [memberFilter, setMemberFilter] = useState('all');
     const [selectedSingleForPromo, setSelectedSingleForPromo] = useState(null);
+    const [pushMemberFilter, setPushMemberFilter] = useState('all');
 
     
     useEffect(() => {
@@ -912,32 +913,61 @@ const ElectionResultModal = () => {
 
 const AnnualAwardsResultModal = () => {
     if (!modalData) return null;
-    const [revealStep, setRevealStep] = useState(0); // 0: Start, 1: Rookie, 2: Song, 3: Idol
+    const [revealStep, setRevealStep] = useState(0);
+
+    // DYNAMICALLY BUILD THE SEQUENCE OF AWARDS
+    const awardSequence = ['rookieOfTheYear', 'songOfTheYear'];
+    if (modalData.bestPicture) awardSequence.push('bestPicture');
+    if (modalData.bestActress) awardSequence.push('bestActress');
+    awardSequence.push('idolOfTheYear');
 
     const revealNext = () => setRevealStep(prev => prev + 1);
 
-    const AwardCard = ({ title, icon: Icon, color, winnerData, metricField, unit, delayClass, isRevealed, isMainEvent }) => {
+    // Map award keys to their display properties
+    const awardDetails = {
+        rookieOfTheYear: { title: "Rookie of the Year", icon: Sparkles, color: "text-pink-400", metric: "fans", unit: " fans" },
+        songOfTheYear: { title: "Song of the Year", icon: FileText, color: "text-blue-400", metric: "sales", unit: " copies" },
+        bestPicture: { title: "Best Picture", icon: Film, color: "text-cyan-400", metric: "score", unit: " score" },
+        bestActress: { title: "Best Actress", icon: User, color: "text-lime-400" },
+        idolOfTheYear: { title: "Idol of the Year", icon: Trophy, color: "text-yellow-300", metric: "fans", unit: " fans", isMainEvent: true },
+    };
+
+    const getButtonText = () => {
+        if (revealStep >= awardSequence.length) return 'Finish';
+        const nextAwardKey = awardSequence[revealStep];
+        if (nextAwardKey === 'idolOfTheYear') return 'And the Idol of the Year is...';
+        return `Reveal ${awardDetails[nextAwardKey].title}`;
+    };
+
+    const AwardCard = ({ awardKey, winnerData, isRevealed }) => {
+        const details = awardDetails[awardKey];
+        if (!details) return null;
+        
         if (!isRevealed) return (
-            <div className="h-[105px] bg-black/20 rounded-lg flex items-center justify-center">
+            <div className="h-[80px] bg-black/20 rounded-lg flex items-center justify-center">
                  <p className="text-gray-600 animate-pulse">Waiting for announcement...</p>
             </div>
         );
 
+        let displayData = winnerData;
+        if (awardKey === 'bestPicture') displayData = { name: winnerData.film, group: null, isRival: false, score: winnerData.score };
+        if (awardKey === 'bestActress') displayData = { name: winnerData.member, group: `for "${winnerData.film}"`, isRival: false };
+
         return (
-            <div className={`opacity-0 ${delayClass} bg-black bg-opacity-20 p-4 rounded-lg border ${isMainEvent ? 'border-2 border-yellow-400 shadow-lg shadow-yellow-500/20' : 'border-yellow-500/30'}`}>
-                <h3 className={`text-xl font-bold ${color} flex items-center mb-2`}>
-                    <Icon className="mr-3 h-6 w-6" /> {title}
+            <div className={`opacity-0 animate-fade-in-delay-1 bg-black bg-opacity-20 p-4 rounded-lg border ${details.isMainEvent ? 'border-2 border-yellow-400 shadow-lg shadow-yellow-500/20' : 'border-yellow-500/30'}`}>
+                <h3 className={`text-xl font-bold ${details.color} flex items-center mb-2`}>
+                    <details.icon className="mr-3 h-6 w-6" /> {details.title}
                 </h3>
-                {winnerData ? (
+                {displayData ? (
                     <div className="text-center py-2">
-                        <p className={`text-2xl font-light ${winnerData.isRival ? 'text-gray-400 italic' : 'text-white'}`}>{winnerData.name}</p>
+                        <p className={`text-2xl font-light ${displayData.isRival ? 'text-gray-400 italic' : 'text-white'}`}>{displayData.name}</p>
                         <p className="text-sm text-gray-400">
-                            {winnerData.isRival 
-                                ? `(${winnerData.group})` 
-                                : `from ${winnerData.group}`
+                            {displayData.isRival 
+                                ? `(${displayData.group})` 
+                                : (displayData.group && `${displayData.group}`)
                             }
-                            {metricField && !winnerData.isRival &&
-                                <span className="ml-2 font-mono">({(winnerData[metricField] || 0).toLocaleString()}{unit})</span>
+                            {details.metric && !displayData.isRival &&
+                                <span className="ml-2 font-mono">({(displayData[details.metric] || 0).toLocaleString()}{details.unit})</span>
                             }
                         </p>
                     </div>
@@ -963,50 +993,24 @@ const AnnualAwardsResultModal = () => {
             </div>
 
             {/* Awards Presentation */}
-            <div className="px-8 py-6 space-y-5 min-h-[360px]">
-              <AwardCard 
-                title="Rookie of the Year"
-                icon={Sparkles}
-                color="text-pink-400"
-                winnerData={modalData.rookieOfTheYear}
-                metricField="fans"
-                unit=" fans"
-                isRevealed={revealStep >= 1}
-                delayClass="animate-fade-in-delay-1"
-              />
-              <AwardCard 
-                title="Song of the Year"
-                icon={FileText}
-                color="text-blue-400"
-                winnerData={modalData.songOfTheYear}
-                metricField="sales"
-                unit=" copies"
-                isRevealed={revealStep >= 2}
-                delayClass="animate-fade-in-delay-1"
-              />
-              <AwardCard 
-                title="Idol of the Year"
-                icon={Trophy}
-                color="text-yellow-300"
-                winnerData={modalData.idolOfTheYear}
-                metricField="fans"
-                unit=" fans"
-                isRevealed={revealStep >= 3}
-                delayClass="animate-fade-in-delay-1"
-                isMainEvent={true}
-              />
+            <div className="px-8 py-6 space-y-2 min-h-[400px]">
+              {awardSequence.map((awardKey, index) => (
+                  <AwardCard 
+                    key={awardKey}
+                    awardKey={awardKey}
+                    winnerData={modalData[awardKey]}
+                    isRevealed={revealStep > index}
+                  />
+              ))}
             </div>
             
             {/* Footer Button */}
-            <div className="p-4 bg-black bg-opacity-20 mt-4 border-t border-yellow-600/50 flex justify-center h-[68px]">
+            <div className="p-4 bg-black bg-opacity-20 border-t border-yellow-600/50 flex justify-center h-[68px]">
               <button
-                onClick={revealStep < 3 ? revealNext : () => setShowModal(null)}
+                onClick={revealStep < awardSequence.length ? revealNext : () => setShowModal(null)}
                 className="bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 text-black font-bold py-3 px-12 rounded-lg shadow-lg transform hover:scale-105 transition-all"
               >
-                {revealStep === 0 && 'Reveal Rookie of the Year'}
-                {revealStep === 1 && 'Reveal Song of the Year'}
-                {revealStep === 2 && 'And the Idol of the Year is...'}
-                {revealStep >= 3 && 'Finish'}
+                {getButtonText()}
               </button>
             </div>
           </div>
@@ -8003,6 +8007,54 @@ const JankenResultModal = () => {
     );
 };
 
+const FilmPromotionResultModal = () => {
+    if (!modalData) return null;
+
+    const { project, promo, result } = modalData;
+
+    const StatDisplay = ({ icon, label, value, valueColor }) => (
+        <div className="flex justify-between items-center bg-white/50 p-3 rounded-lg backdrop-blur-sm border border-white/30">
+            <span className="font-semibold flex items-center text-sm text-pink-800/80"><span className="mr-2 text-lg">{icon}</span>{label}:</span>
+            <span className={`font-bold text-lg ${valueColor}`}>{value}</span>
+        </div>
+    );
+
+    return (
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in">
+            <div className="relative w-full max-w-lg rounded-3xl bg-gradient-to-br from-purple-200/80 to-pink-300/70 backdrop-blur-xl border-2 border-white/70 shadow-2xl p-6 text-center text-pink-900 animate-in fade-in slide-in-from-bottom-5">
+                
+                <div className="absolute top-4 right-4 text-4xl animate-bounce text-yellow-400">
+                    🎬
+                </div>
+
+                <h3 className="text-3xl font-serif font-bold text-purple-800 mb-2" style={{ textShadow: '1px 1px 3px rgba(255, 255, 255, 0.5)' }}>
+                    Promotion Success!
+                </h3>
+                <p className="text-sm text-purple-700/80 mb-4">For the film "{project.title}"</p>
+                
+                <div className="my-4 p-4 rounded-xl bg-white/30 border border-white/40">
+                     <p className="font-bold text-lg text-purple-800 mb-2">"{promo.name}"</p>
+                     <p className="italic text-sm text-purple-700/90">"{result.message}"</p>
+                </div>
+
+                <div className="space-y-3 my-6">
+                    {result.fanGain > 0 && <StatDisplay icon="👥" label="New Fans" value={`+${result.fanGain.toLocaleString()}`} valueColor="text-green-700" />}
+                    {result.criticalBoost > 0 && <StatDisplay icon="⭐" label="Critical Score" value={`+${result.criticalBoost}`} valueColor="text-blue-600" />}
+                    {result.criticalBoost < 0 && <StatDisplay icon="⭐" label="Critical Score" value={`${result.criticalBoost}`} valueColor="text-red-600" />}
+                    {result.commercialBoost > 0 && <StatDisplay icon="📈" label="Commercial Score" value={`+${result.commercialBoost}`} valueColor="text-teal-600" />}
+                </div>
+                
+                <div className="flex justify-center mt-6">
+                    <button onClick={() => setShowModal(null)} className="bg-gradient-to-br from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 active:scale-95 text-white px-12 py-3 rounded-full font-bold shadow-lg shadow-pink-500/30 transition-all text-lg border-2 border-white/80">
+                        Fabulous!
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+
 const SurvivalEliminationModal = () => {
     if (!eliminationData) return null;
     const { contestants, cutoffRank, title } = eliminationData;
@@ -8114,28 +8166,29 @@ const CreateVarietyShowModal = () => {
     const [type, setType] = useState(Object.keys(varietyShowTypes)[0]);
     const [castIds, setCastIds] = useState([]);
     const [memberFilter, setMemberFilter] = useState('all');
+    const [producerTier, setProducerTier] = useState('rookie');
+    const [writerTier, setWriterTier] = useState('inHouse');
 
     const availableMembers = getAllAvailableMembers(true).filter(m => m.isAvailable);
 
-    // --- Data for filter dropdown ---
+    const baseCost = 200000;
+    const producerCost = varietyProducerTiers[producerTier].cost;
+    const writerCost = varietyWriterTiers[writerTier].cost;
+    const totalCost = baseCost + producerCost + writerCost;
+
     const mainGroupGenerations = [...new Set(availableMembers.filter(m => !m.isSisterMember).map(m => m.generation).filter(Boolean))];
     const sisterGroupDetails = sisterGroups.map(sg => ({
         ...sg,
-        generations: [...new Set(availableMembers.filter(m => m.groupId === sg.id).map(m => m.generation).filter(Boolean))]
+        generations: [...new Set(availableMembers.filter(m => String(m.groupId) === String(sg.id)).map(m => m.generation).filter(Boolean))]
     }));
 
-    // --- Filtering Logic ---
     let filteredMembers = availableMembers;
     if (memberFilter !== 'all') {
         if (memberFilter.startsWith('team-')) {
             const teamId = parseInt(memberFilter.replace('team-', ''), 10);
-            const selectedTeam = teams.find(t => t.id === teamId);
-            if (selectedTeam) {
-                const teamMemberIds = new Set(selectedTeam.members.map(String));
-                filteredMembers = availableMembers.filter(member => teamMemberIds.has(String(member.rosterId || member.id)));
-            } else {
-                filteredMembers = [];
-            }
+            const team = teams.find(t => t.id === teamId);
+            const teamMemberIds = new Set((team?.members || []).map(String));
+            filteredMembers = availableMembers.filter(member => teamMemberIds.has(String(member.rosterId || member.id)));
         } else if (memberFilter === 'main') {
             filteredMembers = availableMembers.filter(m => !m.isSisterMember || (m.kenninGroups || []).includes(groupName));
         } else if (memberFilter.startsWith('main-gen-')) {
@@ -8144,11 +8197,10 @@ const CreateVarietyShowModal = () => {
         } else if (memberFilter.startsWith('sg-')) {
             if (memberFilter.includes('-gen-')) {
                 const [sgIdStr, gen] = memberFilter.replace('sg-', '').split('-gen-');
-                const sgId = parseInt(sgIdStr, 10);
-                filteredMembers = availableMembers.filter(m => m.groupId === sgId && m.generation === gen);
+                filteredMembers = availableMembers.filter(m => String(m.groupId) === sgIdStr && m.generation === gen);
             } else {
-                const sgId = parseInt(memberFilter.replace('sg-', ''), 10);
-                filteredMembers = availableMembers.filter(m => m.groupId === sgId);
+                const sgId = memberFilter.replace('sg-', '');
+                filteredMembers = availableMembers.filter(m => String(m.groupId) === sgId);
             }
         }
     }
@@ -8163,7 +8215,7 @@ const CreateVarietyShowModal = () => {
 
     const handleConfirm = () => {
         if (name.trim() && type && castIds.length > 0) {
-            createVarietyShow(name, type, castIds);
+            createVarietyShow(name, type, castIds, producerTier, writerTier);
             setShowModal(null);
         } else {
             setMessage("Show name, type, and at least one cast member are required.");
@@ -8171,18 +8223,56 @@ const CreateVarietyShowModal = () => {
     };
 
     return (
-        <ModalWrapper title="Create New Variety Show" maxWidth="max-w-2xl">
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Production Cost: ¥200,000</p>
-            <div className="space-y-4">
-                <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Show Name" className="w-full p-2 border rounded bg-white dark:bg-gray-700"/>
-                <select value={type} onChange={e => setType(e.target.value)} className="w-full p-2 border rounded bg-white dark:bg-gray-700">
-                    {Object.entries(varietyShowTypes).map(([key, value]) => (
-                        <option key={key} value={key} title={value.description}>{key}</option>
-                    ))}
-                </select>
+        <ModalWrapper title="Create New Variety Show" maxWidth="max-w-4xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Left Column: Details */}
+                <div className="space-y-4">
+                    <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Show Name" className="w-full p-2 border rounded bg-white dark:bg-gray-700"/>
+                    <select value={type} onChange={e => setType(e.target.value)} className="w-full p-2 border rounded bg-white dark:bg-gray-700">
+                        {Object.entries(varietyShowTypes).map(([key, value]) => (
+                            <option key={key} value={key} title={value.description}>{key}</option>
+                        ))}
+                    </select>
+
+                    {/* Producer Selection */}
+                    <div>
+                        <h4 className="font-bold text-md capitalize mb-2 border-b pb-1 dark:text-gray-200">Producer</h4>
+                        <div className="space-y-2">
+                            {Object.entries(varietyProducerTiers).map(([id, data]) => (
+                                <label key={id} className="flex items-start p-2 rounded-lg border bg-white dark:bg-gray-700 dark:border-gray-600 has-[:checked]:bg-blue-100 has-[:checked]:border-blue-400 dark:has-[:checked]:bg-gray-900 dark:has-[:checked]:border-blue-500 cursor-pointer text-xs">
+                                    <input type="radio" name="producer" value={id} checked={producerTier === id} onChange={() => setProducerTier(id)} className="form-radio h-4 w-4 text-blue-600 mt-0.5"/>
+                                    <div className="ml-2">
+                                        <p className="font-semibold dark:text-gray-200">{data.name}</p>
+                                        <p className="text-gray-600 dark:text-gray-400">{data.description}</p>
+                                        <p className="font-bold text-blue-700 dark:text-blue-400">¥{data.cost.toLocaleString()}</p>
+                                    </div>
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Writer Selection */}
+                    <div>
+                        <h4 className="font-bold text-md capitalize mb-2 border-b pb-1 dark:text-gray-200">Writer</h4>
+                        <div className="space-y-2">
+                            {Object.entries(varietyWriterTiers).map(([id, data]) => (
+                                <label key={id} className="flex items-start p-2 rounded-lg border bg-white dark:bg-gray-700 dark:border-gray-600 has-[:checked]:bg-blue-100 has-[:checked]:border-blue-400 dark:has-[:checked]:bg-gray-900 dark:has-[:checked]:border-blue-500 cursor-pointer text-xs">
+                                    <input type="radio" name="writer" value={id} checked={writerTier === id} onChange={() => setWriterTier(id)} className="form-radio h-4 w-4 text-blue-600 mt-0.5"/>
+                                    <div className="ml-2">
+                                        <p className="font-semibold dark:text-gray-200">{data.name}</p>
+                                        <p className="text-gray-600 dark:text-gray-400">{data.description}</p>
+                                        <p className="font-bold text-blue-700 dark:text-blue-400">¥{data.cost.toLocaleString()}</p>
+                                    </div>
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Right Column: Member Selection */}
                 <div>
                     <div className="flex justify-between items-center mb-2">
-                        <h4 className="font-semibold">Select Main Cast ({castIds.length})</h4>
+                        <h4 className="font-semibold dark:text-gray-200">Select Main Cast ({castIds.length})</h4>
                         <select id="variety-member-filter" value={memberFilter} onChange={e => setMemberFilter(e.target.value)} className="p-1 rounded border-gray-300 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 text-xs">
                             <option value="all">All Available</option>
                             <optgroup label="Teams">
@@ -8197,19 +8287,26 @@ const CreateVarietyShowModal = () => {
                         </select>
                     </div>
                     <button onClick={selectAllFiltered} className="w-full mb-2 px-3 py-1 text-xs bg-gray-500 text-white rounded hover:bg-gray-600">Select All (Filtered)</button>
-                    <div className="max-h-60 overflow-y-auto border rounded p-2 mt-1 bg-gray-50 dark:bg-gray-900">
+                    <div className="max-h-96 overflow-y-auto border rounded p-2 mt-1 bg-gray-50 dark:bg-gray-900">
                         {filteredMembers.map(member => (
                             <div key={member.rosterId} onClick={() => toggleMember(member.rosterId)} className={`p-2 rounded cursor-pointer flex justify-between items-center ${castIds.includes(member.rosterId) ? 'bg-blue-100 dark:bg-blue-800' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}`}>
-                                <p>{member.name} <span className="text-xs text-gray-500">({getMemberGroupStatus(member)})</span></p>
+                                <div>
+                                    <p className="dark:text-gray-200">{member.name} <span className="text-xs text-gray-500">({getMemberGroupStatus(member)})</span></p>
+                                    <p className="text-xs text-gray-500">Va:{Math.round(member.variety)} Ch:{Math.round(member.charisma)}</p>
+                                </div>
                                 <input type="checkbox" checked={castIds.includes(member.rosterId)} readOnly />
                             </div>
                         ))}
                     </div>
                 </div>
             </div>
-            <div className="flex justify-end gap-2 mt-4">
-                <button onClick={() => setShowModal(null)} className="p-2 bg-gray-300 rounded">Cancel</button>
-                <button onClick={handleConfirm} disabled={!name.trim() || castIds.length === 0} className="p-2 bg-green-500 text-white rounded disabled:bg-gray-400">Confirm</button>
+            {/* Footer */}
+            <div className="flex justify-between items-center mt-6 pt-4 border-t dark:border-gray-600">
+                <p className="font-bold text-lg dark:text-gray-200">Total Cost: <span className={money < totalCost ? 'text-red-500' : 'text-green-500'}>¥{totalCost.toLocaleString()}</span></p>
+                <div className="flex justify-end gap-2">
+                    <button onClick={() => setShowModal(null)} className="p-2 bg-gray-300 rounded">Cancel</button>
+                    <button onClick={handleConfirm} disabled={!name.trim() || castIds.length === 0 || money < totalCost} className="p-2 bg-green-500 text-white rounded disabled:bg-gray-400">Confirm</button>
+                </div>
             </div>
         </ModalWrapper>
     );
@@ -8258,18 +8355,18 @@ const FilmProductionModal = () => {
     const [cast, setCast] = useState({ lead: [], supporting: [], general: [] });
     const [currentRole, setCurrentRole] = useState('lead');
     const [memberFilter, setMemberFilter] = useState('all');
+    const [scriptTier, setScriptTier] = useState('inHouse');
+    const [directorTier, setDirectorTier] = useState('rookie');
 
     const availableMembers = getAllAvailableMembers(true).filter(m => m.isAvailable);
     const allCastIds = new Set([...cast.lead, ...cast.supporting, ...cast.general]);
 
-    // --- Filter Data Generation ---
+    // --- Filter Data & Logic ---
     const mainGroupGenerations = [...new Set(availableMembers.filter(m => !m.isSisterMember).map(m => m.generation).filter(Boolean))];
     const sisterGroupDetails = sisterGroups.map(sg => ({
         ...sg,
         generations: [...new Set(availableMembers.filter(m => String(m.groupId) === String(sg.id)).map(m => m.generation).filter(Boolean))]
     }));
-
-    // --- Filtering Logic ---
     let filteredMembers = availableMembers.filter(m => !allCastIds.has(m.rosterId));
     if (memberFilter !== 'all') {
         if (memberFilter.startsWith('team-')) {
@@ -8291,8 +8388,11 @@ const FilmProductionModal = () => {
                 filteredMembers = filteredMembers.filter(m => String(m.groupId) === sgId);
             }
         }
+
     }
-    
+    filteredMembers.sort((a, b) => getTotalFansForMember(b) - getTotalFansForMember(a));
+
+
     const handleSelectMember = (memberId) => {
         setCast(prev => ({...prev, [currentRole]: [...prev[currentRole], memberId]}));
     };
@@ -8307,15 +8407,33 @@ const FilmProductionModal = () => {
 
     const handleConfirm = () => {
         if (title.trim() && cast.lead.length > 0) {
-            startFilmProject(title, type, cast);
+            startFilmProject(title, type, cast, scriptTier, directorTier);
         } else {
             setMessage("A title and at least one lead actor are required.");
         }
     };
     
     const projectType = filmProjectTypes[type];
-    let cost = projectType.cost;
-    if (filmStudio.level > 0) { cost *= (1 - (filmStudio.level - 1) * 0.1); }
+    const script = scriptTiers[scriptTier];
+    const director = directorTiers[directorTier];
+    const baseTotalCost = projectType.cost + script.cost + director.cost;
+    const finalCost = baseTotalCost * (1 - (filmStudio.level - 1) * 0.1);
+
+    const getChemistryText = (score) => {
+        if (score > 50) return { text: "Perfect Partners", color: "text-green-500" };
+        if (score > 10) return { text: "Good Synergy", color: "text-green-400" };
+        if (score > -10) return { text: "Neutral", color: "text-gray-500" };
+        if (score > -50) return { text: "Awkward Silence", color: "text-yellow-500" };
+        return { text: "Explosive Feud!", color: "text-red-500" };
+    };
+    let chemistry = null;
+    if (cast.lead.length >= 2) {
+        const member1 = getMemberById(cast.lead[0]);
+        const member2 = getMemberById(cast.lead[1]);
+        if (member1 && member2) {
+            chemistry = getChemistry(member1.rosterId, member2.rosterId);
+        }
+    }
 
     const RoleButton = ({ role, label }) => (
         <button 
@@ -8327,73 +8445,94 @@ const FilmProductionModal = () => {
     );
 
     return (
-        <ModalWrapper title={<span className="flex items-center"><Film size={22} className="mr-3"/>Film Production</span>} maxWidth="max-w-5xl">
+        <ModalWrapper title={<span className="flex items-center"><Film size={22} className="mr-3"/>Film Production</span>} maxWidth="max-w-7xl">
             <div className="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 dark:from-gray-800 dark:to-slate-900 p-4 rounded-xl -m-6">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* Left Column */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    {/* Left Column: Project Details & Pre-Production */}
                     <div className="space-y-4">
-                        <input type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder="Project Title (e.g., 'Idol High School')" className="w-full p-3 border-pink-200 dark:border-pink-800/50 rounded-lg bg-white/70 dark:bg-slate-700/50 focus:ring-2 focus:ring-pink-400 focus:outline-none"/>
-                        <select value={type} onChange={e => setType(e.target.value)} className="w-full p-3 border-pink-200 dark:border-pink-800/50 rounded-lg bg-white/70 dark:bg-slate-700/50 focus:ring-2 focus:ring-pink-400 focus:outline-none">
-                            {Object.entries(filmProjectTypes).map(([t, data]) => <option key={t} value={t} title={data.description}>{t}</option>)}
+                        <input type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder="Project Title" className="w-full p-3 border-pink-200 dark:border-pink-800/50 rounded-lg bg-white/70 dark:bg-slate-700/50"/>
+                        <select value={type} onChange={e => setType(e.target.value)} className="w-full p-3 border-pink-200 dark:border-pink-800/50 rounded-lg bg-white/70 dark:bg-slate-700/50">
+                            {Object.entries(filmProjectTypes).map(([t, data]) => <option key={t} value={t}>{t} ({data.genre})</option>)}
                         </select>
-                        <div className="p-3 bg-white/50 dark:bg-black/20 rounded-lg border border-pink-200/50 dark:border-pink-900/50">
-                            <p className="text-sm"><strong>Duration:</strong> {projectType.duration} weeks</p>
-                            <p className="text-sm"><strong>Base Cost:</strong> ¥{projectType.cost.toLocaleString()}</p>
-                            {filmStudio.level > 1 && <p className="text-sm text-green-600"><strong>Discounted Cost:</strong> ¥{cost.toLocaleString()} (-{ (filmStudio.level - 1) * 10 }%)</p>}
+                        
+                        <div>
+                            <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">Script Quality</h4>
+                            <select value={scriptTier} onChange={e => setScriptTier(e.target.value)} className="w-full p-3 border-pink-200 dark:border-pink-800/50 rounded-lg bg-white/70 dark:bg-slate-700/50">
+                                {Object.entries(scriptTiers).map(([id, data]) => <option key={id} value={id}>{data.name} (+¥{data.cost.toLocaleString()})</option>)}
+                            </select>
+                            <p className="text-xs text-gray-500 mt-1 px-1">{script.description}</p>
+                        </div>
+                        
+                        <div>
+                            <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">Director</h4>
+                            <select value={directorTier} onChange={e => setDirectorTier(e.target.value)} className="w-full p-3 border-pink-200 dark:border-pink-800/50 rounded-lg bg-white/70 dark:bg-slate-700/50">
+                                {Object.entries(directorTiers).map(([id, data]) => <option key={id} value={id}>{data.name} (+¥{data.cost.toLocaleString()})</option>)}
+                            </select>
+                            <p className="text-xs text-gray-500 mt-1 px-1">{director.description}</p>
                         </div>
 
-                        <div>
-                            <div className="flex justify-between items-center mb-2">
-                                <h4 className="font-semibold text-gray-800 dark:text-gray-200">Available Members</h4>
-                                <select value={memberFilter} onChange={e => setMemberFilter(e.target.value)} className="p-1 text-xs rounded border-gray-300 dark:bg-slate-600">
-                                    <option value="all">All</option>
-                                    <optgroup label="Teams">
-                                        {(teams || []).map(team => (<option key={`team-${team.id}`} value={`team-${team.id}`}>{team.name}</option>))}
-                                    </optgroup>
-                                    <optgroup label="Groups">
-                                        <option value="main">{groupName}</option>
-                                        {sisterGroups.map(sg => (<option key={`sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>))}
-                                    </optgroup>
-                                    {mainGroupGenerations.length > 0 && <optgroup label={`${groupName} Gen`}>{mainGroupGenerations.map(gen => (<option key={`main-gen-${gen}`} value={`main-gen-${gen}`}>{gen}</option>))}</optgroup>}
-                                    {sisterGroupDetails.map(sg => (sg.generations.length > 0 && (<optgroup key={`sg-gen-group-${sg.id}`} label={`${sg.name} Gen`}>{sg.generations.map(gen => (<option key={`sg-${sg.id}-gen-${gen}`} value={`sg-${sg.id}-gen-${gen}`}>{gen}</option>))}</optgroup>)))}
-                                </select>
-                            </div>
-                            <div className="max-h-60 overflow-y-auto border rounded-lg p-2 bg-white/50 dark:bg-slate-900/30">
-                                {filteredMembers.map(member => (
-                                    <div key={member.rosterId} className="p-2 rounded-md hover:bg-pink-100/50 dark:hover:bg-pink-900/30 flex justify-between items-center">
-                                        <div>
-                                            <p className="font-bold">{member.name}</p>
-                                            <p className="text-xs text-gray-500">{getMemberGroupStatus(member)}</p>
-                                            <p className="text-xs font-mono text-purple-600 dark:text-purple-400">Ch:{member.charisma} In:{member.intelligence} Vi:{member.visual}</p>
-                                        </div>
-                                         <button onClick={() => handleSelectMember(member.rosterId)} className="p-1.5 bg-green-200 dark:bg-green-800 rounded-full text-green-800 dark:text-green-200 hover:bg-green-300">
-                                            <Plus size={16} />
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
+                        <div className="p-3 bg-white/50 dark:bg-black/20 rounded-lg border border-pink-200/50 dark:border-pink-900/50 space-y-1">
+                            <p className="text-sm"><strong>Duration:</strong> {projectType.duration} weeks</p>
+                            <p className="text-sm"><strong>Total Cost:</strong> ¥{finalCost.toLocaleString()}</p>
+                            {filmStudio.level > 1 && <p className="text-xs text-green-600">Studio Discount: {(filmStudio.level - 1) * 10}%</p>}
                         </div>
                     </div>
 
-                    {/* Right Column */}
+                    {/* Middle Column: Member Selection */}
+                    <div className="space-y-4">
+                        <div className="flex justify-between items-center">
+                            <h4 className="font-semibold text-gray-800 dark:text-gray-200">Available Members</h4>
+                            <select value={memberFilter} onChange={e => setMemberFilter(e.target.value)} className="p-1 text-xs rounded border-gray-300 dark:bg-slate-600">
+                                <option value="all">All</option>
+                                <optgroup label="Teams">
+                                    {(teams || []).map(team => (<option key={`team-${team.id}`} value={`team-${team.id}`}>{team.name}</option>))}
+                                </optgroup>
+                                <optgroup label="Groups">
+                                    <option value="main">{groupName}</option>
+                                    {sisterGroups.map(sg => (<option key={`sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>))}
+                                </optgroup>
+                                {mainGroupGenerations.length > 0 && <optgroup label={`${groupName} Gen`}>{mainGroupGenerations.map(gen => (<option key={`main-gen-${gen}`} value={`main-gen-${gen}`}>{gen}</option>))}</optgroup>}
+                                {sisterGroupDetails.map(sg => (sg.generations.length > 0 && (<optgroup key={`sg-gen-group-${sg.id}`} label={`${sg.name} Gen`}>{sg.generations.map(gen => (<option key={`sg-${sg.id}-gen-${gen}`} value={`sg-${sg.id}-gen-${gen}`}>{gen}</option>))}</optgroup>)))}
+                            </select>
+                        </div>
+                        <div className="max-h-96 overflow-y-auto border rounded-lg p-2 bg-white/50 dark:bg-slate-900/30">
+                            {filteredMembers.map(member => (
+                                <div key={member.rosterId} className="p-2 rounded-md hover:bg-pink-100/50 dark:hover:bg-pink-900/30 flex justify-between items-center">
+                                        <div>
+                                            <p className="font-bold">{member.name}</p>
+                                            <p className="text-xs text-pink-600 dark:text-pink-400 font-semibold">Fans: {getTotalFansForMember(member).toLocaleString()}</p>
+                                            <p className="text-xs font-mono text-purple-600 dark:text-purple-400">Ch:{Math.round(member.charisma)} In:{Math.round(member.intelligence)} Vi:{Math.round(member.visual)}</p>
+                                        </div>
+                                    <button onClick={() => handleSelectMember(member.rosterId)} className="p-1.5 bg-green-200 dark:bg-green-800 rounded-full text-green-800 dark:text-green-200">
+                                        <Plus size={16} />
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Right Column: Casting Board */}
                     <div>
                         <h3 className="font-bold text-gray-800 dark:text-gray-200 text-lg mb-2">Casting Board</h3>
                         <div className="flex">
                             <RoleButton role="lead" label="Lead Cast" />
-                            <RoleButton role="supporting" label="Supporting Cast" />
-                            <RoleButton role="general" label="General Cast" />
+                            <RoleButton role="supporting" label="Supporting" />
+                            <RoleButton role="general" label="General" />
                         </div>
-                        <div className="bg-pink-100 dark:bg-pink-900/50 p-3 rounded-b-lg min-h-[300px] max-h-[300px] overflow-y-auto">
+                        <div className="bg-pink-100 dark:bg-pink-900/50 p-3 rounded-b-lg min-h-[400px] max-h-[400px] overflow-y-auto">
+                            {cast.lead.length >= 2 && chemistry !== null && (
+                                <div className="p-2 text-center rounded-lg bg-white/50 mb-2">
+                                    <p className="text-sm font-bold">Lead Chemistry</p>
+                                    <p className={`text-lg font-bold ${getChemistryText(chemistry).color}`}>{getChemistryText(chemistry).text}</p>
+                                </div>
+                            )}
                             <div className="space-y-2">
                                 {cast[currentRole].map(id => {
                                     const member = getMemberById(id);
                                     return member ? (
                                         <div key={id} className="p-2 bg-white/80 dark:bg-slate-800 rounded-lg shadow flex justify-between items-center">
-                                            <div>
-                                                <p className="font-semibold">{member.name}</p>
-                                                <p className="text-xs text-gray-500">{getMemberGroupStatus(member)}</p>
-                                            </div>
-                                            <button onClick={() => uncastMember(id)} className="p-1 bg-red-200 dark:bg-red-800 rounded-full text-red-700 dark:text-red-200 hover:bg-red-300">
+                                            <p className="font-semibold">{member.name}</p>
+                                            <button onClick={() => uncastMember(id)} className="p-1 bg-red-200 dark:bg-red-800 rounded-full text-red-700 dark:text-red-200">
                                                 <X size={14} />
                                             </button>
                                         </div>
@@ -8405,11 +8544,156 @@ const FilmProductionModal = () => {
                 </div>
 
                 <div className="flex justify-end gap-2 mt-6 pt-4 border-t border-pink-200/50 dark:border-pink-900/50">
-                    <button onClick={() => setShowModal(null)} className="px-6 py-2 bg-gray-200/80 dark:bg-gray-600 text-gray-800 dark:text-gray-100 font-semibold rounded-lg hover:bg-gray-300">Cancel</button>
-                    <button onClick={handleConfirm} className="px-8 py-2 bg-pink-400 text-white font-bold rounded-lg hover:bg-pink-500 transition-shadow shadow-lg shadow-pink-500/20 disabled:bg-gray-400" disabled={!title.trim() || cast.lead.length === 0 || money < cost}>
+                    <button onClick={() => setShowModal(null)} className="px-6 py-2 bg-gray-200/80 dark:bg-gray-600 font-semibold rounded-lg">Cancel</button>
+                    <button onClick={handleConfirm} className="px-8 py-2 bg-pink-400 text-white font-bold rounded-lg shadow-lg" disabled={!title.trim() || cast.lead.length === 0}>
                         Start Production
                     </button>
                 </div>
+            </div>
+        </ModalWrapper>
+    );
+};
+
+const FilmAwardsModal = () => {
+    const lastYear = new Date().getFullYear() + yearOffset - 1;
+    const awardsForYear = filmAwardsHistory.filter(a => a.year === lastYear);
+
+    const bestPicture = awardsForYear.find(a => a.award === 'Best Picture');
+    const bestActress = awardsForYear.find(a => a.award === 'Best Actress');
+
+    return (
+        <ModalWrapper title={<span className="flex items-center text-amber-500"><Trophy size={22} className="mr-3"/>{lastYear} Japan Idol Film Awards</span>} maxWidth="max-w-lg">
+            <div className="p-4 bg-gradient-to-br from-gray-800 to-black text-white rounded-lg">
+                {bestPicture ? (
+                    <div className="text-center space-y-4">
+                        <div>
+                            <h3 className="text-2xl font-bold text-amber-300">Best Picture</h3>
+                            <p className="text-xl">"{bestPicture.film}"</p>
+                            <p className="text-sm text-gray-400">Critical Score: {bestPicture.score}</p>
+                        </div>
+                        {bestActress && (
+                            <div>
+                                <h3 className="text-2xl font-bold text-amber-300">Best Actress</h3>
+                                <p className="text-xl">{bestActress.member}</p>
+                                <p className="text-sm text-gray-400">for their role in "{bestActress.film}"</p>
+                            </div>
+                        )}
+                    </div>
+                ) : (
+                    <p className="text-center text-gray-400">No major awards for your productions this year.</p>
+                )}
+                <div className="text-center mt-6">
+                    <button onClick={() => setShowModal(null)} className="px-6 py-2 bg-amber-500 text-black font-bold rounded">Close</button>
+                </div>
+            </div>
+        </ModalWrapper>
+    );
+};
+
+const FilmAwardsHistoryModal = () => {
+    const groupedByYear = filmAwardsHistory.reduce((acc, award) => {
+        (acc[award.year] = acc[award.year] || []).push(award);
+        return acc;
+    }, {});
+
+    const years = Object.keys(groupedByYear).sort((a, b) => b - a);
+
+    return (
+        <ModalWrapper title="Film Awards Hall of Fame" maxWidth="max-w-2xl">
+            <div className="max-h-96 overflow-y-auto p-2">
+                {years.length > 0 ? years.map(year => (
+                    <div key={year} className="mb-4 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                        <h3 className="text-xl font-bold text-amber-400 mb-2">{year} Awards</h3>
+                        {groupedByYear[year].map((award, index) => (
+                            <div key={index} className="border-t border-gray-200 dark:border-gray-700 pt-1 mt-1">
+                                <p><strong className="text-amber-500">{award.award}:</strong> {award.award === 'Best Picture' ? `"${award.film}"` : `${award.member} in "${award.film}"`}</p>
+                            </div>
+                        ))}
+                    </div>
+                )) : <p>No awards won yet.</p>}
+            </div>
+        </ModalWrapper>
+    );
+};
+const FilmPromotionModal = () => {
+    if (!promotingFilm) return null;
+
+    return (
+        <ModalWrapper title={`Promote: "${promotingFilm.title}"`} maxWidth="max-w-2xl">
+            <div className="space-y-3">
+                {Object.entries(filmPromotionTypes).map(([id, promo]) => (
+                    <div key={id} className="p-3 bg-gray-100 dark:bg-gray-800 rounded-lg flex justify-between items-center">
+                        <div>
+                            <h4 className="font-bold">{promo.name}</h4>
+                            <p className="text-sm">{promo.description}</p>
+                            <p className="text-sm font-semibold">Cost: ¥{promo.cost.toLocaleString()}</p>
+                        </div>
+                        <button onClick={() => startFilmPromotion(promotingFilm.id, id)} disabled={money < promo.cost} className="px-4 py-2 bg-cyan-600 text-white font-bold rounded disabled:bg-gray-400">
+                            Start
+                        </button>
+                    </div>
+                ))}
+            </div>
+        </ModalWrapper>
+    );
+};
+
+const FilmographyModal = () => (
+    <ModalWrapper title="Agency Filmography" maxWidth="max-w-4xl">
+        <div className="max-h-96 overflow-y-auto space-y-2">
+            {filmProjects.sort((a,b) => b.completedWeek - a.completedWeek).map(film => (
+                <div key={film.id} className="p-3 bg-gray-100 dark:bg-gray-800 rounded-lg flex justify-between items-center">
+                    <div>
+                        <p className="font-bold text-lg">{film.title} <span className="text-sm font-normal text-gray-500">({getFormattedDateForWeek(film.completedWeek)})</span></p>
+                        <p>Crit: <strong className="text-blue-500">{film.finalCriticalScore}</strong> | Comm: <strong className="text-green-500">{film.finalCommercialScore}</strong></p>
+                    </div>
+                    <button onClick={() => { setViewedFilm(film); setShowModal('filmDetails'); }} className="px-4 py-2 bg-purple-500 text-white font-semibold rounded-lg">
+                        Details
+                    </button>
+                </div>
+            ))}
+            {filmProjects.length === 0 && <p className="text-center text-gray-500">You haven't produced any films yet.</p>}
+        </div>
+    </ModalWrapper>
+);
+
+const FilmDetailsModal = ({ viewedFilm, setViewedFilm, setShowModal, getMemberById }) => {
+
+    if (!viewedFilm) return null;
+    
+    const renderCast = (role, ids) => (
+        <div>
+            <h4 className="font-bold text-pink-500">{role}</h4>
+            <ul className="list-disc list-inside text-sm">
+                {ids.map(id => {
+                    const member = getMemberById(id);
+                    return <li key={id}>{member ? member.name : 'Unknown Member'}</li>;
+                })}
+                {ids.length === 0 && <li className="text-gray-400 italic">None</li>}
+            </ul>
+        </div>
+    );
+
+    return (
+        <ModalWrapper title={`Details: "${viewedFilm.title}"`} onBack={() => { setViewedFilm(null); setShowModal('filmography'); }}>
+            <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                    {renderCast("Lead Cast", viewedFilm.cast.lead)}
+                    {renderCast("Supporting Cast", viewedFilm.cast.supporting)}
+                </div>
+                <div>
+                    <h4 className="font-bold">Production Details</h4>
+                    <p className="text-sm">Script: {viewedFilm.script.name} (+{viewedFilm.script.quality} Crit)</p>
+                    <p className="text-sm">Director: {viewedFilm.director.name} (+{viewedFilm.director.qualityBonus} Crit)</p>
+                </div>
+                {viewedFilm.events.length > 0 && (
+                    <div>
+                        <h4 className="font-bold">On-Set Events</h4>
+                        <ul className="list-disc list-inside text-sm text-gray-600 dark:text-gray-400">
+                            {viewedFilm.events.map((event, i) => <li key={i}>{event}</li>)}
+                        </ul>
+                    </div>
+                )}
             </div>
         </ModalWrapper>
     );
@@ -9486,6 +9770,64 @@ const EditGroupNameModal = () => {
     );
 };
     // --- END NEW MODALS ---
+
+const FanPostDetailModal = () => {
+    if (!modalData) return null;
+
+    const post = modalData;
+
+    const style = {
+        happy: { icon: '💖', color: 'text-pink-500' },
+        angry: { icon: '😡', color: 'text-red-500' },
+        sad: { icon: '😭', color: 'text-blue-500' },
+        neutral: { icon: '🤔', color: 'text-gray-500' },
+    }[post.type] || { icon: '🤔', color: 'text-gray-500' };
+
+    const handle = `@${(post.username || 'idol_fan').toLowerCase().replace(/_/g, '')}_${String(post.id).slice(-4)}`;
+
+    // Generate fake engagement numbers
+    const likes = Math.floor(Math.random() * 500) + (post.type === 'happy' ? 200 : 0) + 10;
+    const retweets = Math.floor(likes / (Math.random() * 3 + 2));
+
+    return (
+        <ModalWrapper title="" maxWidth="max-w-xl">
+            <div className="p-4">
+                <div className="flex items-start">
+                    <div className={`w-12 h-12 rounded-full bg-gray-300 dark:bg-gray-600 mr-4 flex-shrink-0 flex items-center justify-center text-2xl ${style.color}`}>
+                        {style.icon}
+                    </div>
+                    <div className="flex-1">
+                        <div className="flex flex-col">
+                            <span className="font-bold text-gray-900 dark:text-gray-100">{post.username || 'Idol Fan'}</span>
+                            <span className="text-sm text-gray-500">{handle}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <p className="text-lg text-gray-800 dark:text-gray-200 mt-4 whitespace-pre-wrap">{post.text}</p>
+                
+                <p className="text-xs text-gray-500 mt-4 border-t dark:border-gray-700 pt-2">
+                    {getFormattedDateForWeek(post.week)}
+                </p>
+
+                <div className="flex items-center gap-6 mt-2 pt-2 border-t dark:border-gray-700">
+                    <div className="flex items-center gap-2 text-gray-500">
+                        <MessageSquare size={18} />
+                        <span className="text-sm font-semibold">{Math.floor(retweets / 4)}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-gray-500">
+                        <Repeat size={18} />
+                        <span className="text-sm font-semibold">{retweets}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-gray-500">
+                        <Heart size={18} />
+                        <span className="text-sm font-semibold">{likes}</span>
+                    </div>
+                </div>
+            </div>
+        </ModalWrapper>
+    );
+};
 
 const ExchangeStudentModal = () => {
     if (!modalData || !modalData.rival) return null;
@@ -10797,24 +11139,113 @@ const TabButton = ({ id, label, icon: Icon }) => (
 
 
             {/* Push Member Management */}
-            <div className="p-2 rounded-lg shadow-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 transition-colors duration-300 md:col-span-2">
-              <h3 className="text-sm font-bold mb-2 flex items-center"><TrendingUp size={18} className="mr-2 text-green-500"/> Push Member Management</h3>
-              <p className="text-xs text-gray-500 mb-2">Select members to receive a "push". Pushed members will receive a larger share of fans from group activities.</p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 max-h-48 overflow-y-auto p-2 bg-gray-50 dark:bg-gray-900 rounded">
-                {getMainGroupRoster().map(member => (
-                  <div key={member.rosterId || member.id}>
-                    <label className="flex items-center p-1.5 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer">
-                        <input 
-                            type="checkbox"
-                            checked={pushedMembers.map(String).includes(String(member.id))}
-                            onChange={() => handleTogglePushMember(member.id)}
-                            className="mr-2 form-checkbox h-4 w-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                        />
-                        <span className="text-sm font-medium">{member.name}</span>
-                    </label>
-                  </div>
-                ))}
-                {getMainGroupRoster().length === 0 && <p className="text-gray-500 italic col-span-full text-center">Recruit members to select them for a push.</p>}
+            <div className="p-4 rounded-xl shadow-lg bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 dark:from-slate-800 dark:to-gray-900 border border-pink-200/80 dark:border-pink-800/50 md:col-span-2">
+              <h3 className="text-base font-bold mb-2 flex items-center text-pink-600 dark:text-pink-300">
+                <TrendingUp size={18} className="mr-2"/> Push Member Management
+              </h3>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                Select members to receive a "push". Pushed members will receive a larger share of fans from group activities.
+              </p>
+
+              {/* NEW: Filter Dropdown */}
+              {(() => {
+                  const roster = getMainGroupRoster();
+                  const mainGroupGenerations = [...new Set(roster.filter(m => !m.isSisterMember).map(m => m.generation).filter(Boolean))];
+                  const sisterGroupDetails = sisterGroups.map(sg => ({
+                      ...sg,
+                      generations: [...new Set(roster.filter(m => String(m.groupId) === String(sg.id)).map(m => m.generation).filter(Boolean))]
+                  }));
+
+                  return (
+                      <div className="mb-3">
+                          <label htmlFor="push-member-filter" className="text-xs font-semibold mr-2 text-gray-600 dark:text-gray-300">Filter:</label>
+                          <select
+                              id="push-member-filter"
+                              value={pushMemberFilter}
+                              onChange={e => setPushMemberFilter(e.target.value)}
+                              className="p-1.5 text-xs border border-pink-200/80 dark:border-pink-800/50 rounded-md bg-white/50 dark:bg-slate-700/50 focus:ring-2 focus:ring-pink-300"
+                          >
+                              <option value="all">All Groups</option>
+                              <optgroup label="Groups">
+                                  <option value="main">{groupName}</option>
+                                  {(sisterGroups || []).map(sg => <option key={`filter-sg-${sg.id}`} value={sg.name}>{sg.name}</option>)}
+                              </optgroup>
+                              <optgroup label="Teams">
+                                  {(teams || []).map(t => <option key={`filter-team-${t.id}`} value={`team-${t.id}`}>{t.name}</option>)}
+                              </optgroup>
+                              {mainGroupGenerations.length > 0 && (
+                                  <optgroup label={`${groupName} Generations`}>
+                                      {mainGroupGenerations.map(gen => (
+                                          <option key={`main-gen-${gen}`} value={`main-gen-${gen}`}>{gen}</option>
+                                      ))}
+                                  </optgroup>
+                              )}
+                              {sisterGroupDetails.map(sg => (
+                                  sg.generations.length > 0 && (
+                                      <optgroup key={`sg-gen-group-${sg.id}`} label={`${sg.name} Generations`}>
+                                          {sg.generations.map(gen => (
+                                              <option key={`sg-${sg.id}-gen-${gen}`} value={`sg-${sg.id}-gen-${gen}`}>{gen}</option>
+                                          ))}
+                                      </optgroup>
+                                  )
+                              ))}
+                          </select>
+                      </div>
+                  );
+              })()}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2 bg-black/5 dark:bg-black/20 rounded-lg shadow-inner">
+                {(() => {
+                    let roster = getMainGroupRoster();
+
+                    if (pushMemberFilter !== 'all') {
+                        if (pushMemberFilter.startsWith('team-')) {
+                            const teamId = parseInt(pushMemberFilter.replace('team-', ''), 10);
+                            const team = teams.find(t => t.id === teamId);
+                            const teamMemberIds = new Set((team?.members || []).map(String));
+                            roster = roster.filter(m => teamMemberIds.has(String(m.rosterId || m.id)));
+                        } else if (pushMemberFilter === 'main') {
+                            roster = roster.filter(m => !m.isSisterMember);
+                        } else if (pushMemberFilter.startsWith('main-gen-')) {
+                            const gen = pushMemberFilter.replace('main-gen-', '');
+                            roster = roster.filter(m => !m.isSisterMember && m.generation === gen);
+                        } else if (pushMemberFilter.startsWith('sg-')) {
+                            const [sgIdStr, gen] = pushMemberFilter.replace('sg-', '').split('-gen-');
+                             if (gen) { // This means it's a generation filter like 'sg-1-gen-1st'
+                                roster = roster.filter(m => String(m.groupId) === sgIdStr && m.generation === gen);
+                             } else { // This means it's just a group filter like 'sg-1'
+                                roster = roster.filter(m => String(m.groupId) === sgIdStr);
+                             }
+                        } else {
+                            roster = roster.filter(m => m.isSisterMember && m.displayGroupName === pushMemberFilter);
+                        }
+                    }
+                    
+                    if (roster.length === 0) {
+                         return <p className="text-gray-500 italic col-span-full text-center p-4">No members match the current filter.</p>;
+                    }
+
+                    return roster.map(member => (
+                        <div key={member.rosterId || member.id}>
+                            <label className={`p-2 rounded-lg cursor-pointer flex items-center transition-all duration-200 border-2 ${pushedMembers.map(String).includes(String(member.rosterId)) ? 'bg-pink-100 dark:bg-pink-900/80 border-pink-300 dark:border-pink-600' : 'bg-white/80 dark:bg-slate-800/80 border-transparent hover:bg-pink-50 dark:hover:bg-slate-700/80'}`}>
+                                <input 
+                                    type="checkbox"
+                                    checked={pushedMembers.map(String).includes(String(member.rosterId))}
+                                    onChange={() => handleTogglePushMember(member.rosterId)}
+                                    className="mr-3 form-checkbox h-5 w-5 text-pink-500 bg-gray-200 border-gray-300 rounded-md focus:ring-pink-400 focus:ring-offset-0"
+                                />
+                                <div>
+                                    <span className="text-sm font-bold text-gray-800 dark:text-gray-100">{member.name}</span>
+                                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                                        <span>{member.displayGroupName || groupName}</span>
+                                        <span className="mx-1">|</span>
+                                        <span className="font-mono">Fans: {getTotalFansForMember(member).toLocaleString()}</span>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    ));
+                })()}
               </div>
             </div>
 
@@ -11470,22 +11901,29 @@ const TabButton = ({ id, label, icon: Icon }) => (
                     Upgrade (¥{(200000 * Math.pow(2, varietyStudio.level)).toLocaleString()})
                 </button>
             </div>
-            {varietyShows.map(show => (
-                <div key={show.id} className="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg border dark:border-gray-600">
-                    <p className="font-bold">{show.name} (S{show.season}) - {show.type}</p>
-                    <p className="text-xs">Cast: {show.cast.map(id => getMemberById(id)?.name || 'N/A').join(', ')}</p>
-                    <p className="text-xs">Popularity: {show.popularity.toFixed(0)} | Staleness: {show.staleness.toFixed(0)}</p>
-                    {!show.isActive ? (
-                        <div className="mt-2 flex gap-2">
-                            <button onClick={() => { setModalData(show); setShowModal('recastShow'); }} className="flex-1 p-1 text-xs bg-blue-500 text-white rounded">Recast & Renew</button>
-                            <button onClick={() => renewVarietyShow(show.id)} className="flex-1 p-1 text-xs bg-green-500 text-white rounded">Renew Season</button>
-                            <button onClick={() => cancelVarietyShow(show.id)} className="flex-1 p-1 text-xs bg-red-500 text-white rounded">Cancel</button>
-                        </div>
-                    ) : (
-                        <p className="text-xs font-semibold text-green-500 mt-1">On Air ({show.seasonDuration - show.weeksAired} weeks left)</p>
-                    )}
-                </div>
-            ))}
+            {varietyShows.map(show => {
+                const { name, type, cast, season, isActive, weeksAired, seasonDuration, popularity, staleness } = show;
+                return (
+                    <div key={show.id} className="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg border dark:border-gray-600">
+                        <p className="font-bold">{name} (S{season}) - {type}</p>
+                        <p className="text-xs">Cast: {cast.map(id => getMemberById(id)?.name || 'N/A').join(', ')}</p>
+                            <div className="flex justify-between text-xs mt-1">
+                                <p>Popularity: <span className="font-bold">{popularity.toFixed(0)}</span></p>
+                                <p>Staleness: <span className="font-bold">{staleness.toFixed(0)}</span></p>
+                                <p>Income: <span className="font-bold text-green-600">¥{(show.income || 0).toLocaleString()}</span></p>
+                            </div>
+                        {!isActive ? (
+                            <div className="mt-2 flex gap-2">
+                                <button onClick={() => { setModalData(show); setShowModal('recastShow'); }} className="flex-1 p-1 text-xs bg-blue-500 text-white rounded">Recast & Renew</button>
+                                <button onClick={() => renewVarietyShow(show.id)} className="flex-1 p-1 text-xs bg-green-500 text-white rounded">Renew Season</button>
+                                <button onClick={() => cancelVarietyShow(show.id)} className="flex-1 p-1 text-xs bg-red-500 text-white rounded">Cancel</button>
+                            </div>
+                        ) : (
+                            <p className="text-xs font-semibold text-green-500 mt-1">On Air ({seasonDuration - weeksAired} weeks left)</p>
+                        )}
+                    </div>
+                );
+            })}
             {varietyShows.length < (Math.floor(varietyStudio.level / 2) + 1) && (
                 <button onClick={() => setShowModal('createVarietyShow')} className="w-full p-2 text-sm bg-green-600 text-white rounded font-bold">
                     <Plus size={16} className="inline-block mr-1"/> Create New Show
@@ -11496,39 +11934,80 @@ const TabButton = ({ id, label, icon: Icon }) => (
 </div>
 
 {/* Film Studio */}
-<div className="md:col-span-1 p-3 rounded-lg shadow-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700">
-    <h3 className="text-base font-bold mb-2 flex items-center"><Film size={18} className="mr-2"/> Film Studio</h3>
+<div className="md:col-span-1 p-3 rounded-xl shadow-lg bg-gradient-to-br from-pink-50 to-purple-100 dark:from-slate-800 dark:to-gray-900 border border-pink-100 dark:border-gray-700">
+    <h3 className="text-lg font-bold mb-3 flex items-center text-pink-600 dark:text-pink-400"><Film size={20} className="mr-2"/> Film Studio</h3>
     {filmStudio.level === 0 ? (
-        <button onClick={buildFilmStudio} className="w-full p-2 text-sm bg-cyan-500 text-white rounded font-semibold">
+        <button onClick={buildFilmStudio} className="w-full p-2 text-sm bg-pink-500 hover:bg-pink-600 transition-all text-white rounded-lg font-semibold shadow">
             Build Studio (¥400,000)
         </button>
     ) : (
-        <div className="space-y-2">
-            <div className="flex justify-between items-center text-sm">
-                <p>Studio Level: <strong>{filmStudio.level}</strong></p>
-                <button onClick={upgradeFilmStudio} disabled={filmStudio.level >= 3} className="px-3 py-1 text-xs bg-purple-500 text-white rounded disabled:bg-gray-400">
+        <div className="space-y-3">
+            <div className="flex justify-between items-center text-sm p-2 bg-white/50 dark:bg-black/20 rounded-lg">
+                <p className="font-bold">Studio Level: <strong>{filmStudio.level}</strong></p>
+                <button onClick={upgradeFilmStudio} disabled={filmStudio.level >= 3} className="px-3 py-1 text-xs bg-purple-500 hover:bg-purple-600 text-white rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold">
                     Upgrade (¥{(300000 * Math.pow(2, filmStudio.level)).toLocaleString()})
                 </button>
             </div>
 
-{filmProjects.map(p => (
-    <div key={p.id} className="p-2 bg-gray-100 dark:bg-gray-700 rounded text-xs">
-        <p className="font-bold">{p.title}</p>
-        <p className={`font-semibold ${p.status === 'filming' ? 'text-red-500' : 'text-green-500'}`}>
-            Status: {p.status === 'filming' ? 'Filming' : 'Airing'} ({p.weeksLeft} weeks left)
-        </p>
-    </div>
-))}
+            <div className="space-y-2">
+                {filmProjects.filter(p => p.status === 'filming').map(p => (
+                    <div key={p.id} className="p-2 bg-white/60 dark:bg-black/20 rounded-lg text-xs">
+                        <p className="font-bold text-gray-800 dark:text-gray-200">{p.title}</p>
+                        <p className="font-semibold text-red-500 animate-pulse">
+                            Now Filming ({p.weeksLeft} weeks left)
+                        </p>
+                    </div>
+                ))}
+                {filmProjects.filter(p => p.status === 'filming').length === 0 && (
+                    <p className="text-sm text-center text-gray-500 italic py-2">No films in production.</p>
+                )}
+            </div>
 
-            {filmProjects.length < filmStudio.level && (
-                <button onClick={() => setShowModal('filmProduction')} className="w-full p-2 text-sm bg-cyan-600 text-white rounded font-bold mt-2">
-                    <Plus size={16} className="inline-block mr-1"/> Start New Film Project
+            {filmProjects.filter(p => p.status === 'filming').length < filmStudio.level && (
+                <button onClick={() => setShowModal('filmProduction')} className="w-full p-2 text-sm bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 transition-all text-white rounded-lg font-bold shadow-lg">
+                    <Plus size={16} className="inline-block mr-1"/> Start New Project
                 </button>
             )}
         </div>
     )}
 </div>
 
+{/* Film Industry */}
+<div className="md:col-span-1 p-3 rounded-xl shadow-lg bg-gradient-to-br from-amber-50 to-yellow-100 dark:from-slate-800 dark:to-gray-900 border border-amber-100 dark:border-gray-700">
+    <h3 className="text-lg font-bold mb-3 flex items-center text-amber-600 dark:text-amber-400"><Trophy size={20} className="mr-2"/> Film Industry</h3>
+    <button onClick={() => setShowModal('filmAwardsHistory')} className="w-full p-2 text-sm bg-amber-400 hover:bg-amber-500 transition-all text-black rounded-lg font-bold shadow">
+        View Hall of Fame
+    </button>
+</div>
+<button onClick={() => setShowModal('filmography')} className="w-full mt-2 p-2 text-sm bg-gray-600 hover:bg-gray-700 transition-all text-white rounded-lg font-bold shadow">
+    View Filmography
+</button>
+
+{/* Airing Productions */}
+<div className="md:col-span-2 p-3 rounded-xl shadow-lg bg-gradient-to-br from-green-50 to-cyan-100 dark:from-slate-800 dark:to-gray-900 border border-green-100 dark:border-gray-700">
+    <h3 className="text-lg font-bold mb-3 flex items-center text-green-600 dark:text-green-400"><Clapperboard size={20} className="mr-2"/> Airing Now</h3>
+    <div className="space-y-2">
+        {filmProjects.filter(p => p.status === 'airing').map(p => (
+            <div key={p.id} className="p-3 bg-white/60 dark:bg-black/20 rounded-lg flex justify-between items-center">
+                <div>
+                    <p className="font-bold text-gray-800 dark:text-gray-200">{p.title}</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">
+                        Airing for <strong>{p.weeksLeft}</strong> more weeks | Crit: {p.finalCriticalScore}, Comm: {p.finalCommercialScore}
+                    </p>
+                </div>
+                <button 
+                    onClick={() => { setPromotingFilm(p); setShowModal('filmPromotion'); }} 
+                    className="px-4 py-2 text-sm bg-cyan-500 hover:bg-cyan-600 transition-all text-white rounded-lg font-bold shadow"
+                >
+                    Promote
+                </button>
+            </div>
+        ))}
+        {filmProjects.filter(p => p.status === 'airing').length === 0 && (
+            <p className="text-sm text-center text-gray-500 italic py-2">No films are currently airing.</p>
+        )}
+    </div>
+</div>
 
   </div>
 
@@ -11597,6 +12076,70 @@ const TabButton = ({ id, label, icon: Icon }) => (
                     </div>
                 </div>
             )}
+{/* ----- BUZZ TAB ----- */}
+{currentTab === 'buzz' && (
+    <div className="space-y-4">
+        <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-bold flex items-center">
+                <MessageSquare size={22} className="mr-2 text-cyan-500"/> Fan Buzz
+            </h2>
+        </div>
+        <div className="space-y-3 max-h-[75vh] overflow-y-auto pr-2">
+            {fanPosts.length > 0 ? fanPosts.map(post => {
+                const postTypeStyles = {
+                    happy: { icon: '💖', color: 'text-pink-500' },
+                    angry: { icon: '😡', color: 'text-red-500' },
+                    sad: { icon: '😭', color: 'text-blue-500' },
+                    neutral: { icon: '🤔', color: 'text-gray-500' },
+                };
+                const style = postTypeStyles[post.type] || postTypeStyles['neutral'];
+                const handle = `@${(post.username || 'idol_fan').toLowerCase().replace(/_/g, '')}_${String(post.id).slice(-4)}`;
+
+                // Generate fake engagement numbers
+                const likes = Math.floor(Math.random() * 500) + (post.type === 'happy' ? 200 : 0) + 10;
+                const retweets = Math.floor(likes / (Math.random() * 3 + 2));
+
+                return (
+                    <div key={post.id} className="p-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                        <div className="flex items-start">
+                            {/* Avatar */}
+                            <div className={`w-10 h-10 rounded-full bg-gray-300 dark:bg-gray-600 mr-3 flex-shrink-0 flex items-center justify-center text-lg ${style.color}`}>
+                                {style.icon}
+                            </div>
+                            <div className="flex-1">
+                                {/* User Info */}
+                                <div className="flex items-center gap-2">
+                                    <span className="font-bold text-gray-900 dark:text-gray-100">{post.username || 'Idol Fan'}</span>
+                                    <span className="text-sm text-gray-500">{handle}</span>
+                                    <span className="text-sm text-gray-500">·</span>
+                                    <span className="text-sm text-gray-500">Wk {post.week}</span>
+                                </div>
+                                {/* Post Text */}
+                                <p className="text-sm text-gray-800 dark:text-gray-200 mt-1 whitespace-pre-wrap">{post.text}</p>
+
+                                {/* Engagement buttons */}
+                                <div className="flex items-center gap-6 mt-3 pt-2">
+                                    <div className="flex items-center gap-2 text-gray-500 hover:text-blue-500 cursor-pointer">
+                                        <MessageSquare size={16} />
+                                        <span className="text-xs font-semibold">{Math.floor(retweets / 4)}</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 text-gray-500 hover:text-green-500 cursor-pointer">
+                                        <Repeat size={16} />
+                                        <span className="text-xs font-semibold">{retweets}</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 text-gray-500 hover:text-pink-500 cursor-pointer">
+                                        <Heart size={16} />
+                                        <span className="text-xs font-semibold">{likes}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }) : <p className="text-center text-gray-500 italic p-8">No fan buzz yet. Release a single to see what they think!</p>}
+        </div>
+    </div>
+)}
 
             {/* ----- MERCHANDISE TAB ----- */}
             {currentTab === 'merch' && (
@@ -11625,8 +12168,9 @@ const TabButton = ({ id, label, icon: Icon }) => (
             <TabButton id="members" label="Members" icon={Users} />
             <TabButton id="discography" label="Songs" icon={Music} />
             <TabButton id="management" label="Manage" icon={Building} />
-            <TabButton id="history" label="History" icon={Clipboard} />\
+            <TabButton id="history" label="History" icon={Clipboard} />
             <TabButton id="rivals" label="Rivals" icon={Globe} />
+            <TabButton id="buzz" label="Buzz" icon={MessageSquare} />
             <TabButton id="activities" label="Activities" icon={Zap} />
             <TabButton id="training" label="Training" icon={Brain} />
             <TabButton id="merch" label="Merch" icon={ShoppingBag} />
@@ -12125,6 +12669,8 @@ const TabButton = ({ id, label, icon: Icon }) => (
       { id: 'merch', label: 'Merch' },
       { id: 'history', label: 'History' },
       { id: 'rivals', label: 'Rivals' },
+      { id: 'buzz', label: 'Buzz', icon: MessageSquare },
+
     ].map(tab => (
       <button
         key={tab.id}
@@ -12269,6 +12815,12 @@ const TabButton = ({ id, label, icon: Icon }) => (
         {showModal === 'sportsFestivalResult' && <SportsFestivalResultModal />}
         {showModal === 'liveSportsFestival' && <LiveSportsFestivalModal />}
         {showModal === 'shuffleTypeSelection' && <ShuffleTypeSelectionModal />}
+        {showModal === 'filmAwardsHistory' && <FilmAwardsHistoryModal />}
+        {showModal === 'filmAwards' && <FilmAwardsModal />}
+        {showModal === 'filmPromotion' && <FilmPromotionModal />}
+        {showModal === 'filmPromotionResult' && <FilmPromotionResultModal />} 
+        {showModal === 'filmography' && <FilmographyModal filmProjects={filmProjects} setViewedFilm={setViewedFilm} setShowModal={setShowModal} />}
+        {showModal === 'filmDetails' && <FilmDetailsModal viewedFilm={viewedFilm} setViewedFilm={setViewedFilm} setShowModal={setShowModal} getMemberById={getMemberById} />}
         {showModal === 'draftKaigi' && (
             <DraftKaigiModal 
                 draftKaigi={draftKaigi} 

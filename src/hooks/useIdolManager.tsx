@@ -793,6 +793,67 @@ export const tiers = [
     { id: 4, name: 'Elite Scouting', cost: 1500000, poolSize: 10, contractFee: 200000, statMin: 60, statMax: 85, potentialMin: 85, potentialMax: 100 },
 ];
 
+export const filmPromotionTypes = {
+    'pressScreening': {
+        name: 'Press & VIP Screening',
+        cost: 50000,
+        description: 'Hold a private screening for media and critics to generate early buzz.',
+        effect: (project) => ({
+            fanGain: 10000,
+            criticalBoost: 5,
+            commercialBoost: 0,
+            message: `The press screening for "${project.title}" generated positive early reviews, boosting critical score.`
+        })
+    },
+    'magazineInterviews': {
+        name: 'Magazine Interviews',
+        cost: 30000,
+        description: 'Have the lead cast do a round of magazine interviews.',
+        effect: (project, cast) => {
+            const fanGain = cast.reduce((sum, m) => sum + (m.charisma || 0), 0) * 100;
+            return {
+                fanGain: fanGain,
+                criticalBoost: 0,
+                commercialBoost: 0,
+                message: `Magazine interviews with the cast of "${project.title}" gained them ${fanGain.toLocaleString()} new fans.`
+            };
+        }
+    },
+    'onlineAdCampaign': {
+        name: 'Online Ad Campaign',
+        cost: 75000,
+        description: 'Run a targeted ad campaign on social media and video sites.',
+        effect: (project) => ({
+            fanGain: 25000,
+            criticalBoost: 0,
+            commercialBoost: 5,
+            message: `The online ad campaign for "${project.title}" reached a wide audience, boosting commercial score.`
+        })
+    },
+    'awardShowPush': {
+        name: 'Award Show Push',
+        cost: 200000,
+        description: 'Spend heavily to promote the film to award-voting bodies. High risk, high reward.',
+        effect: (project) => {
+            const success = Math.random() < 0.5;
+            if (success) {
+                return {
+                    fanGain: 15000,
+                    criticalBoost: 10,
+                    commercialBoost: 0,
+                    message: `SUCCESS! The award show push for "${project.title}" paid off, significantly boosting its critical acclaim!`
+                };
+            } else {
+                return {
+                    fanGain: 0,
+                    criticalBoost: -5,
+                    commercialBoost: 0,
+                    message: `FAILURE. The award show push for "${project.title}" failed to gain traction with critics.`
+                };
+            }
+        }
+    }
+};
 
 // --- NEW: Global Fan Calculation Helper ---
 export const getTotalFansForMember = (member) => {
@@ -861,6 +922,8 @@ export const ambitions = {
     },
 };
 
+
+
 export const varietyShowTypes = {
     'Game Show': {
         description: 'A fun, chaotic show with games and challenges. Great for attracting new, casual fans.',
@@ -891,6 +954,35 @@ export const varietyShowTypes = {
         stalenessRate: 100, // It's a one-off
         isSpecial: true,
     },
+        'Studio Variety': {
+        description: 'A classic weekly studio show (like AKBingo!) mixing games, talk segments, and member challenges. Great for developing variety skill and chemistry.',
+        coreStats: ['variety', 'charisma'],
+        primaryReward: 'fans',
+        secondaryReward: 'chemistry',
+        stalenessRate: 8,
+    },
+    'Outdoor Challenge': {
+        description: 'A high-effort show where members tackle a difficult real-world challenge (like Nemousu TV). Boosts hardcore fans and morale.',
+        coreStats: ['stamina', 'intelligence'],
+        primaryReward: 'hardcore',
+        secondaryReward: 'morale',
+        stalenessRate: 12,
+    },
+    'Dokkiri Pranks': {
+        description: 'A hidden camera prank show. High viral potential and showcases members.',
+        coreStats: ['variety', 'intelligence'],
+        primaryReward: 'fans',
+        secondaryReward: 'skill',
+        stalenessRate: 15,
+    },
+    'Cooking Battle': {
+        description: 'Members compete in chaotic cooking challenges. Great for chemistry and deepening fan bonds.',
+        coreStats: ['intelligence', 'charisma'],
+        primaryReward: 'conversion',
+        secondaryReward: 'chemistry',
+        stalenessRate: 7,
+    },
+
 };
 
 export const filmProjectTypes = {
@@ -900,7 +992,9 @@ export const filmProjectTypes = {
         rewards: { fanGain: 20000, repGain: 0 },
         airingDuration: 4,
         weeklyRevenue: 10000,
-        description: "A small, artistic project. Low impact, but a good way to get a member's feet wet."
+        description: "A small, artistic project. Low impact, but a good way to get a member's feet wet.",
+        genre: 'Slice of Life',
+        coreStats: ['charisma', 'intelligence']
     },
     'Web Drama': {
         duration: 8,
@@ -908,7 +1002,9 @@ export const filmProjectTypes = {
         rewards: { fanGain: 50000, repGain: 1 },
         airingDuration: 8,
         weeklyRevenue: 25000,
-        description: "A short series for an online platform. Decent exposure for the cost."
+        description: "A short series for an online platform. Decent exposure for the cost.",
+        genre: 'Romance',
+        coreStats: ['visual', 'charisma']
     },
     'Straight-to-DVD Movie': {
         duration: 10,
@@ -916,7 +1012,9 @@ export const filmProjectTypes = {
         rewards: { fanGain: 70000, repGain: 1 },
         airingDuration: 10,
         weeklyRevenue: 30000,
-        description: "A full-length feature that bypasses theaters. A bit old-school, but can be profitable."
+        description: "A full-length feature that bypasses theaters. A bit old-school, but can be profitable.",
+        genre: 'Action',
+        coreStats: ['dancing', 'stamina']
     },
     'Supporting TV Role': {
         duration: 12,
@@ -924,7 +1022,9 @@ export const filmProjectTypes = {
         rewards: { fanGain: 120000, repGain: 2 },
         airingDuration: 12,
         weeklyRevenue: 40000,
-        description: "Secure a recurring role for an idol in a network television drama."
+        description: "Secure a recurring role for an idol in a network television drama.",
+        genre: 'Slice of Life',
+        coreStats: ['intelligence', 'charisma']
     },
     'Voice Acting (Anime)': {
         duration: 10,
@@ -932,7 +1032,9 @@ export const filmProjectTypes = {
         rewards: { fanGain: 80000, repGain: 1 },
         airingDuration: 12,
         weeklyRevenue: 20000,
-        description: "The idol will voice a character in an upcoming anime series. Taps into a new market."
+        description: "The idol will voice a character in an upcoming anime series. Taps into a new market.",
+        genre: 'Sci-Fi',
+        coreStats: ['singing', 'intelligence']
     },
     'Stage Play / Musical': {
         duration: 14,
@@ -940,7 +1042,9 @@ export const filmProjectTypes = {
         rewards: { fanGain: 150000, repGain: 2 },
         airingDuration: 8,
         weeklyRevenue: 60000,
-        description: "A live theatrical run. Grueling for the members, but proves their live talent."
+        description: "A live theatrical run. Grueling for the members, but proves their live talent.",
+        genre: 'Drama',
+        coreStats: ['singing', 'dancing']
     },
     'Feature Film': {
         duration: 16,
@@ -948,7 +1052,9 @@ export const filmProjectTypes = {
         rewards: { fanGain: 200000, repGain: 3 },
         airingDuration: 8,
         weeklyRevenue: 120000,
-        description: "A standard theatrical movie release. The bread-and-butter of the film world."
+        description: "A standard theatrical movie release. The bread-and-butter of the film world.",
+        genre: 'Comedy',
+        coreStats: ['variety', 'charisma']
     },
     'Historical Epic (Taiga)': {
         duration: 30,
@@ -956,7 +1062,9 @@ export const filmProjectTypes = {
         rewards: { fanGain: 400000, repGain: 4 },
         airingDuration: 26,
         weeklyRevenue: 80000,
-        description: "A year-long commitment to a prestigious historical drama series. High prestige and fan gain."
+        description: "A year-long commitment to a prestigious historical drama series. High prestige and fan gain.",
+        genre: 'Drama',
+        coreStats: ['intelligence', 'visual']
     },
     'Major Series (Prime Time)': {
         duration: 24,
@@ -964,7 +1072,9 @@ export const filmProjectTypes = {
         rewards: { fanGain: 500000, repGain: 5 },
         airingDuration: 12,
         weeklyRevenue: 250000,
-        description: "The lead role in a prime-time television series. A massive star-making opportunity."
+        description: "The lead role in a prime-time television series. A massive star-making opportunity.",
+        genre: 'Romance',
+        coreStats: ['charisma', 'visual']
     },
     'International Blockbuster': {
         duration: 36,
@@ -972,9 +1082,66 @@ export const filmProjectTypes = {
         rewards: { fanGain: 1000000, repGain: 10 },
         airingDuration: 10,
         weeklyRevenue: 500000,
-        description: "A role in a Hollywood-level production. Extremely expensive and a long commitment, but with legendary rewards."
+        description: "A role in a Hollywood-level production. Extremely expensive and a long commitment, but with legendary rewards.",
+        genre: 'Action',
+        coreStats: ['dancing', 'visual']
     }
 };
+export const scriptTiers = {
+    'inHouse': {
+        name: 'In-House Writer',
+        cost: 25000,
+        quality: 40,
+        description: 'Your staff writers will handle the script. Cheap, but basic.'
+    },
+    'freelancer': {
+        name: 'Hired Screenwriter',
+        cost: 150000,
+        quality: 65,
+        description: 'A professional writer with a solid track record. A reliable choice.'
+    },
+    'acclaimed': {
+        name: 'Acclaimed Novelist',
+        cost: 500000,
+        quality: 85,
+        description: 'Adapt a work from a famous author. Expensive, but provides an excellent foundation.'
+    }
+};
+
+export const directorTiers = {
+    'rookie': {
+        name: 'Rookie Director',
+        cost: 50000,
+        qualityBonus: 5,
+        description: 'An up-and-coming director. Lacks experience but is full of passion.'
+    },
+    'veteran': {
+        name: 'Veteran Director',
+        cost: 250000,
+        qualityBonus: 15,
+        description: 'A reliable industry pro who knows how to make a solid commercial product.'
+    },
+    'auteur': {
+        name: 'Auteur Director',
+        cost: 800000,
+        qualityBonus: 10,
+        specialEffect: 'doubles_intelligence_bonus',
+        description: 'A visionary artist. Extremely expensive and demanding, but can create a masterpiece with intelligent actors.'
+    }
+};
+
+export const varietyProducerTiers = {
+    'rookie': { name: 'Rookie PD', cost: 10000, fanGainBonus: 0, accidentModifier: 0, description: 'Standard cost, no bonus.' },
+    'veteran': { name: 'Veteran PD', cost: 50000, fanGainBonus: 0.1, accidentModifier: -0.1, description: '+10% Fan Gain, reduced chance of on-air issues.' },
+    'star': { name: 'Star PD', cost: 150000, fanGainBonus: 0.2, accidentModifier: -0.2, popularityBonus: 10, description: '+20% Fan Gain, +10 Initial Popularity, low chance of issues.' }
+};
+
+export const varietyWriterTiers = {
+    'inHouse': { name: 'In-House Team', cost: 5000, statBonus: 0, description: 'Standard script quality.' },
+    'comedy': { name: 'Comedy Writer', cost: 40000, statBonus: 0.2, description: 'Boosts effectiveness of cast Variety and Intelligence skills.' },
+    'broadcaster': { name: 'Veteran Broadcaster', cost: 100000, statBonus: 0.1, conversionBonus: 0.05, stalenessReduction: 0.2, description: 'Boosts fan conversion and reduces how quickly the show gets stale.' }
+};
+
 
 // --- Custom Hook for Game Logic and State Management ---
 export const useIdolManager = () => {
@@ -1024,9 +1191,13 @@ export const useIdolManager = () => {
     
     const [theaterSongs, setTheaterSongs] = useState([]);
     const [theaters, setTheaters] = useState([]);
+    const [filmAwardsHistory, setFilmAwardsHistory] = useState([]);
+    const [promotingFilm, setPromotingFilm] = useState(null);
+    const [viewedFilm, setViewedFilm] = useState(null);
     const [buildings, setBuildings] = useState({ practiceRooms: { vocal: 0, dance: 0, variety: 0, visual: 0, charisma: 0, intelligence: 0 } });
     const [sisterGroups, setSisterGroups] = useState([]); 
     const [rivalGroups, setRivalGroups] = useState([]);
+    const [fanPosts, setFanPosts] = useState([]);
     const [collaborations, setCollaborations] = useState([]);
     const [achievements, setAchievements] = useState([]);
     const [hallOfFame, setHallOfFame] = useState([]);
@@ -1324,6 +1495,7 @@ const promoMultipliers = { none: 1, tier1: 1.05, tier2: 1.1, tier3: 1.15, tier4:
     const [activeTour, setActiveTour] = useState(null);
     const [musicVideos, setMusicVideos] = useState([]);
     const [varietyShows, setVarietyShows] = useState([]);
+    
     const [filmStudio, setFilmStudio] = useState({ level: 0 });
     const [filmProjects, setFilmProjects] = useState([]);
     const [varietyStudio, setVarietyStudio] = useState({ level: 0 });    const [photoBooks, setPhotoBooks] = useState([]);
@@ -1531,12 +1703,14 @@ const [pendingMerch, setPendingMerch] = useState([]);
                 musicVideos: JSON.stringify(musicVideos),
                 varietyShows: JSON.stringify(varietyShows),
                 varietyStudio: JSON.stringify(varietyStudio),
+                filmProjects: JSON.stringify(filmProjects),
                 photoBooks: JSON.stringify(photoBooks),
                 documentaries: JSON.stringify(documentaries),
                 collaborations: JSON.stringify(collaborations),
                 exchangeStudents: JSON.stringify(exchangeStudents),
                 scandals: JSON.stringify(scandals),
                 statistics: JSON.stringify(statistics),
+                filmStudio: JSON.stringify(filmStudio),
                 merchInventory: JSON.stringify(merchInventory),
                 activeTrainingCamp: JSON.stringify(activeTrainingCamp),
                 username: gameUsername,
@@ -1714,7 +1888,7 @@ const [pendingMerch, setPendingMerch] = useState([]);
             setVotingTickets(data.votingTickets || 0);
             setRequestHourHistory(JSON.parse(data.requestHourHistory || "[]"));
             setLastRequestHourResult(JSON.parse(data.lastRequestHourResult || "null"));
-
+            setFilmProjects(JSON.parse(data.filmProjects || "[]"));
             setEvents(JSON.parse(data.events || "[]"));
             setSponsorships(JSON.parse(data.sponsorships || "[]"));
             setDifficulty(data.difficulty || "normal");
@@ -1726,6 +1900,7 @@ const [pendingMerch, setPendingMerch] = useState([]);
             setMusicVideos(JSON.parse(data.musicVideos || "[]"));
             setVarietyShows(JSON.parse(data.varietyShows || "[]"));
             setVarietyStudio(JSON.parse(data.varietyStudio || '{"level":0}'));
+            setFilmStudio(JSON.parse(data.filmStudio || '{"level":0}'));
             setPhotoBooks(JSON.parse(data.photoBooks || "[]"));
             setDocumentaries(JSON.parse(data.documentaries || "[]"));
             setCollaborations(JSON.parse(data.collaborations || "[]"));
@@ -4595,6 +4770,133 @@ universallySortedMembers.forEach(member => {
     }
 });
 
+        // --- NEW: Post-Election Fan Buzz Generation ---
+        const electionFanPosts = [];
+        const electionWinner = universallySortedMembers[0];
+        if (electionWinner) {
+            const winnerReactions = [
+                `I'M SO HAPPY! ${electionWinner.name} IS THE NEW QUEEN! SHE DESERVED IT SO MUCH! #ElectionCenter #${electionWinner.name.replace(/\s/g, '')}`,
+                `The crown fits perfectly. Congratulations to ${electionWinner.name} for winning the election!`,
+                `All that hard work paid off. ${electionWinner.name} is finally #1!`,
+                `SCREAMING! CRYING! ${electionWinner.name} is our new center! The best possible result!`,
+                `From the first day I saw her, I knew ${electionWinner.name} was destined for the top. So proud.`
+            ];
+            electionFanPosts.push({ type: 'happy', text: winnerReactions[Math.floor(Math.random() * winnerReactions.length)] });
+        }
+
+        // New Kami 7 entry
+        const newKami7Member = universallySortedMembers.find(m => m.rank > 1 && m.rank <= 7 && (m.previousRank > 7 || m.previousRank === 999));
+        if (newKami7Member) {
+            const kami7Reactions = [
+                `YESSS! ${newKami7Member.name} made it into Kami 7! So proud of all the hard work paying off!`,
+                `The new God has descended. Welcome to the Kami 7, ${newKami7Member.name}!`,
+                `I screamed when they called ${newKami7Member.name}'s name for the top 7. A well-deserved spot!`,
+                `From outside the top ranks to Kami 7! What a legendary election story for ${newKami7Member.name}.`,
+                `The power of the fans is amazing! We got ${newKami7Member.name} into the Kami 7!`
+            ];
+            electionFanPosts.push({ type: 'happy', text: kami7Reactions[Math.floor(Math.random() * kami7Reactions.length)] });
+        }
+
+        // Retained Kami 7
+        const retainedKami7Member = universallySortedMembers.find(m => m.rank > 1 && m.rank <= 7 && m.previousRank > 1 && m.previousRank <= 7);
+        if (retainedKami7Member) {
+            const retainedKami7Reactions = [
+                `So glad ${retainedKami7Member.name} is still in Kami 7. A true pillar of the group.`,
+                `Of course ${retainedKami7Member.name} is still in the top 7. Her reign continues!`,
+                `My oshi ${retainedKami7Member.name} is unshakable. Still in the God Tier where she belongs.`,
+                `Another year, another Kami 7 rank for ${retainedKami7Member.name}. Her consistency is incredible.`,
+                `The top 7 wouldn't be the same without ${retainedKami7Member.name}. Happy she kept her spot!`
+            ];
+            electionFanPosts.push({ type: 'happy', text: retainedKami7Reactions[Math.floor(Math.random() * retainedKami7Reactions.length)] });
+        }
+
+        const senbatsu = universallySortedMembers.slice(0, 16);
+        const newFaceInSenbatsu = senbatsu.find(m => m.previousRank > 16 || m.previousRank === 999);
+        if (newFaceInSenbatsu) {
+             const newSenbatsuReactions = [
+                `So excited to see ${newFaceInSenbatsu.name} make it into Senbatsu! A fresh face in the front line!`,
+                `A new member in Senbatsu! Congrats to ${newFaceInSenbatsu.name}, she's going to do great things.`,
+                `The Senbatsu lineup looks amazing with ${newFaceInSenbatsu.name} in it. Can't wait for this new era.`,
+                `Welcome to Senbatsu, ${newFaceInSenbatsu.name}! This is just the beginning for her.`,
+                `The moment they called ${newFaceInSenbatsu.name}'s name for Senbatsu was everything.`
+             ];
+             electionFanPosts.push({ type: 'happy', text: newSenbatsuReactions[Math.floor(Math.random() * newSenbatsuReactions.length)] });
+        }
+        
+        // Retained Senbatsu
+        const retainedSenbatsuMember = universallySortedMembers.find(m => m.rank > 7 && m.rank <= 16 && m.previousRank > 7 && m.previousRank <= 16);
+        if (retainedSenbatsuMember) {
+            const retainedReactions = [
+                `So happy ${retainedSenbatsuMember.name} is still in Senbatsu. A pillar of the group for sure.`,
+                `Another year in Senbatsu for ${retainedSenbatsuMember.name}! Consistency is key.`,
+                `Phew! Was worried for a second, but ${retainedSenbatsuMember.name} held her Senbatsu spot. Congrats!`,
+                `Can always count on ${retainedSenbatsuMember.name} to secure her place. A true Senbatsu regular.`,
+                `My oshi ${retainedSenbatsuMember.name} is safe in Senbatsu for another year! Time to celebrate.`
+            ];
+            electionFanPosts.push({ type: 'happy', text: retainedReactions[Math.floor(Math.random() * retainedReactions.length)] });
+        }
+
+        // Unit Centers
+        const unitCenterRanks = [
+            { rank: 17, unit: 'Undergirls' },
+            { rank: 33, unit: 'Next Girls' },
+            { rank: 49, unit: 'Future Girls' },
+            { rank: 65, unit: 'Upcoming Girls' }
+        ];
+
+        unitCenterRanks.forEach(({ rank, unit }) => {
+            const unitCenter = universallySortedMembers.find(m => m.rank === rank);
+            if (unitCenter) {
+                const unitCenterReactions = [
+                    `Congrats to ${unitCenter.name} for being the center of ${unit}! Can't wait for the MV!`,
+                    `So excited for the ${unit} song with ${unitCenter.name} as the center!`,
+                    `The center for ${unit} is ${unitCenter.name}! A perfect choice!`,
+                    `${unitCenter.name} leading the ${unit}! This is going to be a banger for sure.`,
+                    `A huge round of applause for the new ${unit} center, ${unitCenter.name}!`
+                ];
+                electionFanPosts.push({ type: 'happy', text: unitCenterReactions[Math.floor(Math.random() * unitCenterReactions.length)] });
+            }
+        });
+
+        if (biggestJump.spots > 10) {
+            const jumpReactions = [
+                `The biggest surprise of the night was ${biggestJump.name} jumping ${biggestJump.spots} spots! That's how you do a campaign!`,
+                `Wow, ${biggestJump.name} really shot up the rankings this year! Her fans are amazing.`,
+                `A jump of ${biggestJump.spots} spots for ${biggestJump.name}! Incredible!`,
+                `Nobody saw ${biggestJump.name}'s massive rank-up coming. So happy for her!`,
+                `The power of a dedicated fanbase: ${biggestJump.name}'s huge jump in the ranks!`
+            ];
+            electionFanPosts.push({ type: 'happy', text: jumpReactions[Math.floor(Math.random() * jumpReactions.length)] });
+        }
+        
+        if (biggestDrop.spots > 10) {
+            const dropReactions = [
+                `My heart is broken for ${biggestDrop.name}... falling from #${biggestDrop.oldRank} all the way to #${biggestDrop.newRank}. I hope she doesn't graduate...`,
+                `I can't believe ${biggestDrop.name} dropped so far. What happened this year?`,
+                `Seeing ${biggestDrop.name}'s face when her rank was called was devastating.`,
+                `A moment of silence for ${biggestDrop.name}'s rank. We'll get her back up there next year.`,
+                `The most shocking drop of the night. ${biggestDrop.name} deserved better.`
+            ];
+            electionFanPosts.push({ type: 'sad', text: dropReactions[Math.floor(Math.random() * dropReactions.length)] });
+        }
+
+        const unrankedAce = participants.find(p => p.previousRank <= 16 && p.rank > (spots || 80));
+        if (unrankedAce) {
+            const unrankedReactions = [
+                `I can't believe ${unrankedAce.name} didn't even rank this year. What happened?! She was in Senbatsu last year...`,
+                `Wait, did I miss ${unrankedAce.name}'s speech? She didn't rank AT ALL?`,
+                `${unrankedAce.name} going from Senbatsu to unranked is the saddest story of this election.`,
+                `Is there a mistake? How did ${unrankedAce.name} not get enough votes to rank?`,
+                `My heart hurts for ${unrankedAce.name}. She must be so disappointed.`
+            ];
+            electionFanPosts.push({ type: 'sad', text: unrankedReactions[Math.floor(Math.random() * unrankedReactions.length)] });
+        }
+        
+        if (electionFanPosts.length > 0) {
+            setFanPosts(prev => [...electionFanPosts.map(p => ({...p, week, id: Date.now() + Math.random()})), ...prev].slice(0, 100));
+        }
+        // --- END NEW ---
+
         setModalData({
             rankedMembers: universallySortedMembers,
             electionYear: Math.floor(week / 52) + 1,
@@ -4925,7 +5227,495 @@ const disbandUnit = (unitId) => {
             entries: chartEntries,
         });
     };
+const generateSenbatsuFanPosts = (newSingle, previousSingle, allMembers) => {
+    const newPosts = [];
+    const titleTrack = newSingle.tracks.find(t => t.type === 'title');
+    if (!titleTrack) return;
 
+    const senbatsuMembers = titleTrack.members.map(m => allMembers.find(fullM => (fullM.rosterId || String(fullM.id)) === String(m.id))).filter(Boolean);
+    const senbatsuIds = new Set(senbatsuMembers.map(m => String(m.rosterId || m.id)));
+    const centerIds = new Set((titleTrack.center || []).map(String));
+
+    const prevTitleTrack = previousSingle?.tracks.find(t => t.type === 'title');
+    const prevSenbatsuIds = new Set((prevTitleTrack?.members || []).map(m => {
+        if (String(m.id).startsWith('sg-')) return String(m.id);
+        if (previousSingle.targetGroup && previousSingle.targetGroup !== 'main') {
+            const sg = sisterGroups.find(g => g.name === previousSingle.targetGroup || String(g.id) === String(previousSingle.targetGroup));
+            if (sg) return `sg-${sg.id}-${m.id}`;
+        }
+        return String(m.id);
+    }));
+
+    // --- EXISTING REACTIONS ---
+
+// 1. Center reactions
+centerIds.forEach(centerId => {
+    const member = senbatsuMembers.find(m => (m.rosterId || String(m.id)) === centerId);
+    if (member) {
+        const centerReactions = [
+            `YEEEEESSS! ${member.name} is center! This is what we've been waiting for! #${newSingle.name} #Center`,
+            `${member.name} as center for #${newSingle.name}? The company finally did something right!`,
+            `The ace has returned to her throne. ${member.name} is center where she belongs.`,
+            `A ${member.name} center song is always a banger. My expectations are sky-high!`,
+            `From the back row to the center! So incredibly proud of ${member.name}'s journey!`,
+            `Management finally listened to the fans! ${member.name} CENTER! LET'S GO!`,
+            `This is it. This is the single that will make ${member.name} a legend.`,
+            `The perfect choice. ${member.name}'s aura is exactly what this song needs.`,
+            `I'm so emotional right now. My oshi, ${member.name}, is leading the group!`,
+            `The power, the presence, the performance... ${member.name} is the total package for a center.`
+        ];
+        
+        // Push 2 random, unique reactions for a center announcement
+        const shuffled = centerReactions.sort(() => 0.5 - Math.random());
+        newPosts.push({ type: 'happy', text: shuffled[0] });
+        if (shuffled.length > 1) {
+            newPosts.push({ type: 'happy', text: shuffled[1] });
+        }
+    }
+});
+
+// 2. Senbatsu inclusion reactions
+senbatsuMembers.forEach(member => {
+    const memberId = String(member.rosterId || member.id);
+    if (centerIds.has(memberId)) return;
+    if (!prevSenbatsuIds.has(memberId)) { // This member is new to senbatsu or is returning
+        
+        // --- HAPPY REACTION VARIANTS ---
+        const happyReactions = [
+            `OMG ${member.name} made it into Senbatsu! My votes weren't wasted! So proud of my oshi! #${newSingle.name}`,
+            `Let's goooo! ${member.name} is finally in senbatsu! The comeback is real!`,
+            `Crying tears of joy right now. ${member.name} deserved this senbatsu position more than anyone.`,
+            `The lineup for #${newSingle.name} is perfect because ${member.name} is in it. That's it. That's the post.`,
+            `YES! ${member.name}'s hard work finally paid off! She's in!`,
+            `Screaming, crying, throwing up. ${member.name} is in senbatsu!!!`,
+            `My timeline is blessed with the news of ${member.name} making senbatsu.`,
+            `The dark horse has made it! So excited to see more of ${member.name} this era.`,
+            `This senbatsu lineup has my full support now that ${member.name} is included.`,
+            `A round of applause for ${member.name}, our newest senbatsu member! Well earned.`,
+            `WE WON. ${member.name} IN SENBATSU I NEVER DOUBTED FOR A SECOND.`,
+            `THEY FINALLY SAW THE VISION. ${member.name} SENBATSU ERA STARTS NOW.`,
+            `Not to be dramatic but ${member.name} making senbatsu just healed me.`,
+            `${member.name} really said MAIN CHARACTER ONLY this single.`,
+            `Oh ${member.name} the woman that you are… SENBATSU!!!`,
+            `Everyone who slept on ${member.name} owes me an apology right now.`,
+            `This is ${member.name}'s world and we're just living in her senbatsu era.`,
+            `I KNOW THAT'S RIGHT!!! ${member.name} SENBATSU CONFIRMED.`,
+            `From underrated to UNDENIABLE. Congrats ${member.name}!`,
+            `The way ${member.name} clawed her way into senbatsu… inspirational.`,
+            `No because seeing ${member.name} in senbatsu feels CORRECT.`,
+            `The screams I scrumpt when I saw ${member.name} in the lineup.`,
+            `${member.name} really said hard work > everything. SENBATSU BABY.`,
+            `This single already outsold in my house because ${member.name} is in senbatsu.`,
+            `They tried to doubt ${member.name} but look who’s laughing now.`,
+            `Every era belongs to someone and this one belongs to ${member.name}.`,
+            `SENBATSU LOOKS GOOD ON YOU ${member.name}.`,
+            `I prayed for times like this. ${member.name} SENBATSU.`,
+            `Tell me again why ${member.name} SHOULDN’T be in senbatsu? Exactly.`,
+            `My oshi in senbatsu… peace has been restored. #${newSingle.name}`,
+            `Timeline moving different now that ${member.name} is senbatsu.`,
+            `${member.name} said “watch this” and DID THAT.`,
+            `This announcement singlehandedly cured my bad mood. ${member.name} SENBATSU.`,
+            `The growth… the payoff… ${member.name} in senbatsu feels surreal.`,
+            `Not me refreshing the lineup just to make sure ${member.name} is still there.`,
+            `Oh this era is about to be NASTY for the haters. Congrats ${member.name}!`,
+            `${member.name} went from “maybe someday” to SENBATSU REALNESS.`,
+            `I love being right about ${member.name}. Senbatsu queen.`,
+            `History was made today and her name is ${member.name}.`,
+            `The lineup ate the moment ${member.name} walked in.`,
+            `This is what stanning pays off with. ${member.name} SENBATSU.`,
+            `Proof that manifesting works: ${member.name} in senbatsu.`,
+            `The talent jumped OUT and landed her in senbatsu.`,
+            `Your fave could never but ${member.name} DID.`,
+            `I won’t shut up about ${member.name} making senbatsu actually.`,
+            `This is why we stream, vote, and believe. ${member.name}.`,
+            `Senbatsu secured, haters silenced. Thank you ${member.name}.`,
+            `${member.name} in senbatsu just makes sense. Like nature healing.`,
+            `This era already iconic and it hasn’t even started. ${member.name}!`,
+            `Put some respect on ${member.name}'s name — SENBATSU MEMBER.`
+        ];
+
+        // Pick one random happy reaction to push
+        newPosts.push({
+            type: 'happy',
+            text: happyReactions[Math.floor(Math.random() * happyReactions.length)]
+        });
+    }
+});
+
+// 3. Senbatsu exclusion reactions
+prevSenbatsuIds.forEach(memberId => {
+    if (!senbatsuIds.has(memberId)) { // Dropped from senbatsu
+        const member = getMemberById(memberId);
+        if (member) {
+            const randomSenbatsuMember = titleTrack.members.length > 0 ? titleTrack.members[Math.floor(Math.random() * titleTrack.members.length)].name : 'someone else';
+
+            // --- SAD REACTION VARIANTS ---
+            const sadReactions = [
+                `Wait... where is ${member.name}? She was dropped? This is unacceptable! #JusticeFor${member.name.replace(/\s/g, '')}`,
+                `My heart just broke. They really dropped ${member.name}... I'm not buying this single.`,
+                `Devastated doesn't even cover it. ${member.name} worked so hard. Why wasn't she chosen?`,
+                `No ${member.name}? No buy. Simple as that.`,
+                `She was the reason I followed this group... what's the point now?`,
+                `I feel sick. ${member.name} gave everything and got nothing in return.`,
+                `The sun is a little dimmer today knowing ${member.name} isn't in senbatsu.`,
+                `Can someone explain why ${member.name} was dropped? It makes no sense.`,
+                `This feels personal. Why does management hate ${member.name} so much?`,
+                `I'm going to go watch all of ${member.name}'s old videos and cry.`,
+                `The heart of the group is missing without ${member.name}.`,
+                `It's not just that she was dropped, it's the disrespect.`,
+                `I can't even bring myself to be happy for the others. This just hurts.`,
+                `Hoping this is just a temporary setback for ${member.name}. She'll be back stronger!`,
+                `The single just feels empty without her name in the lineup.`,
+                `Oh… ${member.name} isn’t in senbatsu. I actually feel sick.`,
+                `Not seeing ${member.name}'s name in the lineup just ruined my entire day.`,
+                `I stared at the lineup for a solid minute hoping I missed ${member.name}. I didn’t.`,
+                `This era already feels empty without ${member.name}.`,
+                `I don’t even want to talk right now. ${member.name} deserved better.`,
+                `Why does stanning always hurt like this… ${member.name} 💔`,
+                `I know it’s just a lineup but this genuinely broke my heart.`,
+                `No because ${member.name} worked TOO hard for this to happen.`,
+                `Trying not to cry but yeah… ${member.name} being dropped hurts bad.`,
+                `This single will never feel the same without ${member.name}.`,
+                `Management really looked at ${member.name}'s effort and said “nah”.`,
+                `I just wanted to see ${member.name} shine this era. That’s all.`,
+                `The silence on my timeline says everything. We’re all hurting over ${member.name}.`,
+                `I’ll keep supporting ${member.name} no matter what… but this hurts.`,
+                `I actually feel numb. Seeing a lineup without ${member.name} doesn’t feel real.`,
+                `This was supposed to be ${member.name}’s era. I don’t know how to cope with this.`,
+                `No music is hitting right now knowing ${member.name} was left out.`,
+                `I keep replaying all the times ${member.name} said she’d work harder… for THIS?`,
+                `I wish I never refreshed the lineup. I wish I didn’t see ${member.name} missing.`,
+                `This hurts in a way I can’t even explain. ${member.name} deserved her moment.`,
+                `Everyone celebrating and I’m just here grieving ${member.name}.`,
+                `The joy I had for this single is completely gone.`,
+                `I don’t think management understands how much ${member.name} meant to people.`,
+                `This is one of those moments that makes stanning feel exhausting.`,
+                `I can’t even pretend to be okay about ${member.name} being dropped.`,
+                `It’s not just disappointment — it feels like a loss.`,
+                `Watching old clips of ${member.name} smiling and knowing this happened… yeah.`,
+                `I hope ${member.name} knows she didn’t fail. Management failed her.`,
+                `I’ll support her forever but this is genuinely heartbreaking.`
+            ];
+
+            // --- ANGRY REACTION VARIANTS ---
+            const angryReactions = [
+                `Are you kidding me? You drop ${member.name} but keep ${randomSenbatsuMember}? What is management thinking?!`,
+                `This is a joke. How can you have a senbatsu without ${member.name}? The group's identity is gone.`,
+                `Boycotting this single. Dropping ${member.name} after all her hard work is a slap in the face to her and the fans.`,
+                `I'm officially an anti of this management. How dare they drop ${member.name}!`,
+                `Absolute garbage decision. The people in charge are clueless.`,
+                `So we're rewarding trainees over established, hardworking members now? Cool. Great strategy.`,
+                `This company is actively sabotaging its own group. Dropping ${member.name} for ${randomSenbatsuMember} is proof.`,
+                `Whoever made this decision needs to be fired. Immediately.`,
+                `It's not an opinion, it's a fact: this senbatsu is objectively worse without ${member.name}.`,
+                `Done. I'm selling all my merch. This is the last straw.`,
+                `They're running this group into the ground. What a waste of talent.`,
+                `The disrespect is astounding. ${member.name} deserved better than this trash company.`,
+                `I'm going to make sure my voice is heard. This is war. #JusticeFor${member.name.replace(/\s/g, '')}`,
+                `Congratulations to management for alienating a huge chunk of the fanbase. Brilliant move.`,
+                `This isn't just a bad lineup, it's a betrayal.`,
+                `No actually what the hell was management THINKING dropping ${member.name}?`,
+                `Explain to me RIGHT NOW how ${member.name} didn’t make senbatsu.`,
+                `Dropping ${member.name} is insane behavior. Absolutely insane.`,
+                `This lineup is a mess and it starts with cutting ${member.name}.`,
+                `They really said ${member.name} wasn’t good enough? Be serious.`,
+                `Management once again proving they don’t listen to fans at all.`,
+                `I’m so tired of this company disrespecting ${member.name} every single era.`,
+                `How do you justify keeping ${randomSenbatsuMember} but dropping ${member.name}? Quickly.`,
+                `This isn’t even favoritism anymore, it’s straight-up sabotage.`,
+                `Congrats management, you just lost my support. Dropping ${member.name} was the last straw.`,
+                `There is ZERO logic behind this decision. ZERO.`,
+                `They keep pushing mediocrity while ignoring real talent like ${member.name}.`,
+                `Say it with me: this senbatsu is weaker without ${member.name}.`,
+                `I hope management enjoys the backlash because they earned it.`,
+                `No explanation, no apology, just dropping ${member.name}. This company is a joke.`,
+                `Management better start answering questions because this decision STINKS.`,
+                `Dropping ${member.name} tells me everything I need to know about this lineup.`,
+                `If you still defend management after they cut ${member.name}, you’re the problem.`,
+                `They really looked at talent, effort, and fan support and ignored all of it.`,
+                `This isn’t a “creative choice”, it’s incompetence.`,
+                `Name ONE valid reason ${member.name} didn’t make senbatsu. I’ll wait.`,
+                `Every era management finds a new way to disrespect ${member.name}. I’m sick of it.`,
+                `They expect fans to stay quiet after pulling this? Not happening.`,
+                `This lineup is about favoritism, not quality. ${member.name} proves that.`,
+                `I hope this decision follows management forever because it deserves to.`,
+                `Dropping ${member.name} but pushing the same tired faces is crazy work.`,
+                `Don’t tell me to “trust management” when they keep doing stuff like this.`,
+                `This single will be remembered for who they excluded, not who they chose.`,
+                `If ${member.name} leaves one day, management will act shocked. This is why.`
+            ];
+
+            // Pick one random sad and one random angry reaction to push
+            newPosts.push({
+                type: 'sad',
+                text: sadReactions[Math.floor(Math.random() * sadReactions.length)]
+            });
+
+            newPosts.push({
+                type: 'angry',
+                text: angryReactions[Math.floor(Math.random() * angryReactions.length)]
+            });
+        }
+    }
+});
+
+// NEW: Graduation Single Announcement
+if (newSingle.isGraduationSingle) {
+    const titleTrack = newSingle.tracks.find(t => t.type === 'title');
+    const gradMember = titleTrack && titleTrack.center && titleTrack.center.length > 0
+        ? allMembers.find(m => (m.rosterId || String(m.id)) === String(titleTrack.center[0]))
+        : null;
+
+    if (gradMember) {
+        const gradReactions = [
+            `I can't believe it... ${gradMember.name}'s graduation single. This is going to be so emotional. 😭`,
+            `This is ${gradMember.name}'s last single... Let's make it the best one ever for her! #ThankYou${gradMember.name.replace(/\s/g, '')}`,
+            `The title "${newSingle.name}" is probably a hint... I'm not ready to say goodbye to ${gradMember.name}.`,
+            `A graduation single for ${gradMember.name}. My heart is breaking, but I'm so proud of her.`,
+            `Listening to ${gradMember.name}'s graduation song. Tears are streaming down my face. We'll miss you!`,
+            `It's official. The new single is ${gradMember.name}'s graduation song. An era is ending.`,
+            `So this is it... the last time we'll see ${gradMember.name} in a senbatsu lineup. Let's cherish it.`,
+            `Protect ${gradMember.name} at all costs! Let's give her the best send-off with this single.`
+        ];
+        // Add a couple of different reactions to the feed
+        newPosts.push({ type: 'sad', text: gradReactions.sort(() => 0.5 - Math.random())[0] });
+        newPosts.push({ type: 'sad', text: gradReactions.sort(() => 0.5 - Math.random())[1] });
+    }
+}
+
+// 4. Generic Song reactions
+const genericReactions = [
+    `The new song #${newSingle.name} sounds amazing! Can't wait for the MV.`,
+    `Hmm, the lineup for #${newSingle.name} is... interesting. Let's see how this works out.`,
+    `Just heard the preview for #${newSingle.name}, and it's on repeat already!`,
+    `Another single already? They're working hard! #IdolLife`
+];
+newPosts.push({
+    type: 'neutral',
+    text: genericReactions[Math.floor(Math.random() * genericReactions.length)]
+});
+
+// --- NEW SINGLE-SPECIFIC REACTIONS ---
+
+// 5. Visual Overload
+const avgVisual = senbatsuMembers.reduce((sum, m) => sum + (m.visual || 0), 0) / (senbatsuMembers.length || 1);
+if (avgVisual > 85) {
+    const visualReactions = [
+        `This senbatsu is a VISUAL EXPLOSION! Every single member is a goddess. My eyes have been blessed. #SenbatsuGods`,
+        `How is it possible for one group to have so many top-tier visuals? This lineup is insane.`,
+        `My wallet is already crying because I know I'm going to buy all the photosets for this single. The visuals are off the charts.`
+    ];
+    newPosts.push({
+        type: 'happy',
+        text: visualReactions[Math.floor(Math.random() * visualReactions.length)]
+    });
+}
+
+// 6. Weak Lineup
+const avgFans = senbatsuMembers.reduce((sum, m) => sum + getTotalFansForMember(m), 0) / (senbatsuMembers.length || 1);
+if (avgFans < 5000 && senbatsuMembers.length > 5) {
+    const weakLineupReactions = [
+        `I don't know half of these girls in the senbatsu... Are they trying to kill the group's sales? Where are the aces? #ManagementPlease`,
+        `This has to be the weakest senbatsu lineup I've ever seen. What happened to the popular members?`,
+        `Is this a senbatsu or a charity event for trainees? I'm so confused by these choices.`,
+        `Be serious… WHO is this lineup even for?`,
+        `I genuinely thought this was a joke lineup at first.`,
+        `This senbatsu has no presence, no star power, no direction.`,
+        `Not a single member here makes me want to preorder.`,
+        `This looks like a B-side lineup, not a title track senbatsu.`,
+        `Where are the faces of the group? Why does this feel so random?`,
+        `I’m trying to be open-minded but this lineup is not convincing me at all.`,
+        `This is what happens when management ignores popularity and fan support.`,
+        `No aces, no pull, no hype. What were they thinking?`,
+        `I’ve never felt less excited for a single in my life.`,
+        `This lineup feels experimental in the worst way possible.`,
+        `Tell me this wouldn’t flop without telling me this would flop.`    
+    ];
+    newPosts.push({
+        type: 'angry',
+        text: weakLineupReactions[Math.floor(Math.random() * weakLineupReactions.length)]
+    });
+}
+    
+// 7. MV Screentime Complaint (30% chance for one member)
+const nonCenterMembers = senbatsuMembers.filter(m => !centerIds.has(String(m.rosterId || m.id)));
+if (nonCenterMembers.length > 0 && Math.random() < 0.3) {
+    const unluckyMember = nonCenterMembers[Math.floor(Math.random() * nonCenterMembers.length)];
+    const screentimeComplaints = [
+        `I blinked and I missed ${unluckyMember.name} in the new MV. She got 1.5 seconds of screentime. Unbelievable. #More${unluckyMember.name.replace(/\s/g, '')}`,
+        `Did the camera operator forget ${unluckyMember.name} exists? So frustrating.`,
+        `Rewatching the MV for the 5th time just to find ${unluckyMember.name}. Found her for a total of 2 seconds in the background. #JusticeFor${unluckyMember.name.replace(/\s/g, '')}`
+    ];
+    newPosts.push({
+        type: 'sad',
+        text: screentimeComplaints[Math.floor(Math.random() * screentimeComplaints.length)]
+    });
+}
+
+// 8. God-Tier B-Side Praise (25% chance)
+const bSideTracks = newSingle.tracks.filter(t => t.type === 'b-side');
+if (bSideTracks.length > 0 && Math.random() < 0.25) {
+    const praisedBSide = bSideTracks[Math.floor(Math.random() * bSideTracks.length)];
+    const bsidePraises = [
+        `Unpopular opinion: '${praisedBSide.name}' is the real A-side of this single. It's a masterpiece! Give the B-side unit an MV!`,
+        `Okay but can we talk about how good '${praisedBSide.name}' is? The unit's vibe is perfect.`,
+        `The B-Side '${praisedBSide.name}' is on another level. I hope they perform it live.`
+        `No because '${praisedBSide.name}' cleared the title track so easily.`,
+        `'${praisedBSide.name}' deserved the budget, the MV, and the promotions.`,
+        `Be honest… you're replaying '${praisedBSide.name}' more than the A-side.`,
+        `The way '${praisedBSide.name}' instantly became my favorite track.`,
+        `If '${praisedBSide.name}' was the A-side, this era would hit different.`,
+        `That B-side unit understood the assignment. '${praisedBSide.name}' ate.`,
+        `I'm sorry but '${praisedBSide.name}' is the song everyone will remember.`,
+        `They really hid the best song as a B-side again… '${praisedBSide.name}'.`,
+        `Need a live performance, dance practice, AND unit content for '${praisedBSide.name}'.`,
+        `The production, the vocals, the vibe… '${praisedBSide.name}' is THAT song.`,
+        `Why does the B-side unit have more chemistry than the senbatsu? '${praisedBSide.name}'.`,
+        `I fear '${praisedBSide.name}' just became a fandom classic.`
+    ];
+    newPosts.push({
+        type: 'happy',
+        text: bsidePraises[Math.floor(Math.random() * bsidePraises.length)]
+    });
+}
+
+// 9. Double Center
+if (centerIds.size === 2) {
+    const centers = senbatsuMembers.filter(m => centerIds.has(String(m.rosterId || m.id)));
+    if (centers.length === 2) {
+        const doubleCenterPraises = [
+            `A W-Center with ${centers[0].name} and ${centers[1].name}?! The chemistry is going to be insane! Best decision ever! #WCenter`,
+            `${centers[0].name} AND ${centers[1].name} as centers? This is the power duo we've been asking for!`,
+            `The synergy between ${centers[0].name} and ${centers[1].name} is going to carry this single. A brilliant choice for W-Center.`
+        ];
+        newPosts.push({
+            type: 'happy',
+            text: doubleCenterPraises[Math.floor(Math.random() * doubleCenterPraises.length)]
+        });
+    }
+}
+
+// 10. Solo Song Celebration
+const soloTrack = bSideTracks.find(t => t.members.length === 1);
+if (soloTrack) {
+    const soloMember = soloTrack.members[0];
+    if (soloMember) {
+        const soloSongPraises = [
+            `${soloMember.name} has her own SOLO SONG on the new single! I'm literally crying right now. We're finally getting to hear her voice properly!`,
+            `A solo for ${soloMember.name}!!! This is not a drill! She's finally getting the recognition she deserves.`,
+            `The world is not ready for ${soloMember.name}'s solo song. Her vocals are going to heal the nation.`
+        ];
+        newPosts.push({
+            type: 'happy',
+            text: soloSongPraises[Math.floor(Math.random() * soloSongPraises.length)]
+        });
+    }
+}
+// NEW: Election Single Hype
+if (newSingle.isElectionSingle) {
+    const electionReactions = [
+        `It's an election single! Time to start saving up to vote for my oshi! Let's get her to #1! #${newSingle.name} #SenbatsuElection`,
+        `Every copy of "${newSingle.name}" comes with a voting ticket. You know what to do, fans!`,
+        `The road to the General Election starts NOW. This is the most important single of the year.`,
+        `Already pre-ordered 10 copies. My vote is for ${senbatsuMembers[0]?.name || 'the center'}!`,
+        `Election season is here! Good luck to all the girls. May the best oshi win!`,
+        `Can't wait to see the appeal videos. The election single is always so exciting.`
+    ];
+    newPosts.push({ type: 'happy', text: electionReactions[Math.floor(Math.random() * electionReactions.length)] });
+}
+// 11. MV Concept Review
+if (newSingle.production?.mv === 'storyline' || newSingle.production?.mv === 'cinematic') {
+    const mvConceptReactions = [
+        `The storyline for the #${newSingle.name} MV is so emotional and beautiful. I actually teared up a little. 10/10 production.`,
+        `This MV feels like a short film. The production quality is top-tier.`,
+        `I love it when they do story-driven MVs. It adds so much depth to the song #${newSingle.name}.`
+    ];
+    newPosts.push({
+        type: 'neutral',
+        text: mvConceptReactions[Math.floor(Math.random() * mvConceptReactions.length)]
+    });
+}
+
+// 12. Costume Criticism
+if (newSingle.production?.outfits === 'existing') {
+    const costumeCritiques = [
+        `Are they seriously re-using old outfits for the title track? Management is getting so cheap. My girls deserve better. #GiveThemNewCostumes`,
+        `Wait, aren't those the costumes from two singles ago? Come on...`,
+        `Love the song, but I'm so disappointed they're using old outfits again. It just feels lazy.`
+    ];
+    newPosts.push({
+        type: 'angry',
+        text: costumeCritiques[Math.floor(Math.random() * costumeCritiques.length)]
+    });
+}
+
+// 13. Kennin Support Post
+const kenninMemberInSenbatsu = senbatsuMembers.find(m => (m.kenninGroups && m.kenninGroups.length > 0) || m.isExchangeStudent);
+if (kenninMemberInSenbatsu) {
+    const kenninSupportPosts = [
+        `So proud of ${kenninMemberInSenbatsu.name} for making it into the main group's senbatsu! Go represent ${kenninMemberInSenbatsu.homeGroup} well!`,
+        `YES! ${kenninMemberInSenbatsu.name} made it! Kennin members have to work twice as hard. So well deserved.`,
+        `Seeing ${kenninMemberInSenbatsu.name} in the lineup gives me hope for more crossover between groups.`
+    ];
+    newPosts.push({
+        type: 'happy',
+        text: kenninSupportPosts[Math.floor(Math.random() * kenninSupportPosts.length)]
+    });
+}
+
+// 14. Generational Shift
+const latestGenString = allMembers.length > 0 ? Math.max(...allMembers.map(m => parseInt(m.generation, 10) || 0)) + "th Generation" : "1st Generation";
+const newGenInSenbatsu = senbatsuMembers.filter(m => m.generation === latestGenString).length;
+if (newGenInSenbatsu > senbatsuMembers.length / 2 && senbatsuMembers.length > 3) {
+    const genShiftObservations = [
+        `Looking at this senbatsu... it's all new faces. I miss the old guard. Guess it's the start of a new era, for better or worse.`,
+        `Wow, the next generation is really taking over with this lineup. The group's future is in their hands now.`,
+        `So many fresh faces in senbatsu for #${newSingle.name}. It feels a little strange not seeing some of the classic members, but I'm excited for the change.`
+    ];
+    newPosts.push({
+        type: 'neutral',
+        text: genShiftObservations[Math.floor(Math.random() * genShiftObservations.length)]
+    });
+}
+
+    // Add posts to state, keeping the list from getting too long
+    setFanPosts(prev => [...newPosts.map(p => ({...p, week, id: Date.now() + Math.random()})), ...prev].slice(0, 100));
+};
+    
+    const generateGraduationAnnouncementFanPosts = (member) => {
+        if (!member) return;
+
+        const newPosts = [];
+        const announcementReactions = [
+            `I'm in shock... ${member.name} just announced her graduation.`,
+            `No, no, no. Not ${member.name}. Please say this is a prank.`,
+            `The livestream just ended with ${member.name} announcing her graduation. My heart is broken. #ThankYou${member.name.replace(/\s/g, '')}`,
+            `An era is officially over. We'll miss you, ${member.name}. Thank you for everything.`,
+            `I can't stop crying. ${member.name} was the reason I started following this group.`,
+            `Everyone is posting about ${member.name}... I can't believe it's real.`,
+            `The timeline is a mess right now. Everyone is so sad about ${member.name}.`,
+            `I feel like someone punched me in the chest. ${member.name} graduating hurts BAD.`,
+            `I don't even know what to say. Thank you for everything, ${member.name}.`,
+            `This doesn’t feel real yet. Seeing ${member.name} say goodbye broke me.`,
+            `She gave us so much and now we have to let her go… ${member.name}.`,
+            `I knew this day would come but I was never ready for ${member.name}.`,
+            `How am I supposed to watch old performances knowing this?`,
+            `The group will never feel the same without ${member.name}.`,
+            `I grew up with ${member.name} in this group. This hurts on another level.`,
+            `Her smile, her effort, her presence… thank you for everything.`,
+            `Logging off because I cannot process ${member.name} graduating right now.`,
+            `If you ever doubted how loved she is, look at the timeline. Thank you ${member.name}.`        
+        ];
+
+        const shuffled = announcementReactions.sort(() => 0.5 - Math.random());
+        newPosts.push({ type: 'sad', text: shuffled[0], week: week, id: Date.now() + Math.random() });
+        newPosts.push({ type: 'sad', text: shuffled[1], week: week, id: Date.now() + Math.random() });
+        if (shuffled.length > 2) {
+           newPosts.push({ type: 'sad', text: shuffled[2], week: week, id: Date.now() + Math.random() });
+        }
+        
+        setFanPosts(prev => [...newPosts, ...prev].slice(0, 100));
+    };
 
     const executeSongRelease = (singleToRelease, initialMembers, initialSisterGroups, initialSongs, rivalGroups, initialExchangeStudents) => {
         if (!singleToRelease || !singleToRelease.songData || !singleToRelease.songData.tracks) {
@@ -5693,7 +6483,9 @@ if (rookieStreakMembers.length > 0) {
                 result: 'Success' 
             };
         }
-        
+    // --- FAN POST GENERATION ---
+    generateSenbatsuFanPosts(newSong, previousSingle, fullRoster);
+    // --- END FAN POST GENERATION ---
         const releaseMessage = `RELEASED: \"${songData.name}\"! It will begin charting next week. Initial Hype: +${newFansTotal.toLocaleString()} fans.`;
         addNotification({ type: 'success', message: releaseMessage });
         
@@ -7720,6 +8512,8 @@ const runAnnualAwards = () => {
     // --- Data Collection ---
     const allMembers = getMainGroupRoster();
     const allSongs = [...songs, ...sisterGroups.flatMap(sg => sg.songs || [])];
+    let bestPictureWinner = null;
+    let bestActressWinner = null;
 
     // --- Award 1: Rookie of the Year ---
     const MIN_FANS_FOR_ROOKIE = 1000;
@@ -7817,6 +8611,8 @@ const runAnnualAwards = () => {
         rookieOfTheYear: rookieWinner,
         songOfTheYear: songWinner,
         idolOfTheYear: idolWinner,
+        bestPicture: bestPictureWinner,
+        bestActress: bestActressWinner
     };
 
     setAnnualAwardsHistory(prev => [historyEntry, ...prev]);
@@ -7945,7 +8741,7 @@ setPerformanceHistory(prev => [kouhakuPerformanceForHistory, ...prev]);
         const newWeek = week + 1;
 
 // --- ANNUAL AWARDS EVENT ---
-if ((newWeek - 1) % 52 === 49) { // Trigger at the end of Week 49
+if ((newWeek - 1) % 52 === 45) { // Trigger at the end of Week 45 for Week 46 results
     runAnnualAwards(); // This will show the modal on Week 50
     }
                     
@@ -8847,38 +9643,84 @@ if (result.updatedExchangeStudents) exchangeStudentsForUpdate = result.updatedEx
             const showType = varietyShowTypes[show.type];
             if (!showType) return;
 
-            // Calculate Performance
+            const producer = varietyProducerTiers[show.producerTier || 'rookie'];
+            const writer = varietyWriterTiers[show.writerTier || 'inHouse'];
             const castMembers = show.cast.map(id => getMemberById(id)).filter(Boolean);
             if (castMembers.length === 0) return;
 
+            // --- 1. Calculate Core Performance ---
+            const writerStatBonus = writer.statBonus || 0;
             const avgCoreStat = castMembers.reduce((sum, member) => {
-                return sum + showType.coreStats.reduce((statSum, stat) => statSum + (member[stat] || 0), 0);
+                return sum + showType.coreStats.reduce((statSum, stat) => {
+                    let statValue = member[stat] || 0;
+                    if ((stat === 'variety' || stat === 'intelligence') && writerStatBonus > 0) {
+                        statValue *= (1 + writerStatBonus);
+                    }
+                    return statSum + statValue;
+                }, 0);
             }, 0) / (castMembers.length * showType.coreStats.length);
-
-            const quality = (avgCoreStat * 0.7) + ((varietyStudio.level * 10) * 0.3); // 70% stats, 30% studio level
-            const stalenessPenalty = 1 - (show.staleness / 150); // Max penalty of ~66%
+            
+            const quality = (avgCoreStat * 0.7) + ((varietyStudio.level * 10) * 0.3);
+            const stalenessReduction = writer.stalenessReduction || 0;
+            const stalenessPenalty = 1 - ((show.staleness * (1 - stalenessReduction)) / 150);
             const weeklyPerformance = quality * stalenessPenalty * (0.8 + Math.random() * 0.4);
 
-            // Apply Rewards
             let weeklyMessage = '';
-            if (showType.primaryReward === 'fans') {
-                const fanGain = Math.floor(500 + weeklyPerformance * 100);
-                localDistributeFans(fanGain, show.cast);
-                weeklyMessage = `gained ${fanGain.toLocaleString()} fans.`;
-            } else if (showType.primaryReward === 'conversion') {
-                let converted = 0;
-                castMembers.forEach(member => {
-                    const toConvert = Math.floor((member.fans.casual || 0) * (weeklyPerformance / 1000));
-                    localUpdateMemberState(member.rosterId, m => ({
-                        ...m,
-                        fans: {
-                            hardcore: (m.fans.hardcore || 0) + toConvert,
-                            casual: (m.fans.casual || 0) - toConvert,
-                        }
-                    }));
-                    converted += toConvert;
-                });
-                weeklyMessage = `converted ${converted.toLocaleString()} casual fans to hardcore.`;
+            let weeklyIncome = 0;
+            let fanGain = 0;
+            let popularityChange = 0;
+
+            // --- 2. Check for Critical Events (Hit or Flop) ---
+            const accidentChance = Math.max(0, 0.15 + (producer.accidentModifier || 0));
+            if (Math.random() < accidentChance) { // Flop chance
+                popularityChange = -15;
+                show.popularity = Math.max(0, show.popularity + popularityChange);
+                weeklyMessage = `the episode flopped due to on-air issues! Popularity dropped significantly.`;
+                addNotificationInLoop({ type: 'alert', message: `An on-air accident during "${show.name}" caused the episode to flop!` });
+
+            } else if (weeklyPerformance > 90) { // Viral Hit chance
+                popularityChange = 20;
+                show.popularity = Math.min(100, show.popularity + popularityChange);
+                // Fan gain for viral hits is based on the show's NEW popularity
+                fanGain = Math.floor(10000 + show.popularity * 500);
+                weeklyMessage = `the episode went viral! Gained a massive ${fanGain.toLocaleString()} fans and a huge popularity boost!`;
+                addNotificationInLoop({ type: 'success', message: `"${show.name}" went viral this week!` });
+
+            } else { // --- 3. Standard Weekly Outcome ---
+                popularityChange = (weeklyPerformance - 55) / 5; // -1 to +9 popularity change
+                show.popularity = Math.max(0, Math.min(100, show.popularity + popularityChange));
+                
+                // Standard fan gain/conversion is based on the show's current popularity
+                const fanGainBonus = producer.fanGainBonus || 0;
+                if (showType.primaryReward === 'fans') {
+                    fanGain = Math.floor((500 + show.popularity * 100) * (1 + fanGainBonus));
+                    weeklyMessage = `gained ${fanGain.toLocaleString()} fans.`;
+                } else if (showType.primaryReward === 'conversion') {
+                    const conversionBonus = writer.conversionBonus || 0;
+                    let converted = 0;
+                    castMembers.forEach(member => {
+                        const toConvert = Math.floor((member.fans.casual || 0) * ((show.popularity / 1500) * (1 + conversionBonus)));
+                        localUpdateMemberState(member.rosterId, m => ({
+                            ...m,
+                            fans: {
+                                hardcore: (m.fans.hardcore || 0) + toConvert,
+                                casual: Math.max(0, (m.fans.casual || 0) - toConvert),
+                            }
+                        }));
+                        converted += toConvert;
+                    });
+                    weeklyMessage = `converted ${converted.toLocaleString()} casual fans to hardcore.`;
+                }
+            }
+
+            if(fanGain > 0) {
+                 localDistributeFans(fanGain, show.cast);
+            }
+            // --- NEW: Calculate Weekly Income ---
+            if (show.popularity > 20) { // Only shows with some popularity generate income
+                weeklyIncome = Math.floor(show.popularity * 100 + (varietyStudio.level * 5000));
+                totalWeeklyIncome += weeklyIncome;
+                show.income = weeklyIncome; // Store it on the show object for UI display
             }
 
             // Apply Secondary Rewards
@@ -8892,11 +9734,11 @@ if (result.updatedExchangeStudents) exchangeStudentsForUpdate = result.updatedEx
                 });
             }
 
-            // Update Show Stats
-            showsForUpdate[index].staleness += showType.stalenessRate;
-            showsForUpdate[index].popularity = Math.max(0, Math.min(100, show.popularity + (weeklyPerformance - 50) / 10));
+            // Update Show Stats for next week
+            showsForUpdate[index].staleness += showType.stalenessRate * (1 - stalenessReduction);
+            showsForUpdate[index].popularity = show.popularity;
 
-            addNotificationInLoop({ type: 'Variety', message: `"${show.name}" aired and ${weeklyMessage}` });
+            addNotificationInLoop({ type: 'Variety', message: `\"${show.name}\" aired and ${weeklyMessage}` });
 
             // Check for Season End
             if (showsForUpdate[index].weeksAired >= showsForUpdate[index].seasonDuration) {
@@ -8917,14 +9759,77 @@ if (result.updatedExchangeStudents) exchangeStudentsForUpdate = result.updatedEx
 
             if (currentProject.status === 'filming') {
                 const newWeeksLeft = currentProject.weeksLeft - 1;
-                if (newWeeksLeft <= 0) {
-                    // FILMING IS COMPLETE, TRANSITION TO AIRING
-                    const projectType = filmProjectTypes[currentProject.type];
-                    const allCastIds = [...currentProject.cast.lead, ...currentProject.cast.supporting, ...currentProject.cast.general];
+
+                // --- On-Set Events ---
+                if (Math.random() < 0.15) { // 15% chance of an event each week
+                    const leadCast = currentProject.cast.lead.map(id => getMemberById(id)).filter(Boolean);
+                    if (leadCast.length > 0) {
+                        const randomMember = leadCast[Math.floor(Math.random() * leadCast.length)];
+                        if (randomMember.variety > 60 && Math.random() < 0.5) {
+                            currentProject.baseCriticalScore += 5;
+                            const eventText = `Brilliant Ad-lib: ${randomMember.name}'s improvisation added a memorable scene. (+5 Critical Score)`;
+                            currentProject.events.push(eventText);
+                            addNotificationInLoop({ type: 'Event', message: eventText });
+                        } else if (randomMember.intelligence < 40 && Math.random() < 0.5) {
+                            currentProject.baseCriticalScore -= 3;
+                            const eventText = `Line Trouble: ${randomMember.name} struggled with their lines, causing delays. (-3 Critical Score)`;
+                            currentProject.events.push(eventText);
+                            addNotificationInLoop({ type: 'Event', message: eventText });
+                        }
+                    }
                     
-                    // Distribute initial rewards (FANS and REP)
-                    localDistributeFans(projectType.rewards.fanGain, allCastIds);
-                    setGroupReputation(prev => prev + projectType.rewards.repGain);
+                    // Chemistry Event
+                    if (leadCast.length > 1) {
+                        const member1 = leadCast[0];
+                        const member2 = leadCast[1];
+                        const chemistry = getChemistry(member1.rosterId, member2.rosterId);
+                        if (chemistry < -20 && Math.random() < 0.3) {
+                            currentProject.baseCriticalScore -= 5;
+                            const eventText = `On-Set Feud: Tensions flared between ${member1.name} and ${member2.name}. (-5 Critical Score)`;
+                            currentProject.events.push(eventText);
+                            addNotificationInLoop({ type: 'Event', message: eventText });
+                            localUpdateMemberState(member1.rosterId, m => ({...m, morale: m.morale - 10}));
+                            localUpdateMemberState(member2.rosterId, m => ({...m, morale: m.morale - 10}));
+                        }
+                    }
+                }
+
+                if (newWeeksLeft <= 0) {
+                    // --- FILMING COMPLETE, CALCULATE SCORES ---
+                    const projectType = filmProjectTypes[currentProject.type];
+                    
+                    // Calculate Critical Score
+                    let criticalScore = currentProject.baseCriticalScore + currentProject.director.qualityBonus;
+                    const leadCast = currentProject.cast.lead.map(id => getMemberById(id)).filter(Boolean);
+                    if (leadCast.length > 0) {
+                        let intelligenceBonus = leadCast.reduce((sum, m) => sum + (m.intelligence || 0), 0) / leadCast.length;
+                        if (currentProject.director.specialEffect === 'doubles_intelligence_bonus') {
+                            intelligenceBonus *= 2;
+                        }
+                        criticalScore += intelligenceBonus / 10; // Add up to 10 points for intelligence
+                    }
+                    currentProject.finalCriticalScore = Math.max(0, Math.min(100, Math.round(criticalScore)));
+
+                    // Calculate Commercial Score
+                    let commercialScore = 60 + (currentProject.commercialScoreBoost || 0); // Base score
+                    if (leadCast.length > 0) {
+                        const charismaBonus = leadCast.reduce((sum, m) => sum + (m.charisma || 0), 0) / leadCast.length;
+                        const fanBonus = leadCast.reduce((sum, m) => sum + getTotalFansForMember(m), 0) / 100000; // 1 point per 100k fans
+                        commercialScore += (charismaBonus / 5) + fanBonus; // Up to 20 points for charisma, unlimited for fans
+                    }
+                    currentProject.finalCommercialScore = Math.max(0, Math.min(100, Math.round(commercialScore)));
+                    
+                    // Apply Rewards based on scores
+                    const fanMultiplier = currentProject.finalCommercialScore / 75; // 75 is the 'average' score
+                    const repMultiplier = currentProject.finalCriticalScore / 75;
+                    
+                    const finalFanGain = Math.floor(projectType.rewards.fanGain * fanMultiplier);
+                    const finalRepGain = Math.round(projectType.rewards.repGain * repMultiplier);
+
+                    const allCastIds = [...currentProject.cast.lead, ...currentProject.cast.supporting, ...currentProject.cast.general];
+
+                    localDistributeFans(finalFanGain, allCastIds);
+                    setGroupReputation(prev => prev + finalRepGain);
 
                     // Make cast available again
                     allCastIds.forEach(memberId => {
@@ -8937,32 +9842,82 @@ if (result.updatedExchangeStudents) exchangeStudentsForUpdate = result.updatedEx
                         }));
                     });
                     
-                    addNotificationInLoop({ type: 'Success', message: `Filming for "${currentProject.title}" has wrapped! It will now begin its run, generating weekly revenue.` });
+                    addNotificationInLoop({ type: 'Success', message: `Filming for "${currentProject.title}" has wrapped! It scored ${currentProject.finalCriticalScore} with critics and ${currentProject.finalCommercialScore} commercially.` });
 
                     // Transition the project to the 'airing' phase
                     currentProject.status = 'airing';
                     currentProject.weeksLeft = projectType.airingDuration;
+
                 } else {
                     currentProject.weeksLeft = newWeeksLeft;
                 }
+
             } else if (currentProject.status === 'airing') {
                 const projectType = filmProjectTypes[currentProject.type];
-                const leadCast = currentProject.cast.lead.map(id => getMemberById(id)).filter(Boolean);
-                const avgLeadCharisma = leadCast.reduce((sum, m) => sum + (m.charisma || 0), 0) / (leadCast.length || 1);
-                
-                // Calculate weekly revenue
-                const revenue = Math.floor(projectType.weeklyRevenue * (1 + avgLeadCharisma / 200));
+                const revenueMultiplier = currentProject.finalCommercialScore / 75;
+                const revenue = Math.floor(projectType.weeklyRevenue * revenueMultiplier);
                 totalWeeklyIncome += revenue;
                 incomeBreakdown.push(`${currentProject.title}: ¥${revenue.toLocaleString()}`);
 
-                // Decrement airing time
                 currentProject.weeksLeft -= 1;
+                if (currentProject.weeksLeft <= 0) {
+                    currentProject.status = 'completed';
+                    currentProject.completedWeek = week;
+                }
             }
-            
+
             return currentProject;
-        }).filter(p => p.weeksLeft > 0); // Finally, remove any projects whose airing duration has ended
+        }).filter(p => p.weeksLeft > 0 || p.status === 'filming' || p.status === 'completed'); // Keep filming projects even if weeksLeft hits 0 for one cycle
 
         setFilmProjects(updatedFilmProjects);
+
+        // --- AWARDS SEASON ---
+        const currentDate = getFormattedDateForWeek(week);
+        if (currentDate.includes('December') && currentDate.includes('Week 4')) {
+            const lastYear = parseInt(currentDate.slice(-4)) -1;
+            const filmsThisYear = filmProjects.filter(p => p.completedWeek && p.completedWeek >= startOfWeekYear && p.completedWeek <= week);
+
+
+            const bestPictureNominees = filmsThisYear.filter(p => p.finalCriticalScore > 0);            
+            
+            if (bestPictureNominees.length > 0) {
+                let awardsLog = [];
+                // Best Picture
+                const bestPicture = bestPictureNominees.reduce((max, p) => p.finalCriticalScore > max.finalCriticalScore ? p : max);
+                awardsLog.push({ year: lastYear, award: 'Best Picture', film: bestPicture.title, score: bestPicture.finalCriticalScore });
+                setGroupReputation(prev => prev + 10);
+
+                // Best Actress
+                let bestActress = null;
+                let bestActressScore = -1;
+                bestPictureNominees.forEach(film => {
+                    film.cast.lead.forEach(memberId => {
+                        const member = getMemberById(memberId);
+                        if (member) {
+                            const score = member.intelligence + member.charisma;
+                            if (score > bestActressScore) {
+                                bestActressScore = score;
+                                bestActress = { member, film };
+                            }
+                        }
+                    });
+                });
+
+                if (bestActress) {
+                    awardsLog.push({ year: lastYear, award: 'Best Actress', member: bestActress.member.name, film: bestActress.film.title });
+                    updateMemberState(bestActress.member.rosterId, m => ({
+                        ...m,
+                        charisma: Math.min(100, m.charisma + 5),
+                        fans: { ...m.fans, casual: m.fans.casual + 100000 },
+                        awards: [...(m.awards || []), { year: lastYear, award: 'Best Actress', film: bestActress.film.title }]
+                    }));
+                }
+                
+                setFilmAwardsHistory(prev => [...prev, ...awardsLog]);
+                priorityMessage = `🏆 The ${lastYear} Japan Idol Film Awards results are in! Check the Awards panel for details.`;
+            }
+        }
+
 
         // --- COMMIT DRAFTS FOR THIS SECTION ---
         moneyForUpdate += totalWeeklyIncome;
@@ -9513,6 +10468,7 @@ newStress += chemistryStressEffect;
         setExchangeStudents(exchangeStudentsForUpdate);
         // If a new member is announcing graduation, pause the game to show the modal.
         if (graduatingMember) {
+            generateGraduationAnnouncementFanPosts(graduatingMember);
             setModalData(graduatingMember);
             setShowModal('graduationAnnouncement');
             return;
@@ -10172,9 +11128,13 @@ const startStudyAbroad = (memberId, destinationGroupId) => {
         addNotification({ type: 'Facility', message: msg });
     };
 
-const createVarietyShow = (name, type, castIds) => {
-    const cost = 200000;
-    if (money < cost) {
+const createVarietyShow = (name, type, castIds, producerTier, writerTier) => {
+    const baseCost = 200000;
+    const producerCost = varietyProducerTiers[producerTier].cost;
+    const writerCost = varietyWriterTiers[writerTier].cost;
+    const totalCost = baseCost + producerCost + writerCost;
+
+    if (money < totalCost) {
         setMessage("Not enough money to create a new show.");
         return;
     }
@@ -10184,18 +11144,20 @@ const createVarietyShow = (name, type, castIds) => {
         name,
         type,
         cast: castIds,
+        producerTier,
+        writerTier,
         season: 1,
         isActive: true,
         weeksAired: 0,
         seasonDuration: 12,
-        popularity: 50,
+        popularity: 50 + (varietyProducerTiers[producerTier].popularityBonus || 0),
         staleness: 0,
     };
 
-    setMoney(prev => prev - cost);
+    setMoney(prev => prev - totalCost);
     setVarietyShows(prev => [...prev, newShow]);
-    setMessage(`Started production for new show: "${name}"!`);
-    addNotification({ type: 'Variety', message: `The first season of "${name}" has begun!` });
+    setMessage(`Started production for new show: \"${name}\"!`);
+    addNotification({ type: 'Variety', message: `The first season of \"${name}\" has begun!` });
 };
 
 const renewVarietyShow = (showId) => {
@@ -10275,18 +11237,69 @@ const upgradeFilmStudio = () => {
     setMessage(msg);
     addNotification({ type: 'Facility', message: msg });
 };
+const startFilmPromotion = (projectId, promoType) => {
+    const project = filmProjects.find(p => p.id === projectId);
+    const promo = filmPromotionTypes[promoType];
 
-const startFilmProject = (title, type, cast) => {
-    const projectType = filmProjectTypes[type];
-    if (!projectType) return;
-
-    let cost = projectType.cost;
-    // Apply discount from studio level
-    if (filmStudio.level > 0) {
-        cost *= (1 - (filmStudio.level - 1) * 0.1); // 10% discount per level after 1
+    if (!project || !promo) {
+        return setMessage("Project or promotion type not found.");
     }
 
-    if (money < cost) {
+    if (money < promo.cost) {
+        return setMessage(`Not enough money for this promotion. Cost: ¥${promo.cost.toLocaleString()}`);
+    }
+
+    // Check if this promotion has already been done for this project
+    if ((project.promotionsDone || []).includes(promoType)) {
+        return setMessage(`The "${promo.name}" promotion has already been done for this film.`);
+    }
+
+    setMoney(prev => prev - promo.cost);
+
+    const cast = project.cast.lead.map(id => getMemberById(id)).filter(Boolean);
+    const result = promo.effect(project, cast);
+
+    if (result.fanGain > 0) {
+        // Distribute fans to the lead cast
+        distributeFans(result.fanGain, cast.map(m => m.rosterId));
+    }
+
+    setFilmProjects(prev => prev.map(p => {
+        if (p.id === projectId) {
+            return {
+                ...p,
+                // Add boosts directly to the scores
+                baseCriticalScore: p.baseCriticalScore + (result.criticalBoost || 0),
+                commercialScoreBoost: (p.commercialScoreBoost || 0) + (result.commercialBoost || 0),
+                // Mark promotion as done
+                promotionsDone: [...(p.promotionsDone || []), promoType]
+            };
+        }
+        return p;
+    }));
+
+    addNotification({ type: 'Promotion', message: result.message });
+    // Prepare data for the new modal
+    setModalData({ project, promo, result }); 
+    // Set the showModal state to display our new result modal
+    setShowModal('filmPromotionResult');
+};
+
+
+const startFilmProject = (title, type, cast, scriptTierId, directorTierId) => {
+    const projectType = filmProjectTypes[type];
+    const script = scriptTiers[scriptTierId];
+    const director = directorTiers[directorTierId];
+    if (!projectType || !script || !director) return;
+
+    // Calculate total cost including pre-production
+    const totalCost = projectType.cost + script.cost + director.cost;
+    let finalCost = totalCost;
+    if (filmStudio.level > 0) {
+        finalCost *= (1 - (filmStudio.level - 1) * 0.1); // Apply studio discount to total cost
+    }
+
+    if (money < finalCost) {
         setMessage("Not enough money to start this film project.");
         return;
     }
@@ -10296,13 +11309,20 @@ const startFilmProject = (title, type, cast) => {
         id: `film-${Date.now()}`,
         title,
         type,
-        cast, // { lead: [...], supporting: [...], general: [...] }
+        cast,
+        script,
+        director,
         endWeek,
         weeksLeft: projectType.duration,
         status: 'filming',
+        // Store base quality for later calculation
+        baseCriticalScore: script.quality,
+        events: [],
+        finalCriticalScore: 0,
+        finalCommercialScore: 0,
     };
 
-    setMoney(prev => prev - cost);
+    setMoney(prev => prev - finalCost);
     setFilmProjects(prev => [...prev, newProject]);
     
     // Make cast unavailable and update their history
@@ -10317,7 +11337,6 @@ const startFilmProject = (title, type, cast) => {
             isAvailable: false,
             activityEnd: endWeek,
             currentActivity: `Filming: ${title}`,
-            // THIS IS THE NEW HISTORY LOGIC
             filmHistory: [...(m.filmHistory || []), { week: week, title: title, role: role, projectType: type }],
             teamHistory: [...(m.teamHistory || []), { week: week, event: `Cast as ${role} in "${title}"` }]
         }));
@@ -11339,9 +12358,87 @@ for (const blockName of blockNames) {
                                 if (!hasBeenCenter) {
                                     jankenTrivia.push(`A new star is born! ${winner.name} claims their first-ever center position by winning the Janken tournament.`);
                                 }
-                
+            
                                 // --- END TRIVIA GENERATION ---
-                
+      
+                // --- NEW: Janken Fan Buzz Generation ---
+                const jankenFanPosts = [];
+                const jankenWinner = finalWinner;
+                const jankenSenbatsu = senbatsuRanked;
+
+                // 1. The Winner
+                if (jankenWinner) {
+                    const winnerReactions = [
+                        `I CAN'T BELIEVE IT! ${jankenWinner.name} WON THE JANKEN TOURNAMENT! The ultimate underdog!`,
+                        `The Janken Queen is ${jankenWinner.name}! Who would have predicted this?!`,
+                        `Pure luck and a strong heart! Congrats to ${jankenWinner.name} for the Janken center!`,
+                        `This is what Janken is all about! An unexpected winner! Go ${jankenWinner.name}!`,
+                        `My hands are shaking, ${jankenWinner.name} actually won the whole thing!`
+                    ];
+                    jankenFanPosts.push({ type: 'happy', text: winnerReactions[Math.floor(Math.random() * winnerReactions.length)] });
+                }
+
+                // 2. The Cinderella Story (a low-fan member making it)
+                const cinderella = jankenSenbatsu.find(m => getTotalFansForMember(m) < 50000 && m.rank > 1);
+                if (cinderella) {
+                    const cinderellaReactions = [
+                        `So happy for ${cinderella.name} making it into the Janken senbatsu! This is her chance to shine!`,
+                        `Look at ${cinderella.name} defying the odds! Sometimes all you need is a little luck.`,
+                        `This is why I love Janken. It gives girls like ${cinderella.name} a chance.`,
+                        `A new star is born tonight! Let's all support ${cinderella.name}!`,
+                        `Her reaction when she won her spot was priceless. Congrats ${cinderella.name}!`
+                    ];
+                    jankenFanPosts.push({ type: 'happy', text: cinderellaReactions[Math.floor(Math.random() * cinderellaReactions.length)] });
+                }
+
+                // 3. The Runner-up
+                const runnerUp = jankenSenbatsu.find(m => m.rank === 2);
+                if (runnerUp) {
+                    const runnerUpReactions = [
+                        `So close for ${runnerUp.name}! Being the runner-up in Janken must be the most frustrating feeling.`,
+                        `Aaaah, ${runnerUp.name} was just one win away from center!`,
+                        `My heart breaks for ${runnerUp.name}, but #2 is still an amazing result!`,
+                        `I really thought ${runnerUp.name} had it in the final round. Good fight!`,
+                        `Pouring one out for ${runnerUp.name}. So close, yet so far.`
+                    ];
+                    jankenFanPosts.push({ type: 'sad', text: runnerUpReactions[Math.floor(Math.random() * runnerUpReactions.length)] });
+                }
+
+                // 4. Ace crashing out early
+                const fallenAce = jankenTournament.participants.find(p => {
+                    const memberFanCount = getTotalFansForMember(p);
+                    const wasEliminated = finalElims.some(e => e.loserId === (p.rosterId || p.id));
+                    const notInSenbatsu = !jankenSenbatsu.some(s => (s.rosterId || s.id) === (p.rosterId || p.id));
+                    return memberFanCount > 500000 && wasEliminated && notInSenbatsu;
+                });
+
+                if (fallenAce) {
+                    const fallenAceReactions = [
+                        `Can you believe ${fallenAce.name} got knocked out in the first round?! Janken is brutal.`,
+                        `All that popularity means nothing against the power of rock-paper-scissors. RIP ${fallenAce.name}.`,
+                        `My oshi ${fallenAce.name} is already out... well, there goes my interest in this tournament.`,
+                        `Of course the ace lost early. It's the law of Janken.`,
+                        `Watching ${fallenAce.name} lose to a rookie with a lucky 'paper' is the funniest and saddest thing I've seen all day.`
+                    ];
+                    jankenFanPosts.push({ type: 'sad', text: fallenAceReactions[Math.floor(Math.random() * fallenAceReactions.length)] });
+                }
+
+                // 5. Generic Janken comment
+                const genericReactions = [
+                    `This Janken tournament is a rollercoaster of emotions.`,
+                    `You can't predict anything in Janken, that's the beauty of it.`,
+                    `Some dreams came true and some were crushed. What a day.`,
+                    `I love the Janken tournament, it's always so dramatic.`,
+                    `Time to check the new senbatsu lineup. It's... interesting, to say the least.`
+                ];
+                jankenFanPosts.push({ type: 'neutral', text: genericReactions[Math.floor(Math.random() * genericReactions.length)] });
+
+
+                if (jankenFanPosts.length > 0) {
+                    setFanPosts(prev => [...jankenFanPosts.map(p => ({...p, week, id: Date.now() + Math.random()})), ...prev].slice(0, 100));
+                }
+                // --- END NEW ---
+                                
                 const memberIdToNameMap = new Map(jankenTournament.participants.map(m => [m.id, m.name]));
                 const eliminationMap = new Map(finalElims.map(e => [e.loserId, e]));
                 const senbatsuIds = new Set(senbatsuRanked.map(m => m.id));
@@ -11812,6 +12909,7 @@ const simulateRivalActions = (currentRivals, currentWeek, addNotificationInLoop)
         return newRival;
     });
 
+
     // Chance for a new rival group to appear
     const rivalNames = [
         'Lunar Princesses', 'Project Nova', 'Sapphire Kiss', 'Onyx7', 'Solstice', 
@@ -12140,7 +13238,7 @@ const memberFans = isAce ? rival.ace.fans : 100000 + Math.floor(Math.random() * 
     
 return {
     // State
-    filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
+    fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm, setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
     // Firebase/Persistence
     getSavedGames, saveGame, loadGame,
     // Utilities
