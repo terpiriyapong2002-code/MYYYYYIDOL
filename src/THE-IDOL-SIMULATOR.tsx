@@ -592,12 +592,12 @@ const CustomSetlistModal = () => {
                                   </td>
                                   <td className="p-2 font-medium">{c.name}</td>
                                   <td className="p-2">{c.hometown}</td>
-                                  <td className="p-2">{c.vocal}</td>
-                                  <td className="p-2">{c.dance}</td>
-                                  <td className="p-2">{c.visual}</td>
-                                  <td className="p-2">{c.charisma}</td>
-                                  <td className="p-2">{c.intelligence}</td>
-                                  <td className="p-2 font-bold text-blue-600 dark:text-blue-400">{c.potential}</td>
+                                    <td className="p-2">{Math.round(c.vocal)}</td>
+                                    <td className="p-2">{Math.round(c.dance)}</td>
+                                    <td className="p-2">{Math.round(c.visual)}</td>
+                                    <td className="p-2">{Math.round(c.charisma)}</td>
+                                    <td className="p-2">{Math.round(c.intelligence)}</td>
+                                    <td className="p-2 font-bold text-blue-600 dark:text-blue-400">{Math.round(c.potential)}</td>
                                   <td className="p-2">{c.personality}</td>
                               </tr>
                           ))}
@@ -1828,10 +1828,10 @@ if (memberFilter !== 'all') {
         return false;
     });
 
-    if (showOnlyUnchosen) {
-        const allChosenMemberIds = new Set(tracks.flatMap(t => t.members.map(String)));
-        visibleRoster = visibleRoster.filter(member => !allChosenMemberIds.has(String(member.id)));
-    }
+if (showOnlyUnchosen) {
+    const allChosenMemberIds = new Set(tracks.flatMap(t => t.members.map(String)));
+    visibleRoster = visibleRoster.filter(member => !allChosenMemberIds.has(String(member.rosterId)));
+}
 
     const handleToggleSelectAllFiltered = () => {
         if (!currentTrack) return;
@@ -2017,9 +2017,9 @@ const handleSchedule = () => {
 
     const PyramidVisualization = ({ lineup, members, center, activeDragId }) => {
         const DraggableChip = memo(({ member }) => {
-            const { attributes, listeners, setNodeRef } = useDraggable({ id: member.id });
+            const { attributes, listeners, setNodeRef } = useDraggable({ id: member.rosterId });
             return (
-                <div ref={setNodeRef} {...listeners} {...attributes} style={{ touchAction: 'none' }} className={`p-1 rounded text-center cursor-grab transition-all duration-200 ${(center || []).includes(String(member.id)) ? 'bg-yellow-400 text-black ring-2 ring-yellow-200' : 'bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-100'}`}>
+                <div ref={setNodeRef} {...listeners} {...attributes} style={{ touchAction: 'none' }} className={`p-1 rounded text-center cursor-grab transition-all duration-200 ${(center || []).includes(String(member.rosterId)) ? 'bg-yellow-400 text-black ring-2 ring-yellow-200' : 'bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-100'}`}>
                     <div className="flex flex-col items-center leading-tight" style={{ userSelect: 'none' }}>
                         <span className="font-semibold text-[11px]">{member.nickname || member.name.split(' ')[0]}</span>
                         <span className="text-[10px] text-gray-600 dark:text-gray-400">Vo:{Math.round(member.singing)} Da:{Math.round(member.dancing)} Vi.{Math.round(member.visual)}</span>
@@ -2094,7 +2094,7 @@ const handleGraduatingMemberConfirm = (member) => {
 
     // Pre-configure the tracks for a graduation single
     setTracks([
-        { name: gradSongName, unitName: 'Senbatsu', type: 'title', members: [String(member.id)], center: [String(member.id)], lineup: { [String(member.id)]: '1st Row' } },
+        { name: gradSongName, unitName: 'Senbatsu', type: 'title', members: [String(member.rosterId)], center: [String(member.rosterId)], lineup: { [String(member.rosterId)]: '1st Row' } },
         { name: 'Common B-Side', unitName: 'Universe Girls', type: 'b-side', members: [], center: null, lineup: {}, cdType: 'common' }
     ]);
 
@@ -2419,7 +2419,14 @@ const renderSelectGraduatingMemberStep = () => {
         const renderAlbumSelectionStep = () => {
             const currentTrack = albumTracks[selectedAlbumTrackIndex];
             const selectableSenbatsu = selectableMembers.filter(m => (currentTrack?.members || []).map(String).includes(String(m.rosterId)));
-
+            const rowOrder = { '1st Row': 1, '2nd Row': 2, '3rd Row': 3, '4th Row': 4, '5th Row': 5 };
+            if(currentTrack && currentTrack.lineup) {
+                selectableSenbatsu.sort((a, b) => {
+                    const rowA = rowOrder[currentTrack.lineup[String(a.rosterId)]] || 6;
+                    const rowB = rowOrder[currentTrack.lineup[String(b.rosterId)]] || 6;
+                    return rowA - rowB;
+                });
+            }
             return (
             <>
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -3748,9 +3755,9 @@ if (memberFilter !== 'all') {
                             <div key={member.rosterId} className={`flex items-center justify-between p-2 rounded ${selectedMembers.includes(member.id) ? 'bg-blue-200 dark:bg-blue-800' : 'bg-white dark:bg-gray-800/50'}`}>
                                 <div>
                                     <p className="font-semibold text-sm">{member.name}</p>
-                                    <p className="text-xs text-gray-600 dark:text-gray-400">
-                                        Vo: {member.singing} Da: {member.dancing} Va: {member.variety} Fans: {getTotalFansForMember(member).toLocaleString()}
-                                    </p>
+<p className="text-xs text-gray-600 dark:text-gray-400">
+    Vo: {Math.round(member.singing)} Da: {Math.round(member.dancing)} Va: {Math.round(member.variety)} Fans: {getTotalFansForMember(member).toLocaleString()}
+</p>
                                 </div>
                                 <button onClick={() => toggleMember(member.rosterId)} className={`px-3 py-1 text-xs rounded font-semibold ${selectedMembers.includes(member.rosterId) ? 'bg-red-200 text-red-800' : 'bg-green-200 text-green-800'}`}>
                                     {selectedMembers.includes(member.rosterId) ? 'Remove' : 'Add'}
@@ -4433,10 +4440,10 @@ const randomizeSetlist = (count = 16) => {
                         <div className="p-3 mt-4 rounded-lg bg-white/20 text-xs backdrop-blur-sm border border-white/30">
                             <h4 className="font-bold text-center text-pink-900/80 mb-2">Performance Breakdown</h4>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-center">
-                                <div><p className="font-bold text-blue-600 text-lg">{performanceStats.singing.toFixed(1)}</p><p className="text-pink-900/70">Avg. Vocal</p></div>
-                                <div><p className="font-bold text-green-600 text-lg">{performanceStats.dancing.toFixed(1)}</p><p className="text-pink-900/70">Avg. Dance</p></div>
-                                <div><p className="font-bold text-cyan-500 text-lg">{performanceStats.visual.toFixed(1)}</p><p className="text-pink-900/70">Avg. Visual</p></div>
-                                <div><p className="font-bold text-rose-500 text-lg">{performanceStats.charisma.toFixed(1)}</p><p className="text-pink-900/70">Avg. Charisma</p></div>
+                                <div><p className="font-bold text-blue-600 text-lg">{Math.round(performanceStats.singing)}</p><p className="text-pink-900/70">Avg. Vocal</p></div>
+                                <div><p className="font-bold text-green-600 text-lg">{Math.round(performanceStats.dancing)}</p><p className="text-pink-900/70">Avg. Dance</p></div>
+                                <div><p className="font-bold text-cyan-500 text-lg">{Math.round(performanceStats.visual)}</p><p className="text-pink-900/70">Avg. Visual</p></div>
+                                <div><p className="font-bold text-rose-500 text-lg">{Math.round(performanceStats.charisma)}</p><p className="text-pink-900/70">Avg. Charisma</p></div>
                             </div>
                         </div>
                     )}
@@ -4860,7 +4867,7 @@ const ShuffleResultModal = () => {
             );
         };
 
-        const selectAll = () => setSelectedMemberIds(availableMembers.map(m => m.id));
+        const selectAll = () => setSelectedMemberIds(availableMembers.map(m => m.rosterId));
         const deselectAll = () => setSelectedMemberIds([]);
 
         const handleConfirm = () => {
@@ -4876,7 +4883,7 @@ const ShuffleResultModal = () => {
                 </div>
                 <div className="space-y-1 max-h-[400px] overflow-y-auto border-t border-b dark:border-gray-700 p-1 mb-4">
                     {availableMembers.map(member => (
-                        <div key={member.rosterId} className={`flex items-center justify-between p-2 rounded cursor-pointer ${selectedMemberIds.includes(member.id) ? 'bg-blue-100 dark:bg-blue-800' : 'bg-white dark:bg-gray-700/50 hover:bg-gray-50'}`} onClick={() => toggleMember(member.id)}>
+                        <div key={member.rosterId} className={`flex items-center justify-between p-2 rounded cursor-pointer ${selectedMemberIds.includes(member.id) ? 'bg-blue-100 dark:bg-blue-800' : 'bg-white dark:bg-gray-700/50 hover:bg-gray-50'}`} onClick={() => toggleMember(member.rosterId)}>
                             <div>
                                 <p className="font-semibold text-sm">{member.name}</p>
                                 <p className="text-xs text-gray-500 dark:text-gray-400">Fans: {getTotalFansForMember(member).toLocaleString()}</p>
@@ -4895,115 +4902,65 @@ const ShuffleResultModal = () => {
         );
     };
 
-    const HandshakeEventResultModal = () => {
-        if (!modalData) return null;
-        const { convertedFans, newFans, members } = modalData;
-        const containerRef = useRef(null);
+const HandshakeEventResultModal = () => {
+    if (!modalData) return null;
+    const { handshakeResults } = modalData;
 
-        // A simple, reusable chibi character component for the modal
-        const Chibi = ({ index }) => {
-            return (
-                <div className="relative flex flex-col items-center chibi-bounce" style={{ animationDelay: `${index * 0.15}s` }}>
-                    <div className="relative w-20 h-28">
-                        {/* Hair */}
-                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-20 rounded-full bg-[#ff99c8]"></div>
-                        {/* Face */}
-                        <div className="absolute top-6 left-1/2 -translate-x-1/2 w-16 h-16 rounded-full bg-[#ffdab9]"></div>
-                        {/* Hair highlight */}
-                        <div className="absolute top-2 left-8 w-6 h-4 rounded-full bg-white/60" style={{transform: 'rotate(-30deg)'}}></div>
-                        {/* Dress */}
-                        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-8 bg-pink-300 rounded-t-lg"></div>
-                    </div>
-                </div>
-            );
-        };
+    if (!handshakeResults) {
+         const { convertedFans, newFans, members } = modalData;
+         // Fallback for old modal data structure
+         return (
+             <ModalWrapper title="Handshake Event Success!">
+                 <p>Converted {convertedFans.toLocaleString()} fans to hardcore supporters.</p>
+                 <p>Gained {newFans.toLocaleString()} new fans.</p>
+                 <p>Participating members: {members.map(m => m.name).join(', ')}</p>
+             </ModalWrapper>
+         )
+    }
 
-        // This effect creates the floating hearts and sparkles
-        useEffect(() => {
-            const container = containerRef.current;
-            if (!container) return;
+    const { singleName, round, results } = handshakeResults;
 
-            const createParticle = (emoji, className) => {
-                const particle = document.createElement('div');
-                particle.innerHTML = emoji;
-                particle.className = `absolute bottom-0 pointer-events-none text-2xl ${className}`;
-                particle.style.left = `${Math.random() * 100}%`;
-                particle.style.animationDuration = `${Math.random() * 2 + 3}s`;
-                particle.style.opacity = `${Math.random()}`;
-                container.appendChild(particle);
-                setTimeout(() => particle.remove(), 5000);
-            };
-            
-            const heartInterval = setInterval(() => createParticle('❤️', 'heart-float'), 300);
-            const sparkleInterval = setInterval(() => createParticle('✨', 'sparkle-float'), 450);
-
-            return () => {
-                clearInterval(heartInterval);
-                clearInterval(sparkleInterval);
-            };
-        }, []);
-
-        return (
-            <div ref={containerRef} className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in overflow-hidden">
-                <div className="w-full max-w-xl rounded-3xl bg-gradient-to-br from-pink-300/80 to-purple-300/60 border-2 border-white/50 shadow-2xl p-6 text-center text-white relative animate-in fade-in slide-in-from-bottom-5">
-                    
-                    <h2 className="text-4xl font-bold text-white drop-shadow-lg mb-2" style={{ fontFamily: 'Mochiy Pop One, sans-serif', textShadow: '2px 2px 8px rgba(236, 72, 153, 0.8)'}}>
-                        HANDSHAKE SUCCESS!
+    return (
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in">
+            <div className="w-full max-w-2xl rounded-2xl bg-gradient-to-br from-pink-200/80 to-purple-200/70 backdrop-blur-xl border-2 border-white/50 shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-5 text-gray-800">
+                <div className="p-4 text-center border-b-2 border-white/50">
+                    <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500 drop-shadow-sm" style={{ fontFamily: "'Mochiy Pop One', sans-serif" }}>
+                        {singleName}
                     </h2>
-                    <p className="text-white/80 mb-6">The fans absolutely loved the event!</p>
-                    
-                    <div className="flex justify-center items-end gap-4 my-6 h-32">
-                        {(members || []).slice(0, 5).map((member, index) => (
-                            <Chibi key={member.rosterId} index={index} />
-                        ))}
-                    </div>
-
-                    <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl space-y-4 border border-white/20">
-                        <div className="flex items-center justify-center gap-4">
-                            <div className="text-4xl drop-shadow-md">💖</div>
-                            <p className="text-lg text-left">
-                                Converted <span className="font-bold text-2xl text-red-300 drop-shadow-sm">{convertedFans.toLocaleString()}</span> fans to Hardcore!
-                            </p>
-                        </div>
-                        <div className="flex items-center justify-center gap-4">
-                            <div className="text-4xl drop-shadow-md">✨</div>
-                            <p className="text-lg text-left">
-                                Gained <span className="font-bold text-2xl text-cyan-300 drop-shadow-sm">{newFans.toLocaleString()}</span> new Casual fans!
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="flex justify-center mt-8">
-                        <button 
-                            onClick={() => setShowModal(null)} 
-                            className="bg-gradient-to-br from-pink-500 to-fuchsia-500 hover:from-pink-600 hover:to-fuchsia-600 active:scale-95 text-white px-12 py-3 rounded-full font-bold shadow-xl transition-all text-lg border-2 border-white/50"
-                        >
-                            SUGOI!
-                        </button>
-                    </div>
+                    <p className="font-semibold text-pink-500/80">Handshake Sales - Round {round}</p>
                 </div>
-                <style jsx>{`
-                    @import url('https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&display=swap');
-                    .chibi-bounce { animation: bounce 3s infinite ease-in-out; }
-                    @keyframes bounce { 
-                        0%, 100% { transform: translateY(0); } 
-                        50% { transform: translateY(-12px); } 
-                    }
-                    .heart-float, .sparkle-float { 
-                        animation-name: floatUp;
-                        animation-timing-function: linear;
-                        animation-fill-mode: forwards;
-                    }
-                    @keyframes floatUp { 
-                        to { 
-                            transform: translateY(-500px) rotate(360deg); 
-                            opacity: 0; 
-                        } 
-                    }
-                `}</style>
+                
+                <div className="max-h-[60vh] overflow-y-auto p-4 space-y-2">
+                    {results.map(({ member, soldSlots, totalSlots, pendingSlots, isSoldOut, fansConverted }) => (
+                        <div key={member.id} className="p-3 bg-white/60 dark:bg-gray-800/50 rounded-xl flex justify-between items-center shadow-md">
+                            <div>
+                                <p className="font-bold text-lg">{member.name}</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400">{getMemberGroupStatus(member)}</p>
+                                <div className="flex items-center text-xs text-pink-500 gap-1">
+                                    <Heart size={12} />
+                                    <span>+{fansConverted.toLocaleString()} fans converted</span>
+                                </div>
+                            </div>
+                            <div className="text-right font-mono">
+                                <span className={`font-bold text-lg ${isSoldOut ? 'text-red-500' : 'text-gray-700 dark:text-gray-200'}`}>
+                                    {soldSlots}/{totalSlots}
+                                </span>
+                                {isSoldOut && <span className="text-red-500 font-bold ml-1">SO</span>}
+                                {pendingSlots > 0 && <span className="text-gray-500"> ({pendingSlots})</span>}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                <div className="p-4 bg-black/10 flex justify-center">
+                     <button onClick={() => setShowModal(null)} className="px-8 py-2 bg-gradient-to-r from-pink-400 to-purple-500 text-white font-bold rounded-full shadow-lg hover:shadow-xl transition-all">
+                        OK!
+                    </button>
+                </div>
             </div>
-        );
-    };
+        </div>
+    );
+};
 
     const SportsFestivalModal = () => {
 const [includeOverseas, setIncludeOverseas] = useState(false);
@@ -9166,7 +9123,7 @@ const KouhakuInvitationModal = () => {
                             {filteredMembers.map(member => (
                                 <label key={member.rosterId || member.id} className={`flex items-center justify-between p-2 rounded-lg cursor-pointer ${selectedMemberIds.includes(member.id) ? 'bg-green-100 dark:bg-green-900' : 'bg-white dark:bg-gray-800'}`}>
                                     <span>{member.name}</span>
-                                    <input type="checkbox" checked={selectedMemberIds.includes(member.id)} onChange={() => toggleMember(member.id)} />
+                                    <input type="checkbox" checked={selectedMemberIds.includes(member.rosterId)} onChange={() => toggleMember(member.rosterId)} />
                                 </label>
                             ))}
                             {!selectedSong && <p className="text-center text-gray-500 p-4">Select a song to see the member list.</p>}
@@ -9876,9 +9833,9 @@ const ExchangeStudentModal = () => {
                         >
                             <div>
                                 <p className="font-semibold text-sm">{member.name}</p>
-                                <p className="text-xs text-gray-500 dark:text-gray-400">
-                                    Vo: {member.singing} Da: {member.dancing} Vi: {member.visual} | Fans: {((member.fans.hardcore || 0) + (member.fans.casual || 0)).toLocaleString()}
-                                </p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                                        Vo: {Math.round(member.singing)} Da: {Math.round(member.dancing)} Vi: {Math.round(member.visual)} | Fans: {((member.fans.hardcore || 0) + (member.fans.casual || 0)).toLocaleString()}
+                                    </p>
                             </div>
                             <input type="checkbox" checked={selectedRivalMembers.some(m => m.id === member.id)} readOnly className="form-checkbox h-4 w-4 text-blue-600"/>
                         </div>
@@ -9916,8 +9873,8 @@ const ExchangeStudentModal = () => {
                         >
                             <div>
                                 <p className="font-semibold text-sm">{member.name}</p>
-                                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                                    Vo: {member.singing} Da: {member.dancing} Vi: {member.visual} | Fans: {getTotalFansForMember(member).toLocaleString()}
+                                <p className="text-xs text-gray-500 dark:text-gray-400">
+                                    Vo: {Math.round(member.singing)} Da: {Math.round(member.dancing)} Vi: {Math.round(member.visual)} | Fans: {getTotalFansForMember(member).toLocaleString()}
                                 </p>
                             </div>
                             <input type="checkbox" checked={selectedPlayerMemberIds.includes(member.rosterId)} readOnly className="form-checkbox h-4 w-4 text-blue-600"/>
@@ -10070,7 +10027,7 @@ const DraftKaigiModal = () => {
                                     <h4 className="font-bold">{prospect.name}</h4>
                                     <span className="font-mono text-sm text-yellow-500">Pot: {prospect.potential} ({prospect.potentialGrade})</span>
                                 </div>
-                                <p className="text-xs text-gray-500">Vo:{prospect.vocal} Da:{prospect.dance} Vi:{prospect.visual} Ch:{prospect.charisma} In:{prospect.intelligence}</p>
+                                <p className="text-xs text-gray-500">Vo:{Math.round(prospect.vocal)} Da:{Math.round(prospect.dance)} Vi:{Math.round(prospect.visual)} Ch:{Math.round(prospect.charisma)} In:{Math.round(prospect.intelligence)}</p>
                             </div>
                         ))}
                     </div>
@@ -10349,7 +10306,7 @@ const PyramidRanking = () => {
       <div className="mb-1">
         <div className="flex justify-between text-xs font-semibold mb-0.5">
           <span>{label}</span>
-          <span>{value} / {max}</span>
+          <span>{Math.round(value)} / {max}</span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2">
           <div className={color + " h-2 rounded-full"} style={{ width: `${((value || 0) / max) * 100}%` }}></div>
@@ -10370,7 +10327,9 @@ const TabButton = ({ id, label, icon: Icon }) => (
     </button>
 );
 
-    if (!gameStarted) {
+ // MAIN UI //
+
+if (!gameStarted) {
       const handleFileLoad = (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -10383,67 +10342,79 @@ const TabButton = ({ id, label, icon: Icon }) => (
         }
       };
 
+     
       return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 p-4 sm:p-6 lg:p-8">
-          <div className="w-full max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Load from File Column */}
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700">
-              <h2 className="text-2xl font-bold mb-4 text-center text-gray-800 dark:text-gray-200">Load Production</h2>
-              <div className="text-center p-8 text-gray-500">
-                <p className="mb-4">Load a game from a <code>.json</code> file.</p>
-                <input
-                  type="file"
-                  accept=".json"
-                  onChange={handleFileLoad}
-                  className="w-full text-sm text-slate-500
-                    file:mr-4 file:py-2 file:px-4
-                    file:rounded-full file:border-0
-                    file:text-sm file:font-semibold
-                    file:bg-blue-50 file:text-blue-700
-                    hover:file:bg-blue-100"
-                />
-              </div>
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-blue-100 dark:from-slate-800 dark:via-slate-900 dark:to-black p-4">
+            <div className="w-full max-w-4xl mx-auto bg-white/80 dark:bg-slate-800/50 backdrop-blur-lg rounded-2xl shadow-xl border border-white/50 dark:border-slate-700/50 p-8">
+                <div className="text-center mb-10">
+                    <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-500 tracking-tight" style={{ fontFamily: "'Mochiy Pop One', sans-serif" }}>
+                        THE IDOL SIMULATOR
+                    </h1>
+                    <p className="text-gray-500 dark:text-gray-400 mt-2">Your journey to stardom begins now!</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
+                    {/* New Game Section */}
+                    <div className="md:col-span-3 bg-gradient-to-br from-pink-100 to-purple-100 dark:from-pink-900/30 dark:to-purple-900/30 p-6 rounded-xl border border-pink-200 dark:border-pink-800/50 shadow-lg">
+                        <h2 className="text-2xl font-bold text-pink-600 dark:text-pink-300 text-center mb-4 flex items-center justify-center gap-2">
+                            <Sparkles size={24} />
+                            Start New Production
+                        </h2>
+                        <div className="space-y-4">
+                            <input
+                                type="text"
+                                value={startUsername}
+                                onChange={(e) => setStartUsername(e.target.value)}
+                                className="w-full p-3 bg-white/70 dark:bg-slate-700/50 border border-pink-200/80 dark:border-pink-800/50 rounded-full text-center focus:ring-2 focus:ring-pink-300 focus:outline-none placeholder-gray-500 dark:placeholder-gray-400"
+                                placeholder="Producer Name ♡"
+                            />
+                            <div className="flex w-full gap-2">
+                                <input
+                                    type="text"
+                                    value={startGroupName}
+                                    onChange={(e) => setStartGroupName(e.target.value)}
+                                    className="flex-1 p-3 bg-white/70 dark:bg-slate-700/50 border border-pink-200/80 dark:border-pink-800/50 rounded-full text-center focus:ring-2 focus:ring-pink-300 focus:outline-none placeholder-gray-500 dark:placeholder-gray-400"
+                                    placeholder="Group Name ✿"
+                                />
+                                <button
+                                    onClick={generateRandomGroupName}
+                                    className="p-3 bg-pink-300 text-white rounded-full hover:bg-pink-400 transition-colors shadow-sm"
+                                    title="Generate Random Name"
+                                >
+                                    <Shuffle size={20} />
+                                </button>
+                            </div>
+                        </div>
+                        <button
+                            onClick={handleStartGame}
+                            disabled={!startUsername.trim() || !startGroupName.trim()}
+                            className="w-full mt-6 p-4 bg-gradient-to-r from-pink-400 to-purple-500 text-white rounded-full font-bold text-lg hover:shadow-xl hover:scale-105 transition-all duration-300 disabled:bg-gray-400 disabled:from-gray-400 disabled:to-gray-500 disabled:hover:scale-100 disabled:shadow-none flex items-center justify-center"
+                        >
+                            Begin Your Story <Heart size={16} className="ml-2" />
+                        </button>
+                    </div>
+
+                    {/* Load Game Section */}
+                    <div className="md:col-span-2 bg-gray-100 dark:bg-slate-800/70 p-6 rounded-xl border border-gray-200 dark:border-slate-700">
+                         <h2 className="text-xl font-bold text-gray-700 dark:text-gray-300 text-center mb-4 flex items-center justify-center gap-2">
+                            <LogIn size={22} />
+                            Continue Production
+                        </h2>
+                        <p className="text-center text-sm text-gray-500 dark:text-gray-400 mb-4">Load a game from a <code>.json</code> file.</p>
+                        <input
+                            type="file"
+                            accept=".json"
+                            onChange={handleFileLoad}
+                            className="w-full text-sm text-slate-500
+                            file:mr-4 file:py-2 file:px-4
+                            file:rounded-full file:border-0
+                            file:text-sm file:font-semibold
+                            file:bg-purple-50 dark:file:bg-purple-800/50 file:text-purple-700 dark:file:text-purple-300
+                            hover:file:bg-purple-100 dark:hover:file:bg-purple-800"
+                        />
+                    </div>
+                </div>
             </div>
-    
-            {/* New Game Column */}
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-xl border-2 border-blue-500">
-              <h2 className="text-2xl font-bold mb-4 text-center text-gray-800 dark:text-gray-200 flex items-center justify-center gap-2">
-                <Plus size={24} />
-                Start New Production
-              </h2>
-              <p className="text-gray-600 dark:text-gray-400 text-center mb-6">Enter your Producer Name and Group Name to begin.</p>
-              <input
-                type="text"
-                value={startUsername}
-                onChange={(e) => setStartUsername(e.target.value)}
-                className="w-full p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg mb-4 text-center focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                placeholder="Producer Name (e.g., Aki-P)"
-              />
-              <div className="flex w-full gap-2 mb-5">
-                <input
-                  type="text"
-                  value={startGroupName}
-                  onChange={(e) => setStartGroupName(e.target.value)}
-                  className="flex-1 p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg text-center focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                  placeholder="Group Name (e.g., AKB48)"
-                />
-                <button
-                  onClick={generateRandomGroupName}
-                  className="p-3 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition-colors flex items-center justify-center"
-                  title="Generate Random Name"
-                >
-                  <Shuffle size={20} />
-                </button>
-              </div>
-              <button
-                onClick={handleStartGame}
-                disabled={!startUsername.trim() || !startGroupName.trim()}
-                className="w-full p-3 bg-blue-500 text-white rounded-lg font-bold text-lg hover:bg-blue-600 transition-colors disabled:bg-gray-400"
-              >
-                Begin
-              </button>
-            </div>
-          </div>
         </div>
       );
     }
@@ -10461,26 +10432,34 @@ const TabButton = ({ id, label, icon: Icon }) => (
         {/* --- Left Column (Main Content) --- */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Top Header & Message Bar */}
-          <header className="shadow-md p-2 lg:p-4 flex justify-between items-center bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border-b border-gray-200 dark:border-gray-700 transition-colors duration-300">
+          <header className="p-3 flex justify-between items-center bg-white/70 dark:bg-slate-800/60 backdrop-blur-sm border-b-2 border-pink-200/80 dark:border-slate-700/80 transition-colors duration-300">
             <div>
-<h1 className="text-lg lg:text-2xl font-bold text-gray-800">{groupName}</h1>
+              <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-500 tracking-tight" style={{ fontFamily: "'Mochiy Pop One', sans-serif" }}>
+                {groupName}
+              </h1>
+              <p className="text-xs text-gray-500 dark:text-gray-400 -mt-1">
+                Produced by: {username}
+              </p>
             </div>
-            <div className="flex items-center gap-4">
-              <button onClick={() => setShowModal('saveGame')} d className="p-2 bg-blue-100 text-blue-600 rounded-full hover:bg-blue-200 disabled:bg-gray-300 disabled:text-gray-500" title="Save Game (via Username)"><Save size={20} /></button>
-              <button onClick={() => fileInputRef.current && fileInputRef.current.click()} className="p-2 bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200" title="Load Game from File"><Upload size={20} /></button>
-              <button onClick={() => setShowNotifications(!showNotifications)} className="relative p-2 bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200" title="Notifications">
-                <Bell size={20} />
-                {notifications.length > 0 && !showNotifications && <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>}
-              </button>
+            <div className="flex items-center gap-2">
+                <button onClick={() => setShowModal('saveGame')} className="p-2 bg-pink-100 text-pink-600 rounded-full hover:bg-pink-200 dark:bg-pink-800/50 dark:text-pink-300 dark:hover:bg-pink-800" title="Save Game">
+                    <Save size={18} />
+                </button>
+                <button onClick={() => fileInputRef.current && fileInputRef.current.click()} className="p-2 bg-purple-100 text-purple-600 rounded-full hover:bg-purple-200 dark:bg-purple-800/50 dark:text-purple-300 dark:hover:bg-purple-800" title="Load Game from File">
+                    <Upload size={18} />
+                </button>
+                <button onClick={() => setShowNotifications(!showNotifications)} className="relative p-2 bg-blue-100 text-blue-600 rounded-full hover:bg-blue-200 dark:bg-blue-800/50 dark:text-blue-300 dark:hover:bg-blue-800" title="Notifications">
+                    <Bell size={18} />
+                    {notifications.length > 0 && !showNotifications && <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>}
+                </button>
             </div>
-
           </header>
-          {message && <div className="p-1 bg-blue-100 text-blue-800 text-center text-sm">{message}</div>}
-          {activeTour && <div className="p-2 bg-red-100 text-red-800 text-center text-sm font-bold flex items-center justify-center"><Plane size={16} className='mr-2'/> Active Tour: {activeTour.name} ({activeTour.weeksLeft} weeks left)</div>}
-
-            {isCampaignActive && <div className="p-2 bg-yellow-100 text-yellow-800 text-center text-sm font-bold flex items-center justify-center">
-                <Zap size={16} className='mr-2'/> ELECTION CAMPAIGN ACTIVE! Ends in {campaignEndWeek - week} week(s).
-            </div>}
+          
+          {message && <div className="p-2 bg-gradient-to-r from-pink-100 to-purple-100 text-purple-800 dark:from-pink-900/50 dark:to-purple-900/50 dark:text-purple-200 text-center text-sm font-semibold border-y border-pink-200/50 dark:border-pink-800/50">{message}</div>}
+          {activeTour && <div className="p-2 bg-rose-500/10 text-rose-700 dark:text-rose-300 text-center text-sm font-bold flex items-center justify-center border-y border-rose-500/20"><Plane size={16} className='mr-2'/> Active Tour: {activeTour.name} ({activeTour.weeksLeft} weeks left)</div>}
+          {isCampaignActive && <div className="p-2 bg-amber-500/10 text-amber-700 dark:text-amber-300 text-center text-sm font-bold flex items-center justify-center border-y border-amber-500/20">
+              <Zap size={16} className='mr-2'/> ELECTION CAMPAIGN ACTIVE! Ends in {campaignEndWeek - week} week(s).
+          </div>}
 
 
           {/* Main Content Area */}

@@ -860,9 +860,9 @@ export const getTotalFansForMember = (member) => {
     if (!member || !member.fans) return 0;
     // Handle old format (number) and new format (object) for safety
     if (typeof member.fans === 'number') {
-        return member.fans;
+        return Math.floor(member.fans);
     }
-    return (member.fans.hardcore || 0) + (member.fans.casual || 0);
+    return Math.floor((member.fans.hardcore || 0) + (member.fans.casual || 0));
 };
 
 
@@ -2356,13 +2356,13 @@ const distributeFans = (amount, memberIds, conversionRate = 0.1) => {
   // --- NEW: Market Saturation Nerf ---
   // Once the group is massive, fan growth becomes progressively harder.
   let modifiedAmount = amount;
-  if (totalFans > 50_000_000) {
-      modifiedAmount *= 0.3; // 70% reduction
-  } else if (totalFans > 20_000_000) {
-      modifiedAmount *= 0.5; // 50% reduction
-  } else if (totalFans > 10_000_000) {
-      modifiedAmount *= 0.7; // 30% reduction
-  }
+    if (totalFans > 10_000_000) {
+        modifiedAmount *= 0.3; // 70% reduction
+    } else if (totalFans > 5_000_000) {
+        modifiedAmount *= 0.5; // 50% reduction
+    } else if (totalFans > 1_000_000) {
+        modifiedAmount *= 0.7; // 30% reduction
+    }
   modifiedAmount = Math.floor(modifiedAmount);
   // --- END NEW ---
 
@@ -3707,7 +3707,7 @@ const executeShuffle = (shuffleType, mode, manualAssignments = null) => {
         } else {
             performingMembers = members.filter(m => m.isAvailable);
         }
-        const performingMemberIds = performingMembers.map(m => m.id);
+        const performingMemberIds = performingMembers.map(m => m.rosterId || m.id);
 
         if (performingMembers.length === 0) {
             return setMessage(team ? `${team.name} has no available members!` : 'No available members in the main group!');
@@ -4573,9 +4573,15 @@ if (exchangeStudents && exchangeStudents.length > 0) {
         findAndAddTrivia(65, `The Upcoming Girls Center: [Name] stands at the front of the Upcoming Girls, securing rank #65.`);
 
         // Gatekeepers
-        findAndAddTrivia(16, `Senbatsu Gatekeeper: [Name] secures the final, precious spot in Senbatsu at rank #16.`);
-        findAndAddTrivia(32, `Hanging On: [Name] claims the last spot in the Undergirls at rank #32.`);
-        findAndAddTrivia(80, `The Last Rank: [Name] secures the final ranked position, just making it in at #80.`);
+        if (numberOfSpots >= 16) {
+            findAndAddTrivia(16, `Senbatsu Gatekeeper: [Name] secures the final, precious spot in Senbatsu at rank #16.`);
+        }
+        if (numberOfSpots >= 32) {
+            findAndAddTrivia(32, `Hanging On: [Name] claims the last spot in the Undergirls at rank #32.`);
+        }
+        if (numberOfSpots > 0) {
+            findAndAddTrivia(numberOfSpots, `The Last Rank: [Name] secures the final ranked position, just making it in at #${numberOfSpots}.`);
+        }
         
 
         // --- NEW: Statistical & Milestone Trivia ---
@@ -5774,7 +5780,7 @@ if (newGenInSenbatsu > senbatsuMembers.length / 2 && senbatsuMembers.length > 3)
             return { ...member, singing: Math.min(100, (member.singing || 0) + trainingBuff), dancing: Math.min(100, (member.dancing || 0) + trainingBuff), morale: Math.min(100, (member.morale || 0) + moraleBuff) };
         });
 
-        const fanSales = senbatsuWithBonuses.reduce((sum, m) => sum + ((m.fans?.hardcore || 0) * 0.9) + ((m.fans?.casual || 0) * 0.4), 0);
+        const fanSales = senbatsuWithBonuses.reduce((sum, m) => sum + ((m.fans?.hardcore || 0) * 0.2) + ((m.fans?.casual || 0) * 0.05), 0);
         const avgSkill = senbatsuWithBonuses.reduce((sum, m) => sum + (((m.singing || 0) * 0.30) + ((m.dancing || 0) * 0.30) + ((m.visual || 0) * 0.20) + ((m.variety || 0) * 0.067) + ((m.charisma || 0) * 0.067) + ((m.intelligence || 0) * 0.066)), 0) / (senbatsuWithBonuses.length || 1);
         const skillPower = avgSkill * 20;
 
@@ -6541,7 +6547,7 @@ if (rookieStreakMembers.length > 0) {
             b: venue.capacity - Math.floor(venue.capacity * 0.1) - Math.floor(venue.capacity * 0.3)
         };
 
-        const baseFanDemand = Math.log10((totalFans || 0) + 1) * 25000; // Logarithmic scaling
+        const baseFanDemand = Math.log10((totalFans || 0) + 1) * 2000; // Logarithmic scaling
         const hypeMultiplier = 1 + avgSkill;
         let potentialAttendance = baseFanDemand * hypeMultiplier;
         
@@ -6629,11 +6635,11 @@ if (rookieStreakMembers.length > 0) {
         setMoney(prev => prev + agencyProfit);
         setStatistics(prev => ({ ...prev, totalRevenue: (prev.totalRevenue || 0) + ticketRevenue, totalConcerts: (prev.totalConcerts || 0) + 1 }));
 
-        const performingMemberIds = performingMembers.map(m => m.id);
+        const performingMemberIds = performingMembers.map(m => m.rosterId || m.id);
         distributeFans(fanGain, performingMemberIds);
 
-        performingMemberIds.forEach(memberId => {
-            updateMemberState(memberId, m => ({
+        performingMembers.forEach(member => {
+            updateMemberState(member.rosterId, m => ({                
                 ...m,
                 stamina: Math.max(0, (m.stamina || 100) - staminaDrain),
                 stress: Math.min(100, m.stress + 40),
@@ -6738,7 +6744,7 @@ if (rookieStreakMembers.length > 0) {
         setMoney(prev => prev + agencyProfit);
         setStatistics(prev => ({ ...prev, totalRevenue: (prev.totalRevenue || 0) + totalRevenue, totalConcerts: (prev.totalConcerts || 0) + 1 }));
 
-        const performingMemberIds = performingMembers.map(m => m.id);
+        const performingMemberIds = performingMembers.map(m => m.rosterId || m.id);
         
         distributeFans(fanGain, performingMemberIds);
 
@@ -7170,66 +7176,186 @@ const beginActivity = (memberId, activityType) => {
         setShowModal('handshakeSelection');
     };
 
-    const executeHandshakeEvent = (selectedMemberIds, singleId) => {
-        const eligibleSingle = songs.find(s => s.id === singleId);
-    
-        if (!eligibleSingle) {
-            return setMessage("Error: Could not find the single for this handshake event.");
-        }
-        
-        if (selectedMemberIds.length === 0) {
-            return setMessage("You must select at least one member to participate.");
-        }
+const generateHandshakeFanPosts = (handshakeData, currentSingle, previousSingle) => {
+    const { singleName, results } = handshakeData;
+    const newPosts = [];
+    const postedMemberIds = new Set(); // Keep track of who we already talked about
 
-        const participatingMembers = selectedMemberIds.map(id => getMemberById(id)).filter(m => m && m.isAvailable);
-          
-        if (participatingMembers.length === 0) {
-            return setMessage("None of the selected members are available for the handshake event.");
-        }
-        
-        let totalConvertedFans = 0;
-        let totalNewFans = 0;
-        const salesFanBoost = (eligibleSingle.totalSales || 0) * 0.1;
+    const currentTitleTrack = currentSingle?.tracks.find(t => t.type === 'title');
+    const currentSenbatsuIds = new Set(currentTitleTrack?.members.map(m => m.id) || []);
 
-        participatingMembers.forEach(member => {
-            const currentCasual = member.fans?.casual || 0;
-            const charismaModifier = (member.charisma || 0) / 250; 
-            const fansToConvert = Math.floor(currentCasual * (0.15 + charismaModifier));
-            const newCasualFans = Math.floor(salesFanBoost / participatingMembers.length) * (1 + charismaModifier);
+    const prevTitleTrack = previousSingle?.tracks.find(t => t.type === 'title');
+    const prevSenbatsuIds = new Set(prevTitleTrack?.members.map(m => m.id) || []);
+
+    // 1. Dropped from Senbatsu but Sold Out (High drama!)
+    const droppedAndSoldOut = results.filter(r => 
+        r.isSoldOut && 
+        !currentSenbatsuIds.has(r.member.rosterId) && 
+        prevSenbatsuIds.has(r.member.rosterId)
+    );
+
+    droppedAndSoldOut.forEach(r => {
+        if (postedMemberIds.has(r.member.id)) return;
+        const reactions = [
+            `You're telling me management dropped ${r.member.name} and she just sold out all her handshake slots?? The incompetence is astounding.`,
+            `${r.member.name} proving management wrong by selling out instantly. We miss you in senbatsu! 😭 #BringHerBack`,
+            `Management's biggest mistake this era was dropping ${r.member.name}. Her selling out her handshake slots is the ultimate proof. They look like fools.`,
+            `So ${r.member.name} was dropped, yet she sold out her slots instantly. Can someone explain the logic? Oh wait, there is none. Fire everyone.`,
+            `Every single sold-out slot for ${r.member.name} is a middle finger to the management that dropped her. We see you, queen.`,
+            `Dropping ${r.member.name} and then watching her sell out completely is the funniest and saddest thing. This company is a circus.`,
+            `My heart breaks and soars at the same time. ${r.member.name} was dropped, but her fans showed up and sold out her slots. She is so loved.`,
+            `This is what you call fan power. Dropped from senbatsu but her handshake slots are gone in a flash. ${r.member.name}, we'll always be here for you.`,
+            `I'm crying. ${r.member.name} sold out. She deserved to be in senbatsu and this proves it. We won't let management forget this.`,
+            `She was dropped, but her fans didn't drop her. Sold out queen ${r.member.name}! 👑`,
+            `SOLD OUT. That's the tweet. ${r.member.name} deserved better and her fans know it. #JusticeFor${r.member.name.replace(/ /g, '')}`,
+            `The numbers don't lie. Dropped from senbatsu, but still more popular than half the lineup. Put ${r.member.name} back where she belongs.`,
+            `Hope management is taking notes. This is what happens when you underestimate a member and her dedicated fanbase. Congrats on selling out, ${r.member.name}!`,
+            `If ${r.member.name} isn't back in senbatsu for the next single after selling out like this, we riot.`,
+            `Her dropping from senbatsu was a mistake. Her selling out proves it. End of story.`
+        ];
+        newPosts.push({ type: 'sad', text: reactions[Math.floor(Math.random() * reactions.length)] });
+        postedMemberIds.add(r.member.id);
+    });
+
+    // 2. Non-Senbatsu members who Sold Out
+    const deservingMembers = results.filter(r => 
+        r.isSoldOut && 
+        !currentSenbatsuIds.has(r.member.rosterId) &&
+        !postedMemberIds.has(r.member.id) // Make sure we haven't already posted about them
+    );
+
+    deservingMembers.slice(0, 2).forEach(r => { // Post about up to 2
+        if (postedMemberIds.has(r.member.id)) return;
+        const reactions = [
+            `${r.member.name} sold out all her slots and she's not even in senbatsu... make it make sense. #JusticeFor${r.member.name.replace(/ /g, '')}`,
+            `Seeing ${r.member.name} sell out instantly gives me hope she'll make it into the next senbatsu. The fans have spoken!`,
+        ];
+        newPosts.push({ type: 'angry', text: reactions[Math.floor(Math.random() * reactions.length)] });
+        postedMemberIds.add(r.member.id);
+    });
+
+    // 3. Senbatsu members who are NOT selling well
+    const underperformingSenbatsu = results.filter(r => 
+        r.soldSlots < (r.totalSlots / 2) && 
+        currentSenbatsuIds.has(r.member.rosterId)
+    );
+
+    underperformingSenbatsu.slice(0, 1).forEach(r => { // Post about one to avoid too much negativity
+         if (postedMemberIds.has(r.member.id)) return;
+        const reactions = [
+            `I don't get it, ${r.member.name} can't even sell half her slots but she's in senbatsu? While other girls sell out in minutes?`,
+            `Hot take: if you're in senbatsu, you should be able to sell your handshake slots. Looking at you, ${r.member.name}.`,
+        ];
+        newPosts.push({ type: 'angry', text: reactions[Math.floor(Math.random() * reactions.length)] });
+        postedMemberIds.add(r.member.id);
+    });
+
+    // 4. The top seller, if not already featured in a dramatic post
+    const topSeller = results[0];
+    if (topSeller && !postedMemberIds.has(topSeller.member.id)) {
+        const topSellerReactions = [
+            `Just met ${topSeller.member.name} at the handshake event! She was so sweet and remembered my name! 😭 Best oshi ever! #${singleName}`,
+            `${topSeller.member.name}'s lane was insane today but so worth it. Her smile is everything. 💖`,
+        ];
+        newPosts.push({ type: 'happy', text: topSellerReactions[Math.floor(Math.random() * topSellerReactions.length)] });
+    }
+
+    // 5. Add a couple of general posts
+    const positiveGeneral = [
+        `The handshake event for #${singleName} was so much fun! Got to see so many of the girls. 🥰`,
+        `My wallet is empty but my heart is full. What a great handshake event!`,
+    ];
+    newPosts.push({ type: 'happy', text: positiveGeneral[Math.floor(Math.random() * positiveGeneral.length)] });
+
+    const negativeGeneral = [
+        `The lines for this handshake event are crazy... I've been waiting for 2 hours. 😩`,
+        `Spent so much money on this handshake event and I only got to talk to my oshi for 5 seconds... is it worth it? 🤔`,
+    ];
+    newPosts.push({ type: 'neutral', text: negativeGeneral[Math.floor(Math.random() * negativeGeneral.length)] });
     
-            totalConvertedFans += fansToConvert;
-            totalNewFans += newCasualFans;
+    // Final check to make sure we don't add too many posts in one go
+    const finalPosts = newPosts.slice(0, 10); // Limit to 7 posts per event
+
+    if (finalPosts.length > 0) {
+        setFanPosts(prev => [...finalPosts.map(p => ({...p, week, id: Date.now() + Math.random()})), ...prev].slice(0, 100));
+    }
+};
+
+const executeHandshakeEvent = (selectedMemberIds, singleId) => {
+    const eligibleSingle = songs.find(s => s.id === singleId);
+
+    if (!eligibleSingle) {
+        return setMessage("Error: Could not find the single for this handshake event.");
+    }
+
+    if (selectedMemberIds.length === 0) {
+        return setMessage("You must select at least one member to participate.");
+    }
+
+    const participatingMembers = selectedMemberIds.map(id => getMemberById(id)).filter(m => m && m.isAvailable);
+
+    if (participatingMembers.length === 0) {
+        return setMessage("None of the selected members are available for the handshake event.");
+    }
     
-            updateMemberState(member.rosterId || member.id, m => {
-                const casual = m.fans?.casual || 0;
-                const hardcore = m.fans?.hardcore || 0;
-                return {
-                    ...m,
-                    fans: {
-                        hardcore: hardcore + fansToConvert,
-                        casual: Math.max(0, casual - fansToConvert) + newCasualFans,
-                    },
-                    stamina: Math.max(0, (m.stamina || 100) - 50),
-                    stress: Math.min(100, (m.stress || 0) + 25),
-                    morale: Math.min(100, (m.morale || 0) + 5)
-                };
-            });
-        });
-          
-        setSongs(prevSongs => prevSongs.map(s => 
-            s.id === eligibleSingle.id ? { ...s, handshakeEventHeld: true } : s
-        ));
-    
-        const successMessage = `The handshake event for "${eligibleSingle.name}" was a massive success!`;
-        addNotification({ type: 'Fans', message: successMessage });
+    const titleTrack = eligibleSingle.tracks.find(t => t.type === 'title');
+    const senbatsuMemberIds = new Set(titleTrack ? titleTrack.members.map(m => m.id) : []);
+
+    const results = participatingMembers.map(member => {
+        const isSenbatsu = senbatsuMemberIds.has(member.rosterId);
+        const totalSlots = isSenbatsu ? 59 : 37; // Senbatsu get 59, others get 37
+
+        const charismaFactor = (member.charisma || 50) / 100;
+        const fanFactor = getTotalFansForMember(member) / 100000;
+        let soldSlots = Math.floor((charismaFactor + fanFactor) / 3 * totalSlots);
+        soldSlots = Math.min(totalSlots, soldSlots);
+        const pendingSlots = Math.floor(Math.random() * 5);
+
+        // Update member stats
+        const fansToConvert = Math.floor((member.fans?.casual || 0) * (0.15 + (member.charisma / 250)));
+        const newCasualFans = Math.floor((eligibleSingle.totalSales || 0) / participatingMembers.length * 0.1 * (1 + (member.charisma / 250)));
+
+        updateMemberState(member.rosterId || member.id, m => ({
+            ...m,
+            fans: {
+                hardcore: (m.fans?.hardcore || 0) + fansToConvert,
+                casual: Math.max(0, (m.fans?.casual || 0) - fansToConvert) + newCasualFans,
+            },
+            stamina: Math.max(0, (m.stamina || 100) - 50),
+            stress: Math.min(100, (m.stress || 0) + 25),
+            morale: Math.min(100, (m.morale || 0) + 5)
+        }));
         
-        setModalData({
-            convertedFans: totalConvertedFans,
-            newFans: totalNewFans,
-            members: participatingMembers
-        });
-        setShowModal('handshakeResult');
+        return {
+            member,
+            soldSlots,
+            totalSlots,
+            pendingSlots,
+            isSoldOut: soldSlots === totalSlots,
+            fansConverted: fansToConvert // Include converted fans data
+        };
+    }).sort((a,b) => b.soldSlots - a.soldSlots);
+
+    setSongs(prevSongs => prevSongs.map(s => 
+        s.id === eligibleSingle.id ? { ...s, handshakeEventHeld: true } : s
+    ));
+
+const handshakeData = {
+        singleName: eligibleSingle.name,
+        round: Math.floor(Math.random() * 4) + 1, // Random round
+        results
     };
+
+    const songListOfGroup = songs;
+    const previousSingle = songListOfGroup.filter(s => s.type === 'single' && s.releaseWeek < eligibleSingle.releaseWeek).sort((a,b) => b.releaseWeek - a.releaseWeek)[0];
+
+    generateHandshakeFanPosts(handshakeData, eligibleSingle, previousSingle);
+    
+    setModalData({handshakeResults: handshakeData});
+
+    addNotification({ type: 'Fans', message: `Handshake event for "${eligibleSingle.name}" was a success!` });
+    setShowModal('handshakeResult');
+};
 
     
     const startTrainingCamp = (memberId, skill) => {
@@ -7967,10 +8093,11 @@ const beginActivity = (memberId, activityType) => {
                 break;
             
             case 'gamingStream':
-                cost = -10000;
-                const streamFanGain = 12000;
+                cost = 120000;
+                if (money < cost) return setMessage("Not enough money for a sponsored gaming stream.");
+                const streamFanGain = 25000;
                 distributeFansWithRivals(streamFanGain, unitMembers, single);
-                modalPayload = { ...modalPayload, fanGain: streamFanGain, income: -cost, message: `The sponsored gaming stream by '${track.unitName}' was a success, earning ¥${(-cost).toLocaleString()} and gaining ${streamFanGain.toLocaleString()} fans!` };
+                modalPayload = { ...modalPayload, fanGain: streamFanGain, message: `The sponsored gaming stream by '${track.unitName}' was a success, gaining ${streamFanGain.toLocaleString()} new fans!` };
                 break;
 
             case 'unitMerch':
@@ -8291,6 +8418,7 @@ let updatedRivalGroups = rivalGroups ? JSON.parse(JSON.stringify(rivalGroups)) :
                 visual: Math.floor(Math.random() * 40) + 30,
                 charisma: Math.floor(Math.random() * 40) + 30,
                 intelligence: Math.floor(Math.random() * 40) + 30,
+                variety: Math.floor(Math.random() * 40) + 30,
                 potential,
                 potentialGrade,
                 personality: personalities[Math.floor(Math.random() * personalities.length)],
@@ -8675,6 +8803,7 @@ const runAnnualAwards = () => {
         // --- 0. KOUHAKU EVENT CYCLE ---
         // This now runs at the START of the function to ensure it uses the CURRENT week number.
         if (kouhakuInvitationAccepted && week % 52 === 0) {
+            
             const { performers, fanGain, reputationGain, historyEntry } = executeKouhakuPerformance(
                 JSON.parse(JSON.stringify(members)), 
                 JSON.parse(JSON.stringify(sisterGroups))
@@ -8727,8 +8856,10 @@ setPerformanceHistory(prev => [kouhakuPerformanceForHistory, ...prev]);
             setShowModal('kouhakuResult');
             
             setMessage(`The group's performance at Kouhaku was a huge success, gaining ${fanGain.toLocaleString()} new fans!`);
+            
+            // Now we advance the week and return
             setWeek(prev => prev + 1); 
-            return; 
+            return;
         }        
         
         // --- 1. SETUP & INITIALIZATION ---
@@ -8739,7 +8870,8 @@ setPerformanceHistory(prev => [kouhakuPerformanceForHistory, ...prev]);
 
         // The newWeek number is calculated once.
         const newWeek = week + 1;
-
+        const currentYear = Math.floor((week - 1) / 52) + 2025;
+        const startOfWeekYear = (currentYear - 2025) * 52 + 1;
 // --- ANNUAL AWARDS EVENT ---
 if ((newWeek - 1) % 52 === 45) { // Trigger at the end of Week 45 for Week 46 results
     runAnnualAwards(); // This will show the modal on Week 50
@@ -10944,7 +11076,7 @@ const startStudyAbroad = (memberId, destinationGroupId) => {
                 visual: c.visual, // <-- THE FIX
                 charisma: c.charisma, // <-- THE FIX
                 intelligence: c.intelligence, // <-- THE FIX
-                variety: Math.floor((c.vocal + c.dance) / 2),
+                variety: c.variety,                
                 stamina: 100,
                 morale: 100,
                 stress: 0,
@@ -12441,8 +12573,8 @@ for (const blockName of blockNames) {
                                 
                 const memberIdToNameMap = new Map(jankenTournament.participants.map(m => [m.id, m.name]));
                 const eliminationMap = new Map(finalElims.map(e => [e.loserId, e]));
-                const senbatsuIds = new Set(senbatsuRanked.map(m => m.id));
-    
+                const senbatsuIds = new Set(senbatsuRanked.map(m => m.rosterId));
+
                 const detailedSenbatsu = senbatsuRanked.map(member => {
                     if (member.rank === 1) return { ...member, lostTo: null, eliminationRound: 'Winner' };
                     const elimEvent = eliminationMap.get(member.id);
@@ -12453,9 +12585,9 @@ for (const blockName of blockNames) {
                 });
     
                 const unplacedMembers = jankenTournament.participants
-                    .filter(p => !senbatsuIds.has(p.id))
+                    .filter(p => !senbatsuIds.has(p.rosterId))
                     .map(member => {
-                        const elimEvent = eliminationMap.get(member.id);
+                        const elimEvent = eliminationMap.get(member.rosterId);
                         if (!elimEvent) return { ...member, rank: 'Unplaced', lostTo: 'N/A', eliminationRound: 'N/A' };
                         const lostToName = memberIdToNameMap.get(elimEvent.winnerId) || 'Unknown';
                         const roundName = elimEvent.stage === 'blocks' ? `Block ${elimEvent.block} Round ${elimEvent.round}` : `Finals Round ${elimEvent.round}`;
@@ -12476,7 +12608,7 @@ for (const blockName of blockNames) {
                         roundName: memberResult.eliminationRound,
                         lostTo: memberResult.lostTo || null,
                     };
-                    updateMemberState(memberResult.id, m => ({
+                    updateMemberState(memberResult.rosterId, m => ({
                         ...m,
                         jankenHistory: [...(m.jankenHistory || []), historyEntry]
                     }));
@@ -12594,7 +12726,7 @@ const simulateSportsFestivalEvent = () => {
     }
 
     const newMemberScores = { ...memberScores };
-    newMemberScores[winner.id] = (newMemberScores[winner.id] || 0) + event.points;
+    newMemberScores[winner.rosterId] = (newMemberScores[winner.rosterId] || 0) + event.points;
 
     const newTeamRed = { ...teamRed, score: teamRed.score + (winningTeam === 'Red' ? event.points : 0) };
     const newTeamWhite = { ...teamWhite, score: teamWhite.score + (winningTeam === 'White' ? event.points : 0) };
