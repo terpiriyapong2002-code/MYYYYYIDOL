@@ -1731,6 +1731,7 @@ const [pendingMerch, setPendingMerch] = useState([]);
                 difficulty,
                 electionHistory: JSON.stringify(electionHistory),
                 jankenHistory: JSON.stringify(jankenHistory),
+                gameHistory: JSON.stringify(gameHistory),
                 groupReputation,
                 kouhakuInvitationAccepted,
                 kouhakuHistory: JSON.stringify(kouhakuHistory),
@@ -1928,6 +1929,7 @@ const [pendingMerch, setPendingMerch] = useState([]);
             setLastElectionResult(JSON.parse(data.lastElectionResult || "null"));
             setElectionHistory(JSON.parse(data.electionHistory || "[]"));
             setJankenHistory(JSON.parse(data.jankenHistory || "[]"));
+            setGameHistory(JSON.parse(data.gameHistory || "[]"));
             setGroupReputation(data.groupReputation || 0);
             setKouhakuInvitationAccepted(data.kouhakuInvitationAccepted || false);
             setKouhakuHistory(JSON.parse(data.kouhakuHistory || "[]"));
