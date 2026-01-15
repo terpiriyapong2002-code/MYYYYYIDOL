@@ -855,6 +855,53 @@ export const filmPromotionTypes = {
     }
 };
 
+export const sponsorshipTiers = {
+    model: {
+        1: { id: 'model_1', name: 'Local Magazine Spread', description: 'A feature in a local fashion magazine. Good for building initial recognition.', requires: { stat: 'visual', value: 40, members: 1 }, reward: { money: 15000, fanGain: 2000 }, duration: 0, rarity: 1.0 },
+        2: { id: 'model_2', name: 'Web-Zine Cover', description: 'Become the cover model for a popular online fashion site for teens.', requires: { stat: 'visual', value: 60, members: 1 }, reward: { money: 40000, fanGain: 7500 }, duration: 0, rarity: 0.7 },
+        3: { id: 'model_3', name: 'Major Fashion Magazine Feature', description: 'A multi-page spread in a nationally recognized fashion magazine like "non-no" or "ViVi".', requires: { stat: 'visual', value: 80, members: 1 }, reward: { money: 120000, fanGain: 25000 }, duration: 0, rarity: 0.4 },
+        4: { id: 'model_4', name: 'Cosmetics Endorsement', description: 'The face of a new line of cosmetics. The member will be featured in ads and commercials.', requires: { stat: 'visual', value: 90, members: 1 }, reward: { money: 500000, fanGain: 100000 }, duration: 12, rarity: 0.2 },
+        5: { id: 'model_5', name: 'Paris Fashion Week', description: 'A legendary opportunity to walk the runway at Paris Fashion Week for a major designer.', requires: { stat: 'visual', value: 95, members: 1 }, reward: { money: 250000, fanGain: 150000, repGain: 5 }, duration: 2, rarity: 0.05 },
+        6: { id: 'model_6', name: 'Shibuya 109 Lookbook', description: 'Model for the seasonal lookbook of a popular Shibuya 109 brand.', requires: { stat: 'visual', value: 70, members: 2 }, reward: { money: 80000, fanGain: 18000 }, duration: 0, rarity: 0.5 },
+        7: { id: 'model_7', name: 'Tokyo Girls Collection Runway', description: 'Walk the runway at the prestigious Tokyo Girls Collection event.', requires: { stat: 'visual', value: 85, members: 3 }, reward: { money: 300000, fanGain: 90000, repGain: 1 }, duration: 0, rarity: 0.3 },
+        8: { id: 'model_8', name: 'Skincare Line CM', description: 'A commercial for a popular drugstore skincare brand.', requires: { stat: 'visual', value: 82, members: 1 }, reward: { money: 450000, fanGain: 60000 }, duration: 0, rarity: 0.35 },
+        9: { id: 'model_9', name: 'Artistic Photobook by a Famed Photographer', description: 'Collaborate with a world-renowned photographer on a limited edition photobook.', requires: { stat: 'intelligence', value: 70, members: 1 }, reward: { money: 100000, fanGain: 50000, repGain: 3 }, duration: 0, rarity: 0.15 },
+        10: { id: 'model_10', name: 'Global Uniqlo Campaign', description: 'Become the face of a global campaign for a major apparel brand like Uniqlo.', requires: { stat: 'visual', value: 94, members: 1 }, reward: { money: 3000000, fanGain: 350000, repGain: 5 }, duration: 16, rarity: 0.08 },
+    },
+    tv: {
+        1: { id: 'tv_1', name: 'Local TV Guesting', description: 'A short guest appearance on a local morning show.', requires: { stat: 'charisma', value: 45, members: 3 }, reward: { money: 20000, fanGain: 5000 }, duration: 0, rarity: 1.0 },
+        2: { id: 'tv_2', name: 'Quiz Show Panelist', description: 'Join a panel of celebrities on a popular TV quiz show. Requires quick thinking.', requires: { stat: 'intelligence', value: 65, members: 1 }, reward: { money: 35000, fanGain: 8000 }, duration: 0, rarity: 0.8 },
+        3: { id: 'tv_3', name: 'Variety Show Special', description: 'Guest star on a prime-time variety show, participating in games and skits.', requires: { stat: 'variety', value: 70, members: 5 }, reward: { money: 150000, fanGain: 40000 }, duration: 0, rarity: 0.5 },
+        4: { id: 'tv_4', name: 'Drama Supporting Role', description: 'A recurring supporting role in a network television drama. A major commitment.', requires: { stat: 'charisma', value: 80, members: 1 }, reward: { money: 400000, fanGain: 120000, repGain: 2 }, duration: 12, rarity: 0.3 },
+        5: { id: 'tv_5', name: 'Lead Role in Prime-Time Drama', description: 'The lead role in a major "Getsu9" (Monday 9pm) drama. A star-making opportunity.', requires: { stat: 'charisma', value: 92, members: 1 }, reward: { money: 1500000, fanGain: 500000, repGain: 8 }, duration: 24, rarity: 0.08 },
+        6: { id: 'tv_6', name: 'Music Show MC', description: 'Host a segment on a weekly music show like Music Station.', requires: { stat: 'charisma', value: 75, members: 2 }, reward: { money: 80000, fanGain: 20000 }, duration: 0, rarity: 0.6 },
+        7: { id: 'tv_7', name: 'Cooking Show Guest Judge', description: 'Appear as a guest judge on a popular cooking competition.', requires: { stat: 'variety', value: 60, members: 1 }, reward: { money: 45000, fanGain: 12000 }, duration: 0, rarity: 0.7 },
+        8: { id: 'tv_8', name: 'Anime Movie Voice Acting Role', description: 'Voice a supporting character in a highly anticipated animated feature film.', requires: { stat: 'intelligence', value: 70, members: 1 }, reward: { money: 200000, fanGain: 90000 }, duration: 4, rarity: 0.25 },
+        9: { id: 'tv_9', name: 'Netflix Original Series Role', description: 'Land a key role in a new original series for a global streaming platform.', requires: { stat: 'charisma', value: 88, members: 1 }, reward: { money: 1000000, fanGain: 400000, repGain: 6 }, duration: 20, rarity: 0.1 },
+        10: { id: 'tv_10', name: 'Host Own TV Special', description: 'Host a one-hour TV special dedicated entirely to the group.', requires: { stat: 'charisma', value: 85, members: 7 }, reward: { money: 500000, fanGain: 150000, repGain: 4 }, duration: 0, rarity: 0.12 },
+    },
+    brand: {
+        1: { id: 'brand_1', name: 'Convenience Store Snack CM', description: 'A short commercial for a new snack sold in convenience stores nationwide.', requires: { stat: 'visual', value: 55, members: 3 }, reward: { money: 250000, fanGain: 15000 }, duration: 0, rarity: 0.9 },
+        2: { id: 'brand_2', name: 'Train Station Ad Campaign', description: 'The faces of a new ad campaign plastered across a major train station like Shinjuku or Shibuya.', requires: { stat: 'visual', value: 75, members: 5 }, reward: { money: 400000, fanGain: 50000 }, duration: 0, rarity: 0.6 },
+        3: { id: 'brand_3', name: 'Fast Food Chain CM', description: 'Star in a national TV commercial for a major fast-food chain.', requires: { stat: 'charisma', value: 70, members: 1 }, reward: { money: 750000, fanGain: 80000 }, duration: 0, rarity: 0.4 },
+        4: { id: 'brand_4', name: 'Major Beverage Campaign', description: 'Become the face of a new drink from a major company like Coca-Cola or Suntory. A huge national campaign.', requires: { stat: 'visual', value: 88, members: 1 }, reward: { money: 2000000, fanGain: 250000 }, duration: 12, rarity: 0.2 },
+        5: { id: 'brand_5', name: 'Luxury Brand Ambassador', description: 'A long-term contract as the official Japanese ambassador for a luxury brand like Gucci or Chanel.', requires: { stat: 'visual', value: 96, members: 1 }, reward: { money: 5000000, fanGain: 400000, repGain: 10 }, duration: 24, rarity: 0.1 },
+        6: { id: 'brand_6', name: 'Smartphone Launch CM', description: 'Be the face of a new smartphone launch from a major tech company.', requires: { stat: 'intelligence', value: 70, members: 1 }, reward: { money: 1200000, fanGain: 150000 }, duration: 0, rarity: 0.3 },
+        7: { id: 'brand_7', name: 'Video Game Collaboration', description: 'A member appears as a character or provides a theme song for a new video game.', requires: { stat: 'charisma', value: 75, members: 1 }, reward: { money: 800000, fanGain: 200000 }, duration: 0, rarity: 0.25 },
+        8: { id: 'brand_8', name: 'Airline Ambassador', description: 'Become the face of a major airline, featured in in-flight videos and airport ads.', requires: { stat: 'visual', value: 92, members: 3 }, reward: { money: 2500000, fanGain: 300000, repGain: 3 }, duration: 8, rarity: 0.15 },
+        9: { id: 'brand_9', name: 'Luxury Car Commercial', description: 'A sleek, high-prestige commercial for a luxury car brand.', requires: { stat: 'visual', value: 95, members: 1 }, reward: { money: 4000000, fanGain: 200000 }, duration: 0, rarity: 0.1 },
+        10: { id: 'brand_10', name: 'National Event Ambassador', description: 'Become the official ambassador for a major national event like a sports tournament or a world expo.', requires: { stat: 'charisma', value: 90, members: 5 }, reward: { money: 3000000, fanGain: 500000, repGain: 15 }, duration: 4, rarity: 0.05 },
+    }
+};
+export const livestreamTypes = [
+    { type: 'Gaming', stat: 'variety', baseFanGain: 1000, description: 'is playing a popular new game!', gaffeChance: 0.2 },
+    { type: 'Q&A', stat: 'intelligence', baseFanGain: 1500, description: 'is answering questions from fans!', gaffeChance: 0.15 },
+    { type: 'Makeup Tutorial', stat: 'visual', baseFanGain: 1200, description: 'is doing a cute makeup tutorial!', gaffeChance: 0.1 },
+    { type: 'Cooking', stat: 'variety', baseFanGain: 2000, description: 'is trying to cook a complicated recipe!', gaffeChance: 0.3 },
+    { type: 'Karaoke', stat: 'singing', baseFanGain: 1800, description: 'is singing fan-requested songs!', gaffeChance: 0.05 },
+];
+
+
 // --- NEW: Global Fan Calculation Helper ---
 export const getTotalFansForMember = (member) => {
     if (!member || !member.fans) return 0;
@@ -1477,6 +1524,8 @@ const [survivalShowHistory, setSurvivalShowHistory] = useState([]);
     const [completedPromotions, setCompletedPromotions] = useState({});
     const [completedBsidePromos, setCompletedBsidePromos] = useState({});
     const [sponsorships, setSponsorships] = useState([]);
+    const [activeStream, setActiveStream] = useState(null);
+
     const [showModal, setShowModal] = useState(null);
     const [mediaJobDoneThisWeek, setMediaJobDoneThisWeek] = useState(false);
     const [groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek] = useState(false);
@@ -2467,51 +2516,51 @@ const distributeFans = (amount, memberIds, conversionRate = 0.1) => {
   });
 };
 
-    const assignRandomTraining = () => {
-      const skills = ['singing', 'dancing', 'variety'];
-      getAllAvailableMembers(true).forEach(member => {
-        const randomSkill = skills[Math.floor(Math.random() * skills.length)];
-        updateMemberState(member.rosterId, m => ({ ...m, trainingFocus: randomSkill }));
-      });
-      setMessage('Assigned random training focus to all available members.');
-    };
-
-const assignLowestVocalDanceTraining = () => {
-    getAllAvailableMembers(true).forEach(member => {
+const assignRandomTraining = (membersToTrain) => {
+  // If no specific members are passed, default to all available members.
+  const members = Array.isArray(membersToTrain) && membersToTrain.length > 0 ? membersToTrain : getAllAvailableMembers(true);
+  const skills = ['singing', 'dancing', 'variety'];
+  members.forEach(member => {
+    const randomSkill = skills[Math.floor(Math.random() * skills.length)];
+    updateMemberState(member.rosterId, m => ({ ...m, trainingFocus: randomSkill }));
+  });
+  setMessage(`Assigned random training focus to ${members.length} members.`);
+};
+const assignLowestVocalDanceTraining = (membersToTrain) => {
+    const members = Array.isArray(membersToTrain) && membersToTrain.length > 0 ? membersToTrain : getAllAvailableMembers(true);
+    members.forEach(member => {
     const skills = {
         singing: member.singing || 0,
         dancing: member.dancing || 0,
     };
-
     const lowestSkill = Object.keys(skills).reduce((lowest, skill) => {
         return skills[skill] < skills[lowest] ? skill : lowest;
     }, 'singing');
 
     updateMemberState(member.rosterId, m => ({ ...m, trainingFocus: lowestSkill }));
     });
-    setMessage('Assigned training focus to lowest Vocal/Dance skill for all available members.');
+    setMessage(`Assigned training focus to lowest Vocal/Dance skill for ${members.length} members.`);
 };
-
-    const assignLowestSkillTraining = () => {
-      getAllAvailableMembers(true).forEach(member => {
-        const skills = {
-          singing: member.singing || 0,
-          dancing: member.dancing || 0,
-          variety: member.variety || 0,
-          visual: member.visual || 0,
-          charisma: member.charisma || 0,
-          intelligence: member.intelligence || 0
-        };
-
-        const lowestSkill = Object.keys(skills).reduce((lowest, skill) => {
-          return skills[skill] < skills[lowest] ? skill : lowest;
-        }, 'singing');
-
-        updateMemberState(member.rosterId, m => ({ ...m, trainingFocus: lowestSkill }));
-
-      });
-      setMessage('Assigned training focus to lowest skill for all available members.');
+const assignLowestSkillTraining = (membersToTrain) => {
+  const members = Array.isArray(membersToTrain) && membersToTrain.length > 0 ? membersToTrain : getAllAvailableMembers(true);
+  members.forEach(member => {
+    const skills = {
+      singing: member.singing || 0,
+      dancing: member.dancing || 0,
+      variety: member.variety || 0,
+      visual: member.visual || 0,
+      charisma: member.charisma || 0,
+      intelligence: member.intelligence || 0
     };
+
+    const lowestSkill = Object.keys(skills).reduce((lowest, skill) => {
+      return skills[skill] < skills[lowest] ? skill : lowest;
+    }, 'singing');
+
+    updateMemberState(member.rosterId, m => ({ ...m, trainingFocus: lowestSkill }));
+  });
+  setMessage(`Assigned training focus to lowest skill for ${members.length} members.`);
+};
 
         const getRoomType = (skill) => {
         const mapping = {
@@ -5565,7 +5614,7 @@ if (bSideTracks.length > 0 && Math.random() < 0.25) {
     const bsidePraises = [
         `Unpopular opinion: '${praisedBSide.name}' is the real A-side of this single. It's a masterpiece! Give the B-side unit an MV!`,
         `Okay but can we talk about how good '${praisedBSide.name}' is? The unit's vibe is perfect.`,
-        `The B-Side '${praisedBSide.name}' is on another level. I hope they perform it live.`
+        `The B-Side '${praisedBSide.name}' is on another level. I hope they perform it live.`,
         `No because '${praisedBSide.name}' cleared the title track so easily.`,
         `'${praisedBSide.name}' deserved the budget, the MV, and the promotions.`,
         `Be honest… you're replaying '${praisedBSide.name}' more than the A-side.`,
@@ -5685,7 +5734,7 @@ if (newGenInSenbatsu > senbatsuMembers.length / 2 && senbatsuMembers.length > 3)
 }
 
     // Add posts to state, keeping the list from getting too long
-    setFanPosts(prev => [...newPosts.map(p => ({...p, week, id: Date.now() + Math.random()})), ...prev].slice(0, 100));
+    setFanPosts(prev => [...newPosts.map((p, index) => ({...p, week, id: `${Date.now()}-${index}-${Math.random()}`})), ...prev].slice(0, 100));
 };
     
     const generateGraduationAnnouncementFanPosts = (member) => {
@@ -5714,10 +5763,10 @@ if (newGenInSenbatsu > senbatsuMembers.length / 2 && senbatsuMembers.length > 3)
         ];
 
         const shuffled = announcementReactions.sort(() => 0.5 - Math.random());
-        newPosts.push({ type: 'sad', text: shuffled[0], week: week, id: Date.now() + Math.random() });
-        newPosts.push({ type: 'sad', text: shuffled[1], week: week, id: Date.now() + Math.random() });
+        newPosts.push({ type: 'sad', text: shuffled[0], week: week, id: `${Date.now()}-0-${Math.random()}` });
+        newPosts.push({ type: 'sad', text: shuffled[1], week: week, id: `${Date.now()}-1-${Math.random()}` });
         if (shuffled.length > 2) {
-           newPosts.push({ type: 'sad', text: shuffled[2], week: week, id: Date.now() + Math.random() });
+        newPosts.push({ type: 'sad', text: shuffled[2], week: week, id: `${Date.now()}-2-${Math.random()}` });
         }
         
         setFanPosts(prev => [...newPosts, ...prev].slice(0, 100));
@@ -6489,9 +6538,19 @@ if (rookieStreakMembers.length > 0) {
                 result: 'Success' 
             };
         }
-    // --- FAN POST GENERATION ---
-    generateSenbatsuFanPosts(newSong, previousSingle, fullRoster);
-    // --- END FAN POST GENERATION ---
+// --- FAN POST GENERATION ---
+const generatedPosts = generateSenbatsuFanPosts(newSong, previousSingle, fullRoster);
+const announcementPost = {
+    id: `official-${newSong.id}`,
+    week: week,
+    username: newSong.targetGroup === 'main' ? groupName : newSong.targetGroup,
+    type: 'official',
+    text: `[ANNOUNCEMENT]\nOur new single, "${songData.name}", will be released next week!\nPlease give it your full support!\n#${(newSong.targetGroup === 'main' ? groupName : newSong.targetGroup).replace(/\s/g, '')} #${songData.name.replace(/\s/g, '')}`
+};
+
+const allNewPosts = [...(generatedPosts || []), announcementPost];
+// --- END FAN POST GENERATION ---
+
         const releaseMessage = `RELEASED: \"${songData.name}\"! It will begin charting next week. Initial Hype: +${newFansTotal.toLocaleString()} fans.`;
         addNotification({ type: 'success', message: releaseMessage });
         
@@ -6499,7 +6558,7 @@ if (rookieStreakMembers.length > 0) {
         generateNewChart([newSong]);
         // --- END: Daily Chart Generation ---
 
-        return { updatedMembers, updatedSisterGroups, updatedExchangeStudents, releaseMessage, newSong, updatedRivalGroups, newCollaboration };
+        return { updatedMembers, updatedSisterGroups, updatedExchangeStudents, releaseMessage, newSong, updatedRivalGroups, newCollaboration, newPosts: allNewPosts };
     };
     
     // --- Performance Management Logic ---
@@ -6688,6 +6747,11 @@ if (rookieStreakMembers.length > 0) {
         setHasPerformedThisWeek(true);
         setMessage(summaryMessage);
         addNotification({ type: 'Performance', message: summaryMessage });
+        // --- ADD THIS BLOCK ---
+        if (details.name.includes('Request Hour')) {
+            setLastRequestHourResult(null);
+        }
+        // --- END OF NEW BLOCK ---
 
         setModalData({
             title: `Concert "${newEntry.name}" Results`,
@@ -7277,7 +7341,7 @@ const generateHandshakeFanPosts = (handshakeData, currentSingle, previousSingle)
     const finalPosts = newPosts.slice(0, 10); // Limit to 7 posts per event
 
     if (finalPosts.length > 0) {
-        setFanPosts(prev => [...finalPosts.map(p => ({...p, week, id: Date.now() + Math.random()})), ...prev].slice(0, 100));
+        setFanPosts(prev => [...finalPosts.map((p, index) => ({...p, week, id: `${Date.now()}-${index}-${Math.random()}`})), ...prev].slice(0, 100));
     }
 };
 
@@ -8911,6 +8975,8 @@ if ((newWeek - 1) % 52 === 45) { // Trigger at the end of Week 45 for Week 46 re
         setMediaJobDoneThisWeek(false);
         setGroupMediaJobDoneThisWeek(false);
         setHasPerformedThisWeek(false);
+        generateSponsorships();
+        simulateLivestream();
 
         // --- LOCAL HELPER FUNCTIONS ---
         // These are special functions that only work inside `nextWeek`.
@@ -10551,6 +10617,119 @@ newStress += chemistryStressEffect;
                 chemistry: member.chemistry
             }));
         });
+
+            // --- NEW: Fan Buzz & Social Media Simulation ---
+            const checkedPairs = new Set(); // Prevents checking A-B and B-A
+            const newPostsThisWeek = [];
+            allMembersForWeeklyUpdate.forEach(member => {
+                // Member Posts
+                if (member.isAvailable && Math.random() < 0.05) { // 5% chance per week for an available member to post
+                    let postText = '';
+                    let postType = 'neutral';
+    
+                    if (member.morale > 85) {
+                        const happyPosts = [
+                            'Feeling great after practice today! Can\'t wait to show you all what we\'ve been working on. ✨',
+                            'Just had the best time with the members! I love this group so much. 🥰',
+                            'Thank you for all your support! Reading your letters gives me so much energy. 💖',
+                            'On my way home after a long day of rehearsals. So tired, but so happy!',
+                            'Just finished a photoshoot! The new outfits are super cute, I can\'t wait for you to see them!',
+                            'What\'s everyone\'s favorite song from our new single? I\'m curious!',
+                            'Thinking of all our fans today! Your support means the world to me.',
+                            'Working hard for our next concert! It\'s going to be legendary.',
+                            'Good morning! Let\'s all have a great day today. 😊',
+                            `Just grabbed some boba with my gen-mates! The best study break. 🧋`
+                        ];
+                        postText = happyPosts[Math.floor(Math.random() * happyPosts.length)];
+                        postType = 'happy';
+                        localUpdateMemberState(member.rosterId, m => ({ ...m, fans: { ...m.fans, casual: (m.fans.casual || 0) + 100 }}));
+                    } else if (member.morale < 20) {
+                        const sadPosts = [
+                            'It\'s been a tough week...',
+                            'Sometimes I wonder if I\'m good enough.',
+                            'I need to get some air.',
+                            'Feeling a little lost today.',
+                            'Sorry if I seemed off during the livestream earlier.',
+                            'I wish I could be stronger.',
+                            'I need some time to think.',
+                            'Is this really where I\'m supposed to be?',
+                            'It feels like I\'m letting everyone down.',
+                            'Trying my best isn\'t always enough, I guess.'
+                        ];
+                        postText = sadPosts[Math.floor(Math.random() * sadPosts.length)];
+                        postType = 'sad';
+                    }
+    
+                    if (postText) {
+                        newPostsThisWeek.push({
+                            id: `${Date.now()}-${member.rosterId}`,
+                            week: newWeek,
+                            username: member.name,
+                            type: 'member_post',
+                            text: postText
+                        });
+                    }
+                }
+    
+                // Fan Wars
+                Object.keys(member.chemistry || {}).forEach(otherId => {
+                    const pairKey = [member.rosterId, otherId].sort().join('-');
+                    if (checkedPairs.has(pairKey)) return;
+                    checkedPairs.add(pairKey);
+    
+                    const score = member.chemistry[otherId];
+                    if (score < -50 && Math.random() < 0.1) {
+                        const otherMember = allMembersForWeeklyUpdate.find(m => m.rosterId === otherId);
+                        if (!otherMember) return;
+    
+                        const memberOshiPosts = [
+                            `Honestly, ${otherMember.name} has been dragging the group down lately. Her performance was so lazy compared to ${member.name}.`,
+                            `Is it just me or does ${otherMember.name} always look bored on stage? ${member.name} is giving 110% and she just stands there.`,
+                            `${otherMember.name} gets all the good lines but can't even sing them properly. Give them to ${member.name} and see what a real vocalist can do.`,
+                            `Another magazine cover for ${otherMember.name}? She's clearly a management favorite. Meanwhile, actual talented members like ${member.name} get ignored.`,
+                            `I'm so tired of ${otherMember.name}'s fake personality during interviews. ${member.name} is always so genuine and sweet.`,
+                            `${otherMember.name}'s dancing is so stiff. She makes the whole group's choreography look bad. ${member.name} is a dance goddess, let her lead.`,
+                            `Just saw a fancam of ${otherMember.name} messing up the choreo AGAIN. How is she still in senbatsu when ${member.name} is perfect every time?`,
+                            `Unpopular opinion: ${otherMember.name} has zero stage presence. My eyes always go to ${member.name}, she's the real star.`,
+                            `The company needs to stop pushing ${otherMember.name} and give ${member.name} a chance. The talent gap is just embarrassing at this point.`,
+                            `All ${otherMember.name} does is look pretty. That's it. That's her only skill. ${member.name} can sing, dance, and is funny on variety shows.`
+                        ];
+
+                        const otherMemberStanPosts = [
+                            `Why is everyone hating on ${otherMember.name}? At least she's not as overrated as ${member.name}.`,
+                            `"${member.name} is a better performer"? Are we watching the same group? ${otherMember.name} has charisma, ${member.name} looks like a robot.`,
+                            `All ${member.name}'s fans do is tear down other members. Maybe focus on streaming for your fave instead of being so toxic.`,
+                            `Not you again... ${member.name} fans are the most annoying people in this fandom, I swear. ${otherMember.name} is unbothered.`,
+                            `${member.name} has the most boring personality, no wonder you have to attack other girls to make her seem interesting.`,
+                            `"Lazy"? ${otherMember.name} is just more elegant and composed. Not everyone has to jump around like ${member.name} to get attention.`,
+                            `If ${member.name} is so talented, why does she have so few fans? Check the numbers. ${otherMember.name} is more popular for a reason.`,
+                            `This is just jealousy because ${otherMember.name} is a natural ace and ${member.name} has to try so hard for half the result.`,
+                            `Leave ${otherMember.name} alone! She's always so kind to everyone. Your fave, ${member.name}, is the one who's always causing drama backstage.`,
+                            `Maybe if ${member.name} had half the visual appeal of ${otherMember.name}, she'd be more popular. Just saying.`
+                        ];
+    
+                        newPostsThisWeek.push({
+                            id: `${Date.now()}-war-${pairKey}-1-${Math.random()}`,
+                            week: newWeek,
+                            username: `${member.name.split(' ')[0]}Oshi`,
+                            type: 'angry',
+                            text: memberOshiPosts[Math.floor(Math.random() * memberOshiPosts.length)]
+                        });
+                         newPostsThisWeek.push({
+                            id: `${Date.now()}-war-${pairKey}-2-${Math.random()}`,
+                            week: newWeek,
+                            username: `${otherMember.name.split(' ')[0]}Stan`,
+                            type: 'angry',
+                            text: otherMemberStanPosts[Math.floor(Math.random() * otherMemberStanPosts.length)]
+                        });
+                    }
+                });
+            });
+
+            if (newPostsThisWeek.length > 0) {
+    setFanPosts(prev => [...newPostsThisWeek, ...prev].slice(0, 100));
+}
+
         sisterGroupsForUpdate = simulateSisterGroupActions(sisterGroupsForUpdate, newWeek, addNotificationInLoop);
         rivalsForUpdate = simulateRivalActions(rivalsForUpdate, newWeek, addNotificationInLoop);
 
@@ -13367,10 +13546,143 @@ const memberFans = isAce ? rival.ace.fans : 100000 + Math.floor(Math.random() * 
         });
     };
 
+const generateSponsorships = () => {
+    if (Math.random() > 0.65) { // 65% chance to generate new offers each week
+        const newOffers = [];
+        const maxOffers = 3;
+
+        // Flatten all tiers into a single array
+        const allTiers = Object.values(sponsorshipTiers).flatMap(category => Object.values(category));
+
+        for (let i = 0; i < (Math.random() * 3 + 1); i++) { // Generate 1-3 potential offers
+            if (newOffers.length >= maxOffers) break;
+
+            const offer = allTiers[Math.floor(Math.random() * allTiers.length)];
+            
+            // Rarity check
+            if (Math.random() > offer.rarity) continue;
+
+            // Check if an identical offer already exists
+            if (!sponsorships.some(existing => existing.id === offer.id) && !newOffers.some(existing => existing.id === offer.id)) {
+                newOffers.push({ ...offer, expires: week + 2 }); // Offers last for 2 weeks
+            }
+        }
+
+        if (newOffers.length > 0) {
+            setSponsorships(prev => [...prev, ...newOffers]);
+            addNotification({ type: 'Briefcase', message: `New job offers are available on the Buzz tab!` });
+        }
+    }
+    // Expire old offers
+    setSponsorships(prev => prev.filter(offer => offer.expires > week));
+};
+
+const acceptSponsorship = (offerId, memberIds) => {
+    const offer = sponsorships.find(s => s.id === offerId);
+    if (!offer) return setMessage("Offer not found.");
+
+    if (money < (offer.cost || 0)) {
+        return setMessage("Not enough money for this opportunity.");
+    }
+    setMoney(prev => prev - (offer.cost || 0));
+
+    // Pay out money reward immediately
+    if (offer.reward.money) {
+        setMoney(prev => prev + offer.reward.money);
+    }
+    // Distribute fan rewards
+    if (offer.reward.fanGain) {
+        distributeFans(offer.reward.fanGain, memberIds);
+    }
+    // Add reputation
+    if (offer.reward.repGain) {
+        setGroupReputation(prev => prev + offer.reward.repGain);
+    }
+
+    // Make members unavailable if the job has a duration
+    if (offer.duration > 0) {
+        memberIds.forEach(id => {
+            updateMemberState(id, m => ({
+                ...m,
+                isAvailable: false,
+                currentActivity: `On assignment: ${offer.name}`,
+                activityEnd: week + offer.duration
+            }));
+        });
+    }
     
+    // Get member objects for the result modal
+    const members = memberIds.map(id => getMemberById(id)).filter(Boolean);
+
+    // Remove the offer from the list
+    setSponsorships(prev => prev.filter(s => s.id !== offerId));
+    addNotification({ type: 'Success', message: `Accepted job: ${offer.name}!` });
+
+    // Set data for and show the result modal
+    setModalData({ offer, members });
+    setShowModal('sponsorshipResult');
+};
+
+const declineSponsorship = (offerId) => {
+    setSponsorships(prev => prev.filter(s => s.id !== offerId));
+    setMessage("Offer declined.");
+    setShowModal(null);
+};
+const simulateLivestream = () => {
+    // Reset the stream each week
+    setActiveStream(null);
+
+    // 40% chance of a stream happening each week
+    if (Math.random() > 0.6) return;
+    
+    const availableMembers = getAllAvailableMembers(true).filter(m => m.isAvailable);
+    if (availableMembers.length === 0) return;
+
+    // Higher charisma members are more likely to stream
+    const member = availableMembers.sort((a, b) => (b.charisma || 0) - (a.charisma || 0))[0];
+    if (Math.random() > (member.charisma || 50) / 150) return; // Member with 75 charisma has 50% chance
+
+    const streamType = livestreamTypes[Math.floor(Math.random() * livestreamTypes.length)];
+    
+    let fanGain = 0;
+    let message = '';
+    
+    const skill = member[streamType.stat] || 50;
+    const successRoll = Math.random();
+    const gaffeRoll = Math.random();
+
+    if (gaffeRoll < streamType.gaffeChance && skill < 50) {
+        // Gaffe
+        fanGain = -Math.floor(streamType.baseFanGain * 0.5);
+        message = `${member.name}'s ${streamType.type} stream was a bit awkward, losing some fans.`;
+        addNotification({ type: 'Alert', message });
+    } else {
+        // Success
+        fanGain = Math.floor(streamType.baseFanGain * (skill / 75));
+        message = `${member.name}'s ${streamType.type} stream was a success, gaining ${fanGain.toLocaleString()} fans!`;
+        addNotification({ type: 'Info', message });
+    }
+
+    if (fanGain !== 0) {
+        updateMemberState(member.rosterId, m => ({
+            ...m,
+            fans: {
+                ...m.fans,
+                casual: Math.max(0, (m.fans.casual || 0) + fanGain)
+            }
+        }));
+    }
+
+    setActiveStream({
+        member,
+        streamType,
+        message
+    });
+};
+
 return {
     // State
-    fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm, setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
+    activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm, setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
     // Firebase/Persistence
     getSavedGames, saveGame, loadGame,
     // Utilities

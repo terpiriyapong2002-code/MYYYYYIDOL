@@ -9,7 +9,7 @@ import { CSS } from '@dnd-kit/utilities';
 
 import DailyChartModal from './DailyChartModal';
 
-import { useIdolManager, getTotalFansForMember, getFormattedDateForWeek, productionTiers, getGraduationRisk, songTitles, generateSongTitle, electionSpeechTemplates, performanceTypes, scandalResponseOptions, tiers, getTheaterCapacity, getTicketPrice, hometowns, generateRandomHometown,  warehouseTiers, staffTiers, ambitions, varietyShowTypes, filmProjectTypes, scriptTiers, directorTiers, filmPromotionTypes, varietyWriterTiers, varietyProducerTiers } from "./hooks/useIdolManager";
+import { useIdolManager, getTotalFansForMember, getFormattedDateForWeek, productionTiers, getGraduationRisk, songTitles, generateSongTitle, electionSpeechTemplates, performanceTypes, scandalResponseOptions, tiers, getTheaterCapacity, getTicketPrice, hometowns, generateRandomHometown,  warehouseTiers, staffTiers, ambitions, varietyShowTypes, filmProjectTypes, scriptTiers, directorTiers, filmPromotionTypes, varietyWriterTiers, varietyProducerTiers, sponsorshipTiers, livestreamTypes } from "./hooks/useIdolManager";
 
 import React, { useState, useEffect, useCallback, useRef, memo } from 'react';
 import { 
@@ -31,7 +31,7 @@ const App = () => {
     // Destructure everything from the custom hook
     const {
     // State
-     fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm,setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, resolveSurvivalMission, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory,  merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
+    activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm,setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, resolveSurvivalMission, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory,  merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
     // Firebase/Persistence
     getSavedGames, saveGame, loadGame,
     // Utilities
@@ -75,9 +75,15 @@ const App = () => {
     // --- NEW STATE FOR SORT/FILTER ---
     const [memberSort, setMemberSort] = useState({ key: 'rank', asc: true });
     const [memberFilter, setMemberFilter] = useState('all');
+    const [trainingFilter, setTrainingFilter] = useState('all');
     const [selectedSingleForPromo, setSelectedSingleForPromo] = useState(null);
     const [pushMemberFilter, setPushMemberFilter] = useState('all');
-
+    const allMembers = getMainGroupRoster();
+    const mainGroupGenerations = [...new Set(allMembers.filter(m => !m.isSisterMember).map(m => m.generation).filter(Boolean))];
+    const sisterGroupDetails = sisterGroups.map(sg => ({
+        ...sg,
+        generations: [...new Set(allMembers.filter(m => String(m.groupId) === String(sg.id)).map(m => m.generation).filter(Boolean))]
+    }));
     
     useEffect(() => {
         const allChartingSingles = [
@@ -3788,7 +3794,7 @@ if (memberFilter !== 'all') {
     );
 };
     
-const MajorConcertModal = () => {
+const MajorConcertModal = ({ week }) => {
     // --- STATE ---
     const [concertName, setConcertName] = useState('');
     const [kageAna, setKageAna] = useState('');
@@ -3985,7 +3991,7 @@ const randomizeSetlist = (count = 16) => {
 
         setSetlist(finalSetlist);
         const topCount = lastRequestHourResult?.size || 100;
-        setConcertName(`${new Date().getFullYear()} Request Hour Best ${topCount}`);
+        setConcertName(`${Math.floor((week - 1) / 52) + 2025} Request Hour Best ${topCount}`);
         setMessage(`Request Hour Best ${topCount} setlist has been imported!`);    
     };
 
@@ -8656,6 +8662,176 @@ const FilmDetailsModal = ({ viewedFilm, setViewedFilm, setShowModal, getMemberBy
     );
 };
 
+const SponsorshipModal = () => {
+    if (!modalData) return null;
+
+    const offer = modalData;
+    const [selectedMemberIds, setSelectedMemberIds] = useState([]);
+    const availableMembers = getAllAvailableMembers(true).filter(m => m.isAvailable);
+
+    const toggleMember = (id) => {
+        const requiredMembers = offer.requires.members;
+        setSelectedMemberIds(prev => {
+            if (prev.includes(id)) {
+                return prev.filter(i => i !== id);
+            } else {
+                if (prev.length < requiredMembers) {
+                    return [...prev, id];
+                }
+                // If we are at capacity, replace the last added member
+                // This creates a more intuitive "single-select" feel when only 1 is needed
+                if (requiredMembers === 1) {
+                    return [id];
+                }
+                return prev; 
+            }
+        });
+    };
+
+    const handleAccept = () => {
+        if (selectedMemberIds.length !== offer.requires.members) {
+            setMessage(`This job requires exactly ${offer.requires.members} member(s).`);
+            return;
+        }
+        acceptSponsorship(offer.id, selectedMemberIds);
+    };
+    
+    // Find members who meet the stat requirement
+    const eligibleMembers = availableMembers.filter(m => m[offer.requires.stat] >= offer.requires.value);
+
+    return (
+        <ModalWrapper title="" maxWidth="max-w-3xl">
+            <div className="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 dark:from-slate-800 dark:to-gray-900 p-6 rounded-2xl shadow-2xl border border-white/50 dark:border-gray-700/50 -m-6">
+                <div className="text-center mb-6">
+                    <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-gradient-to-br from-pink-200 to-purple-200 flex items-center justify-center text-purple-500 shadow-lg">
+                        <Briefcase size={32} />
+                    </div>
+                    <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">
+                        {offer.name}
+                    </h2>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 max-w-lg mx-auto">{offer.description}</p>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div className="p-4 bg-white/50 dark:bg-black/20 rounded-xl shadow-inner border border-white/50 dark:border-black/20">
+                        <h4 className="font-bold text-pink-600 dark:text-pink-300 text-center text-lg mb-2">Requirements</h4>
+                        <div className="space-y-2 text-sm text-center">
+                            <p>Members needed: <strong className="text-pink-500">{offer.requires.members}</strong></p>
+                            <p>Required Stat: <strong className="text-pink-500">{offer.requires.stat.charAt(0).toUpperCase() + offer.requires.stat.slice(1)} ≥ {offer.requires.value}</strong></p>
+                            {offer.duration > 0 && <p>Duration: <strong className="text-pink-500">{offer.duration} weeks (unavailable)</strong></p>}
+                        </div>
+                    </div>
+                    <div className="p-4 bg-white/50 dark:bg-black/20 rounded-xl shadow-inner border border-white/50 dark:border-black/20">
+                        <h4 className="font-bold text-green-600 dark:text-green-300 text-center text-lg mb-2">Rewards</h4>
+                        <div className="space-y-2 text-sm text-center">
+                            {offer.reward.money > 0 && <p>Payment: <strong className="text-green-500">¥{offer.reward.money.toLocaleString()}</strong></p>}
+                            {offer.reward.fanGain > 0 && <p>Fan Gain: <strong className="text-green-500">+{offer.reward.fanGain.toLocaleString()}</strong></p>}
+                            {offer.reward.repGain > 0 && <p>Reputation: <strong className="text-green-500">+{offer.reward.repGain}</strong></p>}
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 className="font-semibold mb-3 text-center text-gray-700 dark:text-gray-300">Select Member(s) ({selectedMemberIds.length}/{offer.requires.members})</h4>
+                    <div className="max-h-60 overflow-y-auto border-2 border-dashed border-pink-200 dark:border-pink-800/50 p-2 rounded-xl bg-black/5 dark:bg-black/20">
+                        {eligibleMembers.length > 0 ? eligibleMembers.map(member => (
+                            <div key={member.rosterId} onClick={() => toggleMember(member.rosterId)} className={`p-2 rounded-lg cursor-pointer flex justify-between items-center transition-all mb-1 ${selectedMemberIds.includes(member.rosterId) ? 'bg-pink-100 dark:bg-pink-900/60 ring-2 ring-pink-300' : 'bg-white/80 dark:bg-gray-800/80 hover:bg-pink-50 dark:hover:bg-pink-900/30'}`}>
+                                <div>
+                                    <p className="font-semibold">{member.name}</p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">{offer.requires.stat}: <span className="font-bold">{Math.round(member[offer.requires.stat])}</span></p>
+                                </div>
+                                <div className={`w-5 h-5 rounded-full flex items-center justify-center border-2 ${selectedMemberIds.includes(member.rosterId) ? 'bg-pink-400 border-pink-500' : 'bg-gray-200 dark:bg-gray-600 border-gray-300'}`}>
+                                    {selectedMemberIds.includes(member.rosterId) && <Check size={12} className="text-white"/>}
+                                </div>
+                            </div>
+                        )) : <p className="text-center text-red-500 dark:text-red-400 p-4">You have no available members who meet the required stat of {offer.requires.value} {offer.requires.stat}.</p>}
+                    </div>
+                </div>
+
+                <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-pink-200/50 dark:border-pink-800/50">
+                    <button onClick={() => declineSponsorship(offer.id)} className="px-6 py-2 bg-gray-200/80 dark:bg-gray-600 text-gray-800 dark:text-gray-100 font-semibold rounded-full hover:bg-gray-300">Decline</button>
+                    <button onClick={handleAccept} disabled={selectedMemberIds.length !== offer.requires.members} className="px-8 py-2 bg-gradient-to-r from-pink-400 to-purple-500 text-white font-bold rounded-full shadow-lg hover:shadow-xl transition-all disabled:bg-gray-400 disabled:from-gray-400 disabled:to-gray-500 disabled:hover:shadow-none">Accept Offer</button>
+                </div>
+            </div>
+        </ModalWrapper>
+    );
+};
+
+const SponsorshipResultModal = () => {
+    if (!modalData) return null;
+    const { offer, members } = modalData;
+
+    const containerRef = useRef(null);
+
+    // Particle effect
+    useEffect(() => {
+        const container = containerRef.current;
+        if (!container) return;
+        const createParticle = () => {
+            const particle = document.createElement('div');
+            const emojis = ['✨', '💖', '🌟', '🎉'];
+            particle.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+            particle.className = 'particle-float';
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.transform = `scale(${Math.random() * 0.6 + 0.8})`;
+            particle.style.animationDuration = `${Math.random() * 4 + 3}s`;
+            particle.style.opacity = Math.random() * 0.5 + 0.3;
+            container.appendChild(particle);
+            setTimeout(() => particle.remove(), 7000);
+        };
+        const interval = setInterval(createParticle, 200);
+        return () => clearInterval(interval);
+    }, []);
+
+    const StatDisplay = ({ icon, label, value, valueColor }) => (
+        <div className="flex justify-between items-center bg-white/50 p-3 rounded-lg backdrop-blur-sm border border-white/30">
+            <span className="font-semibold flex items-center text-sm text-pink-800/80"><span className="mr-2 text-lg">{icon}</span>{label}:</span>
+            <span className={`font-bold text-lg ${valueColor}`}>{value}</span>
+        </div>
+    );
+
+    return (
+        <div ref={containerRef} className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in overflow-hidden">
+            <div className="relative w-full max-w-lg rounded-3xl bg-gradient-to-br from-pink-200/80 to-purple-200/70 backdrop-blur-xl border-2 border-white/70 shadow-2xl p-6 text-center text-pink-900 animate-in fade-in slide-in-from-bottom-5">
+                
+                <div className="absolute top-4 right-4 text-4xl animate-bounce text-purple-400">
+                    🎉
+                </div>
+
+                <h3 className="text-3xl font-serif font-bold text-purple-800 mb-2" style={{ textShadow: '1px 1px 3px rgba(255, 255, 255, 0.5)' }}>
+                    Job Complete!
+                </h3>
+                <p className="font-bold text-lg text-purple-700/80 mb-4">{offer.name}</p>
+                
+                <div className="space-y-3 my-6">
+                    {offer.reward.money > 0 && <StatDisplay icon="💰" label="Payment Received" value={`+¥${offer.reward.money.toLocaleString()}`} valueColor="text-green-700" />}
+                    {offer.reward.fanGain > 0 && <StatDisplay icon="👥" label="New Fans" value={`+${offer.reward.fanGain.toLocaleString()}`} valueColor="text-blue-600" />}
+                    {offer.reward.repGain > 0 && <StatDisplay icon="⭐" label="Reputation" value={`+${offer.reward.repGain}`} valueColor="text-yellow-600" />}
+                </div>
+
+                {members && members.length > 0 && (
+                    <div className="mt-6">
+                        <h4 className="font-bold text-sm uppercase text-purple-800/80 mb-3">Participating Members</h4>
+                        <div className="flex justify-center flex-wrap gap-2">
+                            {members.map(m => <span key={m.id} className="text-sm bg-white/50 backdrop-blur-sm font-semibold px-4 py-1.5 rounded-full">{m.name}</span>)}
+                        </div>
+                    </div>
+                )}
+                
+                <div className="flex justify-center mt-8">
+                    <button onClick={() => setShowModal(null)} className="bg-gradient-to-br from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 active:scale-95 text-white px-12 py-3 rounded-full font-bold shadow-lg shadow-pink-500/30 transition-all text-lg border-2 border-white/80">
+                        Awesome!
+                    </button>
+                </div>
+            </div>
+            
+            <style jsx>{`
+                .particle-float { position: absolute; top: 100%; pointer-events: none; animation: floatUpAndFade 7s linear forwards; font-size: 1.5rem; }
+                @keyframes floatUpAndFade { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; } }
+            `}</style>
+        </div>
+    );
+};
 
 const JankenTournamentStartModal = () => {
     const [includeOverseas, setIncludeOverseas] = useState(false);
@@ -10491,19 +10667,37 @@ if (!gameStarted) {
                                 <div className="my-4 p-3 bg-gray-200 dark:bg-gray-800 rounded-lg flex flex-wrap items-center justify-between gap-4">
                                     <div>
                                         <label htmlFor="member-filter" className="font-semibold text-sm mr-2">Filter by:</label>
-                                        <select
-                                            id="member-filter"
-                                            value={memberFilter}
-                                            onChange={e => setMemberFilter(e.target.value)}
-                                            className="p-1.5 border rounded-md text-sm bg-white dark:bg-gray-700 dark:border-gray-600"
-                                        >
-                                            <option value="all">All Groups</option>
+                                    <select
+                                        id="member-filter"
+                                        value={memberFilter}
+                                        onChange={e => setMemberFilter(e.target.value)}
+                                        className="p-1.5 border rounded-md text-sm bg-white dark:bg-gray-700 dark:border-gray-600"
+                                    >
+                                        <option value="all">All Groups</option>
+                                        <optgroup label="Groups">
                                             <option value="main">{groupName}</option>
-                                            {(sisterGroups || []).map(sg => <option key={`filter-sg-${sg.id}`} value={sg.name}>{sg.name}</option>)}
-                                            <optgroup label="Teams">
-                                                {(teams || []).map(t => <option key={`filter-team-${t.id}`} value={`team-${t.id}`}>{t.name}</option>)}
+                                            {(sisterGroups || []).map(sg => <option key={`filter-sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>)}
+                                        </optgroup>
+                                        <optgroup label="Teams">
+                                            {(teams || []).map(t => <option key={`filter-team-${t.id}`} value={`team-${t.id}`}>{t.name}</option>)}
+                                        </optgroup>
+                                        {mainGroupGenerations.length > 0 && (
+                                            <optgroup label={`${groupName} Generations`}>
+                                                {mainGroupGenerations.map(gen => (
+                                                    <option key={`main-gen-${gen}`} value={`main-gen-${gen}`}>{gen}</option>
+                                                ))}
                                             </optgroup>
-                                        </select>
+                                        )}
+                                        {sisterGroupDetails.map(sg => (
+                                            sg.generations.length > 0 && (
+                                                <optgroup key={`sg-gen-group-${sg.id}`} label={`${sg.name} Generations`}>
+                                                    {sg.generations.map(gen => (
+                                                        <option key={`sg-${sg.id}-gen-${gen}`} value={`sg-${sg.id}-gen-${gen}`}>{gen}</option>
+                                                    ))}
+                                                </optgroup>
+                                            )
+                                        ))}
+                                    </select>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <span className="font-semibold text-sm">Sort by:</span>
@@ -10511,27 +10705,41 @@ if (!gameStarted) {
                                         <button onClick={() => setMemberSort({ key: 'fans', asc: false })} className={`px-2 py-1 text-xs rounded ${memberSort.key === 'fans' ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-800 dark:bg-gray-700 dark:text-gray-200'}`}>Fans</button>
                                         <button onClick={() => setMemberSort({ key: 'avgSkill', asc: false })} className={`px-2 py-1 text-xs rounded ${memberSort.key === 'avgSkill' ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-800 dark:bg-gray-700 dark:text-gray-200'}`}>Avg Skill</button>
                                         <button onClick={() => setMemberSort({ key: 'age', asc: true })} className={`px-2 py-1 text-xs rounded ${memberSort.key === 'age' ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-800 dark:bg-gray-700 dark:text-gray-200'}`}>Age</button>
+                                        <button onClick={() => setMemberSort({ key: 'gradUrgency', asc: false })} className={`px-2 py-1 text-xs rounded ${memberSort.key === 'gradUrgency' ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-800 dark:bg-gray-700 dark:text-gray-200'}`}>Grad Urgency</button>
                                     </div>
                                 </div>
                                 {/* --- END NEW --- */}
                                 {/* Prepare and map through correctly grouped members */}
                                 {(() => {
-                                    let allMembers = getMainGroupRoster();
-
-                                    // 2. Filter Members
-                                    let filteredMembers = allMembers;
-                                    if (memberFilter !== 'all') {
-                                        if (memberFilter === 'main') {
-                                            filteredMembers = allMembers.filter(m => !m.isSisterMember);
-                                        } else if (memberFilter.startsWith('team-')) {
-                                            const teamId = parseInt(memberFilter.replace('team-', ''), 10);
-                                            const team = teams.find(t => t.id === teamId);
-                                            const teamMemberIds = new Set((team?.members || []).map(String));
-                                            filteredMembers = allMembers.filter(m => teamMemberIds.has(String(m.rosterId || m.id)));
-                                        } else { // It's a sister group name
-                                            filteredMembers = allMembers.filter(m => m.isSisterMember && m.displayGroupName === memberFilter);
+                                        // 2. Filter Members
+                                        let filteredMembers = allMembers;
+                                        if (memberFilter !== 'all') {
+                                            if (memberFilter.startsWith('team-')) {
+                                                const teamId = parseInt(memberFilter.replace('team-', ''), 10);
+                                                const team = teams.find(t => t.id === teamId);
+                                                const teamMemberIds = new Set((team?.members || []).map(String));
+                                                filteredMembers = allMembers.filter(m => teamMemberIds.has(String(m.rosterId || m.id)));
+                                            } else if (memberFilter === 'main') {
+                                                filteredMembers = allMembers.filter(m => !m.isSisterMember);
+                                            } else if (memberFilter.startsWith('main-gen-')) {
+                                                const gen = memberFilter.replace('main-gen-', '');
+                                                filteredMembers = allMembers.filter(m => !m.isSisterMember && m.generation === gen);
+                                            } else if (memberFilter.startsWith('sg-')) {
+                                                if (memberFilter.includes('-gen-')) {
+                                                    const [sgIdStr, gen] = memberFilter.replace('sg-', '').split('-gen-');
+                                                    const sgId = parseInt(sgIdStr, 10);
+                                                    filteredMembers = allMembers.filter(m => m.groupId === sgId && m.generation === gen);
+                                                } else {
+                                                    // This now correctly finds the sister group by its string ID from the dropdown
+                                                    const sg = sisterGroups.find(g => `sg-${g.id}` === memberFilter);
+                                                    if (sg) {
+                                                        filteredMembers = allMembers.filter(m => String(m.groupId) === String(sg.id));
+                                                    }
+                                                }
+                                            } else { // Fallback for filtering by a sister group's name
+                                                filteredMembers = allMembers.filter(m => m.isSisterMember && m.displayGroupName === memberFilter);
+                                            }
                                         }
-                                    }
 
                                     // 3. Sort Members
                                     filteredMembers.sort((a, b) => {
@@ -10554,6 +10762,11 @@ if (!gameStarted) {
                                                 valA = a.rank;
                                                 valB = b.rank;
                                                 break;
+                                            case 'gradUrgency':
+                                                valA = a.graduationUrgency || 0;
+                                                valB = b.graduationUrgency || 0;
+                                                break;
+
                                         }
 
                                         if (valA < valB) return memberSort.asc ? -1 : 1;
@@ -10711,65 +10924,140 @@ if (!gameStarted) {
                   </div>
                 )}
 {/* ----- TRAINING TAB ----- */}
-{currentTab === 'training' && (
-  <div>
-    <h2 className="text-xl font-bold mb-4 flex items-center"><Brain size={22} className="mr-2"/> Weekly Training Focus</h2>
-    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-      Assign a training focus for each available member. Members will gain a small amount of experience in their chosen skill each week. This happens automatically during the "Next Week" cycle.
-    </p>
-        <div className="flex justify-center gap-2 my-4">
-      <button 
-        onClick={assignRandomTraining}
-        className="px-4 py-2 text-sm font-semibold bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-colors"
-      >
-        <Shuffle size={16} className="inline mr-2"/>
-        Assign Random
-      </button>
-      <button 
-        onClick={assignLowestSkillTraining}
-        className="px-4 py-2 text-sm font-semibold bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition-colors"
-      >
-        <TrendingUp size={16} className="inline mr-2"/>
-        Train Lowest Skill
-      </button>
-      <button
-    onClick={assignLowestVocalDanceTraining}
-    className="px-4 py-2 text-sm font-semibold bg-purple-500 text-white rounded-lg shadow-md hover:bg-purple-600 transition-colors"
->
-    <TrendingUp size={16} className="inline mr-2"/>
-    Train Lowest Vocal/Dance
-</button>
+{currentTab === 'training' && (() => {
+    const allAvailableMembers = getAllAvailableMembers(true);
+    let filteredTrainingMembers = allAvailableMembers;
 
-    </div>
+    // Filter logic
+    if (trainingFilter !== 'all') {
+        if (trainingFilter.startsWith('team-')) {
+            const teamId = parseInt(trainingFilter.replace('team-', ''), 10);
+            const team = teams.find(t => t.id === teamId);
+            const teamMemberIds = new Set((team?.members || []).map(String));
+            filteredTrainingMembers = allAvailableMembers.filter(m => teamMemberIds.has(String(m.rosterId || m.id)));
+        } else if (trainingFilter === 'main') {
+            filteredTrainingMembers = allAvailableMembers.filter(m => !m.isSisterMember);
+        } else if (trainingFilter.startsWith('main-gen-')) {
+            const gen = trainingFilter.replace('main-gen-', '');
+            filteredTrainingMembers = allAvailableMembers.filter(m => !m.isSisterMember && m.generation === gen);
+        } else if (trainingFilter.startsWith('sg-')) {
+             if (trainingFilter.includes('-gen-')) {
+                const [sgIdStr, gen] = trainingFilter.replace('sg-', '').split('-gen-');
+                const sgId = parseInt(sgIdStr, 10);
+                filteredTrainingMembers = allAvailableMembers.filter(m => m.groupId === sgId && m.generation === gen);
+            } else {
+                const sgId = parseInt(trainingFilter.replace('sg-', ''), 10);
+                filteredTrainingMembers = allAvailableMembers.filter(m => m.groupId === sgId);
+            }
+        }
+    }
 
-    <div className="space-y-2 max-w-2xl mx-auto">
-      {getAllAvailableMembers(true).map(member => (
-        <div key={member.rosterId || member.id} className="p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm flex justify-between items-center border dark:border-gray-700">
-          <div>
-            <p className="font-bold">{member.name}</p>
-            <p className="text-xs text-gray-500 dark:text-gray-400">{getMemberGroupStatus(member)}</p>
-          </div>
-          <select
-            value={member.trainingFocus || 'none'}
-            onChange={(e) => handleSetTrainingFocus(member.rosterId, e.target.value)}
-            className="p-2 border rounded bg-gray-50 dark:bg-gray-700 dark:border-gray-600 focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="none">None</option>
-            <option value="singing">Vocal</option>
-            <option value="dancing">Dance</option>
-            <option value="variety">Variety</option>
-            <option value="visual">Visual</option>
-            <option value="charisma">Charisma</option>
-            <option value="intelligence">Intelligence</option>
-          </select>
+    return (
+      <div className="p-4 bg-gradient-to-br from-pink-100 via-blue-100 to-purple-100 dark:from-slate-800 dark:via-slate-900 dark:to-black rounded-lg shadow-inner">
+        <div className="text-center mb-6">
+            <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-blue-500 flex items-center justify-center gap-3">
+                <Brain size={28}/> Weekly Training Focus
+            </h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 max-w-2xl mx-auto">
+              Assign a training focus for each available member. Members will gain a small amount of experience in their chosen skill each week.
+            </p>
         </div>
-      ))}
-       {getAllAvailableMembers(true).length === 0 && (
-        <p className="text-center text-gray-500 p-8">No members available for training.</p>
-      )}
-    </div>
-  </div>
-)}
+        
+        <div className="flex justify-center gap-3 my-6">
+          <button 
+            onClick={() => assignRandomTraining(filteredTrainingMembers)}
+            className="px-5 py-2.5 text-sm font-semibold bg-gradient-to-r from-blue-400 to-cyan-400 text-white rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all"
+          >
+            <Shuffle size={16} className="inline mr-2"/>
+            Assign Random
+          </button>
+          <button 
+            onClick={() => assignLowestSkillTraining(filteredTrainingMembers)}
+            className="px-5 py-2.5 text-sm font-semibold bg-gradient-to-r from-green-400 to-teal-400 text-white rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all"
+          >
+            <TrendingUp size={16} className="inline mr-2"/>
+            Train Lowest Skill
+          </button>
+          <button
+            onClick={() => assignLowestVocalDanceTraining(filteredTrainingMembers)}
+            className="px-5 py-2.5 text-sm font-semibold bg-gradient-to-r from-purple-400 to-violet-400 text-white rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all"
+          >
+            <Mic2 size={16} className="inline mr-2"/>
+            Train Lowest Vocal/Dance
+          </button>
+        </div>
+
+        <div className="my-4 p-3 bg-white/50 dark:bg-black/20 backdrop-blur-sm rounded-xl flex flex-wrap items-center justify-center gap-4 max-w-2xl mx-auto border border-white/50 dark:border-white/10">
+            <div>
+                <label htmlFor="training-member-filter" className="font-semibold text-sm mr-2 text-gray-700 dark:text-gray-300">Filter:</label>
+                <select
+                    id="training-member-filter"
+                    value={trainingFilter}
+                    onChange={e => setTrainingFilter(e.target.value)}
+                    className="p-1.5 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-md text-sm shadow-sm focus:ring-2 focus:ring-pink-300 focus:outline-none"
+                >
+                    <option value="all">All Available Members</option>
+                    <optgroup label="Groups">
+                        <option value="main">{groupName}</option>
+                        {(sisterGroups || []).map(sg => <option key={`filter-sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>)}
+                    </optgroup>
+                    <optgroup label="Teams">
+                        {(teams || []).map(t => <option key={`filter-team-${t.id}`} value={`team-${t.id}`}>{t.name}</option>)}
+                    </optgroup>
+                    {mainGroupGenerations.length > 0 && (
+                        <optgroup label={`${groupName} Generations`}>
+                            {mainGroupGenerations.map(gen => (
+                                <option key={`main-gen-${gen}`} value={`main-gen-${gen}`}>{gen}</option>
+                            ))}
+                        </optgroup>
+                    )}
+                    {sisterGroupDetails.map(sg => (
+                        sg.generations.length > 0 && (
+                            <optgroup key={`sg-gen-group-${sg.id}`} label={`${sg.name} Generations`}>
+                                {sg.generations.map(gen => (
+                                    <option key={`sg-${sg.id}-gen-${gen}`} value={`sg-${sg.id}-gen-${gen}`}>{gen}</option>
+                                ))}
+                            </optgroup>
+                        )
+                    ))}
+                </select>
+            </div>
+        </div>
+
+        <div className="space-y-3 max-w-3xl mx-auto mt-6">
+          {filteredTrainingMembers.map(member => (
+            <div key={member.rosterId || member.id} className="p-4 bg-white/70 dark:bg-gray-800/60 backdrop-blur-md rounded-2xl shadow-lg flex justify-between items-center border border-white/50 dark:border-gray-700/50 transition-all duration-300 hover:shadow-xl hover:border-pink-200/80 dark:hover:border-pink-800/80">
+              <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-200 to-purple-200 dark:from-pink-800 dark:to-purple-800 flex items-center justify-center flex-shrink-0">
+                      <User size={24} className="text-white/80" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-lg text-gray-800 dark:text-gray-100">{member.name}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{getMemberGroupStatus(member)}{member.generation ? ` | ${member.generation}` : ''}</p>
+                  </div>
+              </div>
+              <select
+                value={member.trainingFocus || 'none'}
+                onChange={(e) => handleSetTrainingFocus(member.rosterId, e.target.value)}
+                className="p-3 border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 rounded-full text-sm font-semibold shadow-inner focus:ring-2 focus:ring-pink-300 focus:outline-none"
+              >
+                <option value="none">✨ None</option>
+                <option value="singing">🎤 Vocal</option>
+                <option value="dancing">💃 Dance</option>
+                <option value="variety">😂 Variety</option>
+                <option value="visual">💖 Visual</option>
+                <option value="charisma">🌟 Charisma</option>
+                <option value="intelligence">🧠 Intelligence</option>
+              </select>
+            </div>
+          ))}
+           {filteredTrainingMembers.length === 0 && (
+            <p className="text-center text-gray-500 dark:text-gray-400 p-8">No members match the current filter.</p>
+          )}
+        </div>
+      </div>
+    )
+})()}
 
         {/* ----- MANAGEMENT TAB ----- */}
         {currentTab === 'management' && (
@@ -11615,16 +11903,24 @@ if (!gameStarted) {
         )}
     </div>
     
-    {!(requestHourStatus && requestHourStatus.isActive) && (
-        <div className="mt-4">
+    <div className="mt-4">
+        {lastRequestHourResult ? (
+            <button
+                onClick={() => setShowModal('majorConcert')}
+                className="w-full p-3 text-base bg-yellow-400 hover:bg-yellow-300 text-black font-bold transition-colors animate-pulse"
+            >
+                <Trophy size={18} className="inline mr-2" />
+                Book Request Hour Concert!
+            </button>
+        ) : (
             <button
                 onClick={() => setShowModal('requestHourScope')}
                 className="w-full p-2 text-base bg-cyan-500 hover:bg-cyan-400 text-white font-bold transition-colors"
             >
                 Host Request Hour
             </button>
-        </div>
-    )}
+        )}
+    </div>
 </div>
 
             {/* Senbatsu Promotions - NEW PANEL */}
@@ -12056,69 +12352,135 @@ if (!gameStarted) {
                 </div>
             )}
 {/* ----- BUZZ TAB ----- */}
-{currentTab === 'buzz' && (
-    <div className="space-y-4">
-        <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold flex items-center">
-                <MessageSquare size={22} className="mr-2 text-cyan-500"/> Fan Buzz
-            </h2>
+{currentTab === 'buzz' && 
+(
+    <div className="space-y-6">
+        {/* On Air This Week */}
+        <div>
+            <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold flex items-center">
+                    <Mic2 size={22} className="mr-2 text-purple-500"/> Member Livestream
+                </h2>
+            </div>
+            {activeStream ? (
+                <div className="p-4 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/50 dark:to-pink-900/50 rounded-lg shadow-lg border border-purple-200/80 dark:border-purple-800/50">
+                    <div className="flex items-center">
+                        <div className="w-16 h-16 rounded-full bg-white/50 flex items-center justify-center mr-4">
+                            <User size={32} className="text-purple-500"/>
+                        </div>
+                        <div>
+                            <p className="font-bold text-lg text-purple-800 dark:text-purple-200">{activeStream.member.name}</p>
+                            <p className="text-sm text-purple-600 dark:text-purple-300">{activeStream.streamType.description}</p>
+                            <p className="text-xs italic text-purple-700/80 dark:text-purple-400/80 mt-1">"{activeStream.message}"</p>
+                        </div>
+                    </div>
+                </div>
+            ) : (
+                <div className="p-4 text-center text-gray-500 italic bg-gray-100 dark:bg-gray-800/50 rounded-lg">
+                    No members are streaming this week.
+                </div>
+            )}
         </div>
-        <div className="space-y-3 max-h-[75vh] overflow-y-auto pr-2">
-            {fanPosts.length > 0 ? fanPosts.map(post => {
-                const postTypeStyles = {
-                    happy: { icon: '💖', color: 'text-pink-500' },
-                    angry: { icon: '😡', color: 'text-red-500' },
-                    sad: { icon: '😭', color: 'text-blue-500' },
-                    neutral: { icon: '🤔', color: 'text-gray-500' },
-                };
-                const style = postTypeStyles[post.type] || postTypeStyles['neutral'];
-                const handle = `@${(post.username || 'idol_fan').toLowerCase().replace(/_/g, '')}_${String(post.id).slice(-4)}`;
 
-                // Generate fake engagement numbers
-                const likes = Math.floor(Math.random() * 500) + (post.type === 'happy' ? 200 : 0) + 10;
-                const retweets = Math.floor(likes / (Math.random() * 3 + 2));
+        {/* Offer Board */}
+        <div className="border-t pt-6">
+            <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold flex items-center">
+                    <Briefcase size={22} className="mr-2 text-blue-500"/> Offer Board
+                </h2>
+            </div>
+            <div className="space-y-3 max-h-[40vh] overflow-y-auto pr-2">
+                {sponsorships.length > 0 ? sponsorships.map(offer => (
+                    <div key={offer.id} className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                        <div>
+                            <p className="font-bold">{offer.name}</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">{offer.description}</p>
+                            <p className="text-xs text-gray-500 mt-1">Expires in: {offer.expires - week} weeks</p>
+                        </div>
+                        <button onClick={() => { setModalData(offer); setShowModal('sponsorshipDetails'); }} className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600">
+                            View
+                        </button>
+                    </div>
+                )) : <p className="text-center text-gray-500 italic p-8">No current offers. Check back next week!</p>}
+            </div>
+        </div>
 
-                return (
-                    <div key={post.id} className="p-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-                        <div className="flex items-start">
-                            {/* Avatar */}
-                            <div className={`w-10 h-10 rounded-full bg-gray-300 dark:bg-gray-600 mr-3 flex-shrink-0 flex items-center justify-center text-lg ${style.color}`}>
-                                {style.icon}
-                            </div>
-                            <div className="flex-1">
-                                {/* User Info */}
-                                <div className="flex items-center gap-2">
-                                    <span className="font-bold text-gray-900 dark:text-gray-100">{post.username || 'Idol Fan'}</span>
-                                    <span className="text-sm text-gray-500">{handle}</span>
-                                    <span className="text-sm text-gray-500">·</span>
-                                    <span className="text-sm text-gray-500">Wk {post.week}</span>
+        {/* Fan Buzz */}
+        <div className="border-t pt-6">
+            <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold flex items-center">
+                    <MessageSquare size={22} className="mr-2 text-cyan-500"/> Fan Buzz
+                </h2>
+            </div>
+            <div className="space-y-3 max-h-[75vh] overflow-y-auto pr-2">
+                {fanPosts.length > 0 ? fanPosts.map(post => {
+                    const postTypeStyles = {
+                        happy: { icon: '💖', color: 'text-pink-500' },
+                        angry: { icon: '😡', color: 'text-red-500' },
+                        sad: { icon: '😭', color: 'text-blue-500' },
+                        neutral: { icon: '🤔', color: 'text-gray-500' },
+                        official: { icon: '👑', color: 'text-yellow-500' },
+                        member_post: { icon: '✍️', color: 'text-green-500' },
+                    };
+                    let handle, displayName, avatarIcon, postBgClass;
+                    const style = postTypeStyles[post.type] || postTypeStyles['neutral'];
+                    avatarIcon = style.icon;
+
+                    if (post.type === 'official') {
+                        displayName = post.username;
+                        handle = `@${post.username.toLowerCase().replace(/[^a-z0-9]/g, '')}_official`;
+                        postBgClass = 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800/50';
+                    } else if (post.type === 'member_post') {
+                        displayName = post.username;
+                        handle = `@${post.username.toLowerCase().replace(/[^a-z0-9]/g, '')}_idol`;
+                        postBgClass = 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800/50';
+                    } else {
+                        displayName = post.username || 'Idol Fan';
+                        handle = `@${(displayName).toLowerCase().replace(/[^a-z0-9]/g, '')}_${String(post.id).slice(-4)}`;
+                        postBgClass = 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700';
+                    }
+
+                    const likes = Math.floor(Math.random() * 500) + (post.type === 'happy' ? 200 : 0) + 10;
+                    const retweets = Math.floor(likes / (Math.random() * 3 + 2));
+
+                    return (
+                        <div key={post.id} className={`p-4 border-b ${postBgClass}`}>
+                            <div className="flex items-start">
+                                <div className={`w-10 h-10 rounded-full bg-gray-300 dark:bg-gray-600 mr-3 flex-shrink-0 flex items-center justify-center text-lg ${style.color}`}>
+                                    {avatarIcon}
                                 </div>
-                                {/* Post Text */}
-                                <p className="text-sm text-gray-800 dark:text-gray-200 mt-1 whitespace-pre-wrap">{post.text}</p>
-
-                                {/* Engagement buttons */}
-                                <div className="flex items-center gap-6 mt-3 pt-2">
-                                    <div className="flex items-center gap-2 text-gray-500 hover:text-blue-500 cursor-pointer">
-                                        <MessageSquare size={16} />
-                                        <span className="text-xs font-semibold">{Math.floor(retweets / 4)}</span>
+                                <div className="flex-1">
+                                    <div className="flex items-center gap-2">
+                                        <span className="font-bold text-gray-900 dark:text-gray-100">{displayName}</span>
+                                        <span className="text-sm text-gray-500">{handle}</span>
+                                        <span className="text-sm text-gray-500">·</span>
+                                        <span className="text-sm text-gray-500">Wk {post.week}</span>
                                     </div>
-                                    <div className="flex items-center gap-2 text-gray-500 hover:text-green-500 cursor-pointer">
-                                        <Repeat size={16} />
-                                        <span className="text-xs font-semibold">{retweets}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 text-gray-500 hover:text-pink-500 cursor-pointer">
-                                        <Heart size={16} />
-                                        <span className="text-xs font-semibold">{likes}</span>
+                                    <p className="text-sm text-gray-800 dark:text-gray-200 mt-1 whitespace-pre-wrap">{post.text}</p>
+                                    <div className="flex items-center gap-6 mt-3 pt-2">
+                                        <div className="flex items-center gap-2 text-gray-500 hover:text-blue-500 cursor-pointer">
+                                            <MessageSquare size={16} />
+                                            <span className="text-xs font-semibold">{Math.floor(retweets / 4)}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2 text-gray-500 hover:text-green-500 cursor-pointer">
+                                            <Repeat size={16} />
+                                            <span className="text-xs font-semibold">{retweets}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2 text-gray-500 hover:text-pink-500 cursor-pointer">
+                                            <Heart size={16} />
+                                            <span className="text-xs font-semibold">{likes}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                )
-            }) : <p className="text-center text-gray-500 italic p-8">No fan buzz yet. Release a single to see what they think!</p>}
+                    )
+                }) : <p className="text-center text-gray-500 italic p-8">No fan buzz yet. Release a single to see what they think!</p>}
+            </div>
         </div>
     </div>
-)}
+)
+}
 
             {/* ----- MERCHANDISE TAB ----- */}
             {currentTab === 'merch' && (
@@ -12739,6 +13101,7 @@ if (!gameStarted) {
         {showModal === 'performancePrep' && <PerformanceModal />}
         {showModal === 'majorConcert' && (
     <MajorConcertModal
+        week={week}
         onConfirm={holdMajorConcert}
         onCancel={() => setShowModal(null)}
         venues={venues}
@@ -12800,6 +13163,8 @@ if (!gameStarted) {
         {showModal === 'filmPromotionResult' && <FilmPromotionResultModal />} 
         {showModal === 'filmography' && <FilmographyModal filmProjects={filmProjects} setViewedFilm={setViewedFilm} setShowModal={setShowModal} />}
         {showModal === 'filmDetails' && <FilmDetailsModal viewedFilm={viewedFilm} setViewedFilm={setViewedFilm} setShowModal={setShowModal} getMemberById={getMemberById} />}
+        {showModal === 'sponsorshipDetails' && <SponsorshipModal />}
+        {showModal === 'sponsorshipResult' && <SponsorshipResultModal />}
         {showModal === 'draftKaigi' && (
             <DraftKaigiModal 
                 draftKaigi={draftKaigi} 
