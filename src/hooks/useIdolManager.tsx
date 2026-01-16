@@ -12410,27 +12410,29 @@ const setupConceptBattle = (contestants, log) => {
             });
             // --- END NEW ---
     
-// Create pairs for the initial round of each block, handling odd numbers
-const initialBlockBrackets = {};
-for (const blockName of blockNames) {
-    const blockParticipants = blocks[blockName];
-    const pairs = [];
-    let i = 0;
+        // Create pairs for the initial round of each block, handling odd numbers by giving byes
+        const initialBlockBrackets = {};
+        for (const blockName of blockNames) {
+            const blockParticipants = [...blocks[blockName]]; // Make a mutable copy
+            const pairs = [];
 
-    // If the total number of participants in the block is odd and we have more than 2 people,
-    // create one group of 3 first to resolve the odd number.
-    if (blockParticipants.length % 2 === 1 && blockParticipants.length > 2) {
-        pairs.push(blockParticipants.slice(0, 3));
-        i = 3; // Start the rest of the pairing from the 4th person
-    }
-
-    // Create standard pairs of 2 for the remaining participants.
-    // If only one person is left, they will get a bye.
-    for (; i < blockParticipants.length; i += 2) {
-        pairs.push(blockParticipants.slice(i, i + 2));
-    }
-    initialBlockBrackets[blockName] = pairs;
-}
+            // If the number of participants is odd, give one a bye.
+            if (blockParticipants.length % 2 === 1) {
+                // Give a bye to a random member
+                const byeIndex = Math.floor(Math.random() * blockParticipants.length);
+                const [byeMember] = blockParticipants.splice(byeIndex, 1);
+                if (byeMember) {
+                    pairs.push([byeMember]); // A "pair" of one is a bye
+                }
+            }
+            
+            // Pair up the remaining (now even number of) participants
+            for (let i = 0; i < blockParticipants.length; i += 2) {
+                pairs.push(blockParticipants.slice(i, i + 2));
+            }
+            
+            initialBlockBrackets[blockName] = pairs;
+        }
     
             setJankenTournament({
                 participants: availableMembers,
@@ -12531,40 +12533,35 @@ for (const blockName of blockNames) {
 
     
     const createFinalSenbatsu = (winner, allEliminations, allParticipants) => {
+        // Start with the winner at rank 1
         const senbatsu = [{ ...winner, rank: 1 }];
-        const finalRound = Math.max(...allEliminations.filter(e => e.stage === 'finals').map(e => e.round));
+        let nextRank = 2;
 
-        const getLosersOfFinalRound = (roundNum) => {
-            return allEliminations
-                .filter(e => e.stage === 'finals' && e.round === roundNum)
-                .map(e => allParticipants.find(p => p.id === e.loserId))
-                .filter(Boolean);
-        };
+        // Get all losers from the 'finals' stage
+        const finalStageLosers = allEliminations
+            .filter(e => e.stage === 'finals')
+            .map(e => ({
+                ...e,
+                member: allParticipants.find(p => p.rosterId === e.loserId)
+            }))
+            .filter(e => e.member); // Ensure the member exists
 
-        // Rank 2: Loser of the final match
-        const finalLosers = getLosersOfFinalRound(finalRound);
-        if (finalLosers.length > 0) {
-            senbatsu.push({ ...finalLosers[0], rank: 2 });
+        // Sort losers by the round they were eliminated in, from latest to earliest
+        finalStageLosers.sort((a, b) => b.round - a.round);
+
+        // Assign ranks sequentially
+        for (const loss of finalStageLosers) {
+            // Stop if we have already filled the Top 16
+            if (nextRank > 16) break;
+
+            // Make sure we don't add the same member twice (in case of weird bracket)
+            if (!senbatsu.some(s => s.rosterId === loss.loserId)) {
+                senbatsu.push({ ...loss.member, rank: nextRank });
+                nextRank++;
+            }
         }
-
-        // Ranks 3-4: Losers of the semi-finals
-        const semiFinalLosers = getLosersOfFinalRound(finalRound - 1);
-        semiFinalLosers.forEach((member, index) => {
-            senbatsu.push({ ...member, rank: 3 + index });
-        });
-
-        // Ranks 5-8: Losers of the quarter-finals
-        const quarterFinalLosers = getLosersOfFinalRound(finalRound - 2);
-        quarterFinalLosers.forEach((member, index) => {
-            senbatsu.push({ ...member, rank: 5 + index });
-        });
-
-        // Ranks 9-16: Losers of the first final round (round of 16)
-        const roundOf16Losers = getLosersOfFinalRound(finalRound - 3);
-        roundOf16Losers.forEach((member, index) => {
-            senbatsu.push({ ...member, rank: 9 + index });
-        });
-
+        
+        // Sort by rank for final, clean output
         return senbatsu.sort((a, b) => a.rank - b.rank);
     };
 
@@ -12572,7 +12569,7 @@ for (const blockName of blockNames) {
         if (!jankenTournament || !jankenTournament.participants) return null;
         
         // Find the member's original index in the full participant list.
-        const participantIndex = jankenTournament.participants.findIndex(p => p.id === memberId);
+        const participantIndex = jankenTournament.participants.findIndex(p => p.rosterId === memberId);
         if (participantIndex === -1) return null;
         
         // The block is determined by their initial assignment.
@@ -12589,13 +12586,13 @@ for (const blockName of blockNames) {
         roundResults.forEach(outcome => {
             const pair = outcome.results.map(r => r.member);
             const winner = outcome.winner;
-            const losers = pair.filter(p => p.id !== winner.id);
+            const losers = pair.filter(p => p.rosterId !== winner.rosterId);
             losers.forEach(loser => {
                 newEliminations.push({ 
-                    loserId: loser.id, 
-                    winnerId: winner.id, 
+                    loserId: loser.rosterId, 
+                    winnerId: winner.rosterId, 
                     round: round, 
-                    block: stage === 'blocks' ? getBlockForMember(loser.id) : null,
+                    block: stage === 'blocks' ? getBlockForMember(loser.rosterId) : null,
                     stage: stage 
                 });
             });
@@ -12752,13 +12749,13 @@ for (const blockName of blockNames) {
                 }
                 // --- END NEW ---
                                 
-                const memberIdToNameMap = new Map(jankenTournament.participants.map(m => [m.id, m.name]));
+                const memberIdToNameMap = new Map(jankenTournament.participants.map(m => [m.rosterId, m.name]));
                 const eliminationMap = new Map(finalElims.map(e => [e.loserId, e]));
                 const senbatsuIds = new Set(senbatsuRanked.map(m => m.rosterId));
 
                 const detailedSenbatsu = senbatsuRanked.map(member => {
                     if (member.rank === 1) return { ...member, lostTo: null, eliminationRound: 'Winner' };
-                    const elimEvent = eliminationMap.get(member.id);
+                    const elimEvent = eliminationMap.get(member.rosterId);
                     if (!elimEvent) return member;
                     const lostToName = memberIdToNameMap.get(elimEvent.winnerId) || 'Unknown';
                     const roundName = elimEvent.stage === 'finals' ? `Finals Round ${elimEvent.round}` : `Block ${elimEvent.block} Round ${elimEvent.round}`;

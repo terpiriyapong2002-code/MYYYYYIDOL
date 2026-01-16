@@ -1767,7 +1767,12 @@ const allAvailableForSong = getAllAvailableMembers(true);
 
     const currentTrack = tracks[selectedTrackIndex];
     const selectableSenbatsu = selectableMembers.filter(m => (currentTrack?.members || []).map(String).includes(String(m.rosterId)));
-
+        const rowOrder = { '1st Row': 1, '2nd Row': 2, '3rd Row': 3, '4th Row': 4, '5th Row': 5 };
+        const sortedSelectableSenbatsu = [...selectableSenbatsu].sort((a, b) => {
+            const rowA = rowOrder[currentTrack?.lineup[String(a.rosterId)]] || 6;
+            const rowB = rowOrder[currentTrack?.lineup[String(b.rosterId)]] || 6;
+            return rowA - rowB;
+        });
 
 // --- NEW: Generate structured data for the new filter ---
 const mainGroupGenerations = [...new Set(selectableMembers.filter(m => (!m.isSisterMember || m.homeGroup === 'main')).map(m => m.generation).filter(Boolean))];
@@ -2383,18 +2388,18 @@ const renderSelectGraduatingMemberStep = () => {
                                     <thead className="sticky top-0 bg-gray-100 dark:bg-gray-900">
                                         <tr className="text-left"><th className="p-2 w-8"></th><th className="p-2 font-bold dark:text-gray-200">Member</th><th className="p-2 font-bold dark:text-gray-200">Row</th><th className="p-2 text-center font-bold dark:text-gray-200">Center</th></tr>
                                     </thead>
-                                        <SortableContext items={selectableSenbatsu.map(m => m.id)} strategy={verticalListSortingStrategy}>
-                                            <tbody>
-                                                {selectableSenbatsu.map(member => (
-                                                    <DraggableMemberRow
-                                                        key={member.rosterId}
-                                                        member={member}
-                                                        track={currentTrack}
-                                                        trackIndex={selectedTrackIndex}
-                                                    />
-                                                ))}
-                                            </tbody>
-                                        </SortableContext>
+                                    <SortableContext items={sortedSelectableSenbatsu.map(m => m.rosterId)} strategy={verticalListSortingStrategy}>
+                                        <tbody>
+                                            {sortedSelectableSenbatsu.map(member => (
+                                                <DraggableMemberRow
+                                                    key={member.rosterId}
+                                                    member={member}
+                                                    track={currentTrack}
+                                                    trackIndex={selectedTrackIndex}
+                                                />
+                                            ))}
+                                        </tbody>
+                                    </SortableContext>
                                 </table>
                                 {selectableSenbatsu.length === 0 && <p className="text-center text-gray-500 dark:text-gray-400 p-4">Select members to assign positions.</p>}
                             </div>
@@ -2426,13 +2431,13 @@ const renderSelectGraduatingMemberStep = () => {
             const currentTrack = albumTracks[selectedAlbumTrackIndex];
             const selectableSenbatsu = selectableMembers.filter(m => (currentTrack?.members || []).map(String).includes(String(m.rosterId)));
             const rowOrder = { '1st Row': 1, '2nd Row': 2, '3rd Row': 3, '4th Row': 4, '5th Row': 5 };
-            if(currentTrack && currentTrack.lineup) {
-                selectableSenbatsu.sort((a, b) => {
-                    const rowA = rowOrder[currentTrack.lineup[String(a.rosterId)]] || 6;
-                    const rowB = rowOrder[currentTrack.lineup[String(b.rosterId)]] || 6;
-                    return rowA - rowB;
-                });
-            }
+
+            // Create a new sorted array for rendering
+            const sortedSelectableSenbatsu = [...selectableSenbatsu].sort((a, b) => {
+                const rowA = rowOrder[currentTrack?.lineup[String(a.rosterId)]] || 6;
+                const rowB = rowOrder[currentTrack?.lineup[String(b.rosterId)]] || 6;
+                return rowA - rowB;
+            });
             return (
             <>
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -2680,14 +2685,14 @@ const renderSelectGraduatingMemberStep = () => {
                                         <tr className="text-left"><th className="p-2 w-8"></th><th className="p-2 font-bold dark:text-gray-200">Member</th><th className="p-2 font-bold dark:text-gray-200">Row</th><th className="p-2 text-center font-bold dark:text-gray-200">Center</th></tr>
 
                                     </thead>
-                                        <SortableContext items={selectableSenbatsu.map(m => m.id)} strategy={verticalListSortingStrategy}>
+                                        <SortableContext items={sortedSelectableSenbatsu.map(m => m.rosterId)} strategy={verticalListSortingStrategy}>
                                             <tbody>
-                                                {selectableSenbatsu.map(member => (
+                                                {sortedSelectableSenbatsu.map(member => (
                                                     <DraggableMemberRow
                                                         key={member.rosterId}
                                                         member={member}
                                                         track={currentTrack}
-                                                        trackIndex={selectedTrackIndex}
+                                                        trackIndex={selectedAlbumTrackIndex}
                                                     />
                                                 ))}
                                             </tbody>
@@ -10490,6 +10495,102 @@ const PyramidRanking = () => {
       </div>
     );
 
+const GenerationView = () => {
+    // 1. Get all members, including active and graduated
+    const allCurrentMembers = getMainGroupRoster();
+    const allGraduatedMembers = hallOfFame;
+    const allTimeMembers = [...allCurrentMembers, ...allGraduatedMembers];
+
+    // 2. Group by generation
+    const membersByGeneration = allTimeMembers.reduce((acc, member) => {
+        const gen = member.generation || 'Unknown';
+        if (!acc[gen]) {
+            acc[gen] = {
+                allMembers: [],
+                joinWeek: Infinity
+            };
+        }
+        acc[gen].allMembers.push(member);
+
+        // Find the earliest join week for this generation
+        const joinEvent = (member.teamHistory || []).find(e => e.event.includes('Joined'));
+        if (joinEvent && joinEvent.week < acc[gen].joinWeek) {
+            acc[gen].joinWeek = joinEvent.week;
+        }
+
+        return acc;
+    }, {});
+
+    // 3. For each generation, extract the required info
+    const generationData = Object.keys(membersByGeneration).map(genName => {
+        const genInfo = membersByGeneration[genName];
+        const genMembers = genInfo.allMembers;
+
+        const announcementDate = genInfo.joinWeek !== Infinity ? getFormattedDateForWeek(genInfo.joinWeek) : 'Unknown';
+
+        const totalMembers = genMembers.length;
+        const memberNames = genMembers.map(m => m.name).sort().join(', ');
+
+        const membersInTeams = teams.map(team => {
+            const teamMembers = genMembers.filter(m => !m.graduated && (m.teamId === team.id || (m.concurrentTeams || []).some(ct => ct.id === team.id)));
+            if (teamMembers.length === 0) return null;
+            return {
+                teamName: team.name,
+                count: teamMembers.length,
+                names: teamMembers.map(m => m.name).sort().join(', ')
+            };
+        }).filter(Boolean); // Remove null entries
+
+        const graduatedMembers = genMembers.filter(m => m.graduated);
+
+        return {
+            name: genName,
+            announcementDate,
+            totalMembers,
+            memberNames,
+            membersInTeams,
+            graduatedMembers: {
+                count: graduatedMembers.length,
+                names: graduatedMembers.map(m => m.name).sort().join(', ')
+            }
+        };
+    }).sort((a,b) => { // Sort generations
+        const getGenNumber = (name) => {
+            if (name === 'Unknown') return Infinity;
+            // Handle names like "1st Generation", "17th Generation", "2025 Draft Class"
+            const match = name.match(/(\d+)/);
+            return match ? parseInt(match[0], 10) : Infinity;
+        }
+        const numA = getGenNumber(a.name);
+        const numB = getGenNumber(b.name);
+        if (numA !== Infinity && numB !== Infinity) {
+            return numA - numB;
+        }
+        return a.name.localeCompare(b.name); // Fallback for non-numeric names
+    });
+
+    return (
+        <div className="space-y-6">
+            {generationData.map(gen => (
+                <div key={gen.name} className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md border dark:border-gray-700">
+                    <h3 className="text-xl font-bold text-pink-500">{gen.name}</h3>
+                    <ul className="mt-2 space-y-1 text-sm list-disc list-inside">
+                        {gen.announcementDate !== 'Unknown' && <li>Announced on {gen.announcementDate}</li>}
+                        <li><span className="font-semibold">Total Members ({gen.totalMembers})</span>: {gen.memberNames}</li>
+                        {gen.membersInTeams.map(team => (
+                            <li key={team.teamName}><span className="font-semibold">Now in Team {team.teamName} ({team.count})</span>: {team.names}</li>
+                        ))}
+                        {gen.graduatedMembers.count > 0 && (
+                            <li><span className="font-semibold">Now Graduated ({gen.graduatedMembers.count})</span>: {gen.graduatedMembers.names}</li>
+                        )}
+                    </ul>
+                </div>
+            ))}
+        </div>
+    );
+}
+
+
 const TabButton = ({ id, label, icon: Icon }) => (
     <button
         onClick={() => {
@@ -10652,6 +10753,9 @@ if (!gameStarted) {
                           <button onClick={() => setMemberView('ranking')} className={`px-2 py-1 text-xs rounded-md shadow-sm ${memberView === 'ranking' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}>
                               <Award size={14} className='inline mr-1'/> Ranking
                           </button>
+                            <button onClick={() => setMemberView('generations')} className={`px-2 py-1 text-xs rounded-md shadow-sm ${memberView === 'generations' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700'}`}>
+                                <Users size={14} className='inline mr-1'/> Generations
+                            </button>
                           <button onClick={() => setMemberView('graduated')} className={`px-2 py-1 text-xs rounded-md shadow-sm ${memberView === 'graduated' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}>
                               <GraduationCap size={14} className='inline mr-1'/> Graduated
                           </button>
@@ -10880,22 +10984,24 @@ if (!gameStarted) {
                             </>
                         ) : memberView === 'ranking' ? (
                             <PyramidRanking />
+                        ) : memberView === 'generations' ? (
+                            <GenerationView />
                         ) : (
                           <div>
                             <h2 className="text-xl font-bold mb-4 flex items-center"><GraduationCap size={22} className="mr-2"/> Hall of Fame ({hallOfFame.length})</h2>
                             {hallOfFame.length > 0 ? (
                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-{hallOfFame.map(m => (
+                                {hallOfFame.map(m => (
                                   <div key={m.id}
                                     className={`bg-white dark:bg-gray-900 rounded-lg shadow-md overflow-hidden cursor-pointer focus:outline-none transition-all duration-300 opacity-70 ${selectedMember && selectedMember.id === m.id ? 'border-2 border-blue-500 ring-2 ring-blue-200' : 'hover:shadow-lg'}`}
                                     onClick={() => setSelectedMember({ ...m, isAvailable: false })}>
                                     <div className="p-2">
                                         <div className="flex justify-between items-start mb-1">
-                <h3 className="text-xl font-bold flex items-center">
-                    {m.name}
-                    {m.isCurrentCenter && <Trophy size={16} className="ml-2 text-yellow-500" title="Current Center" />}
-                    {(Object.values(groupRoles).includes(m.id) || (m.teamId && groupRoles[m.teamId] === m.id)) && <Shield size={18} className="ml-2 text-purple-500" title="Captain" />}
-                </h3>
+                                            <h3 className="text-xl font-bold flex items-center">
+                                                {m.name}
+                                                {m.isCurrentCenter && <Trophy size={16} className="ml-2 text-yellow-500" title="Current Center" />}
+                                                {(Object.values(groupRoles).includes(m.id) || (m.teamId && groupRoles[m.teamId] === m.id)) && <Shield size={18} className="ml-2 text-purple-500" title="Captain" />}
+                                            </h3>
                                             <span className={`text-xs font-semibold px-1.5 py-0.5 rounded-full bg-gray-500 text-white`}>
                                                 Graduated
                                             </span>
