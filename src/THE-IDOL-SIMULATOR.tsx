@@ -76,6 +76,7 @@ const App = () => {
     const [memberSort, setMemberSort] = useState({ key: 'rank', asc: true });
     const [memberFilter, setMemberFilter] = useState('all');
     const [trainingFilter, setTrainingFilter] = useState('all');
+    const [memberSearch, setMemberSearch] = useState('');
     const [selectedSingleForPromo, setSelectedSingleForPromo] = useState(null);
     const [pushMemberFilter, setPushMemberFilter] = useState('all');
     const allMembers = getMainGroupRoster();
@@ -10501,73 +10502,87 @@ const GenerationView = () => {
     const allGraduatedMembers = hallOfFame;
     const allTimeMembers = [...allCurrentMembers, ...allGraduatedMembers];
 
-    // 2. Group by generation
-    const membersByGeneration = allTimeMembers.reduce((acc, member) => {
-        const gen = member.generation || 'Unknown';
-        if (!acc[gen]) {
-            acc[gen] = {
-                allMembers: [],
-                joinWeek: Infinity
-            };
-        }
-        acc[gen].allMembers.push(member);
+// 2. Group by generation, making a unique key for each group
+const membersByGeneration = allTimeMembers.reduce((acc, member) => {
+    const groupNameForGen = member.homeGroup === 'main' ? groupName : (member.homeGroup || groupName);
+    const gen = member.generation || 'Unknown';
+    const generationKey = `${groupNameForGen} - ${gen}`; // e.g., "NMB48 - 1st Generation"
 
-        // Find the earliest join week for this generation
-        const joinEvent = (member.teamHistory || []).find(e => e.event.includes('Joined'));
-        if (joinEvent && joinEvent.week < acc[gen].joinWeek) {
-            acc[gen].joinWeek = joinEvent.week;
-        }
-
-        return acc;
-    }, {});
-
-    // 3. For each generation, extract the required info
-    const generationData = Object.keys(membersByGeneration).map(genName => {
-        const genInfo = membersByGeneration[genName];
-        const genMembers = genInfo.allMembers;
-
-        const announcementDate = genInfo.joinWeek !== Infinity ? getFormattedDateForWeek(genInfo.joinWeek) : 'Unknown';
-
-        const totalMembers = genMembers.length;
-        const memberNames = genMembers.map(m => m.name).sort().join(', ');
-
-        const membersInTeams = teams.map(team => {
-            const teamMembers = genMembers.filter(m => !m.graduated && (m.teamId === team.id || (m.concurrentTeams || []).some(ct => ct.id === team.id)));
-            if (teamMembers.length === 0) return null;
-            return {
-                teamName: team.name,
-                count: teamMembers.length,
-                names: teamMembers.map(m => m.name).sort().join(', ')
-            };
-        }).filter(Boolean); // Remove null entries
-
-        const graduatedMembers = genMembers.filter(m => m.graduated);
-
-        return {
-            name: genName,
-            announcementDate,
-            totalMembers,
-            memberNames,
-            membersInTeams,
-            graduatedMembers: {
-                count: graduatedMembers.length,
-                names: graduatedMembers.map(m => m.name).sort().join(', ')
-            }
+    if (!acc[generationKey]) {
+        acc[generationKey] = {
+            allMembers: [],
+            joinWeek: Infinity,
+            groupName: groupNameForGen // Store for sorting
         };
-    }).sort((a,b) => { // Sort generations
-        const getGenNumber = (name) => {
-            if (name === 'Unknown') return Infinity;
-            // Handle names like "1st Generation", "17th Generation", "2025 Draft Class"
-            const match = name.match(/(\d+)/);
-            return match ? parseInt(match[0], 10) : Infinity;
+    }
+    acc[generationKey].allMembers.push(member);
+
+    // Find the earliest join week for this generation
+    const joinEvent = (member.teamHistory || []).find(e => e.event.includes('Joined'));
+    if (joinEvent && joinEvent.week < acc[generationKey].joinWeek) {
+        acc[generationKey].joinWeek = joinEvent.week;
+    }
+
+    return acc;
+}, {});
+
+// 3. For each generation, extract the required info
+const generationData = Object.keys(membersByGeneration).map(generationKey => {
+    const genInfo = membersByGeneration[generationKey];
+    const genMembers = genInfo.allMembers;
+
+    const announcementDate = genInfo.joinWeek !== Infinity ? getFormattedDateForWeek(genInfo.joinWeek) : 'Unknown';
+
+    const totalMembers = genMembers.length;
+    const memberNames = genMembers.map(m => m.name).sort().join(', ');
+
+    const membersInTeams = teams.map(team => {
+        const teamMembers = genMembers.filter(m => !m.graduated && (m.teamId === team.id || (m.concurrentTeams || []).some(ct => ct.id === team.id)));
+        if (teamMembers.length === 0) return null;
+        return {
+            teamName: team.name,
+            count: teamMembers.length,
+            names: teamMembers.map(m => m.name).sort().join(', ')
+        };
+    }).filter(Boolean); // Remove null entries
+
+    const graduatedMembers = genMembers.filter(m => m.graduated);
+
+    return {
+        name: generationKey, // Use the full key like "NMB48 - 1st Generation"
+        groupName: genInfo.groupName, // Pass this along for sorting
+        announcementDate,
+        totalMembers,
+        memberNames,
+        membersInTeams,
+        graduatedMembers: {
+            count: graduatedMembers.length,
+            names: graduatedMembers.map(m => m.name).sort().join(', ')
         }
-        const numA = getGenNumber(a.name);
-        const numB = getGenNumber(b.name);
-        if (numA !== Infinity && numB !== Infinity) {
-            return numA - numB;
-        }
-        return a.name.localeCompare(b.name); // Fallback for non-numeric names
-    });
+    };
+}).sort((a, b) => {
+    // Sort by group name first (main group always on top)
+    if (a.groupName === groupName && b.groupName !== groupName) return -1;
+    if (a.groupName !== groupName && b.groupName === groupName) return 1;
+    if (a.groupName !== b.groupName) return a.groupName.localeCompare(b.groupName);
+    
+    // If groups are the same, sort by generation number
+    const getGenNumber = (fullGenName) => {
+        const name = fullGenName.split(' - ')[1] || '';
+        if (name === 'Unknown') return Infinity;
+        const match = name.match(/(\d+)/);
+        return match ? parseInt(match[0], 10) : Infinity;
+    };
+
+    const numA = getGenNumber(a.name);
+    const numB = getGenNumber(b.name);
+
+    if (numA !== Infinity && numB !== Infinity) {
+        return numA - numB;
+    }
+    // Fallback for non-numeric names like "Draft Class"
+    return a.name.localeCompare(b.name);
+});
 
     return (
         <div className="space-y-6">
@@ -10802,6 +10817,17 @@ if (!gameStarted) {
                                             )
                                         ))}
                                     </select>
+                                <div>
+                                    <label htmlFor="member-search" className="font-semibold text-sm mr-2">Search:</label>
+                                    <input
+                                        id="member-search"
+                                        type="text"
+                                        placeholder="Find by name..."
+                                        value={memberSearch}
+                                        onChange={(e) => setMemberSearch(e.target.value)}
+                                        className="p-1.5 border rounded-md text-sm bg-white dark:bg-gray-700 dark:border-gray-600"
+                                    />
+                                </div>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <span className="font-semibold text-sm">Sort by:</span>
@@ -10845,7 +10871,14 @@ if (!gameStarted) {
                                             }
                                         }
 
-                                    // 3. Sort Members
+                                // Apply search filter
+                                if (memberSearch.trim()) {
+                                    filteredMembers = filteredMembers.filter(m =>
+                                        m.name.toLowerCase().includes(memberSearch.trim().toLowerCase())
+                                    );
+                                }
+
+                                        // 3. Sort Members
                                     filteredMembers.sort((a, b) => {
                                         let valA, valB;
                                         switch (memberSort.key) {
@@ -12760,9 +12793,9 @@ if (!gameStarted) {
       {getMemberGroupStatus(selectedMember)}
     </p>
 
-    <p className="text-gray-600 mb-4">
-    {`${selectedMember.generation ? `${selectedMember.generation} | ` : ''}${selectedMember.hometown} | ${selectedMember.personality} | ${selectedMember.nickname} | ${selectedMember.age} y.o.`}
-    </p>
+        <p className="text-gray-600 mb-4">
+        {`${selectedMember.generation ? `${selectedMember.generation} | ` : ''}${selectedMember.hometown} | ${selectedMember.personality} | ${selectedMember.nickname} | ${selectedMember.age} y.o. | ${selectedMember.yearsActive} years active`}
+        </p>
 
     {/* Stats */}
     <div className="mb-4">

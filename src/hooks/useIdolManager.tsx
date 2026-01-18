@@ -203,6 +203,62 @@ export const productionTiers = {
         "Kimi no Lesson", "Natsu no Kyoushitsu", "Yume no Kaidan", "Asa no Chime", "Bokura no Sensen",
         "Seifuku no Silhouette", "Garasu no Madobe", "Houkago no Kaze", "Kimi no Note", "Jugyou no Monologue"
     ],  
+    JPop: [
+        "Neon Sakura Dreams", "Kimi no Pixel Heart", "Midnight Konbini Love", "Starlight Bento Box", "Mirai Carousel",
+        
+        "Cotton Candy Signal", "Tokyo Rain Letters", "Hologram Sunshine", "Fuwafuwa Gravity", "Last Train to Hanabi",
+        
+        "Digital Kimono Girl", "Cherry Blossom Static", "Moonlight Ramune", "Byousoku Heartbeat", "Pastel Skyline Kiss",
+        
+        "Parallel World Confession", "Twilight Polaroid", "Kazefukeba Utopia", "Sugar Rush Stardust", "Glass Slippers at 7PM",
+        
+        "Koisuru Robot", "Dream Loop Telephone", "Blue Signal Fireworks", "Seifuku Memory", "Satellite Love Note",
+        
+        "Velvet Night Arcade", "Tomorrow Tastes Like You", "Cosmic Panda Parade", "Himitsu no Shuuhasuu", "After School Moonlight",
+        
+        "Electric Umbrella Girl", "Heartbeat in Kana", "Snowfall on the Crosswalk", "KiraKira Offline", "Star Map Confusion",
+        
+        "Koi wa Midoku", "Plastic Summer Tears", "Cherry Soda Afterimage", "Night Bus Daydream", "Pastel Error Message",
+        
+        "Falling in Soft Focus", "Tsuki to One Room", "Signal Lost, Love Found", "Dreaming in Vending Colors", "Cloud Level Heartache",
+        
+        "Byousoku Love Letter", "Invisible Ribbon Promise", "Late Night Emoji", "Starlight Homework Club", "Goodbye, Hello, Tomorrow"
+    ],
+    IdolCute: [
+        "KiraKira Smile Days", "FuwaFuwa Love Step", "Kimi to Tokimeki", "Hajimete no Pinky", "PoyoPoyo Heartbeat",
+        
+        "DokiDoki Candy Pop", "Sakurairo Sunshine", "Motto! Aishiteru", "NicoNico Miracle", "Kirarin Dream Jump",
+        
+        "Houkago Twinkle Time", "Koisuru Vanilla", "Lucky Lucky Star Kiss", "Purin no Yume", "Happy Idol Magic",
+        
+        "MuneKyun Parfait", "FureFure My Heart", "Popcorn Love Story", "PikaPika Tomorrow", "Yumeiro Step!",
+        
+        "Kimi ni Muchuu", "ChocoMint Smile", "Chance! Chance! Cupid", "Tokimeki Palette", "Marshmallow Days",
+        
+        "Smile Switch ON!", "HoshiFuru Countdown", "AiAi Rhythm", "Kirakira Melody", "Poppin’ Angel Time",
+        
+        "Himitsu no Idol Sign", "Sweet na Mirai", "Fuwa Love Wonderland", "Daisuki Horizon", "Heart no Asterisk",
+        
+        "Nyan Nyan Love Call", "PurePure Promise", "Colorful Kimi Theory", "Zutto Idol!"
+    ],
+    Classic2000sIdol: [
+        "Sakura no Chikai", "First Kiss wa Kaze no Naka", "Kimi ga Ita Kisetsu", "Taiyou no Melody", "Hatsukoi Bicycle",
+        
+        "Natsu no Signal", "Namida no Radius", "Ashita e no Tobira", "Hikari no Silhouette", "Yume Miru Koro",
+        
+        "Aozora no Yakusoku", "Houkago no Scenario", "Koi no Rhythm", "Mirai e Dash!", "Kaze ni Naritai",
+        
+        "Onegai! My Heart", "Hoshikuzu no Message", "Kimi to no Distance", "Sotsugyou no Haru", "Kokoro no Album",
+        
+        "Pink no Letter", "Ano Hi no Smile", "Kimi Iro no Sora", "Daisuki tte Iitai", "Tsubasa no Kakera",
+        
+        "Nijiiro Days", "Kimi to Step by Step", "Yasashii Kiseki", "Hajimari no Bell", "Seishun no Page",
+        
+        "Ashita ga Mieru", "Hoshi ni Negai wo", "Kimi dake no Melody", "Kagayaku Ashita e", "Eien no Moment",
+        
+        "Kimi ga Suki da yo", "Last Scene no Yakusoku", "Arigatou no Uta", "Haru Koi Memory"
+    ],
+       
     Introspective: [
         "Kokoro no Shinkansen", "Hitorigoto no Rhythm", "Kimi ga Inai Calendar", "Namida no Heikousen", "Uso no Nai Mirror",
         "Ame no Hi no Telescope", "Boku no Shiranai Kimi", "Kanashimi no Palette", "Digital no Namida", "Monochrome no Sekai",
@@ -3272,31 +3328,59 @@ const executeShuffle = (shuffleType, mode, manualAssignments = null) => {
             }
         }
 
-        const remainingUnassigned = [...unassignedMain, ...unassignedSister];
-        remainingUnassigned.forEach(member => {
-            if (!member.teamId) {
-                const homeGroupTeams = teamsCopy.filter(t => String(t.groupId) === String(member.groupId));
-                if (homeGroupTeams.length > 0) {
-                    const targetTeam = homeGroupTeams[Math.floor(Math.random() * homeGroupTeams.length)];
-                    finalAssignments[member.rosterId] = { primaryTeamId: targetTeam.id };
-                    teamSlots.find(s => s.id === targetTeam.id).filled++;
-                    const fromText = getFormattedFromLocation(member);
-                    shuffleResultData[targetTeam.id].shuffledIn.push({ memberName: member.name, fromTeam: fromText, moveType: 'promotion' });
-                }
-            } else {
-                const potentialShuffleTargets = teamsCopy.filter(t => String(t.groupId) === String(member.groupId) && t.id !== member.teamId);
-                if (potentialShuffleTargets.length > 0) {
-                    const targetTeam = potentialShuffleTargets[Math.floor(Math.random() * potentialShuffleTargets.length)];
-                    finalAssignments[member.rosterId] = { primaryTeamId: targetTeam.id };
-                    teamSlots.find(s => s.id === targetTeam.id).filled++;
-                    const fromText = getFormattedFromLocation(member);
-                    shuffleResultData[targetTeam.id].shuffledIn.push({ memberName: member.name, fromTeam: fromText, moveType: 'shuffle' });
-                } else {
-                    finalAssignments[member.rosterId] = { primaryTeamId: member.teamId };
-                    shuffleResultData[member.teamId].retained.push({ memberName: member.name });
-                }
+    // --- START: New Balanced Shuffle Logic ---
+
+    // 1. Sort all unassigned members by fan count, descending.
+    const remainingUnassigned = [...unassignedMain, ...unassignedSister]
+        .sort((a, b) => getTotalFansForMember(b) - getTotalFansForMember(a));
+
+    // 2. Get a list of teams that can be shuffled into.
+    const availableTeams = teamsCopy.filter(t => {
+        if (shuffleType === 'world') return true;
+        const sg = sisterGroupsCopy.find(sg => String(sg.id) === String(t.groupId));
+        return !sg || sg.type !== 'overseas';
+    }).sort((a,b) => a.id - b.id); // Sort for consistent order
+
+    // 3. Perform a "snake draft" to distribute members.
+    let teamIndex = 0;
+    let direction = 1; // 1 for down, -1 for up
+
+    remainingUnassigned.forEach(member => {
+        let assigned = false;
+        let attempts = 0;
+
+        // Find teams in the member's original group that have space.
+        const homeGroupTeams = availableTeams.filter(t => 
+            String(t.groupId) === String(member.groupId) &&
+            teamSlots.find(s => s.id === t.id).filled < teamSlots.find(s => s.id === t.id).capacity
+        );
+
+        // Prioritize assigning to a team within their own group.
+        while (!assigned && attempts < homeGroupTeams.length) {
+            const targetTeam = homeGroupTeams[teamIndex % homeGroupTeams.length];
+            
+            // This is a safety check in case the initial filtering somehow misses a full team.
+            const teamSlot = teamSlots.find(s => s.id === targetTeam.id);
+            if (teamSlot.filled < teamSlot.capacity) {
+                finalAssignments[member.rosterId] = { primaryTeamId: targetTeam.id };
+                teamSlot.filled++;
+                const fromText = getFormattedFromLocation(member);
+                const moveType = member.teamId ? 'shuffle' : 'promotion';
+                shuffleResultData[targetTeam.id].shuffledIn.push({ memberName: member.name, fromTeam: fromText, moveType });
+                assigned = true;
             }
-        });
+
+            // Move to the next team index for the next member
+            teamIndex += direction;
+            if (teamIndex >= homeGroupTeams.length || teamIndex < 0) {
+                direction *= -1;
+                teamIndex += direction;
+            }
+            attempts++;
+        }
+    });
+    // --- END: New Balanced Shuffle Logic ---
+
     } else if (mode === 'manual' && manualAssignments) {
         Object.keys(manualAssignments).forEach(rosterId => {
             const teamId = manualAssignments[rosterId];
@@ -9433,7 +9517,7 @@ if (requestHourStatus && requestHourStatus.isActive && newWeek > requestHourStat
             // --- GRADUATION & FINAL EVENTS ---
             const eventsForNextWeek = scheduledEvents.filter(e => e.week === newWeek);
             let shouldReturnAfterEvent = false;
-
+            let graduationOccurredThisWeek = false;
             if (eventsForNextWeek.length > 0) {
                 // 1. Separate graduation events from others to prioritize them.
                 const graduationEvents = eventsForNextWeek.filter(e => e.type === 'FINAL_GRADUATION');
@@ -9478,7 +9562,7 @@ if (requestHourStatus && requestHourStatus.isActive && newWeek > requestHourStat
                             
                             hallOfFameForUpdate.push(graduatedMember);
                             graduatingIdsThisWeek.push(memberId);
-                            
+                            graduationOccurredThisWeek = true;
                             priorityMessage = `${graduatedMember.name} has officially graduated and entered the Hall of Fame.`;
                                                         // --- NEW TEAM CLEANUP LOGIC ---
                             teamsForUpdate = teamsForUpdate.map(team => {
@@ -9552,7 +9636,7 @@ if (requestHourStatus && requestHourStatus.isActive && newWeek > requestHourStat
 
                 // 4. Clean up all of this week's events and potentially pause the game loop.
                 setScheduledEvents(prev => prev.filter(e => e.week !== newWeek));
-                if (shouldReturnAfterEvent) {
+                if (shouldReturnAfterEvent && !graduationOccurredThisWeek) {
                     return;
                 }
             }
@@ -10467,9 +10551,13 @@ if (member.teamId) {
             
             // Detailed Graduation Urgency Increase
             let gradUrgencyIncrease = 0;
+            // This adds a small, constant urgency increase every single week.
+            gradUrgencyIncrease += 0.25;
+
             if (newMorale < 30) { gradUrgencyIncrease += (member.ambition === 'Find Normal Happiness') ? 5 : 2; }
             if (newStamina < 15) { gradUrgencyIncrease += (member.ambition === 'Physical Health / Injury') ? 4 : 1; }
             if (newWeek > 1 && newWeek % 52 === 1) { // Yearly check
+                localUpdateMemberState(member.rosterId, m => ({ ...m, age: m.age + 1 }));
                 if (yearsActive >= member.graduationWindow.min) {
                     gradUrgencyIncrease += 5;
                     if (yearsActive >= member.graduationWindow.max) { gradUrgencyIncrease += 10; }
@@ -12086,6 +12174,7 @@ const simulateSurvivalShowWeek = () => {
 
     // Update state for a regular week
     setSurvivalShow(prev => ({ ...prev, week: newWeek, contestants, log: [...prev.log, ...newLog] }));
+    setWeek(prev => prev + 1);
 };
 
 const resolveSurvivalMission = () => {
