@@ -890,7 +890,8 @@ const ElectionResultModal = () => {
                             <div className="p-3 mt-2 border-t border-gray-200 dark:border-slate-700">
                                 <h4 className="font-bold text-sm mb-2 text-gray-800 dark:text-gray-200">Election Trivia</h4>
                                 <ul className="list-disc list-inside text-xs space-y-2 text-gray-600 dark:text-gray-300">
-                                    {trivia.map((item, index) => <li key={index}>{item}</li>)}
+                                    {trivia.map((item, index) => <li key={`${item}-${index}`}>{item}</li>)}
+
                                 </ul>
                             </div>
                         )}
@@ -923,9 +924,9 @@ const ElectionResultModal = () => {
                                             <RankChangeArrow member={currentMember} />
                                         </div>
                                     </div>
-<span className="text-[5.5px] sm:text-xs font-bold text-gray-500 dark:text-gray-400 tracking-widest">
-    {currentMember ? getMemberGroupStatus(currentMember) : '...'}
-</span>
+                                    <span className="text-[5.5px] sm:text-xs font-bold text-gray-500 dark:text-gray-400 tracking-widest">
+                                        {currentMember ? `${getMemberGroupStatus(currentMember)}${currentMember.generation ? ` | ${currentMember.generation}` : ''}` : '...'}
+                                    </span>
                                 </div>
                                 <div className="text-left sm:text-right mt-2 sm:mt-0">
                                     <div className="text-2xl sm:text-3xl font-black text-blue-500 dark:text-blue-400 font-mono">{displayVotes.toLocaleString()}</div>
@@ -2376,10 +2377,10 @@ const renderSelectGraduatingMemberStep = () => {
                                                         })()}
                                                     </span>
                                                 </span>
-                                                <span className="text-xs text-gray-500 dark:text-gray-400">
-                                                    Vocal:{Math.round(member.singing)} Dance:{Math.round(member.dancing)} Visual:{Math.round(member.visual)} Fans:{getTotalFansForMember(member).toLocaleString()}
-                                                    {getMemberWarning(member) && <span className="text-yellow-500 ml-2 font-semibold">{getMemberWarning(member)}</span>}
-                                                </span>
+                                                    <span className="text-[8px] text-gray-500 dark:text-gray-400">
+                                                        Vocal:{Math.round(member.singing)} Dance:{Math.round(member.dancing)} Visual:{Math.round(member.visual)} Urgency:{Math.round(member.graduationUrgency || 0)} Fans:{getTotalFansForMember(member).toLocaleString()}
+                                                        {getMemberWarning(member) && <span className="text-yellow-500 ml-2 font-semibold">{getMemberWarning(member)}</span>}
+                                                    </span>
                                             </div>
                                             <button onClick={() => toggleMember(member.rosterId)} className={`px-2 py-1 text-xs rounded ${isSelected ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`}>
                                                 {isSelected ? 'Remove' : 'Add'}
@@ -2673,10 +2674,10 @@ const renderSelectGraduatingMemberStep = () => {
                                                         })()}
                                                     </span>
                                                 </span>
-                                                <span className="text-xs text-gray-500 dark:text-gray-400">
-                                                    Vocal:{Math.round(member.singing)} Dance:{Math.round(member.dancing)} Visual:{Math.round(member.visual)} Fans:{getTotalFansForMember(member).toLocaleString()}
-                                                    {getMemberWarning(member) && <span className="text-yellow-500 ml-2 font-semibold">{getMemberWarning(member)}</span>}
-                                                </span>
+                                                        <span className="text-[8px] text-gray-500 dark:text-gray-400">
+                                                            Vocal:{Math.round(member.singing)} Dance:{Math.round(member.dancing)} Visual:{Math.round(member.visual)} Urgency:{Math.round(member.graduationUrgency || 0)} Fans:{getTotalFansForMember(member).toLocaleString()}
+                                                            {getMemberWarning(member) && <span className="text-yellow-500 ml-2 font-semibold">{getMemberWarning(member)}</span>}
+                                                        </span>
                                             </div>
                                             <button onClick={() => toggleMember(member.rosterId)} className={`px-2 py-1 text-xs rounded ${isSelected ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`}>
                                                 {isSelected ? 'Remove' : 'Add'}
@@ -10521,9 +10522,25 @@ const GenerationView = () => {
 
 // 2. Group by generation, making a unique key for each group
 const membersByGeneration = allTimeMembers.reduce((acc, member) => {
-    const groupNameForGen = member.homeGroup === 'main' ? groupName : (member.homeGroup || groupName);
+    let groupNameForGen;
+    // Find the first "Joined" event in the member's history
+    const joinEvent = (member.teamHistory || []).find(e => e.event && e.event.includes('Joined'));
+
+    if (joinEvent) {
+        // Parse the group name from an event string like "Joined AKB48 as..."
+        const match = joinEvent.event.match(/Joined (.*?) as/);
+        if (match && match[1]) {
+            groupNameForGen = match[1];
+        }
+    }
+
+    // If we couldn't find the original group (for old data), use the current homeGroup as a fallback
+    if (!groupNameForGen) {
+        groupNameForGen = member.homeGroup === 'main' ? groupName : (member.homeGroup || groupName);
+    }
+
     const gen = member.generation || 'Unknown';
-    const generationKey = `${groupNameForGen} - ${gen}`; // e.g., "NMB48 - 1st Generation"
+    const generationKey = `${groupNameForGen} - ${gen}`;
 
     if (!acc[generationKey]) {
         acc[generationKey] = {
@@ -10534,8 +10551,7 @@ const membersByGeneration = allTimeMembers.reduce((acc, member) => {
     }
     acc[generationKey].allMembers.push(member);
 
-    // Find the earliest join week for this generation
-    const joinEvent = (member.teamHistory || []).find(e => e.event.includes('Joined'));
+    // Now use the already-declared joinEvent to find the join week
     if (joinEvent && joinEvent.week < acc[generationKey].joinWeek) {
         acc[generationKey].joinWeek = joinEvent.week;
     }
@@ -10551,7 +10567,7 @@ const generationData = Object.keys(membersByGeneration).map(generationKey => {
     const announcementDate = genInfo.joinWeek !== Infinity ? getFormattedDateForWeek(genInfo.joinWeek) : 'Unknown';
 
     const totalMembers = genMembers.length;
-    const memberNames = genMembers.map(m => m.name).sort().join(', ');
+    const allMembers = genMembers;
 
     const membersInTeams = teams.map(team => {
         const teamMembers = genMembers.filter(m => !m.graduated && (m.teamId === team.id || (m.concurrentTeams || []).some(ct => ct.id === team.id)));
@@ -10561,16 +10577,16 @@ const generationData = Object.keys(membersByGeneration).map(generationKey => {
             count: teamMembers.length,
             names: teamMembers.map(m => m.name).sort().join(', ')
         };
-    }).filter(Boolean); // Remove null entries
+    }).filter(Boolean);
 
     const graduatedMembers = genMembers.filter(m => m.graduated);
 
     return {
-        name: generationKey, // Use the full key like "NMB48 - 1st Generation"
-        groupName: genInfo.groupName, // Pass this along for sorting
+        name: generationKey,
+        groupName: genInfo.groupName,
         announcementDate,
         totalMembers,
-        memberNames,
+        allMembers,
         membersInTeams,
         graduatedMembers: {
             count: graduatedMembers.length,
@@ -10608,7 +10624,17 @@ const generationData = Object.keys(membersByGeneration).map(generationKey => {
                     <h3 className="text-xl font-bold text-pink-500">{gen.name}</h3>
                     <ul className="mt-2 space-y-1 text-sm list-disc list-inside">
                         {gen.announcementDate !== 'Unknown' && <li>Announced on {gen.announcementDate}</li>}
-                        <li><span className="font-semibold">Total Members ({gen.totalMembers})</span>: {gen.memberNames}</li>
+                                <li className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+            <span className="font-semibold flex-shrink-0">Total Members ({gen.totalMembers}):</span>
+            {gen.allMembers.map(member => (
+                <div key={member.rosterId || member.id} className="flex-shrink-0">
+                    <span className={!member.graduated ? 'font-semibold' : ''}>{member.name}</span>
+                    <span className="text-xs text-gray-500 ml-1">
+                        {member.graduated ? '(Graduated)' : `(${getMemberGroupStatus(member)})`}
+                    </span>
+                </div>
+            ))}
+        </li>
                         {gen.membersInTeams.map(team => (
                             <li key={team.teamName}><span className="font-semibold">Now in Team {team.teamName} ({team.count})</span>: {team.names}</li>
                         ))}
@@ -12343,6 +12369,16 @@ if (!gameStarted) {
                                 <p>Staleness: <span className="font-bold">{staleness.toFixed(0)}</span></p>
                                 <p>Income: <span className="font-bold text-green-600">¥{(show.income || 0).toLocaleString()}</span></p>
                             </div>
+                            
+{/* --- NEW: Force Cancel for Bugged Shows --- */}
+{isActive && (seasonDuration - weeksAired < -5) && (
+    <div className="mt-2">
+        <button onClick={() => cancelVarietyShow(show.id)} className="w-full p-1 text-xs bg-red-600 text-white rounded font-bold">
+            <AlertTriangle size={14} className="inline-block mr-1" />
+            Force Cancel Bugged Show
+        </button>
+    </div>
+)}
                         {!isActive ? (
                             <div className="mt-2 flex gap-2">
                                 <button onClick={() => { setModalData(show); setShowModal('recastShow'); }} className="flex-1 p-1 text-xs bg-blue-500 text-white rounded">Recast & Renew</button>

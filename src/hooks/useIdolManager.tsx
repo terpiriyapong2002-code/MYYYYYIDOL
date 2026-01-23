@@ -793,7 +793,17 @@ export const electionSpeechTemplates = {
         "To those who said I couldn't do it—thank you for the motivation. And to my fans—thank you for the miracle. Let's start a new era for the group!",
         "I've felt so much pressure as the 'ace,' but tonight, that weight has turned into wings. I'm ready to fly higher than ever with all of you!",
         "The scenery from this podium is overwhelming. I promise not to let this be the peak. I’ll work harder than anyone else to take us even further!",
-        "I was just an ordinary girl until I met you. Thank you for giving me this crown. I'll protect this group and our bond with everything I have!"
+        "I was just an ordinary girl until I met you. Thank you for giving me this crown. I'll protect this group and our bond with everything I have!",
+        "I’ve dreamed of this moment since the day I joined, but the reality is so much more emotional. Thank you for making me the face of this group!",
+        "This number one belongs to the fans who stayed up late, who cheered until their voices were gone, and who never doubted me for a second.",
+        "A center's job is to make everyone else shine, too. I’ll use this position to show the world how amazing our whole group is!",
+        "I used to be so afraid of the spotlight, but tonight, I want to bathe in it. Thank you for giving me the confidence to stand here.",
+        "I promise to be a center who listens, who works the hardest, and who never forgets where she started. Let’s make history!",
+        "I can see every single light stick from here... it’s like a sea of stars. Thank you for being the light that guided me to the top.",
+        "To stand where the legends once stood... I feel so small, but your support makes me feel like I can take on any challenge!",
+        "I won't let this rank change who I am. I'll still be the same girl who loves to perform, just with a much bigger responsibility now.",
+        "They say it’s lonely at the top, but I don’t feel lonely at all because I know you’re all standing right here behind me.",
+        "Tonight, we didn't just win a rank—we proved that dreams really do come true if you have the best fans in the world!"
     ],    
     rankUp: [
         "My rank went up! Thank you so much for your support! Next year, I'm aiming even higher!",
@@ -805,8 +815,28 @@ export const electionSpeechTemplates = {
         "I've worked so hard this year, and seeing it pay off like this makes me want to work ten times harder tomorrow!",
         "I finally reached the Senbatsu! I've been looking at this wall for so long... thank you for helping me break through it!",
         "Every single vote was a message of 'keep going.' I heard you loud and clear! I'll keep climbing until I reach the top!",
-        "This isn't just a number to me; it's the strength you've given me to stand tall. Let's aim for the single digits next time!"
-    ],   
+        "This isn't just a number to me; it's the strength you've given me to stand tall. Let's aim for the single digits next time!",
+        "Is this real? I had to blink twice to make sure it was my name! You guys are actually incredible!",
+        "I’ve spent so many nights practicing in the back row... thank you for finally pulling me toward the light.",
+        "I promise to make this the year everyone remembers my name. Let’s make some noise from this new position!",
+        "I didn't think I'd be standing here tonight. My heart is beating so fast... can you hear it? Thank you for choosing me!",
+        "To my fans who never gave up on me even when I was at the bottom—this trophy belongs to us!",
+        "I'm not the best singer or the best dancer, but because of your love, I feel like the brightest star tonight.",
+        "I was so worried I'd stagnate, but you showed me that we still have so much room to grow together.",
+        "Being in the Undergirls was great, but the view from this rank is even more beautiful than I imagined!",
+        "I’m going to use this momentum to become someone you can truly be proud to call your 'Oshi'!",
+        "This rank is heavy with all your hard work and late nights. I’ll carry it with pride and never take it for granted.",
+        "Wait, did I really jump that many spots?! I think I’m going to cry... no, I’ll stay strong and smile for you!",
+        "I used to watch the seniors stand here and wonder if I’d ever join them. Today, you made that dream come true.",
+        "Even when I felt invisible, you were always watching me. Thank you for noticing my effort.",
+        "Let’s not stop here! This is just a pit stop on our way to the very center of the stage!",
+        "I’ll admit it—I cried myself to sleep last year. But tonight, I’m going to sleep with the biggest smile on my face.",
+        "The distance between me and the Center just got a little shorter. Keep an eye on me, okay?",
+        "I’m going to work so hard that next time, you won’t even have to worry about my rank. I’ll be up there for sure!",
+        "To everyone who voted until their fingers hurt... thank you. I feel your love so deeply right now.",
+        "I was just a normal girl before this, but you guys make me feel like I can change the world. Thank you for this rank!",
+        "This isn't my final goal. This is just the beginning of our new chapter. Let's go even higher together!"
+    ],    
     rankDown: [
         "I'm a little disappointed with this rank, but this feeling will only motivate me to work harder. Please continue to watch over me.",
         "This result is frustrating, but it's a sign that I still have room to grow. I'll come back stronger next year.",
@@ -817,8 +847,30 @@ export const electionSpeechTemplates = {
         "This year was tough, and this rank reflects that. But I’m going to take this frustration and turn it into the best performance of my life.",
         "I realized today that I may have been too comfortable. Thank you for this 'wake-up call.' I’m going to work like a rookie all over again!",
         "Even though the number went down, the love I felt from you this year was bigger than ever. I'll work hard so we can smile together next time.",
-        "I’ve hit a wall, but I won’t stop here. Please don’t give up on me yet—I promise to make you proud that you supported me."
-    ],    
+        "I’ve hit a wall, but I won’t stop here. Please don’t give up on me yet—I promise to make you proud that you supported me.",
+    
+        "Seeing this rank hurts, but it also reminds me why I started. I still love the stage, and I still want to chase my dream.",
+        "I know this isn’t the result we hoped for. I’ll reflect on myself honestly and come back with a clearer goal.",
+        "This rank shows me that effort alone isn’t enough—I need to become stronger in every way. I’ll do my best to change.",
+        "I’m disappointed in myself, but I won’t run away from this feeling. I’ll face it head-on and grow from it.",
+        "I’m grateful to everyone who stayed with me even when the results weren’t good. Your support means more than any number.",
+        "This ranking hurts my pride, but it also lights a fire in my heart. I won’t let this be the end of my story.",
+        "I feel frustrated, but also determined. Please believe that I’ll use this moment to become someone even better.",
+        "I couldn’t reach where I wanted this time, but I learned many things along the way. I’ll carry them forward.",
+        "This rank tells me I still have a long road ahead. I’m ready to walk it, step by step, without giving up.",
+        "I’m sorry for making you worry. I’ll stand back up properly and show you a performance you can truly be proud of.",
+    
+        "Even if I fell behind, my feelings haven’t changed. I still want to stand on that stage with a smile.",
+        "This result hurts, but it doesn’t erase everything we’ve built together. I’ll protect those memories and move forward.",
+        "I know I need to change, and I’m not afraid of that anymore. Thank you for giving me the chance to start again.",
+        "I may have lost ground, but I haven’t lost my resolve. I’ll keep challenging myself until I reach the top.",
+        "Please remember me not for this rank, but for how hard I’ll work from here on out.",
+        "I promise that the next time you see me here, I’ll be stronger, more confident, and smiling from my heart.",
+        "This ranking is painful, but it’s also honest. I’ll accept it and use it as my foundation.",
+        "I’m disappointed, but I’m not discouraged. My story doesn’t end here—it’s just turning the page.",
+        "Thank you for supporting me even when things were difficult. I’ll make sure your feelings are never wasted.",
+        "I’ll turn this regret into strength and meet you again with results that truly reflect my effort."
+    ],
     newRank: [
         "My name was called! I didn't think I would rank... thank you! This is the happiest day of my life!",
         "To be given a rank in this amazing group... I'm speechless. Thank you for finding me!",
@@ -829,7 +881,37 @@ export const electionSpeechTemplates = {
         "To my parents who supported my dream, and to the fans who voted for me—look! I finally made it into the rankings!",
         "I didn't have any confidence in myself, but this rank is the greatest gift you could ever give me. I’ll work hard to become a real idol now!",
         "I practiced my speech just in case, but now that I'm here, my mind is completely blank. I just... I love you all so much! Thank you!",
-        "This is the start of my story. Thank you for giving me the courage to keep going. I won't stop until I reach the very top!"
+        "This is the start of my story. Thank you for giving me the courage to keep going. I won't stop until I reach the very top!",
+        "Wait, is there another member with my name? No? It’s really me?! I... I don't know what to say! Thank you!",
+        "I’ve spent so many nights wondering if I was even cut out for this. Tonight, you gave me my answer.",
+        "I promise to work so hard that you'll never regret the day you decided to support me!",
+        "I saw my name on the screen and my heart just stopped. Is this what it feels like to have a dream come true?",
+        "To be honest, I almost gave up this year. Thank you for pulling me back and giving me a reason to stay.",
+        "I'm still just a newcomer, but I'll make sure to grow into this rank and become someone you can be proud of!",
+        "I can't wait to call my mom and tell her! She told me to just enjoy the experience, but look... I actually ranked!",
+        "The view from this microphone is so different from what I saw on TV. It's so bright... thank you for bringing me here.",
+        "I’ll never forget the sound of my name being called tonight. I’ll keep it in my heart forever.",
+        "I was the girl at the very end of the line, but today you brought me to the front. I’m so, so grateful!",
+        "I didn't think anyone was looking at me during the theater shows. I guess I was wrong! Thank you for watching!",
+        "I’m going to run home and practice even harder now. I want to show you that this wasn’t a fluke!",
+        "My legs are shaking so much I can barely stand... but I’m the happiest girl in the world right now!",
+        "Thank you for noticing me among so many talented members. I'll do my path, my way!",
+        "I want to tell everyone who feels invisible: don't give up! Because if I can stand here, you can do anything!",
+        "Is it okay for me to be this happy? I’ll spend the rest of my life repaying this kindness to you all.",
+        "I’ve always been the 'quiet one' in the back. Thank you for giving me a voice tonight!",
+        "I'm going to make this rank the first page of a very long and beautiful book. Let's write it together!",
+        "I used to practice my 'ranking speech' in my bedroom mirror when I was a fan... I can't believe I'm doing it for real!",
+        "I’m so small on this big stage, but because of your votes, I feel ten feet tall tonight!",
+        "Thank you for giving a girl like me a chance to shine. I won't let this opportunity go to waste!",
+        "I was so prepared to clap for everyone else... I didn't think I'd be the one getting the applause.",
+        "To the fans who found me in the corner of the stage—thank you for having the best eyes in the world!",
+        "This is my first trophy, but I'm going to work so hard that it won't be my last!",
+        "I'm crying so much my makeup is probably a mess... but I've never felt more beautiful than I do right now.",
+        "I'll make sure to mention this in my blog tonight! I have so much I want to say to you all!",
+        "Even if it's a low rank, to me, it's the number one rank in the whole world because you gave it to me.",
+        "I've been a trainee for so long... I thought this day would never come. Thank you for waiting for me.",
+        "I feel like I've finally become a real member of this family. Thank you for welcoming me home.",
+        "This is just the beginning! Watch me—I'm going to climb even higher next time!"
     ],    
     holdRank: [
         "Thank you for allowing me to keep this spot. It's an honor, and I'll continue to cherish it and work hard.",
@@ -841,8 +923,28 @@ export const electionSpeechTemplates = {
         "To be able to stand on this stage two years in a row at the same rank... it makes me realize how loyal and kind my fans are.",
         "I'll admit, I wanted to climb higher. But keeping this rank in such a competitive year is a miracle in itself. Thank you!",
         "This rank is a sign that I need to work even harder to break through my current self. Next year, let's move forward together!",
-        "I'm so relieved... I was so afraid of falling. Thank you for holding onto my hand and keeping me right here where I belong."
-    ],    
+        "I'm so relieved... I was so afraid of falling. Thank you for holding onto my hand and keeping me right here where I belong.",
+        "The competition was so fierce this time, I'm just so thankful you didn't let me go. I'm still here because of you!",
+        "I promise to make this rank shine even brighter than last year. I’ll be an idol you can always rely on!",
+        "It’s a bit frustrating not to move up, but I’m going to take this as a message that I still have more to show you.",
+        "I’m still standing in the same spot, but my heart feels so much stronger than it did last year. Thank you for the stability!",
+        "I was holding my breath until they called my name. Thank you for protecting my seat on this stage.",
+        "This isn't a standstill; it’s the foundation for our next big jump! I'm going to work on my 'plus-alpha' starting tomorrow!",
+        "Seeing you all smiling in the crowd makes me realize that this rank is exactly where I’m meant to be right now.",
+        "I'll use this year to polish myself so much that you'll have no choice but to push me to the next level next time!",
+        "I know how hard you worked to keep me here. I’ll make sure every performance I give is worth every single vote.",
+        "Holding steady is proof of your consistent love. That’s more precious to me than any sudden jump in numbers.",
+        "I'm not going to be discouraged. Keeping this rank means I have a solid home to return to. Thank you!",
+        "I’ll admit, I’m a little competitive... so let’s treat this as a 'recharge' year before we take over the world!",
+        "Thank you for not giving up on me. I’ll spend every day of this year making sure I’m worthy of this position.",
+        "The view from here is familiar, but because I’m with you, it looks brand new every single time.",
+        "I was so nervous I’d let you down by dropping, so this feels like a huge weight has been lifted. Thank you!",
+        "Let’s use this result as fuel. I want to become an idol who is indispensable to this group and to you.",
+        "My heart skipped a beat... I’m just so happy I get to keep walking this path alongside all of you.",
+        "I’m going to take this rank and turn it into the best performances you’ve ever seen. Just you wait!",
+        "I’ve learned that 'staying the same' actually requires a lot of effort from all of you. I’m so grateful for your hard work!",
+        "This is our base camp. Next year, we’re going to climb even higher, but for tonight—let's celebrate staying strong!"
+    ],
 };
 
 export const scandalResponseOptions = {
@@ -2015,7 +2117,13 @@ const [pendingMerch, setPendingMerch] = useState([]);
             setActiveTour(JSON.parse(data.activeTour || "null"));
             setPushedMembers(JSON.parse(data.pushedMembers || "[]"));
             setMusicVideos(JSON.parse(data.musicVideos || "[]"));
-            setVarietyShows(JSON.parse(data.varietyShows || "[]"));
+             const loadedShows = JSON.parse(data.varietyShows || "[]").map(show => ({
+                ...show,
+                seasonDuration: show.seasonDuration || 12,
+                weeksAired: show.weeksAired || 0,
+                isActive: show.isActive === undefined ? true : show.isActive
+            }));
+            setVarietyShows(loadedShows);
             setVarietyStudio(JSON.parse(data.varietyStudio || '{"level":0}'));
             setFilmStudio(JSON.parse(data.filmStudio || '{"level":0}'));
             setPhotoBooks(JSON.parse(data.photoBooks || "[]"));
@@ -2330,20 +2438,21 @@ if (foundExchangeStudent) {
         };
     }
     
-    // As a final fallback for any older data or edge cases, search all sister groups by numeric ID.
-    // This should not be the primary way to find sister group members.
-    for (const sg of (sisterGroups || [])) {
-        const member = (sg.members || []).find(m => String(m.id) === memberIdStr);
-        if (member) {
-            return {
-                ...member,
-                rosterId: `sg-${sg.id}-${member.id}`, // Correctly format the unique ID
-                isSisterMember: true,
-                displayGroupName: sg.name,
-                groupId: sg.id
-            };
-        }
+// As a final fallback for any older data or edge cases, search all sister groups by numeric ID.
+// This should not be the primary way to find sister group members.
+for (const sg of (sisterGroups || [])) {
+    if (!sg.members) continue; // Skip if a sister group has no members array
+    const member = sg.members.find(m => String(m.id) === memberIdStr);
+    if (member) {
+        return {
+            ...member,
+            rosterId: `sg-${sg.id}-${member.id}`, // Correctly format the unique ID
+            isSisterMember: true,
+            displayGroupName: sg.name,
+            groupId: sg.id
+        };
     }
+}
 
     return null; // Return null if no member is found anywhere.
 };
@@ -2644,39 +2753,55 @@ const assignLowestSkillTraining = (membersToTrain) => {
 
 
     const trainMember = (memberId, skill) => {
-      if (money < 500) return setMessage('Not enough money!');
-      const member = getMemberById(memberId);
-      if (!member || !member.isAvailable) return setMessage(member ? `${member.name} is unavailable.` : 'Member not found.');
-      
-      const room = getRoomType(skill);
-      if (!room) return setMessage('Invalid skill.');
+  if (money < 500) return setMessage('Not enough money!');
+  const member = getMemberById(memberId);
+  if (!member || !member.isAvailable) return setMessage(member ? `${member.name} is unavailable.` : 'Member not found.');
+  
+  const room = getRoomType(skill);
+  if (!room) return setMessage('Invalid skill.');
 
-      const improvement = 5 + (buildings.practiceRooms[room] || 0) * 2;
-      
-      updateMemberState(memberId, m => ({ 
-          ...m, 
-          [skill]: Math.min(100, (m[skill] || 0) + improvement), 
-          stamina: Math.max(0, (m.stamina || 0) - 15),
-          stress: Math.min(100, (m.stress || 0) + 10)
-      }));
-      
-      setMoney(prev => prev - 500);
-      setMessage(`Training completed! ${member.name}'s ${skill} increased by ${improvement}.`);
-    };
+  const improvement = 5 + (buildings.practiceRooms[room] || 0) * 2;
 
-    const restMember = (memberId) => {
-      const member = getMemberById(memberId);
-      if (!member || !member.isAvailable) return setMessage(member ? `${member.name} is unavailable.` : 'Member not found.');
-      
-      updateMemberState(memberId, m => ({ 
-          ...m, 
-          stamina: Math.min(100, (m.stamina || 0) + 40), 
-          stress: Math.max(0, (m.stress || 0) - 30),
-          morale: Math.min(100, (m.morale || 0) + 10) 
-      }));
-      setMessage(`${member.name} is rested.`);
-    };
+  const updateFn = m => ({ 
+      ...m, 
+      [skill]: Math.min(100, (m[skill] || 0) + improvement), 
+      stamina: Math.max(0, (m.stamina || 0) - 15),
+      stress: Math.min(100, (m.stress || 0) + 10)
+  });
 
+  // Update the main members list
+  updateMemberState(memberId, updateFn);
+
+  // ALSO update the selected member if they are the one being trained
+  if (selectedMember && (selectedMember.rosterId || selectedMember.id) === memberId) {
+    setSelectedMember(prev => updateFn(prev));
+  }
+
+  setMoney(prev => prev - 500);
+  setMessage(`Training completed! ${member.name}'s ${skill} increased by ${improvement}.`);
+};
+
+const restMember = (memberId) => {
+  const member = getMemberById(memberId);
+  if (!member || !member.isAvailable) return setMessage(member ? `${member.name} is unavailable.` : 'Member not found.');
+  
+  const updateFn = m => ({ 
+      ...m, 
+      stamina: Math.min(100, (m.stamina || 0) + 40), 
+      stress: Math.max(0, (m.stress || 0) - 30),
+      morale: Math.min(100, (m.morale || 0) + 10) 
+  });
+
+  // Update the main members list
+  updateMemberState(memberId, updateFn);
+  
+  // ALSO update the selected member if they are the one being rested
+  if (selectedMember && (selectedMember.rosterId || selectedMember.id) === memberId) {
+    setSelectedMember(prev => updateFn(prev));
+  }
+  
+  setMessage(`${member.name} is rested.`);
+};
     const restAllTired = () => {
         const restLogic = m => ({
           ...m,
@@ -4541,10 +4666,12 @@ if (exchangeStudents && exchangeStudents.length > 0) {
                 const lastYearRankedMembers = lastElection.results.slice(0, lastElection.spots);
                 const participatingIds = new Set(participants.map(p => p.rosterId || p.id));
                 const missingMembersByGroup = {}; // Object to group members
+                const graduatedIds = new Set(hallOfFame.map(m => m.rosterId || m.id));
 
                 lastYearRankedMembers.forEach(member => {
                     const memberId = member.rosterId || member.id;
-                    if (!participatingIds.has(memberId)) {
+                    if (!participatingIds.has(memberId) && !graduatedIds.has(memberId)) {
+
                         // This member from last year's ranks is not participating
                         const groupNameDisplay = member.displayGroupName ? member.displayGroupName.split(' | ')[0] : groupName;
                         let teamKey;
@@ -10473,7 +10600,18 @@ if (!member.isAvailable && member.exchangeProgram && newWeek >= member.exchangeP
         });
     }
 
-            const yearsActive = Math.floor(newWeek / 52);
+            let yearsActive = member.yearsActive || 0;
+const joinEvent = (member.teamHistory || []).find(e => e.event && e.event.includes('Joined'));
+if (joinEvent) {
+    yearsActive = Math.floor((newWeek - joinEvent.week) / 52);
+} else {
+    // Fallback for members without a join event (older saves)
+    // Increment their yearsActive once a year
+    if (newWeek > 1 && newWeek % 52 === 1) {
+        yearsActive += 1;
+    }
+}
+
 
             // Yearly stat decay for veterans
             if (newWeek > 52 && newWeek % 52 === 1 && yearsActive >= 4) {
