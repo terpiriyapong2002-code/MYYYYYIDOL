@@ -37,7 +37,7 @@ const App = () => {
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
-    confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference,  completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
+    pendingGraduationAnnouncement, setPendingGraduationAnnouncement, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference,  completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
 
     } = useIdolManager();
 
@@ -71,6 +71,14 @@ const App = () => {
         }
     }, [gameStarted, showModal]);
 
+    useEffect(() => {
+        if (pendingGraduationAnnouncement) {
+            setModalData(pendingGraduationAnnouncement);
+            setShowModal('graduationAnnouncement');
+            // Clear the pending state so it doesn't trigger again on the next re-render
+            setPendingGraduationAnnouncement(null);
+        }
+    }, [pendingGraduationAnnouncement]);
 
     // --- NEW STATE FOR SORT/FILTER ---
     const [memberSort, setMemberSort] = useState({ key: 'rank', asc: true });
@@ -159,6 +167,21 @@ const generateRandomTheaterSongName = () => {
 
     // Pass local state to the hook's startGame function
     const handleStartGame = () => startGame(startUsername, startGroupName);
+
+    const handleStartCampaignClick = () => {
+  setModalData({
+    title: "Start Election Campaign?",
+    message: "This will start a 4-week campaign, costing ¥100,000. Hardcore fan votes will be added to the pool. Are you sure you want to proceed?",
+    onConfirm: () => {
+      startElectionCampaign();
+      setShowModal(null);
+    },
+    onCancel: () => setShowModal(null),
+  });
+  setShowModal('confirm');
+};
+
+
     const handleFileLoad = (event) => { // <--- PASTE THE FUNCTION HERE
         const file = event.target.files[0];
         if (file) {
@@ -1078,24 +1101,15 @@ const AnnualAwardsResultModal = () => {
     const [physicalVersions, setPhysicalVersions] = useState(1);
     const [isElectionSingle, setIsElectionSingle] = useState(false);
     const [includeHandshakeTickets, setIncludeHandshakeTickets] = useState(false);
-
-    const generateUniqueRandomName = () => {
-        const allSongNames = [
-            ...(songs || []).map(s => s.name),
-            ...(sisterGroups || []).flatMap(sg => (sg.songs || []).map(s => s.name))
-        ];
-        const usedNames = new Set(allSongNames);
-        
-        // Try up to 20 times to find a unique name
-        for (let i = 0; i < 20; i++) {
-            const newName = generateSongTitle(); // This calls our new global function
-            if (!usedNames.has(newName)) {
-                return newName;
-            }
-        }
-        // If it can't find a unique one, just return a random one
-        return generateSongTitle();
-    };
+    
+const generateUniqueRandomName = () => {
+    const allSongNames = [
+        ...(songs || []).map(s => s.name),
+        ...(sisterGroups || []).flatMap(sg => (sg.songs || []).map(s => s.name))
+    ];
+    // The new generateSongTitle function now handles the uniqueness check internally
+    return generateSongTitle(null, allSongNames);
+};
 
 
         const baseCostPerVersion = 100000;
@@ -5535,6 +5549,7 @@ const SaveGameModal = () => {
 
     const GraduationPathModal = () => {
         const member = modalData;
+
         if (!member) return null;
 
         const isPopular = getTotalFansForMember(member) > 50000;
@@ -5555,14 +5570,14 @@ const SaveGameModal = () => {
             }
             
             const finalGraduationWeek = week + 12;
-            beginGraduationProcess(member.id, finalGraduationWeek);
+            beginGraduationProcess(member.rosterId, finalGraduationWeek);
             setMoney(prev => prev - grandSendOffCost);
 
             // 1. Schedule only the fixed, non-customizable events
             const gradEvents = [
-                { week: week + 8, type: 'FINAL_HANDSHAKE', memberId: member.id, memberName: member.name, title: `Final Handshake for ${member.name}` },
+                { week: week + 8, type: 'FINAL_HANDSHAKE', memberId: member.rosterId, memberName: member.name, title: `Final Handshake for ${member.name}` },
                 // The Major Concert is now scheduled manually by the player
-                { week: week + 12, type: 'FINAL_GRADUATION', memberId: member.id, memberName: member.name, title: `Official Graduation of ${member.name}` }
+                { week: week + 12, type: 'FINAL_GRADUATION', memberId: member.rosterId, memberName: member.name, title: `Official Graduation of ${member.name}` }
             ];
             setScheduledEvents(prev => [...prev, ...gradEvents]);
 
@@ -5585,12 +5600,13 @@ const SaveGameModal = () => {
         const selectQuietFarewell = () => {
 
             const finalGraduationWeek = week + 3;
-beginGraduationProcess(member.id, finalGraduationWeek);
+beginGraduationProcess(member.rosterId, finalGraduationWeek);
 
-            const gradEvents = [
-                { week: week + 2, type: 'FINAL_THEATER_SHOW', memberId: member.id, memberName: member.name, title: `Final Theater Show for ${member.name}` },
-                { week: week + 3, type: 'FINAL_GRADUATION', memberId: member.id, memberName: member.name }
-            ];
+
+        const gradEvents = [
+            { week: week + 2, type: 'FINAL_THEATER_SHOW', memberId: member.rosterId, memberName: member.name, title: `Final Theater Show for ${member.name}` },
+            { week: week + 3, type: 'FINAL_GRADUATION', memberId: member.rosterId, memberName: member.name }
+        ];
 
             setScheduledEvents(prev => [...prev, ...gradEvents]);
 
@@ -5599,7 +5615,7 @@ beginGraduationProcess(member.id, finalGraduationWeek);
             setShowModal(null);
             // I have also removed the "setWeek(prev => prev + 1)" line that was here, as it can cause bugs.
         };
-
+        
         const selectRenegotiate = () => {
             const negotiationCost = 100000 + Math.floor(getTotalFansForMember(member) * 5);
 
@@ -5616,7 +5632,8 @@ beginGraduationProcess(member.id, finalGraduationWeek);
             setMoney(prev => prev - negotiationCost);
 
             // Reset the graduating member's urgency and boost their morale
-            updateMemberState(member.id, m => ({ 
+            updateMemberState(member.rosterId, m => ({
+ 
                 ...m, 
                 isGraduating: false,
                 graduationUrgency: 20, // Reset to a low, safe value
@@ -11320,9 +11337,9 @@ if (!gameStarted) {
 
                 <h4 className='font-semibold text-sm mt-2 mb-0.5'>Strategic Actions:</h4>
 
-                <button onClick={startElectionCampaign} disabled={isCampaignActive} className="w-full p-1.5 text-sm bg-yellow-500 text-black rounded font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed">
-                    Start Election Campaign (¥100k)
-                </button>
+            <button onClick={handleStartCampaignClick} disabled={isCampaignActive} className="w-full p-1.5 text-sm bg-yellow-500 text-black rounded font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed">
+                Start Election Campaign (¥100k)
+            </button>
 
                 <button onClick={createElectionPosterForAll} disabled={!isCampaignActive} className="w-full p-1.5 text-sm bg-yellow-200 text-yellow-800 rounded font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed">
                     Create All Posters (¥5k/member)

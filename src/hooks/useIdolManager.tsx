@@ -513,19 +513,29 @@ export const productionTiers = {
         ],    
     };
 
-    export const generateSongTitle = (theme) => {
+export const generateSongTitle = (theme, existingTitles = []) => {
+    let newTitle = '';
+    let attempts = 0;
+    const usedTitles = new Set(existingTitles);
+
+    do {
         if (theme && songTitles[theme]) {
-            // If a specific theme is requested (like "Graduation"), pick from that list.
+            // If a specific theme is requested, pick from that list.
             const themeSongs = songTitles[theme];
-            return themeSongs[Math.floor(Math.random() * themeSongs.length)];
+            newTitle = themeSongs[Math.floor(Math.random() * themeSongs.length)];
         } else {
             // Pick a random theme from all themes EXCEPT "Graduation".
             const availableThemes = Object.keys(songTitles).filter(t => t !== 'Graduation');
             const randomTheme = availableThemes[Math.floor(Math.random() * availableThemes.length)];
             const themeSongs = songTitles[randomTheme];
-            return themeSongs[Math.floor(Math.random() * themeSongs.length)];
+            newTitle = themeSongs[Math.floor(Math.random() * themeSongs.length)];
         }
-    };
+        attempts++;
+        // Keep trying if the title is already used, with a failsafe of 50 attempts
+    } while (usedTitles.has(newTitle) && attempts < 50);
+
+    return newTitle;
+};
 
     export const generateRandomGroupName = () => {
       const prefixes = ['Hoshi','Sakura','Tsuki','Ame','Yume','Hana','Aoi','Hikari','Mizu','Kumo','Kaze','Yuki','Kokoro','Akari','Nozomi','Kiseki','Seika','Ameiro','Momoiro','Aozora','Hoshimi','Hanabi','Miyabi','Tokimeki','Ariake','Kouyou','Asahi','Kouka','Suiren','Kurenai','Starlit','Moonlite','Petalix','Blossia','KiraKira','Sparkleon','Dreamia','Twinkia','Glowin','Lumina','Aurasia','MiraiX','Flawra','Cherrix','Fantasia','Hoshira','Sakurive','Prismia','Melodia','Radiant','Hanaria','Yumelia','Akuria','Sakurune','Hoshika','Tsukira','Fuwaria','Kirafine','Mizura','Aozelle','Momoria','Nijika','Haruline','Kokolia','Amelune','Lunaria','Miraiya','Shinoria','Tokira','Asteria','Celestia','Vividia','Eterneo','Luvia','Rhythmex','Purella','Zellia','Xylia','Novelle','Harmonix','Bellaria','Chocola','Sweetia','Angellic','Seraphia','Galaxia','Nebulla','Stellaris','Orion','Eclipsa','Solaria','Lyra','Vespera','Aethel','Nyx','Aura','Lyrica','Sonnet','Fable','Mythia','Legendia','FuwaFuwa','MeroMero','PikaPika','MochiMochi','KyunKyun','PuruPuru','Ribbon','Hearty','Lovely','Berry','Peachia','Milky','Parfait','Soufflé','Sugar','Candy','Bonbon','Chiffon','Marshmo','Lace','Frill','Tiara','Jewelly','Shiny','Pastel','PopStep','Beatly','Melty','Honey','Bunny','Kitty','Puppy','Pony','Cookie','Creamy','Dreamy','Wishy','Magic','Magica','Wand','Starry','Twinkle','Sparkle','Dazzle','Glimmer','Plume','Petit','Belle','Mignon','Ange','Chouchou','Lulu','Mimi','Nana','Coco','Ruru','Kiki','Lala','Nono'];
@@ -1581,7 +1591,7 @@ const [survivalShowHistory, setSurvivalShowHistory] = useState([]);
     const [completedBsidePromos, setCompletedBsidePromos] = useState({});
     const [sponsorships, setSponsorships] = useState([]);
     const [activeStream, setActiveStream] = useState(null);
-
+    const [pendingGraduationAnnouncement, setPendingGraduationAnnouncement] = useState(null);
     const [showModal, setShowModal] = useState(null);
     const [mediaJobDoneThisWeek, setMediaJobDoneThisWeek] = useState(false);
     const [groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek] = useState(false);
@@ -3598,57 +3608,52 @@ const executeShuffle = (shuffleType, mode, manualAssignments = null) => {
     
     
     const graduateMember = (memberId) => {
-      let graduatedMember;
-      let memberName = 'A member';
-      let homeGroupName;
+        const graduatedMember = getMemberById(memberId); // This correctly finds main or sister members
 
-      const mainMember = members.find(m => String(m.id) === String(memberId));
-      if (mainMember) {
-          homeGroupName = groupName;
-          graduatedMember = mainMember;
-      } else {
-          for (const sg of sisterGroups) {
-              const foundMember = (sg.members || []).find(m => String(m.id) === String(memberId));
-              if (foundMember) {
-                  homeGroupName = sg.name;
-                  graduatedMember = foundMember;
-                  break;
-              }
-          }
-      }
+        if (graduatedMember) {
+            const memberName = graduatedMember.name;
+            const homeGroupName = (graduatedMember.displayGroupName || '').split(' | ')[0] || groupName;
+            const event = { week: week, event: `Graduated from ${homeGroupName}` };
+            graduatedMember.teamHistory = [...(graduatedMember.teamHistory || []), event];
+            graduatedMember.graduated = true;
+            graduatedMember.isGraduating = false;
+            graduatedMember.graduationWeek = undefined;
 
-      if (graduatedMember) {
-          memberName = graduatedMember.name;
-          const event = { week: week, event: `Graduated from ${homeGroupName}` };
-          graduatedMember.teamHistory = [...(graduatedMember.teamHistory || []), event];
-          graduatedMember.graduated = true;
+            setHallOfFame(prev => [...prev, graduatedMember]);
+            
+            // PASTE THIS NEW BLOCK
+            if (graduatedMember.isSisterMember) {
+                setSisterGroups(prevGroups => prevGroups.map(sg => {
+                    if (String(sg.id) === String(graduatedMember.groupId)) {
+                        return {
+                            ...sg,
+                            // FIX: Filter using the correct member ID from the object
+                            members: (sg.members || []).filter(m => m.id !== graduatedMember.id)
+                        };
+                    }
+                    return sg;
+                }));
+            } else {
+                // FIX: Filter using the correct member ID from the object
+                setMembers(prev => prev.filter(m => m.id !== graduatedMember.id));
+            }
 
-          setHallOfFame(prev => [...prev, graduatedMember]);
-          setMembers(prev => prev.filter(m => String(m.id) !== String(memberId)));
-          setSisterGroups(prev => prev.map(sg => ({
-              ...sg,
-              members: (sg.members || []).filter(m => String(m.id) !== String(memberId))
-          })));
+            setTeams(prevTeams => prevTeams.map(team => {
+                if ((team.members || []).map(String).includes(memberId)) {
+                    return {
+                        ...team,
+                        members: team.members.filter(id => String(id) !== memberId),
+                        history: [...(team.history || []), { week: week, event: `Member Graduated: ${memberName}` }]
+                    };
+                }
+                return team;
+            }));
 
-          // --- THIS IS THE FIX ---
-          // It finds any team the member is in and removes them.
-          setTeams(prevTeams => prevTeams.map(team => {
-              if ((team.members || []).map(String).includes(String(memberId))) {
-                  return {
-                      ...team,
-                      members: team.members.filter(id => String(id) !== String(memberId)),
-                      history: [...(team.history || []), { week: week, event: `Member Graduated: ${memberName}` }]
-                  };
-              }
-              return team;
-          }));
-          // --- END OF FIX ---
-
-          const gradMessage = `${memberName} has graduated from ${homeGroupName}.`;
-          addNotification({ type: 'Graduation', message: gradMessage });
-          setMessage(gradMessage);
-          setSelectedMember(null);
-      }
+            const gradMessage = `${memberName} has graduated from ${homeGroupName}.`;
+            addNotification({ type: 'Graduation', message: gradMessage });
+            setMessage(gradMessage);
+            setSelectedMember(null);
+        }
     };
 
         const askAboutGraduation = (memberId) => {
@@ -4128,7 +4133,8 @@ const agencyProfit = Math.floor(netProfit * 0.6);
         });
 
         // Each hardcore fan contributes 1 vote
-        const fanVotes = totalHardcoreFans;
+        const fanVotes = Math.floor(totalHardcoreFans / 100);
+
 
         setElectionVotePool(prev => prev + fanVotes);
         // --- END NEW ---
@@ -4255,17 +4261,18 @@ const holdElection = (type = 'main', options = {}) => {
                     participantsPool = (sg.members || []).map(m => getMemberById(`sg-${sg.id}-${m.id}`)).filter(Boolean);
                 }
                 break;
-            case 'main':
-            default:
-                cost = 1000000;
+ case 'main':
+   default:
+                  cost = 1000000;
                 electionName = 'General Election';
-                const mainAndDomesticMembers = [
-                    ...members,
-                    ...domesticGroups.flatMap(sg => (sg.members || []).map(m => getMemberById(`sg-${sg.id}-${m.id}`)).filter(Boolean))
-                ];
-                participantsPool = mainAndDomesticMembers;
-                break;
-        }
+  const mainAndDomesticMembers = [
+           ...members,
+           ...domesticGroups.flatMap(sg => (sg.members || []).map(m => getMemberById(`sg-${sg.id}-${m.id}`)).filter(Boolean)),
+      ...exchangeStudents.map(ex => ex.member)
+ ];
+  participantsPool = mainAndDomesticMembers;
+     break;
+                        }
 
         if (money < cost) return setMessage(`${electionName} costs ¥${cost.toLocaleString()}!`);
 
@@ -9524,62 +9531,55 @@ if (requestHourStatus && requestHourStatus.isActive && newWeek > requestHourStat
                 const otherScheduledEvents = eventsForNextWeek.filter(e => e.type !== 'FINAL_GRADUATION');
 
                 // 2. Process all graduations FIRST. This is the crucial change.
-                if (graduationEvents.length > 0) {
-                    graduationEvents.forEach(event => {
-                        let graduatedMember = null;
-                        let memberFound = false;
-                        const memberId = String(event.memberId);
-                        let homeGroupName = '';
+        if (graduationEvents.length > 0) {
+            graduationEvents.forEach(event => {
+                const memberId = String(event.memberId);
+                
+                // Use a temporary getMemberById that works on the draft arrays for this week
+                const getMemberFromDrafts = (id) => {
+                    if (!String(id).startsWith('sg-')) {
+                        return membersForUpdate.find(m => String(m.id) === String(id));
+                    }
+                    const parts = String(id).split('-');
+                    if (parts.length < 3) return null;
+                    const sgId = parseInt(parts[1], 10);
+                    const mId = parseInt(parts[2], 10);
+                    const sg = sisterGroupsForUpdate.find(g => g.id === sgId);
+                    return sg?.members?.find(m => m.id === mId);
+                };
 
-                        // Search in main group
-                        const mainMemberIndex = membersForUpdate.findIndex(m => String(m.id) === memberId);
-                        if (mainMemberIndex !== -1) {
-                            graduatedMember = { ...membersForUpdate[mainMemberIndex] };
-                            homeGroupName = groupName;
-                            memberFound = true;
+                const graduatedMember = getMemberFromDrafts(memberId);
+
+                if (graduatedMember) {
+                    const homeGroupName = graduatedMember.homeGroup === 'main' ? groupName : (graduatedMember.homeGroup || 'Unknown');
+                    const gradEvent = { week: newWeek, event: `Graduated from ${homeGroupName}` };
+                    
+                    const updatedGraduatedMember = {
+                        ...graduatedMember,
+                        teamHistory: [...(graduatedMember.teamHistory || []), gradEvent],
+                        graduated: true,
+                        isGraduating: false,
+                        graduationWeek: undefined,
+                    };
+                    
+                    hallOfFameForUpdate.push(updatedGraduatedMember);
+                    graduatingIdsThisWeek.push(memberId);
+                    graduationOccurredThisWeek = true;
+                    priorityMessage = `${updatedGraduatedMember.name} has officially graduated and entered the Hall of Fame.`;
+                    
+                    teamsForUpdate = teamsForUpdate.map(team => {
+                        if ((team.members || []).map(String).includes(memberId)) {
+                            return {
+                                ...team,
+                                members: team.members.filter(id => String(id) !== memberId),
+                                history: [...(team.history || []), { week: newWeek, event: `Member Graduated: ${updatedGraduatedMember.name}` }]
+                            };
                         }
-
-                        // Search in sister groups
-                        if (!memberFound) {
-                            for (let i = 0; i < sisterGroupsForUpdate.length; i++) {
-                                const sg = sisterGroupsForUpdate[i];
-                                const memberIndex = (sg.members || []).findIndex(m => `sg-${sg.id}-${m.id}` === memberId);
-                                if (memberIndex !== -1) {
-                                    graduatedMember = { ...sg.members[memberIndex], id: memberId };
-                                    homeGroupName = sg.name;
-                                    memberFound = true;
-                                    break;
-                                }
-                            }
-                        }
-
-                        if (graduatedMember) {
-                            const gradEvent = { week: newWeek, event: `Graduated from ${homeGroupName}` };
-                            graduatedMember.teamHistory = [...(graduatedMember.teamHistory || []), gradEvent];
-                            graduatedMember.graduated = true;
-                            graduatedMember.isGraduating = false;
-                            graduatedMember.graduationWeek = undefined;
-                            
-                            hallOfFameForUpdate.push(graduatedMember);
-                            graduatingIdsThisWeek.push(memberId);
-                            graduationOccurredThisWeek = true;
-                            priorityMessage = `${graduatedMember.name} has officially graduated and entered the Hall of Fame.`;
-                                                        // --- NEW TEAM CLEANUP LOGIC ---
-                            teamsForUpdate = teamsForUpdate.map(team => {
-                                if ((team.members || []).map(String).includes(memberId)) {
-                                    return {
-                                        ...team,
-                                        members: team.members.filter(id => String(id) !== memberId),
-                                        history: [...(team.history || []), { week: newWeek, event: `Member Graduated: ${graduatedMember.name}` }]
-                                    };
-                                }
-                                return team;
-                            });
-                            // --- END NEW LOGIC ---
-
-                        }
+                        return team;
                     });
                 }
+            });
+        }
 
                 // 3. Now, process other events that might show modals.
                 if (otherScheduledEvents.length > 0) {
@@ -10552,7 +10552,27 @@ if (member.teamId) {
             // Detailed Graduation Urgency Increase
             let gradUrgencyIncrease = 0;
             // This adds a small, constant urgency increase every single week.
-            gradUrgencyIncrease += 0.25;
+            // Base urgency increase based on ambition, now with randomness
+            switch (member.ambition) {
+                case 'Find Normal Happiness':
+                case 'The Unwilling Idol':
+                    // These members feel the pull of normal life more strongly. (Range: 0.4 - 0.7)
+                    gradUrgencyIncrease += 0.4 + (Math.random() * 0.3);
+                    break;
+                case 'Space for Juniors':
+                case 'The Producer':
+                    // These members are invested and have slower base urgency. (Range: 0.05 - 0.2)
+                    gradUrgencyIncrease += 0.05 + (Math.random() * 0.15);
+                    break;
+                case 'Academic Focus':
+                    // Education is a constant pressure. (Range: 0.5 - 0.8)
+                    gradUrgencyIncrease += 0.5 + (Math.random() * 0.3);
+                    break;
+                default:
+                    // Standard "aging" for most idols. (Range: 0.15 - 0.4)
+                    gradUrgencyIncrease += 0.15 + (Math.random() * 0.25);
+                    break;
+            }
 
             if (newMorale < 30) { gradUrgencyIncrease += (member.ambition === 'Find Normal Happiness') ? 5 : 2; }
             if (newStamina < 15) { gradUrgencyIncrease += (member.ambition === 'Physical Health / Injury') ? 4 : 1; }
@@ -10566,7 +10586,10 @@ if (member.teamId) {
                 }
             }
             const newUrgency = Math.min(100, (member.graduationUrgency || 0) + gradUrgencyIncrease);
-            // --- Ambition Dynamics ---
+            if (newUrgency >= 100 && !member.isGraduating) {
+                setPendingGraduationAnnouncement(member);
+                member.isGraduating = true; // Mark them as graduating within the loop
+            }
             // --- Ambition Dynamics ---
             let newAmbition = member.ambition; // Start with the current ambition
             if (newWeek % 12 === 0 && Math.random() < 0.2) { // 20% chance to check for an ambition change every 12 weeks
@@ -10844,8 +10867,6 @@ newStress += chemistryStressEffect;
         }
         
         const allUpdatedMembers = [ ...membersForUpdate, ...sisterGroupsForUpdate.flatMap(sg => sg.members || []) ];
-        const graduatingMember = allUpdatedMembers.find(m => (m.graduationUrgency || 0) >= 100 && !m.isGraduating);
-
         // --- THE GRAND FINALE: COMMIT ALL DRAFT VARIABLES TO THE REAL STATE ---
         setWeek(newWeek);
         setMessage(messageForUpdate);
@@ -10867,13 +10888,6 @@ newStress += chemistryStressEffect;
         setElectionVotePool(tempElectionVotePool);
         setVotingTickets(tempVotingTickets);
         setExchangeStudents(exchangeStudentsForUpdate);
-        // If a new member is announcing graduation, pause the game to show the modal.
-        if (graduatingMember) {
-            generateGraduationAnnouncementFanPosts(graduatingMember);
-            setModalData(graduatingMember);
-            setShowModal('graduationAnnouncement');
-            return;
-        }
     };
     
     const startRequestHour = (scope = 'domestic', size = 100) => {
@@ -13776,6 +13790,6 @@ return {
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
-    resolveSurvivalMission, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent,  startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
+    pendingGraduationAnnouncement, setPendingGraduationAnnouncement, resolveSurvivalMission, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent,  startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
     };
     };
