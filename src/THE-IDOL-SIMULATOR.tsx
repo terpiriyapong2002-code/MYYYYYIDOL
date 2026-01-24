@@ -924,7 +924,7 @@ const ElectionResultModal = () => {
                                             <RankChangeArrow member={currentMember} />
                                         </div>
                                     </div>
-                                    <span className="text-[5.5px] sm:text-xs font-bold text-gray-500 dark:text-gray-400 tracking-widest">
+                                    <span className="text-[8.5px] sm:text-xs font-bold text-gray-500 dark:text-gray-400 tracking-widest">
                                         {currentMember ? `${getMemberGroupStatus(currentMember)}${currentMember.generation ? ` | ${currentMember.generation}` : ''}` : '...'}
                                     </span>
                                 </div>
@@ -1577,7 +1577,10 @@ const generateUniqueRandomName = () => {
                 <td className="p-2 cursor-grab" style={{ touchAction: 'none', userSelect: 'none' }} {...listeners}>
                     <GripVertical size={18} className="text-gray-400" />
                 </td>
-                <td className="p-2 font-medium dark:text-gray-200">{member.name}</td>
+                    <td className="p-2">
+                        <p className="font-medium dark:text-gray-200">{member.name}</p>
+                        <p className="text-[6.5px] text-gray-500 dark:text-gray-400">{getMemberGroupStatus(member)}{member.generation ? ` | ${member.generation}` : ''}</p>
+                    </td>
                 <td className="p-2">
                 <select value={track?.lineup[String(member.rosterId)] || '5th Row'} onChange={(e) => lineupChangeHandler(member.rosterId, e.target.value)} className="w-full p-1 border rounded text-xs bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
                         <option>1st Row</option><option>2nd Row</option><option>3rd Row</option><option>4th Row</option><option>5th Row</option>
@@ -4885,7 +4888,15 @@ const ShuffleResultModal = () => {
 
         const { eligibleSingle } = modalData;
         const [selectedMemberIds, setSelectedMemberIds] = useState([]);
+        const [memberFilter, setMemberFilter] = useState('all');
+        const [memberSearch, setMemberSearch] = useState('');
         const availableMembers = getAllAvailableMembers(true).filter(m => m.isAvailable);
+
+const mainGroupGenerations = [...new Set(availableMembers.filter(m => !m.isSisterMember).map(m => m.generation).filter(Boolean))];
+const sisterGroupDetails = sisterGroups.map(sg => ({
+    ...sg,
+    generations: [...new Set(availableMembers.filter(m => String(m.groupId) === String(sg.id)).map(m => m.generation).filter(Boolean))]
+}));
 
         const toggleMember = (memberId) => {
             setSelectedMemberIds(prev => 
@@ -8827,6 +8838,38 @@ const SponsorshipModal = () => {
     // Find members who meet the stat requirement
     const eligibleMembers = availableMembers.filter(m => m[offer.requires.stat] >= offer.requires.value);
 
+    // --- NEW: Filtering and Searching Logic ---
+    let filteredEligibleMembers = eligibleMembers;
+
+    if (memberFilter !== 'all') {
+        if (memberFilter.startsWith('team-')) {
+            const teamId = parseInt(memberFilter.replace('team-', ''), 10);
+            const team = teams.find(t => t.id === teamId);
+            const teamMemberIds = new Set((team?.members || []).map(String));
+            filteredEligibleMembers = filteredEligibleMembers.filter(m => teamMemberIds.has(String(m.rosterId || m.id)));
+        } else if (memberFilter === 'main') {
+            filteredEligibleMembers = filteredEligibleMembers.filter(m => !m.isSisterMember || (m.kenninGroups || []).includes(groupName));
+        } else if (memberFilter.startsWith('main-gen-')) {
+            const gen = memberFilter.replace('main-gen-', '');
+            filteredEligibleMembers = filteredEligibleMembers.filter(m => !m.isSisterMember && m.generation === gen);
+        } else if (memberFilter.startsWith('sg-')) {
+            if (memberFilter.includes('-gen-')) {
+                const [sgIdStr, gen] = memberFilter.replace('sg-', '').split('-gen-');
+                filteredEligibleMembers = filteredEligibleMembers.filter(m => String(m.groupId) === sgIdStr && m.generation === gen);
+            } else {
+                const sgId = memberFilter.replace('sg-', '');
+                filteredEligibleMembers = filteredEligibleMembers.filter(m => String(m.groupId) === sgId);
+            }
+        }
+    }
+
+    if (memberSearch.trim()) {
+        filteredEligibleMembers = filteredEligibleMembers.filter(m =>
+            m.name.toLowerCase().includes(memberSearch.trim().toLowerCase())
+        );
+    }
+    // --- END NEW ---
+
     return (
         <ModalWrapper title="" maxWidth="max-w-3xl">
             <div className="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 dark:from-slate-800 dark:to-gray-900 p-6 rounded-2xl shadow-2xl border border-white/50 dark:border-gray-700/50 -m-6">
@@ -8859,20 +8902,70 @@ const SponsorshipModal = () => {
                     </div>
                 </div>
 
+                <div className="flex justify-between items-center mb-2 gap-2">
+                    <div>
+                        <label htmlFor="sponsorship-member-filter" className="text-xs font-semibold mr-2">Filter:</label>
+                        <select
+                            id="sponsorship-member-filter"
+                            value={memberFilter}
+                            onChange={e => setMemberFilter(e.target.value)}
+                            className="p-1.5 text-xs border border-pink-200/80 dark:border-pink-800/50 rounded-md bg-white/50 dark:bg-slate-700/50 focus:ring-2 focus:ring-pink-300"
+                        >
+                            <option value="all">All Available Members</option>
+                            <optgroup label="Groups">
+                                <option value="main">{groupName}</option>
+                                {(sisterGroups || []).map(sg => <option key={`filter-sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>)}
+                            </optgroup>
+                            <optgroup label="Teams">
+                                {(teams || []).map(t => <option key={`filter-team-${t.id}`} value={`team-${t.id}`}>{t.name}</option>)}
+                            </optgroup>
+                            {mainGroupGenerations.length > 0 && (
+                                <optgroup label={`${groupName} Generations`}>
+                                    {mainGroupGenerations.map(gen => (<option key={`main-gen-${gen}`} value={`main-gen-${gen}`}>{gen}</option>))}
+                                </optgroup>
+                            )}
+                            {sisterGroupDetails.map(sg => (
+                                sg.generations.length > 0 && (
+                                    <optgroup key={`sg-gen-group-${sg.id}`} label={`${sg.name} Generations`}>
+                                        {sg.generations.map(gen => (<option key={`sg-${sg.id}-gen-${gen}`} value={`sg-${sg.id}-gen-${gen}`}>{gen}</option>))}
+                                    </optgroup>
+                                )
+                            ))}
+                        </select>
+                    </div>
+                    <div>
+                        <input
+                            type="text"
+                            placeholder="Search..."
+                            value={memberSearch}
+                            onChange={(e) => setMemberSearch(e.target.value)}
+                            className="p-1.5 text-xs border border-pink-200/80 dark:border-pink-800/50 rounded-md bg-white/50 dark:bg-slate-700/50 focus:ring-2 focus:ring-pink-300"
+                        />
+                    </div>
+                </div>
+
                 <div>
                     <h4 className="font-semibold mb-3 text-center text-gray-700 dark:text-gray-300">Select Member(s) ({selectedMemberIds.length}/{offer.requires.members})</h4>
                     <div className="max-h-60 overflow-y-auto border-2 border-dashed border-pink-200 dark:border-pink-800/50 p-2 rounded-xl bg-black/5 dark:bg-black/20">
-                        {eligibleMembers.length > 0 ? eligibleMembers.map(member => (
+                        {filteredEligibleMembers.length > 0 ? filteredEligibleMembers.map(member => (
                             <div key={member.rosterId} onClick={() => toggleMember(member.rosterId)} className={`p-2 rounded-lg cursor-pointer flex justify-between items-center transition-all mb-1 ${selectedMemberIds.includes(member.rosterId) ? 'bg-pink-100 dark:bg-pink-900/60 ring-2 ring-pink-300' : 'bg-white/80 dark:bg-gray-800/80 hover:bg-pink-50 dark:hover:bg-pink-900/30'}`}>
                                 <div>
                                     <p className="font-semibold">{member.name}</p>
+                                    <p className="text-xs text-gray-400">{getMemberGroupStatus(member)}{member.generation ? ` | ${member.generation}` : ''}</p>
                                     <p className="text-xs text-gray-500 dark:text-gray-400">{offer.requires.stat}: <span className="font-bold">{Math.round(member[offer.requires.stat])}</span></p>
                                 </div>
                                 <div className={`w-5 h-5 rounded-full flex items-center justify-center border-2 ${selectedMemberIds.includes(member.rosterId) ? 'bg-pink-400 border-pink-500' : 'bg-gray-200 dark:bg-gray-600 border-gray-300'}`}>
                                     {selectedMemberIds.includes(member.rosterId) && <Check size={12} className="text-white"/>}
                                 </div>
                             </div>
-                        )) : <p className="text-center text-red-500 dark:text-red-400 p-4">You have no available members who meet the required stat of {offer.requires.value} {offer.requires.stat}.</p>}
+                        )) : (
+                            <p className="text-center text-red-500 dark:text-red-400 p-4">
+                                {eligibleMembers.length === 0
+                                    ? `You have no available members who meet the required stat of ${offer.requires.value} ${offer.requires.stat}.`
+                                    : 'No members match the current filter/search.'
+                                }
+                            </p>
+                        )}
                     </div>
                 </div>
 
