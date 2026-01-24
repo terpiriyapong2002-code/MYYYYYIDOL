@@ -37,7 +37,7 @@ const App = () => {
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
-    pendingGraduationAnnouncement, setPendingGraduationAnnouncement, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference,  completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
+    startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference,  completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
 
     } = useIdolManager();
 
@@ -1762,13 +1762,13 @@ const allAvailableForSong = getAllAvailableMembers(true);
 
     if (targetGroup === 'main') {
         // For a main group song, ALL available members from ALL groups are selectable.
-        selectableMembers = allAvailableForSong.filter(m => m.isAvailable);
+        selectableMembers = allAvailableForSong;
     } else {
         // For a sister group song, only members of that group or kennin members are selectable.
         const sg = sisterGroups.find(s => s.name === targetGroup);
         if (sg) {
             selectableMembers = allAvailableForSong.filter(m => 
-                m.isAvailable && (String(m.groupId) === String(sg.id) || (m.kenninGroups || []).includes(sg.name))
+                (String(m.groupId) === String(sg.id) || (m.kenninGroups || []).includes(sg.name))
             );
         }
     }
@@ -2362,7 +2362,7 @@ const renderSelectGraduatingMemberStep = () => {
                                     return (
                                         <div key={member.rosterId} className="flex items-center justify-between p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
                                             <div className="flex flex-col">
-                                                <span className="font-medium dark:text-gray-200">
+                                                <span className={`font-medium dark:text-gray-200 ${member.isAvailable === false ? 'text-gray-400 italic' : ''}`}>
                                                 {member.name} {member.isSisterMember && `(${member.displayGroupName})`}
                                                     <span className="ml-2 text-xs text-pink-300 font-normal">
                                                         {(() => {
@@ -2659,7 +2659,7 @@ const renderSelectGraduatingMemberStep = () => {
                                     return (
                                         <div key={member.rosterId} className="flex items-center justify-between p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
                                             <div className="flex flex-col">
-                                                <span className="font-medium dark:text-gray-200">
+                                                <span className={`font-medium dark:text-gray-200 ${member.isAvailable === false ? 'text-gray-400 italic' : ''}`}>
                                                 {member.name} {member.isSisterMember && `(${member.displayGroupName})`}
                                                     <span className="ml-2 text-xs text-pink-300 font-normal">
                                                         {(() => {
@@ -2672,6 +2672,7 @@ const renderSelectGraduatingMemberStep = () => {
                                                             }
                                                             return null;
                                                         })()}
+{!member.isAvailable && <span className="text-red-400 ml-2">(Unavailable)</span>}
                                                     </span>
                                                 </span>
                                                         <span className="text-[8px] text-gray-500 dark:text-gray-400">
@@ -7015,6 +7016,20 @@ const handleConfirmMove = () => {
         return (
             <ModalWrapper title={`Senbatsu Promotion: ${single.name}`} maxWidth="max-w-3xl">
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Choose a high-impact promotional activity for the Senbatsu members. Each can only be performed once per single.</p>
+                    <div className="text-center my-4">
+                        <button
+                        onClick={() => {
+                            if (window.confirm('Are you sure you want to run ALL eligible promotions for this single? This action is irreversible and may spend a lot of money.')) {
+                                startAllEligiblePromotions(single.id);
+                            }
+                        }}
+
+                            className="px-6 py-3 bg-gradient-to-r from-green-500 to-teal-500 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all"
+                        >
+                            <Zap size={18} className="inline-block mr-2" />
+                            Run All Eligible Promotions
+                        </button>
+                    </div>
                 <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2">
                     {promotions.map(promo => {
                         const meetsReq = promo.requirement();
@@ -7177,6 +7192,20 @@ const handleConfirmMove = () => {
         return (
             <ModalWrapper title={`Promote B-Side Unit: ${track.unitName}`} maxWidth="max-w-3xl">
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Choose a promotional activity for the '{track.name}' unit. Some promotions can be done only once.</p>
+                
+<div className="text-center my-4">
+    <button
+        onClick={() => {
+            if (window.confirm(`Are you sure you want to run ALL eligible promotions for ${track.unitName}?`)) {
+                startAllEligibleBsidePromotions(single.id, track.name);
+            }
+        }}
+        className="px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all"
+    >
+        <Zap size={18} className="inline-block mr-2" />
+        Run All Eligible Unit Promotions
+    </button>
+</div>
                 <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2">
                     {bsidePromotions.map(promo => {
                         const alreadyDone = (completedBsidePromos[single.id]?.[track.name] || []).includes(promo.id);
@@ -7207,6 +7236,81 @@ const handleConfirmMove = () => {
         );
     };
 
+const AllPromotionsResultModal = () => {
+    if (!modalData) return null;
+    const { promotionsRun, totalCost, promotionsRanCount, singleName } = modalData;
+    const containerRef = useRef(null);
+
+    // Kawaii particle effect
+    useEffect(() => {
+        const container = containerRef.current;
+        if (!container) return;
+        const createParticle = () => {
+            const particle = document.createElement('div');
+            const emojis = ['✨', '💖', '🌸', '🎀', '⭐'];
+            particle.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+            particle.className = 'particle-float';
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.transform = `scale(${Math.random() * 0.6 + 0.8})`;
+            particle.style.animationDuration = `${Math.random() * 4 + 3}s`;
+            particle.style.opacity = Math.random() * 0.5 + 0.3;
+            container.appendChild(particle);
+            setTimeout(() => particle.remove(), 7000);
+        };
+        const interval = setInterval(createParticle, 150);
+        return () => clearInterval(interval);
+    }, []);
+
+    return (
+        <div ref={containerRef} className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in overflow-hidden">
+            <div className="relative w-full max-w-xl rounded-3xl bg-gradient-to-br from-pink-200/70 via-purple-200/60 to-blue-200/70 backdrop-blur-xl border-2 border-white/70 shadow-2xl p-6 text-center text-pink-900 animate-in fade-in slide-in-from-bottom-5">
+
+                <div className="absolute top-4 right-4 text-4xl animate-bounce text-pink-400">
+                    🎉
+                </div>
+
+                <h3 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500 mb-2" style={{ fontFamily: "'Mochiy Pop One', sans-serif" }}>
+                    Promotions Complete!
+                </h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Results for "{singleName}"</p>
+
+                <div className="my-6 p-4 bg-white/50 dark:bg-black/20 rounded-xl shadow-inner border border-white/50">
+                    <p className="text-lg">Successfully ran <strong className="text-green-500 text-xl">{promotionsRanCount}</strong> promotions!</p>
+                    <p className="font-bold text-red-500">Total Cost: ¥{totalCost.toLocaleString()}</p>
+                </div>
+                
+                <div className="space-y-2 max-h-60 overflow-y-auto p-2 bg-black/5 dark:bg-black/20 rounded-lg shadow-inner">
+                    {promotionsRun.map((promo, index) => (
+                        <div key={index} className="p-3 bg-white/80 dark:bg-gray-800/80 rounded-lg shadow-sm flex justify-between items-center text-left">
+                            <div className="flex items-center">
+                                <Sparkles size={16} className="mr-3 text-pink-400 flex-shrink-0" />
+                                <div>
+                                    <span className="font-semibold text-sm text-gray-800 dark:text-gray-200">{promo.name}</span>
+                                    <p className="text-xs text-green-600 dark:text-green-400 font-medium">{promo.result}</p>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                <div className="flex justify-center mt-8">
+                    <button 
+                        onClick={() => setShowModal(null)} 
+                        className="bg-gradient-to-br from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 active:scale-95 text-white px-12 py-3 rounded-full font-bold shadow-lg shadow-pink-500/30 transition-all text-lg border-2 border-white/80"
+                    >
+                        OK!
+                    </button>
+                </div>
+
+            </div>
+            <style jsx>{`
+                .particle-float { position: absolute; top: 100%; pointer-events: none; animation: floatUpAndFade 7s linear forwards; font-size: 1.5rem; }
+                @keyframes floatUpAndFade { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; } }
+                @import url('https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&display=swap');
+            `}</style>
+        </div>
+    );
+};
     const BsidePromotionResultModal = () => {
         if (!modalData) return null;
 
@@ -13326,6 +13430,7 @@ if (!gameStarted) {
         {showModal === 'senbatsuPromotion' && <SenbatsuPromotionModal />}
         {showModal === 'bsidePromotion' && <BsidePromotionModal />}
         {showModal === 'bsidePromotionResult' && <BsidePromotionResultModal />}
+        {showModal === 'allPromotionsResult' && <AllPromotionsResultModal />}
         {showModal === 'jankenTournament' && <JankenTournamentModal />}
         {showModal === 'historyDetail' && <HistoryDetailModal />}
         {showModal === 'jankenTournamentStart' && <JankenTournamentStartModal />}

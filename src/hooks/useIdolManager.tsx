@@ -3362,7 +3362,33 @@ const executeShuffle = (shuffleType, mode, manualAssignments = null) => {
     const acesAndCaptains = Object.values(groupRoles);
 
     if (mode === 'auto') {
-        const teamSlots = teamsCopy.map(t => ({ id: t.id, groupId: t.groupId, capacity: t.members.length, filled: 0 }));
+        // --- NEW: Balanced Capacity Calculation ---
+const teamsToShuffleInto = teamsCopy.filter(t => {
+    if (shuffleType === 'world') return true;
+    const sg = sisterGroupsCopy.find(sg => String(sg.id) === String(t.groupId));
+    return !sg || sg.type !== 'overseas';
+});
+
+const totalMemberCount = masterRoster.length;
+const numTeams = teamsToShuffleInto.length;
+const baseCapacity = Math.floor(totalMemberCount / numTeams);
+let extraSlots = totalMemberCount % numTeams;
+
+const teamSlots = teamsCopy.map(t => {
+    const isTeamInShuffle = teamsToShuffleInto.some(st => st.id === t.id);
+    if (!isTeamInShuffle) {
+        // For teams not in the shuffle (e.g., overseas in a normal shuffle), capacity is their current size.
+        return { id: t.id, groupId: t.groupId, capacity: t.members.length, filled: 0 };
+    }
+
+    let capacity = baseCapacity;
+    if (extraSlots > 0) {
+        capacity++;
+        extraSlots--;
+    }
+    return { id: t.id, groupId: t.groupId, capacity: capacity, filled: 0 };
+});
+// --- END: Balanced Capacity Calculation ---
 
         const unassignedMembers = [];
         masterRoster.forEach(member => {
@@ -3463,58 +3489,113 @@ const executeShuffle = (shuffleType, mode, manualAssignments = null) => {
             }
         }
 
-    // --- START: New Balanced Shuffle Logic ---
+// --- START: New Group-by-Group Balanced Shuffle Logic ---
+const allPlayerGroups = [{ id: 'main', name: groupName }, ...sisterGroupsCopy.filter(sg => {
+    if (shuffleType === 'world') return true;
+    return sg.type !== 'overseas';
+})];
 
-    // 1. Sort all unassigned members by fan count, descending.
-    const remainingUnassigned = [...unassignedMain, ...unassignedSister]
-        .sort((a, b) => getTotalFansForMember(b) - getTotalFansForMember(a));
+const remainingUnassigned = [...unassignedMain, ...unassignedSister];
 
-    // 2. Get a list of teams that can be shuffled into.
-    const availableTeams = teamsCopy.filter(t => {
-        if (shuffleType === 'world') return true;
-        const sg = sisterGroupsCopy.find(sg => String(sg.id) === String(t.groupId));
-        return !sg || sg.type !== 'overseas';
-    }).sort((a,b) => a.id - b.id); // Sort for consistent order
+allPlayerGroups.forEach(group => {
+    const groupId = group.id;
 
-    // 3. Perform a "snake draft" to distribute members.
+    // 1. Get all unassigned members BELONGING to the current group.
+    const membersOfThisGroup = remainingUnassigned.filter(m => {
+        const memberGroupId = m.isSisterMember ? m.groupId : 'main';
+        return String(memberGroupId) === String(groupId);
+    });
+    
+    // Get all teams for the current group.
+    const teamsOfThisGroup = teamsCopy.filter(t => String(t.groupId) === String(groupId));
+
+    if (teamsOfThisGroup.length === 0 || membersOfThisGroup.length === 0) {
+        return; // Skip this group if it has no teams or no members to shuffle.
+    }
+
+    // 2. Re-calculate capacity for THIS GROUP'S teams to balance them.
+    const totalMemberCountInGroup = membersOfThisGroup.length;
+    const numTeamsInGroup = teamsOfThisGroup.length;
+    const baseCapacity = Math.floor(totalMemberCountInGroup / numTeamsInGroup);
+    let extraSlots = totalMemberCountInGroup % numTeamsInGroup;
+
+    // Create a temporary slot mapping for just this group's shuffle
+    const groupTeamSlots = teamsOfThisGroup.map(t => {
+        let capacity = baseCapacity;
+        if (extraSlots > 0) {
+            capacity++;
+            extraSlots--;
+        }
+        return { id: t.id, capacity: capacity, filled: 0 };
+    });
+
+    // 3. Separate trainees from tenured members for THIS GROUP.
+    const traineesToPromote = membersOfThisGroup.filter(m => !m.teamId);
+    const membersToShuffle = membersOfThisGroup.filter(m => !!m.teamId);
+
+    // 4. Promote trainees first, only within their own group's teams.
+    traineesToPromote.forEach(trainee => {
+        const promotableTeams = teamsOfThisGroup.filter(team => {
+            const slot = groupTeamSlots.find(s => s.id === team.id);
+            return slot && slot.filled < slot.capacity;
+        });
+
+        if (promotableTeams.length > 0) {
+            // Find the team with the most available slots to promote into.
+            const targetTeam = promotableTeams.sort((a, b) => {
+                const slotsA = groupTeamSlots.find(s => s.id === a.id);
+                const slotsB = groupTeamSlots.find(s => s.id === b.id);
+                return (slotsB.capacity - slotsB.filled) - (slotsA.capacity - slotsA.filled);
+            })[0];
+            
+            const teamSlot = groupTeamSlots.find(s => s.id === targetTeam.id);
+            if (teamSlot) {
+                finalAssignments[trainee.rosterId] = { primaryTeamId: targetTeam.id };
+                teamSlot.filled++;
+                // Update the master teamSlots as well
+                const masterSlot = teamSlots.find(s => s.id === targetTeam.id);
+                if (masterSlot) masterSlot.filled++;
+
+                const fromText = getFormattedFromLocation(trainee);
+                shuffleResultData[targetTeam.id].shuffledIn.push({ memberName: trainee.name, fromTeam: fromText, moveType: 'promotion' });
+            }
+        }
+    });
+
+    // 5. Shuffle the remaining tenured members within THIS group.
     let teamIndex = 0;
-    let direction = 1; // 1 for down, -1 for up
-
-    remainingUnassigned.forEach(member => {
+    let direction = 1;
+    
+    membersToShuffle.forEach(member => {
         let assigned = false;
         let attempts = 0;
 
-        // Find teams in the member's original group that have space.
-        const homeGroupTeams = availableTeams.filter(t => 
-            String(t.groupId) === String(member.groupId) &&
-            teamSlots.find(s => s.id === t.id).filled < teamSlots.find(s => s.id === t.id).capacity
-        );
+        while (!assigned && attempts < teamsOfThisGroup.length) {
+            const targetTeam = teamsOfThisGroup[teamIndex];
+            const teamSlot = groupTeamSlots.find(s => s.id === targetTeam.id);
 
-        // Prioritize assigning to a team within their own group.
-        while (!assigned && attempts < homeGroupTeams.length) {
-            const targetTeam = homeGroupTeams[teamIndex % homeGroupTeams.length];
-            
-            // This is a safety check in case the initial filtering somehow misses a full team.
-            const teamSlot = teamSlots.find(s => s.id === targetTeam.id);
-            if (teamSlot.filled < teamSlot.capacity) {
+            if (teamSlot && teamSlot.filled < teamSlot.capacity) {
                 finalAssignments[member.rosterId] = { primaryTeamId: targetTeam.id };
                 teamSlot.filled++;
+                 // Update the master teamSlots as well
+                const masterSlot = teamSlots.find(s => s.id === targetTeam.id);
+                if (masterSlot) masterSlot.filled++;
+
                 const fromText = getFormattedFromLocation(member);
-                const moveType = member.teamId ? 'shuffle' : 'promotion';
-                shuffleResultData[targetTeam.id].shuffledIn.push({ memberName: member.name, fromTeam: fromText, moveType });
+                shuffleResultData[targetTeam.id].shuffledIn.push({ memberName: member.name, fromTeam: fromText, moveType: 'shuffle' });
                 assigned = true;
             }
 
-            // Move to the next team index for the next member
             teamIndex += direction;
-            if (teamIndex >= homeGroupTeams.length || teamIndex < 0) {
+            if (teamIndex >= teamsOfThisGroup.length || teamIndex < 0) {
                 direction *= -1;
                 teamIndex += direction;
             }
             attempts++;
         }
     });
-    // --- END: New Balanced Shuffle Logic ---
+});
+// --- END: New Group-by-Group Balanced Shuffle Logic ---
 
     } else if (mode === 'manual' && manualAssignments) {
         Object.keys(manualAssignments).forEach(rosterId => {
@@ -7875,6 +7956,242 @@ const handshakeData = {
         distributeFans(amount, memberObjects.map(m => m.rosterId || m.id));
     };
     
+const startAllEligiblePromotions = (singleId) => {
+    const allReleases = [...songs, ...sisterGroups.flatMap(sg => sg.songs || [])];
+    const single = allReleases.find(s => s.id === singleId);
+
+    if (!single) {
+        setMessage("Promoting single not found.");
+        return;
+    }
+
+    const titleTrack = single.tracks.find(t => t.type === 'title');
+    if (!titleTrack) {
+        setMessage("Cannot find title track for promotion.");
+        return;
+    }
+    
+    const senbatsuMembers = titleTrack.members || [];
+    const senbatsuMemberIds = senbatsuMembers.map(m => m.id);
+    const kami7Ids = (titleTrack.lineup ? Object.entries(titleTrack.lineup).filter(([, row]) => row === '1st Row' || row === '2nd Row' || row === '3rd Row').map(([id]) => id) : []).slice(0, 7);
+
+    // This definition is moved from the UI file to the logic file
+    const promotions = [
+        { id: 'magazineCover', name: 'Magazine Cover (Kami 7)', cost: 75000, description: 'Feature the top 7 members on a famous magazine cover. Greatly boosts their individual popularity.', requirement: () => kami7Ids.length >= 7, reqText: 'Requires at least 7 members in the top three rows.' },
+        { id: 'musicShow', name: 'Weekly Music Show', cost: 100000, description: 'Perform on a popular TV music show. High stamina cost, but boosts sales and gains fans based on performance.', requirement: () => senbatsuMembers.length > 0, reqText: 'Requires at least 1 Senbatsu member.' },
+        { id: 'handshakeEvent', name: 'National Handshake Event', cost: 200000, description: 'Hold a huge event to convert casual fans into hardcore fans. Very high stamina and stress cost.', requirement: () => senbatsuMembers.length >= 12, reqText: 'Requires at least 12 Senbatsu members.' },
+        { id: 'tvSpecial', name: 'Senbatsu TV Special', cost: 150000, description: 'A 30-minute TV special focusing on the members. Drains stamina but provides a good fan gain and boosts sales.', requirement: () => senbatsuMembers.length >= 8, reqText: 'Requires at least 8 Senbatsu members.' },
+        { id: 'radioUnit', name: 'Radio Guesting Unit', cost: 20000, description: 'Send the 4 most charismatic members to a popular radio show. A cheap way to gain some fans.', requirement: () => senbatsuMembers.length >= 4, reqText: 'Requires at least 4 Senbatsu members.' },
+        { id: 'productCM', name: 'Product Commercial (CM)', cost: -500000, description: 'The top 5 visual members star in a TV commercial. Earns a large amount of money and boosts their fame.', requirement: () => senbatsuMembers.filter(m => m.visual >= 75).length >= 5, reqText: 'Requires at least 5 Senbatsu members with 75+ Visual.' },
+        { id: 'animeTieIn', name: 'Anime Theme Song Tie-in', cost: 1000000, description: 'Secure a deal for the song to be an anime opening. Extremely expensive, but provides massive, widespread exposure.', requirement: () => true, reqText: '' },
+        { id: 'guerillaLive', name: 'Guerilla Live Concert', cost: 120000, description: 'Stage a surprise mini-concert in a public square. High risk, high reward.', requirement: () => senbatsuMembers.length >= 5, reqText: 'Requires at least 5 Senbatsu members.' },
+        { id: 'cdShopTour', name: 'CD Shop Greeting Tour', cost: 60000, description: 'Visit major CD shops to boost physical sales potential. Medium stamina cost.', requirement: () => senbatsuMembers.length >= 4, reqText: 'Requires at least 4 Senbatsu members.' },
+        { id: 'varietyShow', name: 'Variety Game Show', cost: 250000, description: 'Senbatsu competes on a game show. Success is based on their Variety skill and can even provide a small skill boost.', requirement: () => senbatsuMembers.length >= 6, reqText: 'Requires at least 6 Senbatsu members.' },
+        { id: 'photobook', name: 'Official Photobook Release', cost: 300000, description: 'Produce a high-quality photobook. High initial cost, but generates income and boosts fans based on Visuals.', requirement: () => senbatsuMembers.length >= 7, reqText: 'Requires at least 7 Senbatsu members.' },
+        { id: 'karaoke', name: 'Karaoke Bar Tie-in', cost: 15000, description: 'Feature the single\\\'s MV in karaoke booths nationwide. A cheap and easy way to gain passive exposure.', requirement: () => true, reqText: '' },
+        { id: 'billboardCampaign', name: 'Shibuya Billboard Campaign', cost: 400000, description: 'Run a massive billboard campaign in Shibuya, featuring the top 4 visual members. Greatly boosts sales potential and brand recognition.', requirement: () => senbatsuMembers.length >= 1, reqText: 'Requires at least 1 Senbatsu member.' },
+        { id: 'gravureSpread', name: 'Magazine Gravure Spread', cost: 50000, description: 'Feature the top 5 visual members in a multi-page gravure spread. Generates income and boosts fans for the featured members.', requirement: () => senbatsuMembers.length >= 3, reqText: 'Requires at least 3 Senbatsu members.' },
+        { id: 'centerSoloRadio', name: "Center's Solo Radio Show", cost: 30000, description: "Give the center a one-month radio special. Greatly boosts their personal fanbase and charisma/variety skills.", requirement: () => titleTrack.center && titleTrack.center.length > 0, reqText: 'Requires a Center to be assigned.' },
+        { id: 'flyerHandout', name: 'Street Team Flyer Handout', cost: 10000, description: 'Send the 4 least popular senbatsu members to hand out flyers. A humbling but highly effective event for converting casual fans to hardcore supporters.', requirement: () => senbatsuMembers.length >= 2, reqText: 'Requires at least 2 Senbatsu members.' },
+        { id: 'mvPressConference', name: 'MV Press Conference', cost: 200000, description: 'Hold a formal press conference with the media to discuss the new MV. A high-risk, high-reward activity based on member charisma and intelligence.', requirement: () => senbatsuMembers.length >= 3, reqText: 'Requires at least 3 Senbatsu members.' },
+    ];
+
+    let updatedMoney = money;
+    let promotionsRanCount = 0;
+    let summaryNotifications = [];
+    const alreadyDonePromos = completedPromotions[singleId] || [];
+
+    promotions.forEach(promo => {
+        if (alreadyDonePromos.includes(promo.id) || !promo.requirement() || updatedMoney < (promo.cost || 0)) {
+            return; // Skip this promotion
+        }
+
+        // Deduct cost immediately for the next iteration
+        updatedMoney -= (promo.cost || 0);
+
+switch (promo.id) {
+    case 'magazineCover': {
+        const kami7Members = kami7Ids.map(id => getMemberById(id)).filter(Boolean);
+        kami7Members.forEach(member => {
+            const fanGain = Math.floor(getTotalFansForMember(member) * 0.1) + 5000;
+            updateMemberState(member.rosterId || member.id, m => ({ ...m, fans: { ...m.fans, casual: (m.fans.casual || 0) + fanGain }, morale: Math.min(100, m.morale + 15), stress: Math.min(100, m.stress + 10) }));
+        });
+        summaryNotifications.push({ name: 'Magazine Cover', result: 'Kami 7 popularity boosted' });
+        break;
+    }
+    case 'musicShow': {
+        const avgSkill = senbatsuMembers.reduce((sum, m) => sum + (m.singing || 0) + (m.dancing || 0), 0) / (senbatsuMembers.length * 2 || 1);
+        let musicShowFanGain = 20000;
+        if (avgSkill > 80) musicShowFanGain = 75000;
+        else if (avgSkill > 60) musicShowFanGain = 40000;
+        distributeFansWithRivals(musicShowFanGain, senbatsuMembers, single);
+        senbatsuMemberIds.forEach(memberId => updateMemberState(memberId, m => ({ ...m, stamina: Math.max(0, m.stamina - 50), stress: Math.min(100, m.stress + 25) })));
+        const updateSalesForMusicShow = s => s.id === singleId ? { ...s, baseSalesPotential: s.baseSalesPotential * 1.05 } : s;
+        if (single.targetGroup === 'main' || single.targetGroup === groupName) setSongs(prev => prev.map(updateSalesForMusicShow));
+        else setSisterGroups(prev => prev.map(sg => sg.name === single.targetGroup || String(sg.id) === String(single.targetGroup) ? { ...sg, songs: (sg.songs || []).map(updateSalesForMusicShow) } : sg));
+        summaryNotifications.push({ name: 'Music Show', result: `+${musicShowFanGain.toLocaleString()} fans` });
+        break;
+    }
+    case 'animeTieIn': {
+        distributeFansWithRivals(250000, senbatsuMembers, single);
+        senbatsuMemberIds.forEach(memberId => updateMemberState(memberId, m => ({ ...m, morale: Math.min(100, m.morale + 20) })));
+        const updateSalesForAnime = s => s.id === singleId ? { ...s, baseSalesPotential: s.baseSalesPotential * 1.25 } : s;
+        if (single.targetGroup === 'main' || single.targetGroup === groupName) setSongs(prev => prev.map(updateSalesForAnime));
+        else setSisterGroups(prev => prev.map(sg => sg.name === single.targetGroup || String(sg.id) === String(single.targetGroup) ? { ...sg, songs: (sg.songs || []).map(updateSalesForAnime) } : sg));
+        summaryNotifications.push({ name: 'Anime Tie-In', result: `+250,000 fans` });
+        break;
+    }
+    case 'productCM': {
+        const visualUnit = senbatsuMembers.sort((a, b) => b.visual - a.visual).slice(0, 5);
+        distributeFansWithRivals(100000, visualUnit, single);
+        visualUnit.forEach(m => updateMemberState(m.rosterId || m.id, m => ({ ...m, morale: Math.min(100, m.morale + 10) })));
+        updatedMoney += 500000;
+        summaryNotifications.push({ name: 'Product CM', result: `+¥500,000, +100,000 fans` });
+        break;
+    }
+    case 'handshakeEvent': {
+        let totalFansConverted = 0;
+        const newCasualFans = 100000;
+        distributeFansWithRivals(newCasualFans, senbatsuMembers, single);
+        const mySenbatsuMembers = senbatsuMembers.filter(m => !m.isRival);
+        mySenbatsuMembers.forEach(member => {
+            updateMemberState(member.id, m => {
+                const toConvert = Math.floor((m.fans.casual || 0) * 0.2);
+                totalFansConverted += toConvert;
+                return { ...m, fans: { hardcore: (m.fans.hardcore || 0) + toConvert, casual: Math.max(0, (m.fans.casual || 0) - toConvert) + Math.floor(newCasualFans / mySenbatsuMembers.length) }, stamina: Math.max(0, m.stamina - 60), stress: Math.min(100, m.stress + 30), morale: Math.min(100, m.morale + 20) };
+            });
+        });
+        summaryNotifications.push({ name: 'Handshake Event', result: `${totalFansConverted.toLocaleString()} fans converted` });
+        break;
+    }
+    case 'tvSpecial': {
+        distributeFansWithRivals(50000, senbatsuMembers, single);
+        senbatsuMemberIds.forEach(memberId => updateMemberState(memberId, m => ({ ...m, stamina: Math.max(0, m.stamina - 40), stress: Math.min(100, m.stress + 20) })));
+        const updateSalesPotential = s => s.id === singleId ? { ...s, baseSalesPotential: s.baseSalesPotential * 1.1 } : s;
+        if (single.targetGroup === 'main' || single.targetGroup === groupName) setSongs(prev => prev.map(updateSalesPotential));
+        else setSisterGroups(prev => prev.map(sg => sg.name === single.targetGroup || String(sg.id) === String(single.targetGroup) ? { ...sg, songs: (sg.songs || []).map(updateSalesPotential) } : sg));
+        summaryNotifications.push({ name: 'TV Special', result: `+50,000 fans` });
+        break;
+    }
+    case 'radioUnit': {
+        const radioUnit = senbatsuMembers.sort((a, b) => ((b.variety + b.charisma) / 2) - ((a.variety + a.charisma) / 2)).slice(0, 4);
+        distributeFansWithRivals(15000, radioUnit, single);
+        summaryNotifications.push({ name: 'Radio Unit', result: `+15,000 fans` });
+        break;
+    }
+    case 'guerillaLive': {
+        senbatsuMemberIds.forEach(memberId => updateMemberState(memberId, m => ({ ...m, stamina: Math.max(0, m.stamina - 30), stress: Math.min(100, m.stress + 15) })));
+        if (Math.random() < 0.7) {
+            distributeFansWithRivals(150000, senbatsuMembers, single);
+            senbatsuMemberIds.forEach(memberId => updateMemberState(memberId, m => ({ ...m, morale: Math.min(100, m.morale + 15) })));
+            summaryNotifications.push({ name: 'Guerilla Live', result: `Success! +150,000 fans` });
+        } else {
+            senbatsuMemberIds.forEach(memberId => updateMemberState(memberId, m => ({ ...m, morale: Math.max(0, m.morale - 10) })));
+            summaryNotifications.push({ name: 'Guerilla Live', result: `Bust. Morale dropped.` });
+        }
+        break;
+    }
+    case 'cdShopTour': {
+        const tourMembers = senbatsuMembers.sort((a, b) => b.charisma - a.charisma).slice(0, 8);
+        tourMembers.forEach(member => updateMemberState(member.rosterId || member.id, m => ({ ...m, stamina: Math.max(0, m.stamina - 20) })));
+        const updateSalesForTour = s => s.id === singleId ? { ...s, baseSalesPotential: s.baseSalesPotential * 1.08 } : s;
+        if (single.targetGroup === 'main' || single.targetGroup === groupName) setSongs(prev => prev.map(updateSalesForTour));
+        else setSisterGroups(prev => prev.map(sg => sg.name === single.targetGroup || String(sg.id) === String(single.targetGroup) ? { ...sg, songs: (sg.songs || []).map(updateSalesForTour) } : sg));
+        summaryNotifications.push({ name: 'CD Shop Tour', result: `Sales potential boosted.` });
+        break;
+    }
+    case 'varietyShow': {
+        const avgVariety = senbatsuMembers.reduce((sum, m) => sum + (m.variety || 0), 0) / (senbatsuMembers.length || 1);
+        let varietyFanGain = 30000;
+        if (avgVariety > 70) varietyFanGain = 120000;
+        distributeFansWithRivals(varietyFanGain, senbatsuMembers, single);
+        summaryNotifications.push({ name: 'Variety Show', result: `+${varietyFanGain.toLocaleString()} fans` });
+        break;
+    }
+    case 'photobook': {
+        updatedMoney += 200000; // 500k income - 300k cost
+        distributeFansWithRivals(80000, senbatsuMembers.filter(m => m.visual > 0), single);
+        summaryNotifications.push({ name: 'Photobook', result: `+¥200,000 profit, +80,000 fans` });
+        break;
+    }
+    case 'karaoke': {
+        distributeFansWithRivals(25000, senbatsuMembers, single);
+        summaryNotifications.push({ name: 'Karaoke Tie-in', result: `+25,000 fans` });
+        break;
+    }
+    case 'billboardCampaign': {
+        const updateSalesForBillboard = s => s.id === singleId ? { ...s, baseSalesPotential: s.baseSalesPotential * 1.12 } : s;
+        if (single.targetGroup === 'main' || single.targetGroup === groupName) setSongs(prev => prev.map(updateSalesForBillboard));
+        else setSisterGroups(prev => prev.map(sg => sg.name === single.targetGroup ? { ...sg, songs: (sg.songs || []).map(updateSalesForBillboard) } : sg));
+        summaryNotifications.push({ name: 'Billboard Campaign', result: `Sales potential boosted.` });
+        break;
+    }
+    case 'gravureSpread': {
+        updatedMoney += 50000;
+        distributeFansWithRivals(40000, senbatsuMembers.sort((a, b) => b.visual - a.visual).slice(0, 5), single);
+        summaryNotifications.push({ name: 'Gravure Spread', result: `+¥50,000, +40,000 fans` });
+        break;
+    }
+    case 'centerSoloRadio': {
+        const centerMemberId = (titleTrack.center || [])[0];
+        if (centerMemberId) {
+            const centerMember = getMemberById(centerMemberId);
+            if(centerMember) {
+                const fanGain = Math.floor(getTotalFansForMember(centerMember) * 0.15) + 2000;
+                updateMemberState(centerMember.rosterId, m => ({ ...m, fans: { ...m.fans, casual: (m.fans.casual || 0) + fanGain } }));
+                summaryNotifications.push({ name: 'Center Radio', result: `+${fanGain.toLocaleString()} fans for Center` });
+            }
+        }
+        break;
+    }
+    case 'flyerHandout': {
+        const handoutUnit = senbatsuMembers.sort((a,b) => getTotalFansForMember(a) - getTotalFansForMember(b)).slice(0, 4);
+        handoutUnit.forEach(member => updateMemberState(member.rosterId || member.id, m => ({ ...m, morale: Math.min(100, m.morale + 30) })));
+        summaryNotifications.push({ name: 'Flyer Handout', result: `Converted hardcore fans` });
+        break;
+    }
+    case 'mvPressConference': {
+        const pressUnit = senbatsuMembers.sort((a, b) => ((b.charisma + b.intelligence)/2) - ((a.charisma + a.intelligence)/2)).slice(0, 5);
+        const avgPressSkill = pressUnit.reduce((sum, m) => sum + m.charisma + m.intelligence, 0) / (pressUnit.length * 2);
+        if (avgPressSkill > 65) {
+            distributeFansWithRivals(70000, pressUnit, single);
+            const updateSalesForPress = s => s.id === singleId ? { ...s, baseSalesPotential: s.baseSalesPotential * 1.10 } : s;
+            if (single.targetGroup === 'main' || single.targetGroup === groupName) setSongs(prev => prev.map(updateSalesForPress));
+            else setSisterGroups(prev => prev.map(sg => sg.name === single.targetGroup ? { ...sg, songs: (sg.songs || []).map(updateSalesForPress) } : sg));
+            summaryNotifications.push({ name: 'Press Conference', result: 'Success! +70,000 fans.' });
+        } else {
+            pressUnit.forEach(member => updateMemberState(member.rosterId, m => ({ ...m, morale: Math.max(0, m.morale - 15) })));
+            summaryNotifications.push({ name: 'Press Conference', result: 'Awkward. Morale dropped.' });
+        }
+        break;
+    }
+}
+promotionsRanCount++;
+alreadyDonePromos.push(promo.id);
+    });
+
+        if (promotionsRanCount > 0) {
+            const totalCost = money - updatedMoney;
+            setMoney(updatedMoney);
+            setCompletedPromotions(prev => ({
+                ...prev,
+                [singleId]: alreadyDonePromos
+            }));
+
+            setModalData({
+                promotionsRun: summaryNotifications,
+                totalCost: totalCost,
+                promotionsRanCount: promotionsRanCount,
+                singleName: single.name
+            });
+            setShowModal('allPromotionsResult');
+            setMessage(`Successfully ran ${promotionsRanCount} eligible promotions for "${single.name}"!`);
+        } else {
+            setMessage("No eligible promotions could be run at this time.");
+        }
+    };
+
+
     const startSenbatsuPromotion = (promoType, singleId) => {
         const allReleases = [...songs, ...sisterGroups.flatMap(sg => sg.songs || [])];
         const single = allReleases.find(s => s.id === singleId);
@@ -8252,6 +8569,187 @@ const handshakeData = {
             setShowModal(null);
         }
     };
+
+
+const startAllEligibleBsidePromotions = (singleId, trackName) => {
+    const allReleases = [...songs, ...sisterGroups.flatMap(sg => sg.songs || [])];
+    const single = allReleases.find(s => s.id === singleId);
+    if (!single) return setMessage("Single not found.");
+
+    const track = single.tracks.find(t => t.name === trackName && t.type === 'b-side');
+    if (!track) return setMessage("B-side track not found.");
+
+    const unitMemberIds = (track.members || []).map(m => String(m.id));
+    const unitMembers = unitMemberIds.map(id => getMemberById(id)).filter(Boolean);
+    if (unitMembers.length === 0) return setMessage("No members in this unit.");
+
+    // Define all possible B-side promotions
+    const bsidePromotions = [
+        { id: 'fullMV', name: 'Full-Budget Music Video', cost: 400000, description: 'Fund a high-quality music video. A massive statement that provides a huge fan gain for the unit.' },
+        { id: 'miniTour', name: 'Unit Mini-Tour', cost: 750000, description: 'The unit headlines their own small tour. Extremely expensive, but provides legendary hardcore fan conversion, skill boosts, and new fans.' },
+        { id: 'performanceVideo', name: 'Special Performance Video', cost: 75000, description: 'Fund a well-shot performance video. Provides a significant fan gain based on unit skill.' },
+        { id: 'varietySkit', name: 'Unit Variety Skit', cost: 15000, description: 'A short, funny online skit. Gains fans based on Variety skill and can even improve the skill.' },
+        { id: 'fanMeeting', name: 'Unit Fan Meeting', cost: 25000, description: 'A classic fan meeting to convert casual fans to hardcore supporters. Effectiveness is based on Charisma.' },
+        { id: 'gravurePhotoshoot', name: 'Gravure Photoshoot (Top 3)', cost: 20000, description: 'Features the top 3 visual members of the unit in a magazine. Provides a targeted fan gain.' },
+        { id: 'acousticVideo', name: 'Acoustic Performance Video', cost: 4000, description: 'A stripped-down vocal performance. Great for converting fans if the unit has high singing skill.' },
+        { id: 'selfieMV', name: 'Selfie MV / TikTok Challenge', cost: 5000, description: 'A fun, low-fi video for social media. Cheap, with a very small chance to go viral.' },
+        { id: 'dancePractice', name: 'Dance Practice Video', cost: 2000, description: 'Release a dance practice video. A very cheap way to impress and convert fans based on Dance skill.' },
+        { id: 'socialMediaTakeover', name: 'Social Media Takeover', cost: 0, description: 'The unit takes over the group\\\'s social media for a day. Free, and converts a small number of fans.' },
+        { id: 'gamingStream', name: 'Sponsored Gaming Stream', cost: -10000, description: 'The unit plays a sponsored game on a livestream. Earns a small income and gains fans.' },
+        { id: 'unitMerch', name: 'Limited Edition Unit Merch', cost: -20000, description: 'Sell limited-run merchandise for the unit. Generates income based on the unit\\\'s popularity.' },
+    ];
+
+    let updatedMoney = money;
+    let promotionsRanCount = 0;
+    let summaryNotifications = [];
+    const alreadyDonePromos = (completedBsidePromos[singleId]?.[trackName] || []);
+
+    bsidePromotions.forEach(promo => {
+        if (alreadyDonePromos.includes(promo.id) || updatedMoney < promo.cost) {
+            return;
+        }
+
+        updatedMoney -= promo.cost;
+        let resultMessage = '';
+
+switch (promo.id) {
+    case 'fanMeeting': {
+        let totalConverted = 0;
+        unitMembers.forEach(member => {
+            const charismaBoost = (member.charisma || 0) / 500;
+            const conversionRate = 0.15 + charismaBoost;
+            const fansToConvert = Math.floor((member.fans?.casual || 0) * conversionRate);
+            totalConverted += fansToConvert;
+            updateMemberState(member.id, m => ({ ...m, fans: { hardcore: (m.fans?.hardcore || 0) + fansToConvert, casual: Math.max(0, (m.fans?.casual || 0) - fansToConvert) }, morale: Math.min(100, m.morale + 15) }));
+        });
+        resultMessage = `+${totalConverted.toLocaleString()} hardcore fans`;
+        break;
+    }
+    case 'performanceVideo': {
+        const avgSkill = unitMembers.reduce((sum, m) => sum + (m.singing || 0) + (m.dancing || 0), 0) / (unitMembers.length * 2);
+        const fanGain = Math.floor(20000 + (avgSkill * 250));
+        distributeFansWithRivals(fanGain, unitMembers, single);
+        resultMessage = `+${fanGain.toLocaleString()} fans`;
+        break;
+    }
+    case 'selfieMV': {
+        let selfieFanGain = 5000;
+        if (Math.random() < 0.01) { // 1% viral chance
+            selfieFanGain = 100000;
+            resultMessage = `Viral Hit! +${selfieFanGain.toLocaleString()} fans`;
+        } else {
+            resultMessage = `+${selfieFanGain.toLocaleString()} fans`;
+        }
+        distributeFansWithRivals(selfieFanGain, unitMembers, single);
+        unitMemberIds.forEach(id => updateMemberState(id, m => ({ ...m, morale: Math.min(100, m.morale + 10) })));
+        break;
+    }
+    case 'dancePractice': {
+        const avgDance = unitMembers.reduce((sum, m) => sum + (m.dancing || 0), 0) / unitMembers.length;
+        let danceConverted = 0;
+        unitMembers.forEach(member => {
+            const conversionRate = 0.05 + (avgDance / 1000);
+            const fansToConvert = Math.floor((member.fans?.casual || 0) * conversionRate);
+            danceConverted += fansToConvert;
+            updateMemberState(member.id, m => ({ ...m, fans: { hardcore: (m.fans?.hardcore || 0) + fansToConvert, casual: Math.max(0, (m.fans?.casual || 0) - fansToConvert) } }));
+        });
+        resultMessage = `+${danceConverted.toLocaleString()} hardcore fans`;
+        break;
+    }
+    case 'acousticVideo': {
+        const avgSinging = unitMembers.reduce((sum, m) => sum + (m.singing || 0), 0) / unitMembers.length;
+        let singingConverted = 0;
+        unitMembers.forEach(member => {
+            const conversionRate = 0.05 + (avgSinging / 800);
+            const fansToConvert = Math.floor((member.fans?.casual || 0) * conversionRate);
+            singingConverted += fansToConvert;
+            updateMemberState(member.id, m => ({ ...m, fans: { hardcore: (m.fans?.hardcore || 0) + fansToConvert, casual: Math.max(0, (m.fans?.casual || 0) - fansToConvert) }, morale: Math.min(100, m.morale + 5) }));
+        });
+        resultMessage = `+${singingConverted.toLocaleString()} hardcore fans`;
+        break;
+    }
+    case 'varietySkit': {
+        const avgVariety = unitMembers.reduce((sum, m) => sum + (m.variety || 0), 0) / unitMembers.length;
+        const varietyFanGain = 10000 + (avgVariety * 100);
+        distributeFansWithRivals(varietyFanGain, unitMembers, single);
+        if (avgVariety > 60) {
+            unitMemberIds.forEach(id => updateMemberState(id, m => ({ ...m, variety: Math.min(100, m.variety + 1) })));
+        }
+        resultMessage = `+${varietyFanGain.toLocaleString()} fans`;
+        break;
+    }
+    case 'socialMediaTakeover': {
+        let socialConverted = 0;
+        unitMembers.forEach(member => {
+            const fansToConvert = Math.floor((member.fans?.casual || 0) * 0.05);
+            socialConverted += fansToConvert;
+            updateMemberState(member.id, m => ({ ...m, fans: { hardcore: (m.fans?.hardcore || 0) + fansToConvert, casual: Math.max(0, (m.fans?.casual || 0) - fansToConvert) }, morale: Math.min(100, m.morale + 10) }));
+        });
+        resultMessage = `+${socialConverted.toLocaleString()} hardcore fans`;
+        break;
+    }
+    case 'gravurePhotoshoot': {
+        const gravureUnit = unitMembers.sort((a, b) => b.visual - a.visual).slice(0, 3);
+        distributeFansWithRivals(15000, gravureUnit, single);
+        resultMessage = `+15,000 fans`;
+        break;
+    }
+    case 'gamingStream': {
+        distributeFansWithRivals(25000, unitMembers, single);
+        resultMessage = `+25,000 fans & +¥10,000`;
+        break;
+    }
+    case 'unitMerch': {
+        const totalUnitFans = unitMembers.reduce((sum, m) => sum + getTotalFansForMember(m), 0);
+        const income = 20000 + Math.floor(totalUnitFans / 10);
+        updatedMoney += income;
+        resultMessage = `+¥${income.toLocaleString()}`;
+        break;
+    }
+    case 'fullMV': {
+        distributeFansWithRivals(150000, unitMembers, single);
+        unitMemberIds.forEach(id => updateMemberState(id, m => ({ ...m, morale: Math.min(100, m.morale + 25) })));
+        resultMessage = `+150,000 fans`;
+        break;
+    }
+    case 'miniTour': {
+        let tourConverted = 0;
+        unitMembers.forEach(member => {
+            if (!member.isRival) {
+                const fansToConvert = Math.floor((member.fans?.casual || 0) * 0.5);
+                tourConverted += fansToConvert;
+                updateMemberState(member.id, m => ({ ...m, fans: { hardcore: (m.fans?.hardcore || 0) + fansToConvert, casual: Math.max(0, (m.fans?.casual || 0) - fansToConvert) }, morale: Math.min(100, m.morale + 50), stamina: Math.max(0, m.stamina - 70), stress: Math.min(100, m.stress + 40), singing: Math.min(100, m.singing + 1), dancing: Math.min(100, m.dancing + 1), charisma: Math.min(100, m.charisma + 1) }));
+            }
+        });
+        distributeFansWithRivals(100000, unitMembers, single);
+        resultMessage = `+100k fans, +${tourConverted.toLocaleString()} hardcore`;
+        break;
+    }
+}
+        
+        summaryNotifications.push({ name: promo.name, result: resultMessage });
+        promotionsRanCount++;
+        alreadyDonePromos.push(promo.id);
+    });
+
+    if (promotionsRanCount > 0) {
+        const totalCost = money - updatedMoney;
+        setMoney(updatedMoney);
+        setCompletedBsidePromos(prev => ({
+            ...prev,
+            [singleId]: {
+                ...(prev[singleId] || {}),
+                [trackName]: alreadyDonePromos
+            }
+        }));
+        setModalData({ promotionsRun: summaryNotifications, totalCost: totalCost, promotionsRanCount: promotionsRanCount, singleName: `${single.name} (${track.unitName})` });
+        setShowModal('allPromotionsResult');
+        setMessage(`Successfully ran ${promotionsRanCount} B-side promotions!`);
+    } else {
+        setMessage("No eligible B-side promotions could be run at this time.");
+    }
+};
+
 
     const startBsidePromotion = (promoType, singleId, trackName) => {
         const allReleases = [...songs, ...sisterGroups.flatMap(sg => sg.songs || [])];
@@ -13928,6 +14426,6 @@ return {
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
-    pendingGraduationAnnouncement, setPendingGraduationAnnouncement, resolveSurvivalMission, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent,  startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
+    startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, resolveSurvivalMission, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent,  startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
     };
     };
