@@ -9,7 +9,7 @@ import { CSS } from '@dnd-kit/utilities';
 
 import DailyChartModal from './DailyChartModal';
 
-import { useIdolManager, getTotalFansForMember, getFormattedDateForWeek, productionTiers, getGraduationRisk, songTitles, generateSongTitle, electionSpeechTemplates, performanceTypes, scandalResponseOptions, tiers, getTheaterCapacity, getTicketPrice, hometowns, generateRandomHometown,  warehouseTiers, staffTiers, ambitions, varietyShowTypes, filmProjectTypes, scriptTiers, directorTiers, filmPromotionTypes, varietyWriterTiers, varietyProducerTiers, sponsorshipTiers, livestreamTypes } from "./hooks/useIdolManager";
+import { useIdolManager, getTotalFansForMember, getFormattedDateForWeek, productionTiers, getGraduationRisk, songTitles, generateSongTitle, electionSpeechTemplates, performanceTypes, scandalResponseOptions, tiers, getTheaterCapacity, getTicketPrice, hometowns, generateRandomHometown,  warehouseTiers, staffTiers, ambitions, varietyShowTypes, filmProjectTypes, scriptTiers, directorTiers, filmPromotionTypes, varietyWriterTiers, varietyProducerTiers, sponsorshipTiers, livestreamTypes, musicShowTypes } from "./hooks/useIdolManager";
 
 import React, { useState, useEffect, useCallback, useRef, memo } from 'react';
 import { 
@@ -37,7 +37,7 @@ const App = () => {
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
-    startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference,  completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
+    startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference,  completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
 
     } = useIdolManager();
 
@@ -2983,24 +2983,18 @@ const memberGroups = memberObjects.reduce((acc, member) => {
     let groupKey;
     const mainGroupName = groupName || 'Hoshimi01';
 
-    if (member.isKennin) {
-        const kenninGroup = (member.kenninGroups && member.kenninGroups.length > 0) ? member.kenninGroups[0] : 'Kennin';
-        const baseGroup = member.teamName ? `Team ${member.teamName}` : (member.homeGroup || mainGroupName);
-        groupKey = `${baseGroup} / ${kenninGroup}`;
-
-    } else if (member.isSisterMember) {
+    if (member.isExchangeStudent) {
+        groupKey = `${member.homeGroup}`;
+    }
+    else if (member.isSisterMember) {
         const sgName = member.displayGroupName || 'Sister Group';
-        if (member.teamName) {
-            groupKey = `${sgName} Team ${member.teamName}`;
-        } else {
-            groupKey = `${sgName} Kenkyuusei`;
-        }
-    } else { // Main group members
-        if (member.teamName) {
-            groupKey = `Team ${member.teamName}`;
-        } else {
-            groupKey = `${mainGroupName} Kenkyuusei`;
-        }
+        groupKey = member.teamName 
+            ? `${sgName} Team ${member.teamName}` 
+            : `${sgName} Kenkyuusei`;
+    } else {
+        groupKey = member.teamName 
+            ? `${mainGroupName} Team ${member.teamName}` 
+            : `${mainGroupName} Kenkyuusei`;
     }
 
     if (!acc[groupKey]) {
@@ -3009,19 +3003,43 @@ const memberGroups = memberObjects.reduce((acc, member) => {
     acc[groupKey].push(member);
     return acc;
 }, {});
-                    return (
-                        <div className="space-y-2">
-                            {Object.entries(memberGroups).sort((a, b) => a[0].localeCompare(b[0])).map(([groupKeyName, membersInGroup]) => (
-                                <div key={groupKeyName}>
-                                    <p className="font-semibold text-pink-600 dark:text-pink-400">
-                                        {groupKeyName}: <span className="font-normal text-gray-700 dark:text-gray-300">
-                                            {membersInGroup.map(m => m.name).join(', ')}
-                                        </span>
-                                    </p>
-                                </div>
-                            ))}
-                        </div>
-                    );
+
+return (
+    <div className="space-y-2">
+        {Object.keys(memberGroups)
+            .sort((a, b) => {
+                const mainGroupName = groupName || 'Hoshimi01';
+
+                const getScore = (key) => {
+                    const isMain = key.startsWith(mainGroupName);
+                    const isKKS = key.includes('Kenkyuusei');
+
+                    if (isMain && !isKKS) return 1;
+                    if (isMain && isKKS) return 2;
+                    if (!isMain && !isKKS) return 3;
+                    if (!isMain && isKKS) return 4;
+                    return 5;
+                };
+
+                const scoreA = getScore(a);
+                const scoreB = getScore(b);
+
+                if (scoreA !== scoreB) {
+                    return scoreA - scoreB;
+                }
+                return a.localeCompare(b);
+            })
+            .map(groupKeyName => (
+                <div key={groupKeyName}>
+                    <p className="font-semibold text-pink-600 dark:text-pink-400">
+                        {groupKeyName}: <span className="font-normal text-gray-700 dark:text-gray-300">
+                            {memberGroups[groupKeyName].map(m => m.name).join(', ')}
+                        </span>
+                    </p>
+                </div>
+            ))}
+    </div>
+);
                 })()}
             </div>
 
@@ -3539,8 +3557,76 @@ const memberGroups = memberObjects.reduce((acc, member) => {
     const [filterCategory, setFilterCategory] = useState('All');
     // MODIFIED: This is the only state change needed.
     const [memberFilter, setMemberFilter] = useState('all');
+
+    // Corrected logic to get top 10 recent tracks from ALL groups
+    const allReleases = [
+        ...(songs || []),
+        ...(sisterGroups || []).flatMap(sg => sg.songs || [])
+    ];
+
+    const historicalTracks = allReleases
+        .sort((a, b) => b.releaseWeek - a.releaseWeek) // Sort all releases by week
+        .slice(0, 10) // Take the 10 most recent releases
+        .flatMap(release => { // Flatten into tracks
+            const artistName = (release.targetGroup === 'main' || release.artist === groupName)
+                ? groupName
+                : (sisterGroups.find(sg => String(sg.id) === String(release.targetGroup) || sg.name === release.artist)?.name || release.targetGroup || release.artist);
+            
+            return (release.tracks || []).map(track => ({
+                id: `${release.id}-${track.name}`, // Simplified ID
+                name: `${track.name} (${release.name} - ${artistName})`,
+                data: {
+                    members: (track.members || []).map(m => String(m.id)),
+                    center: track.center || [],
+                    lineup: track.lineup || {}
+                }
+            }));
+        });
     
-const randomizeSetlist = (count = 12) => {
+    const applyPreviousLineup = (trackId) => {
+        if (!trackId) return;
+    
+        let memberIdsToSelect = [];
+    
+        if (trackId.startsWith('election-')) {
+            const unit = trackId.replace('election-', '');
+            if (!lastElectionResult) return;
+            const rankRanges = {
+                senbatsu: { min: 1, max: 16 },
+                undergirls: { min: 17, max: 32 },
+                nextgirls: { min: 33, max: 48 },
+            };
+            const range = rankRanges[unit];
+            if (range) {
+                memberIdsToSelect = lastElectionResult
+                    .filter(m => m.rank >= range.min && m.rank <= range.max)
+                    .map(m => m.rosterId || m.id);
+            }
+        } else if (trackId === 'janken-senbatsu') {
+            if (!lastJankenResult) return;
+            memberIdsToSelect = lastJankenResult
+                .filter(m => m.rank >= 1 && m.rank <= 16)
+                .map(m => m.rosterId || m.id);
+        } else {
+            const selectedHistory = historicalTracks.find(t => t.id === trackId);
+            if (selectedHistory) {
+                memberIdsToSelect = selectedHistory.data.members;
+            }
+        }
+        
+        const availableMemberIds = new Set(availableMembers.map(m => m.rosterId));
+        const finalSelection = memberIdsToSelect.filter(id => availableMemberIds.has(id));
+    
+        setSelectedMembers(finalSelection);
+    
+        // Reset both possible dropdowns after selection
+        const perfDropdown = document.getElementById('perf-import-lineup');
+        const concertDropdown = document.getElementById('major-concert-import-lineup');
+        if (perfDropdown) perfDropdown.value = "";
+        if (concertDropdown) concertDropdown.value = "";
+    };
+
+    const randomizeSetlist = (count = 12) => {
     if (allTracks.length === 0) return;
     const shuffled = [...allTracks].sort(() => 0.5 - Math.random());
     const newSetlist = shuffled.slice(0, count).map(track => ({
@@ -3699,6 +3785,35 @@ if (memberFilter !== 'all') {
                 {/* Col 4-7: Combined Setlist Builder */}
                 <div className="col-span-12 lg:col-span-4 lg:border-r pr-3 pb-4 border-b lg:border-b-0">
                     <h4 className="font-semibold mb-2 flex justify-between items-center dark:text-gray-100">
+                        
+<div className="mb-2">
+    <label htmlFor="perf-import-lineup" className="block text-xs font-medium text-gray-700 dark:text-gray-300">Import Members From...</label>
+    <select
+        id="perf-import-lineup"
+        onChange={(e) => applyPreviousLineup(e.target.value)}
+        className="mt-1 block w-full pl-3 pr-10 py-1 text-sm border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md dark:bg-gray-700 dark:border-gray-600"
+    >
+        <option value="">-- Select a past lineup --</option>
+        {lastElectionResult && (
+            <optgroup label="Last General Election">
+                <option value="election-senbatsu">Senbatsu (Ranks 1-16)</option>
+                <option value="election-undergirls">Undergirls (Ranks 17-32)</option>
+                <option value="election-nextgirls">Next Girls (Ranks 33-48)</option>
+            </optgroup>
+        )}
+        {lastJankenResult && (
+            <optgroup label="Last Janken Tournament">
+                <option value="janken-senbatsu">Janken Senbatsu (Top 16)</option>
+            </optgroup>
+        )}
+        {historicalTracks.map(track => (
+            <option key={track.id} value={track.id}>
+                {track.name}
+            </option>
+        ))}
+    </select>
+</div>
+                        
                         <span>2. Design Setlist ({setlist.length})</span>
                         <div className="flex items-center gap-2">
                             <button onClick={() => randomizeSetlist(12)} className="text-xs text-blue-500 hover:text-blue-700 font-bold">Randomize</button>
@@ -3783,7 +3898,8 @@ if (memberFilter !== 'all') {
                      <div className="space-y-1 max-h-[500px] overflow-y-auto border-t border-b dark:border-gray-700 p-1">
                         {/* MODIFIED: This now maps over 'filteredMembers' */}
                         {filteredMembers.map(member => (
-                            <div key={member.rosterId} className={`flex items-center justify-between p-2 rounded ${selectedMembers.includes(member.id) ? 'bg-blue-200 dark:bg-blue-800' : 'bg-white dark:bg-gray-800/50'}`}>
+                        <div key={member.rosterId} className={`flex items-center justify-between p-2 rounded ${selectedMembers.includes(member.id) ? 'bg-blue-200 dark:bg-blue-800' : 'bg-white dark:bg-gray-800/50'}`}>
+
                                 <div>
                                     <p className="font-semibold text-sm">{member.name}</p>
 <p className="text-xs text-gray-600 dark:text-gray-400">
@@ -3828,14 +3944,83 @@ const MajorConcertModal = ({ week }) => {
     const [setlist, setSetlist] = useState([]);
     const [selectedMembers, setSelectedMembers] = useState([]);
     const [memberFilter, setMemberFilter] = useState('all');
+
     const [sPrice, setSPrice] = useState(0);
     const [aPrice, setAPrice] = useState(0);
     const [bPrice, setBPrice] = useState(0);
+
+    // Corrected logic to get top 10 recent tracks from ALL groups
+    const allReleases = [
+        ...(songs || []),
+        ...(sisterGroups || []).flatMap(sg => sg.songs || [])
+    ];
+
+    const historicalTracks = allReleases
+        .sort((a, b) => b.releaseWeek - a.releaseWeek) // Sort all releases by week
+        .slice(0, 10) // Take the 10 most recent releases
+        .flatMap(release => { // Flatten into tracks
+            const artistName = (release.targetGroup === 'main' || release.artist === groupName)
+                ? groupName
+                : (sisterGroups.find(sg => String(sg.id) === String(release.targetGroup) || sg.name === release.artist)?.name || release.targetGroup || release.artist);
+            
+            return (release.tracks || []).map(track => ({
+                id: `${release.id}-${track.name}`, // Simplified ID
+                name: `${track.name} (${release.name} - ${artistName})`,
+                data: {
+                    members: (track.members || []).map(m => String(m.id)),
+                    center: track.center || [],
+                    lineup: track.lineup || {}
+                }
+            }));
+        });
+    
+    const applyPreviousLineup = (trackId) => {
+        if (!trackId) return;
+    
+        let memberIdsToSelect = [];
+    
+        if (trackId.startsWith('election-')) {
+            const unit = trackId.replace('election-', '');
+            if (!lastElectionResult) return;
+            const rankRanges = {
+                senbatsu: { min: 1, max: 16 },
+                undergirls: { min: 17, max: 32 },
+                nextgirls: { min: 33, max: 48 },
+            };
+            const range = rankRanges[unit];
+            if (range) {
+                memberIdsToSelect = lastElectionResult
+                    .filter(m => m.rank >= range.min && m.rank <= range.max)
+                    .map(m => m.rosterId || m.id);
+            }
+        } else if (trackId === 'janken-senbatsu') {
+            if (!lastJankenResult) return;
+            memberIdsToSelect = lastJankenResult
+                .filter(m => m.rank >= 1 && m.rank <= 16)
+                .map(m => m.rosterId || m.id);
+        } else {
+            const selectedHistory = historicalTracks.find(t => t.id === trackId);
+            if (selectedHistory) {
+                memberIdsToSelect = selectedHistory.data.members;
+            }
+        }
+        
+        const availableMemberIds = new Set(availableMembers.map(m => m.rosterId));
+        const finalSelection = memberIdsToSelect.filter(id => availableMemberIds.has(id));
+    
+        setSelectedMembers(finalSelection);
+    
+        // Reset both possible dropdowns after selection
+        const perfDropdown = document.getElementById('perf-import-lineup');
+        const concertDropdown = document.getElementById('major-concert-import-lineup');
+        if (perfDropdown) perfDropdown.value = "";
+        if (concertDropdown) concertDropdown.value = "";
+    };
     // NEW: State for Joint Concerts
     const [isJointConcert, setIsJointConcert] = useState(false);
     const [participatingGroups, setParticipatingGroups] = useState(['main']);
 
-const randomizeSetlist = (count = 16) => {
+const randomizeSetlist = (count = 20) => {
     if (allGroupTracks.length === 0) return;
     const shuffled = [...allGroupTracks].sort(() => 0.5 - Math.random());
     const newSetlist = shuffled.slice(0, Math.min(allGroupTracks.length, count)).map(track => ({
@@ -3850,8 +4035,9 @@ const randomizeSetlist = (count = 16) => {
     if (newSetlist.length > 10) {
         newSetlist.splice(9, 0, { type: 'mc', name: 'MC 2', hasAnnouncement: false });
     }
-    if (newSetlist.length > 12) {
-        newSetlist.splice(12, 0, { type: 'encore' });
+    // If the setlist is 20 songs long, add an encore break after the last song.
+    if (newSetlist.length >= 20) {
+        newSetlist.splice(20, 0, { type: 'encore' });
     }
 
     setSetlist(newSetlist);
@@ -3889,15 +4075,15 @@ const randomizeSetlist = (count = 16) => {
         });
     };
 
-    // Recalculate available members based on selected groups
-    const availableMembers = getAllAvailableMembers(true).filter(member => {
-        // For sister group members, check if their numeric groupId is in the participating list.
-        if (member.isSisterMember) {
-            return participatingGroups.includes(member.groupId);
-        }
-        // For main group members, check if the string 'main' is in the participating list.
-        return participatingGroups.includes('main');
-    });
+        const availableMembers = getAllAvailableMembers(true).filter(member => {
+            // For sister group members, check if their numeric groupId is in the participating list.
+            if (member.isSisterMember) {
+                // FIX: Convert both to strings to ensure correct comparison
+                return participatingGroups.map(String).includes(String(member.groupId));
+            }
+            // For main group members, check if the string 'main' is in the participating list.
+            return participatingGroups.includes('main');
+        });
 
     // Recalculate available songs based on selected groups
         const allGroupTracks = [
@@ -4124,8 +4310,38 @@ const randomizeSetlist = (count = 16) => {
                         <div className="border p-2 rounded-lg bg-gray-50 dark:bg-gray-900">
                             <div className="flex justify-between items-center mb-2">
                                 <h4 className="font-semibold dark:text-gray-100">Setlist ({setlist.length})</h4>
+<div className="mb-2">
+    <label htmlFor="major-concert-import-lineup" className="block text-xs font-medium text-gray-700 dark:text-gray-300">Import Member Lineup From...</label>
+    <select
+        id="major-concert-import-lineup"
+        onChange={(e) => applyPreviousLineup(e.target.value)}
+        className="mt-1 block w-full pl-3 pr-10 py-1 text-sm border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md dark:bg-gray-700 dark:border-gray-600"
+    >
+        <option value="">-- Select a past lineup --</option>
+        {lastElectionResult && (
+            <optgroup label="Last General Election">
+                <option value="election-senbatsu">Senbatsu (Ranks 1-16)</option>
+                <option value="election-undergirls">Undergirls (Ranks 17-32)</option>
+                <option value="election-nextgirls">Next Girls (Ranks 33-48)</option>
+            </optgroup>
+        )}
+        {lastJankenResult && (
+            <optgroup label="Last Janken Tournament">
+                <option value="janken-senbatsu">Janken Senbatsu (Top 16)</option>
+            </optgroup>
+        )}
+        {historicalTracks.map(track => (
+            <option key={track.id} value={track.id}>
+                {track.name}
+            </option>
+        ))}
+    </select>
+</div>
+
+
+
                                 <div className="flex items-center gap-2">
-                                    <button onClick={() => randomizeSetlist(16)} className="px-3 py-1 text-xs bg-blue-500 text-white rounded font-semibold hover:bg-blue-600">Randomize</button>
+                                    <button onClick={() => randomizeSetlist(20)} className="px-3 py-1 text-xs bg-blue-500 text-white rounded font-semibold hover:bg-blue-600">Randomize</button>
                                     {lastRequestHourResult && (
                                         <button
                                             onClick={importRequestHourSetlist}
@@ -4167,7 +4383,8 @@ const randomizeSetlist = (count = 16) => {
                             </div>
                             <div className="space-y-1 max-h-60 overflow-y-auto border-t border-b dark:border-gray-700 p-1">
                                 {filteredMembers.map(member => (
-                                    <div key={member.rosterId} className={`flex items-center justify-between p-2 rounded ${selectedMembers.includes(member.id) ? 'bg-blue-200 dark:bg-blue-800' : 'bg-white dark:bg-gray-800/50'}`}>
+                                    <div key={member.rosterId} className={`flex items-center justify-between p-2 rounded ${selectedMembers.includes(member.rosterId) ? 'bg-blue-200 dark:bg-blue-800' : 'bg-white dark:bg-gray-800/50'}`}>
+
                                         <div>
                                             <p className="font-semibold text-sm">{member.name}</p>
                                             <p className="text-xs text-gray-600 dark:text-gray-400">Vo: {member.singing} Da: {member.dancing} Fans: {getTotalFansForMember(member).toLocaleString()}</p>
@@ -7040,6 +7257,19 @@ const handleConfirmMove = () => {
                             <Zap size={18} className="inline-block mr-2" />
                             Run All Eligible Promotions
                         </button>
+
+                    <button
+                        onClick={() => {
+                            setModalData({ single });
+                            setShowModal('musicShowPromotion');
+                        }}
+                        className="px-6 py-3 bg-gradient-to-r from-blue-500 to-sky-500 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all"
+                    >
+                        <Tv size={18} className="inline-block mr-2" />
+                        Appear on Music Shows
+                    </button>
+
+
                     </div>
                 <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2">
                     {promotions.map(promo => {
@@ -7076,7 +7306,7 @@ const handleConfirmMove = () => {
             </ModalWrapper>
         );
     };
-
+    
     const SenbatsuPromotionResultModal = () => {
         if (!modalData) return null;
 
@@ -7178,6 +7408,122 @@ const handleConfirmMove = () => {
             </ModalWrapper>
         );
     };
+
+    const MusicShowPromotionModal = () => {
+    if (!modalData || !modalData.single) return null;
+
+    const { single } = modalData;
+    const shows = Object.values(musicShowTypes).sort((a,b) => a.cost - b.cost);
+
+    return (
+        <ModalWrapper title={`Music Show Promotions: ${single.name}`} maxWidth="max-w-4xl">
+                <div className="text-center my-4">
+                    <button
+                        onClick={() => {
+                            if (window.confirm('Are you sure you want to attend ALL eligible music shows? This may be expensive.')) {
+                                startAllMusicShowAppearances(single.id);
+                            }
+                        }}
+                        className="px-6 py-3 bg-gradient-to-r from-green-500 to-teal-500 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all"
+                    >
+                        <Tv size={18} className="inline-block mr-2" />
+                        Appear on All Eligible Shows
+                    </button>
+                </div>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Choose a TV appearance for the Senbatsu members. Each show can only be attended once per single.</p>
+            <div className="space-y-3 max-h-[70vh] overflow-y-auto pr-2">
+                {shows.map(show => {
+                    const isDone = (completedPromotions[single.id] || []).includes(show.id);
+                    const canAfford = money >= show.cost;
+                    const meetsReq = show.requirement ? show.requirement(single.tracks.find(t => t.type === 'title')?.members || [], single) : true;
+                    const isDisabled = isDone || !canAfford || !meetsReq;
+
+                    let title = "Start";
+                    if(isDone) title = "Completed";
+                    else if(!canAfford) title = "Too Expensive";
+                    else if(!meetsReq) title = "Reqs Not Met";
+
+                    return (
+                        <div key={show.id} className={`p-4 border rounded-lg ${isDisabled ? 'bg-gray-200 dark:bg-gray-700 opacity-70' : 'bg-white dark:bg-gray-800'}`}>
+                            <div className="flex justify-between items-start">
+                                <div>
+                                    <h4 className="font-bold text-lg">{show.name} <span className="text-xs font-normal text-gray-500">({show.channel})</span></h4>
+                                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${show.category === 'Big Three' ? 'bg-red-200 text-red-800' : 'bg-blue-200 text-blue-800'}`}>{show.category}</span>
+                                </div>
+                                <span className={`font-bold ${show.cost > 0 ? 'text-red-500' : 'text-green-500'}`}>
+                                    ¥{show.cost.toLocaleString()}
+                                </span>
+                            </div>
+                            <p className="text-sm text-gray-600 dark:text-gray-400 my-1">{show.description}</p>
+                            <div className="flex justify-end items-center mt-2">
+                                 <button
+                                    onClick={() => startMusicShowAppearance(show.id, single.id)}
+                                    disabled={isDisabled}
+                                    className="px-4 py-2 bg-blue-600 text-white rounded font-bold disabled:bg-gray-400 disabled:cursor-not-allowed"
+                                    title={!meetsReq ? show.reqText : ''}
+                                 >
+                                    {title}
+                                </button>
+                            </div>
+                        </div>
+                    )
+                })}
+            </div>
+        </ModalWrapper>
+    );
+};
+
+const MusicShowResultModal = () => {
+    if (!modalData || !modalData.show) return null;
+    const { show, result, members } = modalData;
+    
+    return (
+        <ModalWrapper title={`Result: ${show.name} Appearance`} maxWidth="max-w-lg">
+            <div className="text-center p-4">
+                <p className="text-lg italic mb-4">"{result.message}"</p>
+                <div className="space-y-2 text-left">
+                    {result.fanGain > 0 && <p><strong className="text-green-500">+{result.fanGain.toLocaleString()}</strong> fans gained.</p>}
+                    {result.repGain > 0 && <p><strong className="text-green-500">+{result.repGain}</strong> Group Reputation.</p>}
+                    {result.salesBoost > 0 && <p><strong className="text-green-500">+{result.salesBoost * 100}%</strong> boost to sales potential.</p>}
+                    {result.internationalFanGain > 0 && <p><strong className="text-green-500">+{result.internationalFanGain.toLocaleString()}</strong> international fans gained.</p>}
+                </div>
+                <div className="mt-4 pt-2 border-t">
+                    <h4 className="font-semibold mb-2">Featured Members:</h4>
+                    <div className="flex flex-wrap justify-center gap-2">
+                        {members.map(m => <span key={m.id} className="text-xs bg-gray-200 text-gray-800 px-2 py-1 rounded-full">{m.name}</span>)}
+                    </div>
+                </div>
+            </div>
+        </ModalWrapper>
+    );
+};
+
+const AllMusicShowResultsModal = () => {
+    if (!modalData) return null;
+    const { showsAttended, totalCost, showsAttendedCount, singleName, totalFanGain, totalRepGain, totalInternationalFanGain } = modalData;
+
+
+    return (
+        <ModalWrapper title={`Promotion Blitz Results: ${singleName}`} maxWidth="max-w-xl">
+            <div className="my-2 p-3 bg-green-100 dark:bg-green-900/50 border border-green-500/20 rounded-lg text-center text-sm">
+                <p className="font-bold text-green-800 dark:text-green-200">Total Rewards:</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 mt-1">
+                    {totalFanGain > 0 && <p>Fan Gain: <span className="font-bold text-blue-600 dark:text-blue-400">+{totalFanGain.toLocaleString()}</span></p>}
+                    {totalRepGain > 0 && <p>Reputation: <span className="font-bold text-yellow-600 dark:text-yellow-400">+{totalRepGain}</span></p>}
+                    {totalInternationalFanGain > 0 && <p>Intl. Fans: <span className="font-bold text-purple-600 dark:text-purple-400">+{totalInternationalFanGain.toLocaleString()}</span></p>}
+                </div>
+            </div>
+            <div className="space-y-2 max-h-60 overflow-y-auto p-2 bg-gray-100 dark:bg-gray-900 rounded-lg">
+                {showsAttended.map((promo, index) => (
+                    <div key={index} className="p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                        <p className="font-bold text-gray-800 dark:text-gray-200">{promo.name}</p>
+                        <p className="text-sm text-green-600 dark:text-green-400">{promo.result}</p>
+                    </div>
+                ))}
+            </div>
+        </ModalWrapper>
+    );
+};
 
 
     const BsidePromotionModal = () => {
@@ -13555,6 +13901,9 @@ if (!gameStarted) {
         {showModal === 'filmDetails' && <FilmDetailsModal viewedFilm={viewedFilm} setViewedFilm={setViewedFilm} setShowModal={setShowModal} getMemberById={getMemberById} />}
         {showModal === 'sponsorshipDetails' && <SponsorshipModal />}
         {showModal === 'sponsorshipResult' && <SponsorshipResultModal />}
+        {showModal === 'musicShowPromotion' && <MusicShowPromotionModal />}
+        {showModal === 'musicShowResult' && <MusicShowResultModal />}
+        {showModal === 'allMusicShowResults' && <AllMusicShowResultsModal />}
         {showModal === 'draftKaigi' && (
             <DraftKaigiModal 
                 draftKaigi={draftKaigi} 

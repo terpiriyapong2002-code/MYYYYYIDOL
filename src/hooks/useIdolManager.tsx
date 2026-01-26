@@ -1069,6 +1069,98 @@ export const livestreamTypes = [
     { type: 'Karaoke', stat: 'singing', baseFanGain: 1800, description: 'is singing fan-requested songs!', gaffeChance: 0.05 },
 ];
 
+export const musicShowTypes = {
+    // Big Three
+    musicStation: {
+        id: 'musicStation',
+        name: 'Music Station',
+        channel: 'TV Asahi',
+        category: 'Big Three',
+        cost: 250000,
+        description: 'Appear on the legendary M-Sute. Proves the group has "arrived" and provides a massive boost to general public recognition.',
+        effect: (senbatsu, single) => ({ fanGain: 120000, repGain: 2, salesBoost: 0.05, message: `A legendary performance on Music Station created massive buzz!` })
+    },
+    cdtv: {
+        id: 'cdtv',
+        name: 'CDTV Live! Live!',
+        channel: 'TBS',
+        category: 'Big Three',
+        cost: 180000,
+        description: 'A full-length performance on CDTV. Known for its high quality, it directly boosts single sales potential.',
+        effect: (senbatsu, single) => ({ fanGain: 50000, repGain: 1, salesBoost: 0.15, message: `A full performance on CDTV greatly boosted sales potential for "${single.name}".` })
+    },
+    musicFair: {
+        id: 'musicFair',
+        name: 'Music Fair',
+        channel: 'Fuji TV',
+        category: 'Big Three',
+        cost: 120000,
+        description: 'Perform a collaboration with a veteran artist. Boosts reputation and appeals to an older audience.',
+        requirement: (senbatsu) => senbatsu.some(m => m.singing > 75),
+        reqText: 'Requires a Senbatsu member with 75+ Vocal skill.',
+        effect: (senbatsu, single) => {
+            const vocalLeader = senbatsu.sort((a,b) => b.singing - a.singing)[0];
+            return { fanGain: 40000, repGain: 1, salesBoost: 0, specificMemberId: vocalLeader.rosterId, message: `${vocalLeader.name} collaborated with a legend, impressing an older audience.` };
+        }
+    },
+    // Late-Night
+    venue101: {
+        id: 'venue101',
+        name: 'Venue101',
+        channel: 'NHK',
+        category: 'Late-Night',
+        cost: 80000,
+        description: 'Perform on the modern, Gen Z-focused show. Great for trending on social media.',
+        effect: (senbatsu, single) => ({ fanGain: 70000, repGain: 0, salesBoost: 0.02, message: `The group trended on X after their Venue101 performance!` })
+    },
+    buzzRhythm: {
+        id: 'buzzRhythm',
+        name: 'Buzz Rhythm 02',
+        channel: 'Nippon TV',
+        category: 'Late-Night',
+        cost: 60000,
+        description: 'A talk-heavy appearance. Success is based on members\' variety and charisma skills.',
+        requirement: (senbatsu) => senbatsu.length >= 3,
+        reqText: 'Requires at least 3 members.',
+        effect: (senbatsu, single) => {
+            const cast = senbatsu.sort((a,b) => (b.variety + b.charisma) - (a.variety + a.charisma)).slice(0, 5);
+            const avgSkill = cast.reduce((sum, m) => sum + m.variety + m.charisma, 0) / (cast.length * 2);
+            const fanGain = 15000 + Math.floor(avgSkill * 200);
+            return { fanGain, repGain: 0, salesBoost: 0, message: `The members' great chemistry on Buzz Rhythm charmed viewers.` };
+        }
+    },
+    melodixPremium: {
+        id: 'melodixPremium',
+        name: 'Melodix! Premium',
+        channel: 'TV Tokyo',
+        category: 'Late-Night',
+        cost: 40000,
+        description: 'A late-night "cult favorite" show, often the first TV appearance for rising idols.',
+        effect: (senbatsu, single) => ({ fanGain: 30000, repGain: 0, salesBoost: 0, message: `A solid performance on Melodix! has energized the core fanbase.` })
+    },
+    withMusic: {
+        id: 'withMusic',
+        name: 'with MUSIC',
+        channel: 'Nippon TV',
+        category: 'Late-Night',
+        cost: 150000,
+        description: 'A prime-time show focusing on global appeal. Boosts both domestic and international fan interest.',
+        effect: (senbatsu, single) => ({ fanGain: 80000, repGain: 1, salesBoost: 0.03, internationalFanGain: 20000, message: `The performance on with MUSIC showcased the group's global potential.` })
+    },
+    // Morning Shows
+    wideShow: {
+        id: 'wideShow',
+        name: 'Morning Wide Show Blitz',
+        channel: 'Fuji TV / NTV',
+        category: 'Morning',
+        cost: 50000,
+        description: 'Feature your new MV in clips on shows like Mezamashi TV and ZIP!. Reaches a massive, broad audience.',
+        requirement: (senbatsu, single) => single.hasVideo,
+        reqText: 'Requires the single to have a music video.',
+        effect: (senbatsu, single) => ({ fanGain: 35000, repGain: 0, salesBoost: 0.02, message: `The new MV was featured on morning shows across the country.` })
+    },
+};
+
 
 // --- NEW: Global Fan Calculation Helper ---
 export const getTotalFansForMember = (member) => {
@@ -8570,6 +8662,173 @@ alreadyDonePromos.push(promo.id);
         }
     };
 
+    const startMusicShowAppearance = (showId, singleId) => {
+    const allReleases = [...songs, ...sisterGroups.flatMap(sg => sg.songs || [])];
+    const single = allReleases.find(s => s.id === singleId);
+    const show = musicShowTypes[showId];
+
+    if (!single || !show) return setMessage("Data not found.");
+    if (money < show.cost) return setMessage("Not enough money for this appearance.");
+
+    const promotionsDone = completedPromotions[singleId] || [];
+    if (promotionsDone.includes(showId)) {
+        return setMessage(`'${show.name}' has already been done for this single.`);
+    }
+
+    const titleTrack = single.tracks.find(t => t.type === 'title');
+    if (!titleTrack) return setMessage("Cannot find title track for promotion.");
+
+    const senbatsuMembers = (titleTrack.members || []).map(m => getMemberById(m.id)).filter(Boolean);
+
+    if (show.requirement && !show.requirement(senbatsuMembers, single)) {
+        return setMessage(show.reqText || "Requirements for this show are not met.");
+    }
+
+    setMoney(prev => prev - show.cost);
+
+    const result = show.effect(senbatsuMembers, single);
+
+    // Apply effects
+    if (result.fanGain > 0) {
+        const targetMembers = result.specificMemberId ? [getMemberById(result.specificMemberId)] : senbatsuMembers;
+        distributeFans(result.fanGain, targetMembers.map(m => m.rosterId));
+    }
+    
+    if (result.repGain > 0) {
+        setGroupReputation(prev => prev + result.repGain);
+    }
+
+    if (result.salesBoost > 0) {
+        const updateSalesFn = s => s.id === singleId ? { ...s, baseSalesPotential: s.baseSalesPotential * (1 + result.salesBoost) } : s;
+        if (single.targetGroup === 'main' || single.targetGroup === groupName) {
+            setSongs(prev => prev.map(updateSalesFn));
+        } else {
+            setSisterGroups(prev => prev.map(sg => 
+                sg.name === single.targetGroup || String(sg.id) === String(single.targetGroup) 
+                ? { ...sg, songs: (sg.songs || []).map(updateSalesFn) } 
+                : sg
+            ));
+        }
+    }
+    
+    if (result.internationalFanGain > 0) {
+         const overseasGroups = sisterGroups.filter(sg => sg.type === 'overseas');
+         if (overseasGroups.length > 0) {
+             overseasGroups.forEach(sg => {
+                 const overseasMembers = (sg.members || []).map(m => `sg-${sg.id}-${m.id}`);
+                 distributeFans(result.internationalFanGain / overseasGroups.length, overseasMembers);
+             });
+         }
+    }
+
+    setCompletedPromotions(prev => ({
+        ...prev,
+        [singleId]: [...(prev[singleId] || []), showId]
+    }));
+
+    addNotification({ type: 'Promotion', message: result.message });
+    setMessage(result.message);
+    setModalData({ show, single, result, members: senbatsuMembers });
+    setShowModal('musicShowResult');
+};
+
+const startAllMusicShowAppearances = (singleId) => {
+    const allReleases = [...songs, ...sisterGroups.flatMap(sg => sg.songs || [])];
+    const single = allReleases.find(s => s.id === singleId);
+    if (!single) return setMessage("Single not found.");
+
+    const titleTrack = single.tracks.find(t => t.type === 'title');
+    if (!titleTrack) return setMessage("Title track not found.");
+
+    const senbatsuMembers = (titleTrack.members || []).map(m => getMemberById(m.id)).filter(Boolean);
+    const shows = Object.values(musicShowTypes);
+
+    let updatedMoney = money;
+    let showsAttendedCount = 0;
+    let summaryNotifications = [];
+    let alreadyDonePromos = completedPromotions[singleId] || [];
+    let totalFanGain = 0;
+    let totalRepGain = 0;
+    let totalInternationalFanGain = 0;
+
+    shows.forEach(show => {
+        const canAfford = updatedMoney >= show.cost;
+        const meetsReq = show.requirement ? show.requirement(senbatsuMembers, single) : true;
+        
+        if (alreadyDonePromos.includes(show.id) || !canAfford || !meetsReq) {
+            return; // Skip this show
+        }
+
+        updatedMoney -= show.cost;
+        
+        const result = show.effect(senbatsuMembers, single);
+        totalFanGain += result.fanGain || 0;
+totalRepGain += result.repGain || 0;
+totalInternationalFanGain += result.internationalFanGain || 0;
+
+
+        // Apply effects
+        if (result.fanGain > 0) {
+            const targetMembers = result.specificMemberId ? [getMemberById(result.specificMemberId)] : senbatsuMembers;
+            distributeFans(result.fanGain, targetMembers.map(m => m.rosterId));
+        }
+        
+        if (result.repGain > 0) {
+            setGroupReputation(prev => prev + result.repGain);
+        }
+
+        if (result.salesBoost > 0) {
+            const updateSalesFn = s => s.id === singleId ? { ...s, baseSalesPotential: s.baseSalesPotential * (1 + result.salesBoost) } : s;
+            if (single.targetGroup === 'main' || single.targetGroup === groupName) {
+                setSongs(prev => prev.map(updateSalesFn));
+            } else {
+                setSisterGroups(prev => prev.map(sg => 
+                    sg.name === single.targetGroup || String(sg.id) === String(single.targetGroup) 
+                    ? { ...sg, songs: (sg.songs || []).map(updateSalesFn) } 
+                    : sg
+                ));
+            }
+        }
+        
+        if (result.internationalFanGain > 0) {
+             const overseasGroups = sisterGroups.filter(sg => sg.type === 'overseas');
+             if (overseasGroups.length > 0) {
+                 overseasGroups.forEach(sg => {
+                     const overseasMembers = (sg.members || []).map(m => `sg-${sg.id}-${m.id}`);
+                     distributeFans(result.internationalFanGain / overseasGroups.length, overseasMembers);
+                 });
+             }
+        }
+        
+        summaryNotifications.push({ name: show.name, result: result.message });
+        alreadyDonePromos.push(show.id);
+        showsAttendedCount++;
+    });
+
+    if (showsAttendedCount > 0) {
+        const totalCost = money - updatedMoney;
+        setMoney(updatedMoney);
+        setCompletedPromotions(prev => ({
+            ...prev,
+            [singleId]: alreadyDonePromos
+        }));
+
+        setModalData({
+            showsAttended: summaryNotifications,
+            totalCost: totalCost,
+            showsAttendedCount: showsAttendedCount,
+            singleName: single.name,
+            totalFanGain,
+            totalRepGain,
+            totalInternationalFanGain
+        });
+        setShowModal('allMusicShowResults');
+        setMessage(`Attended ${showsAttendedCount} music shows!`);
+    } else {
+        setMessage("No eligible music shows could be attended at this time.");
+    }
+};
+
 
 const startAllEligibleBsidePromotions = (singleId, trackName) => {
     const allReleases = [...songs, ...sisterGroups.flatMap(sg => sg.songs || [])];
@@ -14426,6 +14685,6 @@ return {
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
-    startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, resolveSurvivalMission, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent,  startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
+    startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, resolveSurvivalMission, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent,  startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
     };
     };
