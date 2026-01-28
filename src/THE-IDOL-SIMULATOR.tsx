@@ -463,85 +463,100 @@ const CustomSetlistModal = () => {
     );
 };
     
-    const HoldAuditionModal = ({ startAudition, groupName, sisterGroups, setShowModal }) => {
-      const [targetGroup, setTargetGroup] = useState('main');
-      const [tier, setTier] = useState(2);
-      const [generationName, setGenerationName] = useState('');
-        const [location, setLocation] = useState('Japan');
-      const handleConfirm = () => {
-          if (!generationName.trim()) {
-              // In a future step, we should show an error message here.
-              // For now, just prevent the audition.
-              return; 
-          }
-          startAudition(targetGroup, tier, generationName, location);
-      };
-  
-      const tiers = [
-          { id: 1, name: 'Local Casting', cost: 25000 },
-          { id: 2, name: 'Regional Audition', cost: 100000 },
-          { id: 3, name: 'National Audition', cost: 500000 },
-          { id: 4, name: 'Elite Scouting', cost: 1500000 },
-      ];
-  
-      return (
-          <ModalWrapper title={<span className="flex items-center"><User size={20} className="mr-2"/> Hold Audition</span>} maxWidth="max-w-xl">
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Choose the scale and target for your recruitment drive.</p>
-              
-              <h4 className="font-semibold mb-1 text-gray-800 dark:text-gray-200">Target Group</h4>
-              <select value={targetGroup} onChange={(e) => setTargetGroup(e.target.value)} className="w-full p-2 border rounded mb-3 bg-white dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">
-                  <option key="main" value="main">{groupName} (Main Group)</option>
-                  {(sisterGroups || []).map(sg => <option key={sg.id} value={sg.id}>{sg.name}</option>)}
-              </select>
+const HoldAuditionModal = ({ startAudition, groupName, sisterGroups, setShowModal }) => {
+    const [poolSize, setPoolSize] = useState(20);
+    const [targetGroup, setTargetGroup] = useState('main');
+    const [tier, setTier] = useState(2);
+    const [generationName, setGenerationName] = useState('');
+    const [location, setLocation] = useState('Japan');
+    const handleConfirm = () => {
+        if (!generationName.trim()) {
+            setMessage("Generation Name is required.");
+            return;
+        }
+        startAudition(targetGroup, tier, generationName, location, poolSize);
+    };
 
- {targetGroup === 'main' && (
-  <>
-    <h4 className="font-semibold mb-1 text-gray-800 dark:text-gray-200">Audition Location</h4>
-    <select value={location} onChange={(e) => setLocation(e.target.value)} className="w-full p-2 border rounded mb-3 bg-white dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">
-      <option value="Japan">Japan</option>
-      {[...new Set((sisterGroups || []).filter(sg => sg.type === 'overseas').map(sg => sg.location))].map(loc => <option key={loc} value={loc}>{loc}</option>)}
-    </select>
-  </>
-)}
-             
-              <h4 className="font-semibold mb-1 text-gray-800 dark:text-gray-200">Generation Name</h4>
-              <input 
-                  type="text" 
-                  value={generationName} 
-                  onChange={(e) => setGenerationName(e.target.value)}
-                  className="w-full p-2 border rounded mb-3 bg-white dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
-                  placeholder="e.g., 17th Generation"
-              />
-  
-              <h4 className="font-semibold mb-2 text-gray-800 dark:text-gray-200">Audition Scale</h4>
-              <div className="space-y-3">
-                  {tiers.map(t => (
-                      <label key={t.id} className={`p-3 border rounded-lg flex justify-between items-center cursor-pointer transition-colors duration-200 ${
-                          tier === t.id ? 'bg-blue-100 border-blue-500 ring-2 ring-blue-200 dark:bg-gray-900 dark:border-blue-400' : 'bg-white dark:bg-gray-700 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
-                      }`}>
-                          <span className="font-semibold text-gray-800 dark:text-gray-200">{t.name}</span>
-                          <span className="font-bold text-red-500 dark:text-red-400">¥{t.cost.toLocaleString()}</span>
-                          <input
-                              type="radio"
-                              name="tier"
-                              value={t.id}
-                              checked={tier === t.id}
-                              onChange={() => setTier(t.id)}
-                              className="hidden"
-                          />
-                      </label>
-                  ))}
-              </div>
-  
-              <div className="flex justify-end gap-2 mt-6 pt-4 border-t dark:border-t-gray-700">
-                  <button onClick={() => setShowModal(null)} className="p-2 bg-gray-200 dark:bg-gray-600 dark:text-gray-200 rounded px-4">Cancel</button>
-                  <button onClick={handleConfirm} className="p-2 bg-green-500 text-white rounded px-4 font-bold">
-                      Proceed to Draft
-                  </button>
-              </div>
-          </ModalWrapper>
-      );
-  };
+    const tiers = [
+        { id: 1, name: 'Local Casting', cost: 25000 },
+        { id: 2, name: 'Regional Audition', cost: 100000 },
+        { id: 3, name: 'National Audition', cost: 500000 },
+        { id: 4, name: 'Elite Scouting', cost: 1500000 },
+    ];
+
+    return (
+        <ModalWrapper title={<span className="flex items-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-pink-400"><User size={24} className="mr-2 text-blue-400"/> Hold Audition</span>} maxWidth="max-w-xl">
+            <div className="space-y-4">
+                <p className="text-sm text-gray-500 dark:text-blue-200/80 text-center">Choose the scale and target for your next generation of stars.</p>
+
+                <div>
+                    <label className="font-semibold text-sm text-blue-800 dark:text-blue-200 mb-1">Target Group</label>
+                    <select value={targetGroup} onChange={(e) => setTargetGroup(e.target.value)} className="w-full p-2 border border-blue-200/50 rounded-lg bg-blue-50/50 dark:bg-slate-700/50 dark:text-gray-200 dark:border-blue-800/50 focus:ring-2 focus:ring-pink-300 focus:outline-none">
+                        <option key="main" value="main">{groupName} (Main Group)</option>
+                        {(sisterGroups || []).map(sg => <option key={sg.id} value={sg.id}>{sg.name}</option>)}
+                    </select>
+                </div>
+
+                {targetGroup === 'main' && (
+                    <div>
+                        <label className="font-semibold text-sm text-blue-800 dark:text-blue-200 mb-1">Audition Location</label>
+                        <select value={location} onChange={(e) => setLocation(e.target.value)} className="w-full p-2 border border-blue-200/50 rounded-lg bg-blue-50/50 dark:bg-slate-700/50 dark:text-gray-200 dark:border-blue-800/50 focus:ring-2 focus:ring-pink-300 focus:outline-none">
+                            <option value="Japan">Japan</option>
+                            {[...new Set((sisterGroups || []).filter(sg => sg.type === 'overseas').map(sg => sg.location))].map(loc => <option key={loc} value={loc}>{loc}</option>)}
+                        </select>
+                    </div>
+                )}
+           
+                <div>
+                    <label className="font-semibold text-sm text-blue-800 dark:text-blue-200 mb-1">Generation Name</label>
+                    <input 
+                        type="text" 
+                        value={generationName} 
+                        onChange={(e) => setGenerationName(e.target.value)}
+                        className="w-full p-2 border border-blue-200/50 rounded-lg bg-blue-50/50 dark:bg-slate-700/50 dark:text-gray-200 dark:border-blue-800/50 focus:ring-2 focus:ring-pink-300 focus:outline-none"
+                        placeholder="e.g., 17th Generation, Blue Sky Girls..."
+                    />
+                </div>
+
+                <div>
+                    <h4 className="font-semibold text-sm text-blue-800 dark:text-blue-200 mb-2">Audition Scale</h4>
+                    <div className="space-y-3">
+                        {tiers.map(t => (
+                            <label key={t.id} className={`p-3 border rounded-lg flex justify-between items-center cursor-pointer transition-all duration-200 shadow-sm ${
+                                tier === t.id ? 'bg-blue-200/70 dark:bg-blue-900/50 border-blue-400 dark:border-blue-500 ring-2 ring-blue-300 dark:ring-pink-400/50' : 'bg-white/50 dark:bg-slate-700/50 border-blue-200/50 dark:border-blue-800/50 hover:bg-blue-100/50 dark:hover:bg-slate-700'
+                            }`}>
+                                <span className="font-semibold text-blue-900 dark:text-blue-200">{t.name}</span>
+                                <span className="font-bold text-pink-500 dark:text-pink-400">¥{t.cost.toLocaleString()}</span>
+                                <input type="radio" name="tier" value={t.id} checked={tier === t.id} onChange={() => setTier(t.id)} className="hidden"/>
+                            </label>
+                        ))}
+                    </div>
+                </div>
+
+                <div>
+                    <label className="font-semibold text-sm text-blue-800 dark:text-blue-200 mb-1">Number of Candidates</label>
+                     <input
+                        type="number"
+                        value={poolSize}
+                        onChange={(e) => setPoolSize(parseInt(e.target.value))}
+                        className="w-full p-2 border border-blue-200/50 rounded-lg bg-blue-50/50 dark:bg-slate-700/50 dark:text-gray-200 dark:border-blue-800/50 focus:ring-2 focus:ring-pink-300 focus:outline-none"
+                        min="5"
+                        max="100"
+                    />
+                </div>
+
+                <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-blue-200/30 dark:border-blue-800/50">
+                    <button onClick={() => setShowModal(null)} className="px-5 py-2 bg-slate-200 text-slate-600 font-semibold rounded-full hover:bg-slate-300 transition-colors">Cancel</button>
+                    <button onClick={handleConfirm} className="px-6 py-2 bg-gradient-to-r from-blue-400 to-pink-400 text-white rounded-full font-bold hover:shadow-lg hover:shadow-blue-300/50 dark:hover:shadow-pink-500/20 transition-shadow">
+                        Proceed to Draft
+                    </button>
+                </div>
+            </div>
+        </ModalWrapper>
+    );
+};
+
+
   const TraineeDraftModal = ({ auditionCandidates, modalData, confirmRecruitment, setShowModal }) => {
       const [selected, setSelected] = useState([]);
       const [sortBy, setSortBy] = useState({ key: 'potential', asc: false });
@@ -1763,18 +1778,28 @@ let selectableMembers = [];
 // First, get the single source of truth for all members, which now includes exchange students.
 const allAvailableForSong = getAllAvailableMembers(true);
 
-    if (targetGroup === 'main') {
-        // For a main group song, ALL available members from ALL groups are selectable.
-        selectableMembers = allAvailableForSong;
-    } else {
-        // For a sister group song, only members of that group or kennin members are selectable.
-        const sg = sisterGroups.find(s => s.name === targetGroup);
-        if (sg) {
-            selectableMembers = allAvailableForSong.filter(m => 
-                (String(m.groupId) === String(sg.id) || (m.kenninGroups || []).includes(sg.name))
-            );
+if (targetGroup === 'main') {
+    // For a main group song, ALL available members from ALL groups are selectable.
+    selectableMembers = allAvailableForSong;
+} else {
+    const sg = sisterGroups.find(s => s.name === targetGroup);
+    if (sg) {
+        if (sg.type === 'unit') {
+            // It's a unit. sg.members is a list of roster IDs.
+            // We resolve these IDs into full member objects.
+            const unitMemberIds = (sg.members || []).map(member => {
+                if (typeof member === 'object' && member !== null) {
+                    return String(member.rosterId || member.id);
+                }
+                return String(member);
+            });
+            selectableMembers = unitMemberIds.map(id => getMemberById(id)).filter(Boolean);
+        } else {
+            // It's a regular sister group. Find members by their groupId.
+            selectableMembers = allAvailableForSong.filter(m => String(m.groupId) === String(sg.id));
         }
     }
+}
 
     // Add rival members to the selectable pool if it's a collaboration
     if (isCollaboration) {
@@ -9147,182 +9172,191 @@ const FilmDetailsModal = ({ viewedFilm, setViewedFilm, setShowModal, getMemberBy
     );
 };
 
-const SponsorshipModal = () => {
-    if (!modalData) return null;
-
-    const offer = modalData;
-    const [selectedMemberIds, setSelectedMemberIds] = useState([]);
-    const availableMembers = getAllAvailableMembers(true).filter(m => m.isAvailable);
-
-    const toggleMember = (id) => {
-        const requiredMembers = offer.requires.members;
-        setSelectedMemberIds(prev => {
-            if (prev.includes(id)) {
-                return prev.filter(i => i !== id);
-            } else {
-                if (prev.length < requiredMembers) {
-                    return [...prev, id];
-                }
-                // If we are at capacity, replace the last added member
-                // This creates a more intuitive "single-select" feel when only 1 is needed
-                if (requiredMembers === 1) {
-                    return [id];
-                }
-                return prev; 
-            }
-        });
-    };
-
-    const handleAccept = () => {
-        if (selectedMemberIds.length !== offer.requires.members) {
-            setMessage(`This job requires exactly ${offer.requires.members} member(s).`);
-            return;
-        }
-        acceptSponsorship(offer.id, selectedMemberIds);
-    };
+    const SponsorshipModal = () => {
+        if (!modalData) return null;
     
-    // Find members who meet the stat requirement
-    const eligibleMembers = availableMembers.filter(m => m[offer.requires.stat] >= offer.requires.value);
+        const offer = modalData;
+        const [selectedMemberIds, setSelectedMemberIds] = useState([]);
+        // NEW: Local state for search and filter to fix mobile keyboard and component re-render issues
+        const [localMemberSearch, setLocalMemberSearch] = useState('');
+        const [memberFilter, setMemberFilter] = useState('all');
 
-    // --- NEW: Filtering and Searching Logic ---
-    let filteredEligibleMembers = eligibleMembers;
-
-    if (memberFilter !== 'all') {
-        if (memberFilter.startsWith('team-')) {
-            const teamId = parseInt(memberFilter.replace('team-', ''), 10);
-            const team = teams.find(t => t.id === teamId);
-            const teamMemberIds = new Set((team?.members || []).map(String));
-            filteredEligibleMembers = filteredEligibleMembers.filter(m => teamMemberIds.has(String(m.rosterId || m.id)));
-        } else if (memberFilter === 'main') {
-            filteredEligibleMembers = filteredEligibleMembers.filter(m => !m.isSisterMember || (m.kenninGroups || []).includes(groupName));
-        } else if (memberFilter.startsWith('main-gen-')) {
-            const gen = memberFilter.replace('main-gen-', '');
-            filteredEligibleMembers = filteredEligibleMembers.filter(m => !m.isSisterMember && m.generation === gen);
-        } else if (memberFilter.startsWith('sg-')) {
-            if (memberFilter.includes('-gen-')) {
-                const [sgIdStr, gen] = memberFilter.replace('sg-', '').split('-gen-');
-                filteredEligibleMembers = filteredEligibleMembers.filter(m => String(m.groupId) === sgIdStr && m.generation === gen);
-            } else {
-                const sgId = memberFilter.replace('sg-', '');
-                filteredEligibleMembers = filteredEligibleMembers.filter(m => String(m.groupId) === sgId);
+        const availableMembers = getAllAvailableMembers(true).filter(m => m.isAvailable);
+    
+        const toggleMember = (id) => {
+            const requiredMembers = offer.requires.members;
+            setSelectedMemberIds(prev => {
+                if (prev.includes(id)) {
+                    return prev.filter(i => i !== id);
+                } else {
+                    if (prev.length < requiredMembers) {
+                        return [...prev, id];
+                    }
+                    if (requiredMembers === 1) {
+                        return [id];
+                    }
+                    return prev; 
+                }
+            });
+        };
+    
+        const handleAccept = () => {
+            if (selectedMemberIds.length !== offer.requires.members) {
+                setMessage(`This job requires exactly ${offer.requires.members} member(s).`);
+                return;
+            }
+            acceptSponsorship(offer.id, selectedMemberIds);
+        };
+        
+        const eligibleMembers = availableMembers.filter(m => m[offer.requires.stat] >= offer.requires.value);
+    
+        // --- MODIFIED: Filtering and Sorting Logic ---
+        let filteredEligibleMembers = eligibleMembers;
+    
+        if (memberFilter !== 'all') {
+            if (memberFilter === 'pushed') {
+                const pushedIds = new Set(pushedMembers.map(String));
+                filteredEligibleMembers = filteredEligibleMembers.filter(m => pushedIds.has(String(m.rosterId)));
+            } else if (memberFilter.startsWith('team-')) {
+                const teamId = parseInt(memberFilter.replace('team-', ''), 10);
+                const team = teams.find(t => t.id === teamId);
+                const teamMemberIds = new Set((team?.members || []).map(String));
+                filteredEligibleMembers = filteredEligibleMembers.filter(m => teamMemberIds.has(String(m.rosterId || m.id)));
+            } else if (memberFilter === 'main') {
+                filteredEligibleMembers = filteredEligibleMembers.filter(m => !m.isSisterMember || (m.kenninGroups || []).includes(groupName));
+            } else if (memberFilter.startsWith('main-gen-')) {
+                const gen = memberFilter.replace('main-gen-', '');
+                filteredEligibleMembers = filteredEligibleMembers.filter(m => !m.isSisterMember && m.generation === gen);
+            } else if (memberFilter.startsWith('sg-')) {
+                if (memberFilter.includes('-gen-')) {
+                    const [sgIdStr, gen] = memberFilter.replace('sg-', '').split('-gen-');
+                    filteredEligibleMembers = filteredEligibleMembers.filter(m => String(m.groupId) === sgIdStr && m.generation === gen);
+                } else {
+                    const sgId = memberFilter.replace('sg-', '');
+                    filteredEligibleMembers = filteredEligibleMembers.filter(m => String(m.groupId) === sgId);
+                }
             }
         }
-    }
+    
+        if (localMemberSearch.trim()) {
+            filteredEligibleMembers = filteredEligibleMembers.filter(m =>
+                m.name.toLowerCase().includes(localMemberSearch.trim().toLowerCase())
+            );
+        }
 
-    if (memberSearch.trim()) {
-        filteredEligibleMembers = filteredEligibleMembers.filter(m =>
-            m.name.toLowerCase().includes(memberSearch.trim().toLowerCase())
-        );
-    }
-    // --- END NEW ---
-
-    return (
-        <ModalWrapper title="" maxWidth="max-w-3xl">
-            <div className="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 dark:from-slate-800 dark:to-gray-900 p-6 rounded-2xl shadow-2xl border border-white/50 dark:border-gray-700/50 -m-6">
-                <div className="text-center mb-6">
-                    <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-gradient-to-br from-pink-200 to-purple-200 flex items-center justify-center text-purple-500 shadow-lg">
-                        <Briefcase size={32} />
-                    </div>
-                    <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">
-                        {offer.name}
-                    </h2>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 max-w-lg mx-auto">{offer.description}</p>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <div className="p-4 bg-white/50 dark:bg-black/20 rounded-xl shadow-inner border border-white/50 dark:border-black/20">
-                        <h4 className="font-bold text-pink-600 dark:text-pink-300 text-center text-lg mb-2">Requirements</h4>
-                        <div className="space-y-2 text-sm text-center">
-                            <p>Members needed: <strong className="text-pink-500">{offer.requires.members}</strong></p>
-                            <p>Required Stat: <strong className="text-pink-500">{offer.requires.stat.charAt(0).toUpperCase() + offer.requires.stat.slice(1)} ≥ {offer.requires.value}</strong></p>
-                            {offer.duration > 0 && <p>Duration: <strong className="text-pink-500">{offer.duration} weeks (unavailable)</strong></p>}
+        // Sort the final filtered list by fan count
+        filteredEligibleMembers.sort((a, b) => getTotalFansForMember(b) - getTotalFansForMember(a));
+    
+        return (
+            <ModalWrapper title="" maxWidth="max-w-3xl">
+                <div className="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 dark:from-slate-800 dark:to-gray-900 p-6 rounded-2xl shadow-2xl border border-white/50 dark:border-gray-700/50 -m-6">
+                    <div className="text-center mb-6">
+                        <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-gradient-to-br from-pink-200 to-purple-200 flex items-center justify-center text-purple-500 shadow-lg">
+                            <Briefcase size={32} />
                         </div>
+                        <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">
+                            {offer.name}
+                        </h2>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 max-w-lg mx-auto">{offer.description}</p>
                     </div>
-                    <div className="p-4 bg-white/50 dark:bg-black/20 rounded-xl shadow-inner border border-white/50 dark:border-black/20">
-                        <h4 className="font-bold text-green-600 dark:text-green-300 text-center text-lg mb-2">Rewards</h4>
-                        <div className="space-y-2 text-sm text-center">
-                            {offer.reward.money > 0 && <p>Payment: <strong className="text-green-500">¥{offer.reward.money.toLocaleString()}</strong></p>}
-                            {offer.reward.fanGain > 0 && <p>Fan Gain: <strong className="text-green-500">+{offer.reward.fanGain.toLocaleString()}</strong></p>}
-                            {offer.reward.repGain > 0 && <p>Reputation: <strong className="text-green-500">+{offer.reward.repGain}</strong></p>}
-                        </div>
-                    </div>
-                </div>
-
-                <div className="flex justify-between items-center mb-2 gap-2">
-                    <div>
-                        <label htmlFor="sponsorship-member-filter" className="text-xs font-semibold mr-2">Filter:</label>
-                        <select
-                            id="sponsorship-member-filter"
-                            value={memberFilter}
-                            onChange={e => setMemberFilter(e.target.value)}
-                            className="p-1.5 text-xs border border-pink-200/80 dark:border-pink-800/50 rounded-md bg-white/50 dark:bg-slate-700/50 focus:ring-2 focus:ring-pink-300"
-                        >
-                            <option value="all">All Available Members</option>
-                            <optgroup label="Groups">
-                                <option value="main">{groupName}</option>
-                                {(sisterGroups || []).map(sg => <option key={`filter-sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>)}
-                            </optgroup>
-                            <optgroup label="Teams">
-                                {(teams || []).map(t => <option key={`filter-team-${t.id}`} value={`team-${t.id}`}>{t.name}</option>)}
-                            </optgroup>
-                            {mainGroupGenerations.length > 0 && (
-                                <optgroup label={`${groupName} Generations`}>
-                                    {mainGroupGenerations.map(gen => (<option key={`main-gen-${gen}`} value={`main-gen-${gen}`}>{gen}</option>))}
-                                </optgroup>
-                            )}
-                            {sisterGroupDetails.map(sg => (
-                                sg.generations.length > 0 && (
-                                    <optgroup key={`sg-gen-group-${sg.id}`} label={`${sg.name} Generations`}>
-                                        {sg.generations.map(gen => (<option key={`sg-${sg.id}-gen-${gen}`} value={`sg-${sg.id}-gen-${gen}`}>{gen}</option>))}
-                                    </optgroup>
-                                )
-                            ))}
-                        </select>
-                    </div>
-                    <div>
-                        <input
-                            type="text"
-                            placeholder="Search..."
-                            value={memberSearch}
-                            onChange={(e) => setMemberSearch(e.target.value)}
-                            className="p-1.5 text-xs border border-pink-200/80 dark:border-pink-800/50 rounded-md bg-white/50 dark:bg-slate-700/50 focus:ring-2 focus:ring-pink-300"
-                        />
-                    </div>
-                </div>
-
-                <div>
-                    <h4 className="font-semibold mb-3 text-center text-gray-700 dark:text-gray-300">Select Member(s) ({selectedMemberIds.length}/{offer.requires.members})</h4>
-                    <div className="max-h-60 overflow-y-auto border-2 border-dashed border-pink-200 dark:border-pink-800/50 p-2 rounded-xl bg-black/5 dark:bg-black/20">
-                        {filteredEligibleMembers.length > 0 ? filteredEligibleMembers.map(member => (
-                            <div key={member.rosterId} onClick={() => toggleMember(member.rosterId)} className={`p-2 rounded-lg cursor-pointer flex justify-between items-center transition-all mb-1 ${selectedMemberIds.includes(member.rosterId) ? 'bg-pink-100 dark:bg-pink-900/60 ring-2 ring-pink-300' : 'bg-white/80 dark:bg-gray-800/80 hover:bg-pink-50 dark:hover:bg-pink-900/30'}`}>
-                                <div>
-                                    <p className="font-semibold">{member.name}</p>
-                                    <p className="text-xs text-gray-400">{getMemberGroupStatus(member)}{member.generation ? ` | ${member.generation}` : ''}</p>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400">{offer.requires.stat}: <span className="font-bold">{Math.round(member[offer.requires.stat])}</span></p>
-                                </div>
-                                <div className={`w-5 h-5 rounded-full flex items-center justify-center border-2 ${selectedMemberIds.includes(member.rosterId) ? 'bg-pink-400 border-pink-500' : 'bg-gray-200 dark:bg-gray-600 border-gray-300'}`}>
-                                    {selectedMemberIds.includes(member.rosterId) && <Check size={12} className="text-white"/>}
-                                </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div className="p-4 bg-white/50 dark:bg-black/20 rounded-xl shadow-inner border border-white/50 dark:border-black/20">
+                            <h4 className="font-bold text-pink-600 dark:text-pink-300 text-center text-lg mb-2">Requirements</h4>
+                            <div className="space-y-2 text-sm text-center">
+                                <p>Members needed: <strong className="text-pink-500">{offer.requires.members}</strong></p>
+                                <p>Required Stat: <strong className="text-pink-500">{offer.requires.stat.charAt(0).toUpperCase() + offer.requires.stat.slice(1)} ≥ {offer.requires.value}</strong></p>
+                                {offer.duration > 0 && <p>Duration: <strong className="text-pink-500">{offer.duration} weeks (unavailable)</strong></p>}
                             </div>
-                        )) : (
-                            <p className="text-center text-red-500 dark:text-red-400 p-4">
-                                {eligibleMembers.length === 0
-                                    ? `You have no available members who meet the required stat of ${offer.requires.value} ${offer.requires.stat}.`
-                                    : 'No members match the current filter/search.'
-                                }
-                            </p>
-                        )}
+                        </div>
+                        <div className="p-4 bg-white/50 dark:bg-black/20 rounded-xl shadow-inner border border-white/50 dark:border-black/20">
+                            <h4 className="font-bold text-green-600 dark:text-green-300 text-center text-lg mb-2">Rewards</h4>
+                            <div className="space-y-2 text-sm text-center">
+                                {offer.reward.money > 0 && <p>Payment: <strong className="text-green-500">¥{offer.reward.money.toLocaleString()}</strong></p>}
+                                {offer.reward.fanGain > 0 && <p>Fan Gain: <strong className="text-green-500">+{offer.reward.fanGain.toLocaleString()}</strong></p>}
+                                {offer.reward.repGain > 0 && <p>Reputation: <strong className="text-green-500">+{offer.reward.repGain}</strong></p>}
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div className="flex justify-between items-center mb-2 gap-2">
+                        <div>
+                            <label htmlFor="sponsorship-member-filter" className="text-xs font-semibold mr-2">Filter:</label>
+                            <select
+                                id="sponsorship-member-filter"
+                                value={memberFilter}
+                                onChange={e => setMemberFilter(e.target.value)}
+                                className="p-1.5 text-xs border border-pink-200/80 dark:border-pink-800/50 rounded-md bg-white/50 dark:bg-slate-700/50 focus:ring-2 focus:ring-pink-300"
+                            >
+                                <option value="all">All Available Members</option>
+                                <optgroup label="Status">
+                                    <option value="pushed">Pushed Members</option>
+                                </optgroup>
+                                <optgroup label="Groups">
+                                    <option value="main">{groupName}</option>
+                                    {(sisterGroups || []).map(sg => <option key={`filter-sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>)}
+                                </optgroup>
+                                <optgroup label="Teams">
+                                    {(teams || []).map(t => <option key={`filter-team-${t.id}`} value={`team-${t.id}`}>{t.name}</option>)}
+                                </optgroup>
+                                {mainGroupGenerations.length > 0 && (
+                                    <optgroup label={`${groupName} Generations`}>
+                                        {mainGroupGenerations.map(gen => (<option key={`main-gen-${gen}`} value={`main-gen-${gen}`}>{gen}</option>))}
+                                    </optgroup>
+                                )}
+                                {sisterGroupDetails.map(sg => (
+                                    sg.generations.length > 0 && (
+                                        <optgroup key={`sg-gen-group-${sg.id}`} label={`${sg.name} Generations`}>
+                                            {sg.generations.map(gen => (<option key={`sg-${sg.id}-gen-${gen}`} value={`sg-${sg.id}-gen-${gen}`}>{gen}</option>))}
+                                        </optgroup>
+                                    )
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <input
+                                type="text"
+                                placeholder="Search..."
+                                value={localMemberSearch}
+                                onChange={(e) => setLocalMemberSearch(e.target.value)}
+                                className="p-1.5 text-xs border border-pink-200/80 dark:border-pink-800/50 rounded-md bg-white/50 dark:bg-slate-700/50 focus:ring-2 focus:ring-pink-300"
+                            />
+                        </div>
+                    </div>
+    
+                    <div>
+                        <h4 className="font-semibold mb-3 text-center text-gray-700 dark:text-gray-300">Select Member(s) ({selectedMemberIds.length}/{offer.requires.members})</h4>
+                        <div className="max-h-60 overflow-y-auto border-2 border-dashed border-pink-200 dark:border-pink-800/50 p-2 rounded-xl bg-black/5 dark:bg-black/20">
+                            {filteredEligibleMembers.length > 0 ? filteredEligibleMembers.map(member => (
+                                <div key={member.rosterId} onClick={() => toggleMember(member.rosterId)} className={`p-2 rounded-lg cursor-pointer flex justify-between items-center transition-all mb-1 ${selectedMemberIds.includes(member.rosterId) ? 'bg-pink-100 dark:bg-pink-900/60 ring-2 ring-pink-300' : 'bg-white/80 dark:bg-gray-800/80 hover:bg-pink-50 dark:hover:bg-pink-900/30'}`}>
+                                    <div>
+                                        <p className="font-semibold">{member.name}</p>
+                                        <p className="text-xs text-gray-400">{getMemberGroupStatus(member)}{member.generation ? ` | ${member.generation}` : ''}</p>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">{offer.requires.stat}: <span className="font-bold">{Math.round(member[offer.requires.stat])}</span></p>
+                                    </div>
+                                    <div className={`w-5 h-5 rounded-full flex items-center justify-center border-2 ${selectedMemberIds.includes(member.rosterId) ? 'bg-pink-400 border-pink-500' : 'bg-gray-200 dark:bg-gray-600 border-gray-300'}`}>
+                                        {selectedMemberIds.includes(member.rosterId) && <Check size={12} className="text-white"/>}
+                                    </div>
+                                </div>
+                            )) : (
+                                <p className="text-center text-red-500 dark:text-red-400 p-4">
+                                    {eligibleMembers.length === 0
+                                        ? `You have no available members who meet the required stat of ${offer.requires.value} ${offer.requires.stat}.`
+                                        : 'No members match the current filter/search.'
+                                    }
+                                </p>
+                            )}
+                        </div>
+                    </div>
+    
+                    <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-pink-200/50 dark:border-pink-800/50">
+                        <button onClick={() => declineSponsorship(offer.id)} className="px-6 py-2 bg-gray-200/80 dark:bg-gray-600 text-gray-800 dark:text-gray-100 font-semibold rounded-full hover:bg-gray-300">Decline</button>
+                        <button onClick={handleAccept} disabled={selectedMemberIds.length !== offer.requires.members} className="px-8 py-2 bg-gradient-to-r from-pink-400 to-purple-500 text-white font-bold rounded-full shadow-lg hover:shadow-xl transition-all disabled:bg-gray-400 disabled:from-gray-400 disabled:to-gray-500 disabled:hover:shadow-none">Accept Offer</button>
                     </div>
                 </div>
-
-                <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-pink-200/50 dark:border-pink-800/50">
-                    <button onClick={() => declineSponsorship(offer.id)} className="px-6 py-2 bg-gray-200/80 dark:bg-gray-600 text-gray-800 dark:text-gray-100 font-semibold rounded-full hover:bg-gray-300">Decline</button>
-                    <button onClick={handleAccept} disabled={selectedMemberIds.length !== offer.requires.members} className="px-8 py-2 bg-gradient-to-r from-pink-400 to-purple-500 text-white font-bold rounded-full shadow-lg hover:shadow-xl transition-all disabled:bg-gray-400 disabled:from-gray-400 disabled:to-gray-500 disabled:hover:shadow-none">Accept Offer</button>
-                </div>
-            </div>
-        </ModalWrapper>
-    );
-};
+            </ModalWrapper>
+        );
+    };
 
 const SponsorshipResultModal = () => {
     if (!modalData) return null;
@@ -10361,6 +10395,30 @@ const FormUnitModal = () => {
         const sg = modalData;
         if (!sg) return null;
 
+        const handleDisbandClick = () => {
+    const sg = modalData; // The group data is in modalData
+    if (!sg) return;
+
+    // A unit with no "original" members can be disbanded directly.
+    // We check if there are ANY members whose homeGroup IS this unit.
+    const hasOriginalMembers = sg.members.some(memberId => {
+        const member = getMemberById(memberId);
+        return member && member.homeGroup === sg.name;
+    });
+
+    if (sg.type === 'unit' && !hasOriginalMembers) {
+        // This is a unit of concurrent members. Disband it directly.
+        // The main `handleDisbandSisterGroup` function will clean up kennin statuses.
+        handleDisbandSisterGroup(sg.id, false);
+        setShowModal(null); // Close the current modal
+    } else {
+        // This is a full sister group or a unit WITH original members.
+        // Show the transfer modal to decide their fate.
+        setShowModal('disbandMemberTransfer');
+    }
+};
+
+
         return (
             <ModalWrapper title={<span className="flex items-center text-red-600"><Trash2 size={20} className="mr-2"/> Manage {sg.name}</span>}>
                 <p className="text-sm text-gray-600 mb-4">You have two major options for the future of {sg.name}.</p>
@@ -10374,10 +10432,10 @@ const FormUnitModal = () => {
                         Grant Independence
                         <p className="text-xs font-normal">The group leaves your management and becomes a rival group, maintaining their fan base.</p>
                     </button>
-                    <button 
-                        onClick={() => setShowModal('disbandMemberTransfer')}
-                        className="w-full p-3 bg-red-100 text-red-800 rounded font-bold border-l-4 border-red-500 hover:bg-red-200 transition-colors"
-                    >
+                        <button 
+                            onClick={handleDisbandClick}
+                            className="w-full p-3 bg-red-100 text-red-800 rounded font-bold border-l-4 border-red-500 hover:bg-red-200 transition-colors"
+                        >
                         Force Disbandment & Transfer Members
                         <p className="text-xs font-normal">The group is removed, but you can transfer members to other groups or fire them.</p>
                     </button>
@@ -10390,6 +10448,7 @@ const FormUnitModal = () => {
         );
     };
 
+    
     const DisbandMemberTransferModal = () => {
         const sg = modalData;
         const [decisions, setDecisions] = useState({});
@@ -10408,7 +10467,7 @@ const FormUnitModal = () => {
             <ModalWrapper title={`Transfer Members from ${sg.name}`} maxWidth="max-w-2xl">
                 <p className="text-sm text-gray-600 mb-4">The group is being disbanded. You must decide the fate of each member.</p>
                 <div className="space-y-3 max-h-96 overflow-y-auto p-2 border rounded">
-                    {sg.members.map((member, index) => (
+                    {sg.members.map(getMemberById).filter(Boolean).map((member, index) => (
                         <div key={index} className="p-2 bg-gray-100 dark:bg-gray-800 rounded flex justify-between items-center">
                             <span className="font-semibold">{member.name}</span>
                                     <select
@@ -11819,27 +11878,27 @@ if (!gameStarted) {
             onChange={(e) => appointCaptain('main', e.target.value)}
             className="w-full p-1.5 text-sm border rounded bg-white dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
         >
-<option key="captain-none" value="">-- Appoint a Captain --</option>
-        {members.filter(m => m.isAvailable && !m.isSisterMember).sort((a,b) => (b.charisma + b.intelligence) - (a.charisma + a.intelligence)).map(member => (
-            <option key={member.id} value={member.id}>{member.name}</option>
-        ))}
+            <option key="captain-none" value="">-- Appoint a Captain --</option>
+            {members.filter(m => !m.isSisterMember).sort((a,b) => (b.charisma + b.intelligence) - (a.charisma + a.intelligence)).map(member => (
+                <option key={member.id} value={member.id}>
+                    {member.name} {!member.isAvailable ? '(Unavailable)' : ''}
+                </option>
+            ))}
         </select>
     </div>
 
     {/* Sister Groups Section */}
-    {(sisterGroups || []).map(sg => {
+    {(sisterGroups || []).filter(sg => !sg.isDisbanded).map(sg => {
         let membersForDropdown;
         if (sg.type === 'unit') {
-            // For units, get members from the main roster using the stored IDs
             const unitMemberIds = new Set((sg.members || []).map(String));
             membersForDropdown = getAllAvailableMembers(true).filter(m => unitMemberIds.has(m.rosterId));
-            } else {
-                // For normal sister groups, we need to manually construct the rosterId
-                membersForDropdown = (sg.members || []).map(member => ({
-                    ...member,
-                    rosterId: `sg-${sg.id}-${member.id}`
-                }));
-            }
+        } else {
+            membersForDropdown = (sg.members || []).map(member => ({
+                ...member,
+                rosterId: `sg-${sg.id}-${member.id}`
+            }));
+        }
 
         return (
             <div key={`captain-${sg.id}`} className="flex flex-col gap-1.5 mt-2">
@@ -11851,14 +11910,13 @@ if (!gameStarted) {
                 >
                     <option key={`captain-none-${sg.id}`} value="">-- Appoint a Captain --</option>
                     {membersForDropdown
-                        .filter(m => m.isAvailable)
                         .sort((a,b) => (b.charisma + b.intelligence) - (a.charisma + a.intelligence))
                         .map(member => (
                             <option 
                                 key={member.rosterId} 
                                 value={member.rosterId}
                             >
-                                {member.name}
+                                {member.name} {!member.isAvailable ? '(Unavailable)' : ''}
                             </option>
                         ))
                     }
@@ -11866,9 +11924,7 @@ if (!gameStarted) {
             </div>
         );
     })}
-
 </div>
-
 
                       {/* Performance & Elections */}
             <div className="p-2 rounded-lg shadow-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
@@ -12077,7 +12133,7 @@ if (!gameStarted) {
             </div>
 {/* Groups Panel */}
 <div className="p-2 rounded-lg shadow-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
-    <h3 className="text-sm font-bold mb-2 flex items-center"><Globe size={18} className="mr-2"/> Groups ({1 + sisterGroups.length})</h3>
+    <h3 className="text-sm font-bold mb-2 flex items-center"><Globe size={18} className="mr-2"/> Groups ({1 + (sisterGroups || []).filter(sg => !sg.isDisbanded).length})</h3>
     <div className="grid grid-cols-1 gap-1.5 max-h-40 overflow-y-auto mb-1.5">
         {/* Main Group Card */}
         <div className="p-1.5 border rounded bg-gray-50 dark:bg-gray-700 flex justify-between items-center">
@@ -12091,7 +12147,7 @@ if (!gameStarted) {
         </div>
 
         {/* Sister Group & Unit Cards */}
-        {(sisterGroups || []).map(sg => {
+        {(sisterGroups || []).filter(sg => !sg.isDisbanded).map(sg => {
             const isUnit = sg.type === 'unit';
             return (
               <div key={sg.id} className={`p-1.5 border rounded flex justify-between items-center ${isUnit ? 'bg-purple-50 dark:bg-purple-900/40' : 'bg-gray-50 dark:bg-gray-700'}`}>
@@ -13389,9 +13445,9 @@ if (!gameStarted) {
       {getMemberGroupStatus(selectedMember)}
     </p>
 
-        <p className="text-gray-600 mb-4">
-        {`${selectedMember.generation ? `${selectedMember.generation} | ` : ''}${selectedMember.hometown} | ${selectedMember.personality} | ${selectedMember.nickname} | ${selectedMember.age} y.o. | ${selectedMember.yearsActive} years active`}
-        </p>
+    <p className="text-gray-600 mb-4">
+    {`${selectedMember.generation ? `${selectedMember.generation} | ` : ''}${selectedMember.hometown} | ${selectedMember.personality} | ${selectedMember.nickname} | ${selectedMember.age} y.o. | Birthday: Week ${selectedMember.birthday} | ${selectedMember.yearsActive} years active`}
+    </p>
 
     {/* Stats */}
     <div className="mb-4">

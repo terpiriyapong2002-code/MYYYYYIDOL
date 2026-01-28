@@ -510,7 +510,199 @@ export const productionTiers = {
             "Harajuku no Sweets", "Omotesando no Step", "Tokyo Tower no Shita de", "Neon no Diamond", "Urban na Flower",
             "Cyber no Alice", "Futuristic na Love", "Blue Sky in Tokyo", "Metro no Mado kara", "Neon no Paradise",
             "City Pop no Rhythm", "Tokyo na Morning", "Digital no Inori", "Urban no Melody", "Neon-iro no Sekai"
-        ],    
+        ],  
+        GothicAlice: [
+            "Kuro-Loli Labyrinth", "Clockwork Dollhouse", "Gothic Lace Ribbon", "Midnight Tea Party", "Broken Porcelain Heart",
+            "Birdcage Monologue", "Bara no Requiem", "Velvet Shadow Waltz", "Antique Mirror Magic", "Tsuki no Silhouette",
+            "Secret Gothic Garden", "Grimm no Yume", "Doku-Ringo Kiss", "Casket of Memories", "Marionette Dance",
+            "Darkness Dress-up", "Victorian Vanish", "Crimson Rose Thorn", "Gothic Lolita Mode", "Silent Cathedral",
+            "Forbidden Gothic Lolita", "Kousaka no Vampire", "Poisonous Berry", "Iron Gate Secret", "Velvet Night Stage",
+            "Gothic Doll no Namida", "Gekkou no Waltz", "Black Rose Butterfly", "Cross My Heart", "Cursed Candy Box",
+            "Gothic Lolita Fantasy", "Shadow Puppet Show", "Broken Wing Angel", "Dark Lace Nightmare", "Ribbon of Sorrow",
+            "Gothic Rose Garden", "Tsuki no Shizuku Waltz", "Funeral of a Star", "Dark Doll House", "Gothic Lolita Princess",
+            "Antique Key of Soul", "Crimson Velvet Kiss", "Gothic Night Parade", "Skeleton Dance Waltz", "Ghostly Lace Veil",
+            "Black Tea of Destiny", "Broken Clock Tower", "Gothic Charm Magic", "Shadow in the Mirror", "Final Gothic Prayer"
+        ],
+        InakaCore: [
+            "Cicada Summer Sound", "Inaka no Bus-stop", "Sunflower Railway", "Kawa-beri no Nap", "Rusty Bicycle Path",
+            "Midori no Hillside", "Furui Wind-chime", "Country Road Memory", "Natsu-yasumi Noon", "Grandma’s Engawa",
+            "Dragonfly Sunset", "Mountain Blue Mist", "Komorebi Forest", "Old Schoolhouse Ghost", "Rice-field Reflection",
+            "Mushi-pan Picnic", "Rural Train Window", "Tashiro no Kaze", "Stone Path Walk", "Inaka no Starry Sky",
+            "Tanbo no Green", "Asagao Morning", "Mugiwara-boushi Walk", "Rural Radio Taisou", "Secret River Spot",
+            "Kaze no Inaka-michi", "Summer Heat Mirage", "Inaka no Post-box", "Green Tea Breeze", "Nostalgic Firefly",
+            "Inaka no Chime", "Evening Crow Call", "Old Temple Shadow", "Summer Rain Shelter", "Inaka no Festival",
+            "Grandpa’s Orchard", "Country Station Bell", "Distant Mountain Echo", "Inaka no Slow Life", "Fresh Water Spring",
+            "Village Lane Mystery", "Natsu no Kaigo", "Cicada Shell Treasure", "Inaka no Star Dust", "Kousha no Kage",
+            "Rural Sunset Orange", "Memories of the Valley", "Inaka no Small Road", "Wooden Bridge Waltz", "Endless Summer Inaka"
+        ],
+        EverydayMoments: [
+            "Yoru no Konbini", "Okureta Densha 7:42", "Yomenai Line",
+            "Ame to Sumaho", "Samenai Asa Coffee",
+            "Eki no Home de", "Wasurerareta Kasa",
+            "Hitori Elevator", "Mado-gawa no Yume",
+            "Saigo no Busu", "Denwa Shinai Yoru",
+            "Sentakuki no Oto", "Shizukana Kousaten",
+            "Midnight Vending Machine", "Kireta Iyahon",
+            "Aitai ga Ienai", "Hikaru Gaitou",
+            "Tokei no Hari ga Urusai",
+            "Nureta Sneakers", "One Bar Signal",
+            "Kippu no Ura no Omoi", "Machi no Naka de",
+            "Madoromi Alarm", "Karakara no Mug",
+            "Eki Made no Michi", "Furikaeranai Asa",
+            "Pocket no Naka no Coin",
+            "Mijikai Message", "Ameagari no Puddle",
+            "Yoru no Shuumatsu",
+            "Saigo no Train Home",
+            "Kuchibiru ni Nokoru Aji",
+            "Kono Machi no Oto",
+            "Yureru Curtain",
+            "Shiranai Bangou",
+            "Kutsu no Himo",
+            "Kara no Chat",
+            "Mou Nemui Yoru",
+            "Hitori no Room Light",
+            "Asa Made Matenai",
+            "Wasurenaideita Hi",
+            "Shizuka na Byoushin",
+            "Kaeranai Basho",
+            "Yoru ni Tokeru",
+            "Mijikai Sayonara",
+            "Hikouki-gumo no Shita",
+            "Kirei na Uso",
+            "Aenai Jikan",
+            "Yoru ni Nokoru Koe"
+        ],
+        
+        DreamySurreal: [
+            "Yume no Naka no Yume", "Neon Ame no Machi",
+            "Tsuki ga Ochiru Toki",
+            "Garasu no Sora", "Fuwafuwa Toshi",
+            "Hoshikuzu Elevator", "Mirror World",
+            "Yoru no Parade", "Nemuranai Kasei",
+            "Kumo wa Soda Aji",
+            "Jikuu no Loop", "Hologram Heart",
+            "Kieta Mirai", "Hikari no Noise",
+            "Yume Denpa", "Tsukurareta Hoshi",
+            "Uchuu no Konbini",
+            "Shizuka na Ginga",
+            "Yume Archive", "Sakana ga Sora wo Oyogu",
+            "Gyakusa Gravity", "Plastic Moon",
+            "Nemuri Tsuzukeru Machi",
+            "Hoshizora Error",
+            "Midnight Illusion",
+            "Yureru Kage no Sekai",
+            "Kuuki ni Tokeru Oto",
+            "Tsuki no Radio",
+            "Parallel Night",
+            "Hikaru Kuukan",
+            "Yumeiro Signal",
+            "Kawaranai Yoru",
+            "Glass Ocean",
+            "Hoshitachi no Koe",
+            "Sonzai Shinai Asa",
+            "Kagerou City Pop",
+            "Yoru no Gensou",
+            "Aoi Hikari no Mori",
+            "Yume ni Ochiru",
+            "Jikoku no Nai Tokei",
+            "Tsuki to Usotsuki",
+            "Kira Kira Void",
+            "Nemuranai Yume",
+            "Hoshikage Shuffle",
+            "Yume no Afterimage",
+            "Ginga no Heya",
+            "Yoru ga Akenai",
+            "Hikou Suru Machi",
+            "Sora no Ura-gawa"
+        ],
+        
+        YouthAndChange: [
+            "Seishun no Ato", "Sakura no Yakusoku",
+            "Saigo no Bell", "Bokura no Natsu",
+            "Sotsugyou Made", "Kawaranai Kimochi",
+            "Hashiri Tsuzuketa Hi",
+            "Seishun Loop",
+            "Mada Otona Janai",
+            "Kimi to Boku no Aida",
+            "Haru no Kaze",
+            "Gakuseifuku no Yume",
+            "Saigo no Houkago",
+            "Kieyuku Seishun",
+            "Asu ni Mukatte",
+            "Namae no Nai Shashin",
+            "Kono Michi no Saki",
+            "Seishun Interlude",
+            "Mijikai Kisetsu",
+            "Natsukashii Koe",
+            "Bokura wa Mada",
+            "Sayonara no Junbi",
+            "Sukoshi Kawatta",
+            "Yume no Tochuu",
+            "Haru ni Nokoru",
+            "Owari no Hajimari",
+            "Seishun wa Tsumetai",
+            "Kimi no Senaka",
+            "Ashita ni Todokanai",
+            "Bokura Dake no Hibi",
+            "Yoru Made no Jikan",
+            "Kawaru Namae",
+            "Omoidashi Warai",
+            "Sakura ga Ochiru Made",
+            "Seishun Lost",
+            "Mou Modorenai",
+            "Ano Hi no Koto",
+            "Sotsugyou no Sora",
+            "Bokura no Ashiato",
+            "Hajimete no Sayonara",
+            "Seishun no Kage",
+            "Mada Tsuzuku",
+            "Yume wo Motteita",
+            "Ashita ni Naritai",
+            "Kimi to Saigo Made",
+            "Seishun no Kakera",
+            "Kawaranai Uta",
+            "Itsuka no Bokura",
+            "Toki ga Ugoku Mae"
+        ],
+        NatsuNostalgia: [
+            "Natsu no Owari", "Semi no Koe", "Yuuyake Hanabi", "Ase no Nioi", "Sunao ni Narenai Natsu",
+            "Kimi to Natsu no Aida", "Kaze ga Atsui Hi", "Mijikai Kisetsu", "Natsu no Shashin", "Yoru no Poolside",
+            "Aoi Ramune", "Natsukashii Sora", "Festival no Ato", "Hidamari no Kaerimichi", "Sunset Bicycle",
+            "Natsu ni Okizararete", "Mado Kara Mita Umi", "Semi Shigure", "Yasashii Netsu", "Sayonara Natsu",
+            "Kimi ga Ita Kisetsu", "Nureta Yukata", "Omoide Hanabi", "Kagerou no Michi", "Natsu no Melody",
+            "Hoshi yori Atsui Yoru", "Kaze ni Kieru Koe", "Natsu no Yokogao", "Aoi Hi no Tsuzuki", "Kimi no Ase",
+            "Owari no Natsu Matsuri", "Semi ga Yanda Asa", "Mada Atsui Yoru", "Natsu no Kage", "Yuugure Signal",
+            "Natsu ni Narenakatta", "Hajimari no Natsu", "Shiranai Natsu", "Kimi to Saigo no Hi", "Natsu no Kaori",
+            "Kaze ga Kawatta Hi", "Aoi Aoi Natsu", "Natsu no Kakera", "Yoru ni Nokoru Netsu", "Natsu no Soba de",
+            "Semi no Nai Machi", "Omoide ni Naru Mae", "Natsu no Kanashimi", "Mata Natsu ni Aou"
+        ],
+        
+        AmbiguousLove: [
+            "Aimai na Kimochi", "Suki to Ienai", "Kimi no Koto ka na", "Chikaku te Tooi",
+            "Tomodachi Ijou", "Kotae no Nai Koi", "Sukoshi Dake Aitai", "Kimi ga Wakaranai", "Mada Koi Janai", "Koi no You na Mono",
+            "Suki ka Doushika", "Kimi no Senaka Dake", "Aitai Riyuu", "Ima ja Nai Toki",
+            "Kimi to Boku no Sen", "Suki ni Nattara", "Kotae wa Mada", "Aimai Distance", "Kimi ga Iu Nara", "Sore Dake de",
+            "Koi no Mae", "Sukoshi Aimai", "Kimi to no Kuuki", "Nande ka Wakaranai",
+            "Suki tte Iu Mae", "Kimi ga Iru Dake", "Sonna Kankei", "Mada Ienai Koto", "Kokoro no Tochuu", "Kimi to no Tanjun",
+            "Koi no Kakera", "Aimai na Yoru", "Kimi ni Fureta Nara", "Suki ni Naru Made", "Kimochi no Namae",
+            "Bokura no Aida", "Koi ni Narenai", "Kimi no Egao Dake", "Suki ka Wakaranai", "Mada Mada",
+            "Aimai no Mama", "Kimi to no Mondai", "Kokuhaku no Mae", "Suki Mitai", "Kimi ni Todokanai",
+            "Koi ni Chikazuite", "Aimai Love Song", "Kimi to Iu Kotae", "Suki ni Shite yo"
+        ],
+        BokuraNoStartLine: [
+            "Bokura no Start Line", "Koko Kara Hajimaru", "Hajimete no Ippo", "Yume e no Signal", "Ima wo Koete",
+            "Bokura ga Eranda Michi", "Mirai e Hashirou", "Kono Te wo Hanasanai", "Asu ga Matteiru", "Hikari no Hou e",
+            "Onaji Sora no Shita", "Ichi Byou Mae no Mirai", "Bokura Dake no Hajimari", "Yume no Mukou Made",
+            "Kaze ni Nosete", "Kokoro ga Ugoku Toki", "Mae dake Mite", "Ima Kara Zenbu", "Kimi to Iru Mirai", "Step by Step",
+            "Hajimari no Uta", "Bokura wa Mada", "Ashita ni Tsunagu", "Zero Kara One",
+            "Yume wo Motta Mama", "Kono Basho Kara", "Hikaru Mirai Sen", "Ippo Zutsu Demo", "Bokura no Kotae", "Mae e",
+            "Kizuna no Oto", "Kimi to Nara", "Hikari ga Yobu Hou", "Yume ni Mukatte",
+            "Mada Minu Sekai", "Ima Koko Kara", "Hashiridasu Omoi", "Bokura no Ashioto", "Mirai ga Ugoku",
+            "Start no Aizu", "Kono Shunkan", "Issho ni Ikou", "Bokura no Flag", "Hajimaru Yo Ima",
+            "Kibou no Direction", "Kimi to Start", "Asu e no Count", "Bokura ga Saita", "Mirai no Tobira"
+        ]
+        
+         
     };
 
 export const generateSongTitle = (theme, existingTitles = []) => {
@@ -955,10 +1147,10 @@ export const scandalResponseOptions = {
 };
 
 export const tiers = [
-    { id: 1, name: 'Local Casting', cost: 25000, poolSize: 20, contractFee: 5000, statMin: 10, statMax: 30, potentialMin: 20, potentialMax: 60 },
-    { id: 2, name: 'Regional Audition', cost: 100000, poolSize: 20, contractFee: 15000, statMin: 20, statMax: 50, potentialMin: 40, potentialMax: 80 },
-    { id: 3, name: 'National Audition', cost: 500000, poolSize: 20, contractFee: 50000, statMin: 40, statMax: 70, potentialMin: 60, potentialMax: 95 },
-    { id: 4, name: 'Elite Scouting', cost: 1500000, poolSize: 10, contractFee: 200000, statMin: 60, statMax: 85, potentialMin: 85, potentialMax: 100 },
+    { id: 1, name: 'Local Casting', cost: 25000, contractFee: 5000, statMin: 10, statMax: 30, potentialMin: 20, potentialMax: 60 },
+    { id: 2, name: 'Regional Audition', cost: 100000, contractFee: 15000, statMin: 20, statMax: 50, potentialMin: 40, potentialMax: 80 },
+    { id: 3, name: 'National Audition', cost: 500000, contractFee: 50000, statMin: 40, statMax: 70, potentialMin: 60, potentialMax: 95 },
+    { id: 4, name: 'Elite Scouting', cost: 1500000, contractFee: 200000, statMin: 60, statMax: 85, potentialMin: 85, potentialMax: 100 },
 ];
 
 export const filmPromotionTypes = {
@@ -2634,9 +2826,13 @@ const getMemberGroupStatus = (member) => {
         if (!kenninParts.includes(partString)) kenninParts.push(partString);
     }
     if (member.kenninGroups && member.kenninGroups.length > 0) {
-        member.kenninGroups.forEach(kgName => {
-            if (!kenninParts.some(part => part.includes(kgName))) {
-                kenninParts.push(kgName);
+        member.kenninGroups.forEach(kgIdentifier => {
+            // Check if the identifier is a numeric ID
+            const sg = sisterGroups.find(g => String(g.id) === String(kgIdentifier));
+            const groupName = sg ? sg.name : kgIdentifier; // Use the found name, or fallback to the identifier itself
+
+            if (!kenninParts.some(part => part.includes(groupName))) {
+                kenninParts.push(groupName);
             }
         });
     }
@@ -3919,20 +4115,32 @@ allPlayerGroups.forEach(group => {
 
             setHallOfFame(prev => [...prev, graduatedMember]);
             
-            // PASTE THIS NEW BLOCK
+            // --- NEW: Automatically remove captain role on graduation ---
+            const memberRosterId = graduatedMember.rosterId || String(graduatedMember.id);
+            const updatedRoles = { ...groupRoles };
+            let roleRemoved = false;
+            for (const groupId in updatedRoles) {
+                if (updatedRoles[groupId] === memberRosterId) {
+                    updatedRoles[groupId] = null;
+                    roleRemoved = true;
+                }
+            }
+            if (roleRemoved) {
+                setGroupRoles(updatedRoles);
+            }
+            // --- END NEW BLOCK ---
+
             if (graduatedMember.isSisterMember) {
                 setSisterGroups(prevGroups => prevGroups.map(sg => {
                     if (String(sg.id) === String(graduatedMember.groupId)) {
                         return {
                             ...sg,
-                            // FIX: Filter using the correct member ID from the object
                             members: (sg.members || []).filter(m => m.id !== graduatedMember.id)
                         };
                     }
                     return sg;
                 }));
             } else {
-                // FIX: Filter using the correct member ID from the object
                 setMembers(prev => prev.filter(m => m.id !== graduatedMember.id));
             }
 
@@ -7329,14 +7537,15 @@ const handleDisbandSisterGroup = (sgId, independent = false) => {
     if (!sg) return;
 
     // Find and update any member with a concurrent position in the disbanded group
-    const affectedMembers = getAllAvailableMembers(true).filter(m =>
-        (m.kenninGroups || []).includes(sg.name)
+    const affectedMembers = getAllAvailableMembers(true).filter(m => 
+        (m.kenninGroups || []).some(kg => String(kg) === String(sg.id) || String(kg) === String(sg.name))
     );
+
     affectedMembers.forEach(member => {
         const eventText = `Concurrent position in ${sg.name} ended due to disbandment`;
         updateMemberState(member.rosterId, m => ({
             ...m,
-            kenninGroups: (m.kenninGroups || []).filter(gName => gName !== sg.name),
+            kenninGroups: (m.kenninGroups || []).filter(kg => String(kg) !== String(sg.id) && String(kg) !== String(sg.name)),
             teamHistory: [...(m.teamHistory || []), { week, event: eventText }]
         }));
     });
@@ -11247,6 +11456,13 @@ for (const [groupId, captainId] of Object.entries(groupRoles)) {
         allMembersForWeeklyUpdate.forEach(member => {
             if (!member.rosterId) return;
 
+            const currentWeekOfYear = (newWeek - 1) % 52 + 1;
+            if (member.birthday === currentWeekOfYear) {
+                localUpdateMemberState(member.rosterId, m => ({ ...m, age: m.age + 1 }));
+                addNotificationInLoop({ type: 'Event', message: `🎂 It's ${member.name}'s birthday! They are now ${member.age + 1} years old.` });
+            }
+
+
             // --- NEW: Handle Kennin Expiration ---
             if (member.kennin && newWeek >= member.kennin.endWeek) {
                 const endedKenninTeamName = member.kennin.teamName;
@@ -12124,7 +12340,7 @@ const startStudyAbroad = (memberId, destinationGroupId) => {
 };
 
 
-    const startAudition = (targetGroup, tier, generationName, auditionLocation) => {
+    const startAudition = (targetGroup, tier, generationName, auditionLocation, poolSize = 20) => {
 
         const selectedTier = tiers.find(t => t.id === tier);
 
@@ -12162,7 +12378,7 @@ const startStudyAbroad = (memberId, destinationGroupId) => {
     ? auditionLocation 
     : sisterGroups.find(g => String(g.id) === String(targetGroup))?.location;
 
-        const candidates = Array.from({ length: selectedTier.poolSize }, (_, i) => {
+        const candidates = Array.from({ length: poolSize }, (_, i) => {
             let varietyBonus = 0;
             let danceBonus = 0;
             let visualBonus = 0;
@@ -12262,7 +12478,7 @@ const startStudyAbroad = (memberId, destinationGroupId) => {
                 potential: c.potential,
                 personality: c.personality,
                 position: 'under',
-                birthday: { month: 1, day: 1 },
+                birthday: Math.floor(Math.random() * 52) + 1,
                 equippedOutfit: null,
                 scandals: 0,
                 age: Math.floor(Math.random() * 5) + 14,
@@ -14522,18 +14738,32 @@ const memberFans = isAce ? rival.ace.fans : 100000 + Math.floor(Math.random() * 
                 confirmRecruitment(newCandidates, { targetGroup: newUnitId, generationName: '1st Generation', contractFee: 15000 });
         }
 
-            // 3. Assign winning members a CONCURRENT position in the new unit.
-            const playerMemberWinners = (winners || []).filter(w => w.isPlayer);
-            
-            playerMemberWinners.forEach(winner => {
-                updateMemberState(winner.id, m => ({
-                    ...m,
-                    // Add the new unit's ID to the member's concurrent groups
-                    kenninGroups: [...(m.kenninGroups || []), unitName],
-                    // Add a history entry for this event
-                    teamHistory: [...(m.teamHistory || []), { week: week, event: `Joined unit "${unitName}" as a concurrent member.` }]
-                }));
-            });
+        // 3. Assign winning members a CONCURRENT position in the new unit.
+        const playerMemberWinners = (winners || []).filter(w => w.isPlayer);
+
+        // Get the IDs of the winning player members
+        const playerWinnerIds = playerMemberWinners.map(winner => winner.id);
+
+        // Add these existing members to the unit's official member list
+        setSisterGroups(prevSGs => prevSGs.map(sg => {
+            if (sg.id === newUnitId) {
+                // Use a Set to ensure there are no duplicate member IDs
+                const updatedMembers = [...new Set([...(sg.members || []), ...playerWinnerIds])];
+                return { ...sg, members: updatedMembers };
+            }
+            return sg;
+        }));
+
+        // Now, update each winner's personal profile to reflect the new concurrent position
+        playerMemberWinners.forEach(winner => {
+            updateMemberState(winner.id, m => ({
+                ...m,
+                // Add the new unit's ID to the member's concurrent groups for display purposes
+                kenninGroups: [...(m.kenninGroups || []), newUnitId],
+                // Add a history entry for this event
+                teamHistory: [...(m.teamHistory || []), { week: week, event: `Joined unit "${unitName}" as a concurrent member.` }]
+            }));
+        });
 
         addNotification({ type: 'Success', message: `The new unit "${unitName}" has been formed from the survival show winners!`});
 
