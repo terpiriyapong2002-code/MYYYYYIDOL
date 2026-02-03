@@ -9,7 +9,7 @@ import { CSS } from '@dnd-kit/utilities';
 
 import DailyChartModal from './DailyChartModal';
 
-import { useIdolManager, getTotalFansForMember, getFormattedDateForWeek, productionTiers, getGraduationRisk, songTitles, generateSongTitle, electionSpeechTemplates, performanceTypes, scandalResponseOptions, tiers, getTheaterCapacity, getTicketPrice, hometowns, generateRandomHometown,  warehouseTiers, staffTiers, ambitions, varietyShowTypes, filmProjectTypes, scriptTiers, directorTiers, filmPromotionTypes, varietyWriterTiers, varietyProducerTiers, sponsorshipTiers, livestreamTypes, musicShowTypes } from "./hooks/useIdolManager";
+import { useIdolManager, getTotalFansForMember, getFormattedDateForWeek, productionTiers, getGraduationRisk, songTitles, generateSongTitle, electionSpeechTemplates, performanceTypes, scandalResponseOptions, tiers, getTheaterCapacity, getTicketPrice, hometowns, generateRandomHometown,  warehouseTiers, staffTiers, ambitions, varietyShowTypes, filmProjectTypes, scriptTiers, directorTiers, filmPromotionTypes, varietyWriterTiers, varietyProducerTiers, sponsorshipTiers, livestreamTypes, musicShowTypes, annualFestivals } from "./hooks/useIdolManager";
 
 import React, { useState, useEffect, useCallback, useRef, memo } from 'react';
 import { 
@@ -37,7 +37,7 @@ const App = () => {
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
-    startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference,  completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
+    executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference,  completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
 
     } = useIdolManager();
 
@@ -2991,81 +2991,89 @@ return (
 
 <h4 className="font-semibold text-lg mb-2 border-t pt-3 mt-3 flex items-center dark:text-gray-100"><Users size={18} className="mr-2"/> Performers ({(performance.members || []).length})</h4>
             <div className="text-sm p-2 border rounded max-h-48 overflow-y-auto bg-gray-50 dark:bg-gray-800 dark:text-gray-300">
-                {(() => {
-                    if (!performance.members || performance.members.length === 0) {
-                        return <p className="text-gray-500 italic">No members recorded.</p>;
-                    }
-                    
-                    // This handles old history entries that only stored names
-                    if (typeof performance.members[0] === 'string' && !String(performance.members[0]).match(/^sg-/)) {
-                        return <p>{performance.members.join(', ')}</p>
-                    }
-
-const memberObjects = performance.members.map(id => getMemberById(id)).filter(Boolean);
-
-const memberGroups = memberObjects.reduce((acc, member) => {
-    if (!member) return acc;
-    let groupKey;
-    const mainGroupName = groupName || 'Hoshimi01';
-
-    if (member.isExchangeStudent) {
-        groupKey = `${member.homeGroup}`;
+{(() => {
+    if (!performance.members || performance.members.length === 0) {
+        return <p className="text-gray-500 italic">No members recorded.</p>;
     }
-    else if (member.isSisterMember) {
-        const sgName = member.displayGroupName || 'Sister Group';
-        groupKey = member.teamName 
-            ? `${sgName} Team ${member.teamName}` 
-            : `${sgName} Kenkyuusei`;
+
+    let memberObjects;
+
+    // Check if the history entry contains full member objects (new format) or just IDs (old format)
+    if (typeof performance.members[0] === 'object' && performance.members[0] !== null) {
+        // It's the new format, use the data directly from the snapshot
+        memberObjects = performance.members;
     } else {
-        groupKey = member.teamName 
-            ? `${mainGroupName} Team ${member.teamName}` 
-            : `${mainGroupName} Kenkyuusei`;
+        // It's the old format, fetch current member data using IDs for backward compatibility
+        memberObjects = performance.members.map(id => getMemberById(id)).filter(Boolean);
+    }
+    
+    if (memberObjects.length === 0) {
+        return <p className="text-gray-500 italic">Could not display member data for this entry.</p>;
     }
 
-    if (!acc[groupKey]) {
-        acc[groupKey] = [];
-    }
-    acc[groupKey].push(member);
-    return acc;
-}, {});
+    const memberGroups = memberObjects.reduce((acc, member) => {
+        if (!member) return acc;
+        let groupKey;
+        const mainGroupName = groupName || 'Hoshimi01';
 
-return (
-    <div className="space-y-2">
-        {Object.keys(memberGroups)
-            .sort((a, b) => {
-                const mainGroupName = groupName || 'Hoshimi01';
+        if (member.isExchangeStudent) {
+            groupKey = `${member.homeGroup}`;
+        }
+        else if (member.isSisterMember) {
+            const sgName = member.displayGroupName || 'Sister Group';
+            groupKey = member.teamName 
+                ? `${sgName} Team ${member.teamName}` 
+                : `${sgName} Kenkyuusei`;
+        } else {
+            groupKey = member.teamName 
+                ? `${mainGroupName} Team ${member.teamName}` 
+                : `${mainGroupName} Kenkyuusei`;
+        }
+    
+        if (!acc[groupKey]) {
+            acc[groupKey] = [];
+        }
+        acc[groupKey].push(member);
+        return acc;
+    }, {});
 
-                const getScore = (key) => {
-                    const isMain = key.startsWith(mainGroupName);
-                    const isKKS = key.includes('Kenkyuusei');
+    return (
+        <div className="space-y-2">
+            {Object.keys(memberGroups)
+                .sort((a, b) => {
+                    const mainGroupName = groupName || 'Hoshimi01';
 
-                    if (isMain && !isKKS) return 1;
-                    if (isMain && isKKS) return 2;
-                    if (!isMain && !isKKS) return 3;
-                    if (!isMain && isKKS) return 4;
-                    return 5;
-                };
+                    const getScore = (key) => {
+                        const isMain = key.startsWith(mainGroupName);
+                        const isKKS = key.includes('Kenkyuusei');
 
-                const scoreA = getScore(a);
-                const scoreB = getScore(b);
+                        if (isMain && !isKKS) return 1;
+                        if (isMain && isKKS) return 2;
+                        if (!isMain && !isKKS) return 3;
+                        if (!isMain && isKKS) return 4;
+                        return 5;
+                    };
 
-                if (scoreA !== scoreB) {
-                    return scoreA - scoreB;
-                }
-                return a.localeCompare(b);
-            })
-            .map(groupKeyName => (
-                <div key={groupKeyName}>
-                    <p className="font-semibold text-pink-600 dark:text-pink-400">
-                        {groupKeyName}: <span className="font-normal text-gray-700 dark:text-gray-300">
-                            {memberGroups[groupKeyName].map(m => m.name).join(', ')}
-                        </span>
-                    </p>
-                </div>
-            ))}
-    </div>
-);
-                })()}
+                    const scoreA = getScore(a);
+                    const scoreB = getScore(b);
+
+                    if (scoreA !== scoreB) {
+                        return scoreA - scoreB;
+                    }
+                    return a.localeCompare(b);
+                })
+                .map(groupKeyName => (
+                    <div key={groupKeyName}>
+                        <p className="font-semibold text-pink-600 dark:text-pink-400">
+                            {groupKeyName}: <span className="font-normal text-gray-700 dark:text-gray-300">
+                                {memberGroups[groupKeyName].map(m => m.name).join(', ')}
+                            </span>
+                        </p>
+                    </div>
+                ))}
+        </div>
+    );
+})()}
             </div>
 
               <div className="flex justify-end gap-2 mt-4 pt-4 border-t">
@@ -9918,6 +9926,259 @@ const KouhakuInvitationModal = () => {
         );
     };
 
+const AnnualFestivalsModal = () => {
+    if (!availableFestivals || availableFestivals.length === 0) return null;
+
+    return (
+        <ModalWrapper title="Annual Festival Invitations" maxWidth="max-w-3xl">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">You have been invited to the following world-class events. Choose wisely!</p>
+            <div className="space-y-4 max-h-[70vh] overflow-y-auto p-1">
+                {availableFestivals.map(festival => (
+                    <div key={festival.id} className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+                        <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500">{festival.name}</h3>
+                        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2">{festival.location} / Month: {festival.month}</p>
+                        <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">{festival.description}</p>
+                        <div className="p-2 rounded-md bg-yellow-50 dark:bg-gray-900/50 border border-yellow-200 dark:border-gray-700/50 text-xs text-yellow-800 dark:text-yellow-300 mb-3">
+                            <strong>Requires:</strong> {festival.requirements.message}
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <p className="font-bold text-red-500">Cost: ¥{festival.cost.toLocaleString()}</p>
+                            <button
+                                onClick={() => startFestivalPerformance(festival.id)}
+                                disabled={money < festival.cost}
+                                className="px-5 py-2 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 disabled:bg-gray-400 transition-all shadow-md"
+                            >
+                                Participate
+                            </button>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </ModalWrapper>
+    );
+};
+
+const FestivalPerformerSelectionModal = () => {
+    if (!modalData || !modalData.festival) return null;
+    const { festival } = modalData;
+
+    const [selectedMemberIds, setSelectedMemberIds] = useState([]);
+    const [setlist, setSetlist] = useState([]);
+    const [memberFilter, setMemberFilter] = useState('all');
+
+    const availableMembers = getAllAvailableMembers(true).filter(m => m.isAvailable);
+    const allTracks = [...songs.flatMap(s => s.tracks.map(t => ({ id: `${s.id}-${t.name}`, name: `${t.name} (from ${s.name})`, item: { id: t.id, name: t.name } }))), ...theaterSongs.map(song => ({ id: `theater-${song.id}`, name: `${song.name} (Theater)`, item: { id: song.id, name: song.name } }))];
+    const allReleases = [...(songs || []), ...(sisterGroups || []).flatMap(sg => sg.songs || [])];
+
+    const historicalTracks = allReleases
+        .sort((a, b) => b.releaseWeek - a.releaseWeek)
+        .slice(0, 10)
+        .flatMap(release => {
+            const artistName = (release.targetGroup === 'main' || release.artist === groupName)
+                ? groupName
+                : (sisterGroups.find(sg => String(sg.id) === String(release.targetGroup) || sg.name === release.artist)?.name || release.targetGroup || release.artist);
+            
+            return (release.tracks || []).map(track => ({
+                id: `${release.id}-${track.name}`,
+                name: `${track.name} (${release.name} - ${artistName})`,
+                data: {
+                    members: (track.members || []).map(m => String(m.rosterId || m.id)),
+                }
+            }));
+        });
+
+    const applyPreviousLineup = (trackId) => {
+        if (!trackId) return;
+    
+        let memberIdsToSelect = [];
+    
+        if (trackId.startsWith('election-')) {
+            const unit = trackId.replace('election-', '');
+            if (!lastElectionResult) return;
+            const rankRanges = {
+                senbatsu: { min: 1, max: 16 },
+                undergirls: { min: 17, max: 32 },
+                nextgirls: { min: 33, max: 48 },
+            };
+            const range = rankRanges[unit];
+            if (range) {
+                memberIdsToSelect = lastElectionResult
+                    .filter(m => m.rank >= range.min && m.rank <= range.max)
+                    .map(m => m.rosterId || m.id);
+            }
+        } else if (trackId === 'janken-senbatsu') {
+            if (!lastJankenResult) return;
+            memberIdsToSelect = lastJankenResult
+                .filter(m => m.rank >= 1 && m.rank <= 16)
+                .map(m => m.rosterId || m.id);
+        } else {
+            const selectedHistory = historicalTracks.find(t => t.id === trackId);
+            if (selectedHistory) {
+                // This is the key fix: We take the historical member IDs and find
+                // their CURRENT unique rosterId using the getMemberById function.
+                // This handles cases where members have transferred groups.
+                memberIdsToSelect = selectedHistory.data.members.map(historicalId => {
+                    const currentMemberObject = getMemberById(historicalId);
+                    return currentMemberObject ? String(currentMemberObject.rosterId) : null;
+                }).filter(Boolean); // Filter out any nulls if a member was not found
+            }
+        }
+        
+        const availableMemberIds = new Set(availableMembers.map(m => m.rosterId));
+        const finalSelection = memberIdsToSelect.filter(id => availableMemberIds.has(id));
+    
+        setSelectedMemberIds(finalSelection);
+    
+        // Reset dropdown after selection
+        const festivalDropdown = document.getElementById('festival-import-lineup');
+        if (festivalDropdown) festivalDropdown.value = "";
+    };
+
+
+    const mainGroupGenerations = [...new Set(availableMembers.filter(m => !m.isSisterMember).map(m => m.generation).filter(Boolean))];
+    const sisterGroupDetails = sisterGroups.map(sg => ({
+        ...sg,
+        generations: [...new Set(availableMembers.filter(m => String(m.groupId) === String(sg.id)).map(m => m.generation).filter(Boolean))]
+    }));
+
+    let filteredMembers = availableMembers;
+    if (memberFilter !== 'all') {
+        if (memberFilter.startsWith('team-')) {
+            const teamId = parseInt(memberFilter.replace('team-', ''), 10);
+            const team = teams.find(t => t.id === teamId);
+            const teamMemberIds = new Set((team?.members || []).map(String));
+            filteredMembers = availableMembers.filter(m => teamMemberIds.has(String(m.rosterId || m.id)));
+        } else if (memberFilter === 'main') {
+            filteredMembers = availableMembers.filter(m => !m.isSisterMember || (m.kenninGroups || []).includes(groupName));
+        } else if (memberFilter.startsWith('main-gen-')) {
+            const gen = memberFilter.replace('main-gen-', '');
+            filteredMembers = availableMembers.filter(m => !m.isSisterMember && m.generation === gen);
+        } else if (memberFilter.startsWith('sg-')) {
+            if (memberFilter.includes('-gen-')) {
+                const [sgIdStr, gen] = memberFilter.replace('sg-', '').split('-gen-');
+                const sgId = parseInt(sgIdStr, 10);
+                filteredMembers = availableMembers.filter(m => m.groupId === sgId && m.generation === gen);
+            } else {
+                const sgId = parseInt(memberFilter.replace('sg-', ''), 10);
+                filteredMembers = availableMembers.filter(m => m.groupId === sgId);
+            }
+        }
+    }
+
+filteredMembers.sort((a, b) => getTotalFansForMember(b) - getTotalFansForMember(a));
+
+
+    const toggleMember = (memberId) => setSelectedMemberIds(prev => prev.includes(memberId) ? prev.filter(id => id !== memberId) : [...prev, memberId]);
+    const addTrackToSetlist = (trackId) => {
+        const track = allTracks.find(t => t.id === trackId);
+        if (track) setSetlist(prev => [...prev, { type: 'song', item: track.item }]);
+    };
+    const removeSetlistItem = (index) => setSetlist(prev => prev.filter((_, i) => i !== index));
+
+    const handleConfirm = () => {
+        executeFestivalPerformance(festival, selectedMemberIds, setlist);
+    };
+
+    return (
+        <ModalWrapper title={`Lineup for ${festival.name}`} maxWidth="max-w-4xl">
+            <div className="grid grid-cols-2 gap-6">
+                <div>
+                    <div className="flex justify-between items-center mb-2">
+                        <h4 className="font-semibold">Select Performers ({selectedMemberIds.length})</h4>
+                        <select id="member-filter" value={memberFilter} onChange={e => setMemberFilter(e.target.value)} className="p-1 text-xs rounded border">
+                            <option value="all">All Groups</option>
+                            <optgroup label="Groups">
+                                <option value="main">{groupName}</option>
+                                {sisterGroups.map(sg => (<option key={`filter-sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>))}
+                            </optgroup>
+                            <optgroup label="Teams">
+                                {(teams || []).map(t => <option key={`filter-team-${t.id}`} value={`team-${t.id}`}>{t.name}</option>)}
+                            </optgroup>
+                            {mainGroupGenerations.length > 0 && <optgroup label={`${groupName} Gens`}>{mainGroupGenerations.map(gen => (<option key={`main-gen-${gen}`} value={`main-gen-${gen}`}>{gen}</option>))}</optgroup>}
+                            {sisterGroupDetails.map(sg => (sg.generations.length > 0 && (<optgroup key={`sg-gen-group-${sg.id}`} label={`${sg.name} Gens`}>{sg.generations.map(gen => (<option key={`sg-${sg.id}-gen-${gen}`} value={`sg-${sg.id}-gen-${gen}`}>{gen}</option>))}</optgroup>)))}
+                        </select>
+                    </div>
+                     <div className="mb-2">
+                        <label htmlFor="festival-import-lineup" className="text-xs font-medium">Import Lineup:</label>
+                        <select
+                            id="festival-import-lineup"
+                            onChange={(e) => applyPreviousLineup(e.target.value)}
+                            className="w-full text-xs p-1 border rounded"
+                        >
+                            <option value="">-- Select a past lineup --</option>
+                            {lastElectionResult && (
+                                <optgroup label="Last Election">
+                                    <option value="election-senbatsu">Senbatsu (1-16)</option>
+                                    <option value="election-undergirls">Undergirls (17-32)</option>
+                                </optgroup>
+                            )}
+                            {lastJankenResult && <optgroup label="Last Janken"><option value="janken-senbatsu">Janken Senbatsu</option></optgroup>}
+                            {historicalTracks.map(track => (<option key={track.id} value={track.id}>{track.name}</option>))}
+                        </select>
+                    </div>
+                    <div className="space-y-1 max-h-[400px] overflow-y-auto border p-1 rounded">
+                        {filteredMembers.map(member => (
+                            <div key={member.rosterId} onClick={() => toggleMember(member.rosterId)} className={`flex items-center justify-between p-2 rounded cursor-pointer ${selectedMemberIds.includes(member.rosterId) ? 'bg-blue-100 dark:bg-blue-800' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}`}>
+                                <div>
+                                    <p className="font-semibold text-sm">{member.name}</p>
+                                    <p className="text-xs text-gray-500">{getMemberGroupStatus(member)}</p>
+                                    <p className="text-xs text-gray-500">Vo:{Math.round(member.singing)} Da:{Math.round(member.dancing)} | Fans: {getTotalFansForMember(member).toLocaleString()}</p>
+                                </div>
+                                <input type="checkbox" checked={selectedMemberIds.includes(member.rosterId)} readOnly/>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                <div>
+                    <h4 className="font-semibold mb-2">Build Setlist ({setlist.length})</h4>
+                    <select onChange={e => addTrackToSetlist(e.target.value)} className="w-full p-2 border rounded mb-2 bg-white dark:bg-gray-700">
+                        <option value="">-- Add Song to Setlist --</option>
+                        {allTracks.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                    </select>
+                    <div className="space-y-1 max-h-[360px] overflow-y-auto border p-1 rounded">
+                        {setlist.map((item, index) => (
+                            <div key={index} className="flex justify-between items-center p-1 bg-gray-100 dark:bg-gray-700 rounded">
+                                <span>{item.item.name}</span>
+                                <button onClick={() => removeSetlistItem(index)} className="text-red-500 font-bold px-2">X</button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+            <div className="flex justify-end gap-2 mt-4">
+                <button onClick={() => setShowModal('annualFestivals')} className="p-2 bg-gray-300 dark:bg-gray-600 rounded px-4">Back</button>
+                <button onClick={handleConfirm} disabled={selectedMemberIds.length === 0 || setlist.length === 0} className="p-3 bg-green-500 text-white rounded font-bold disabled:bg-gray-400">Confirm & Perform</button>
+            </div>
+        </ModalWrapper>
+    );
+};
+
+const FestivalResultModal = () => {
+    if (!modalData || !modalData.festival) return null;
+    const { festival, result } = modalData;
+
+    return (
+        <ModalWrapper title={`Result: ${festival.name}`} maxWidth="max-w-lg">
+            <div className="text-center p-4">
+                <h3 className="text-2xl font-bold mb-4">{festival.name}</h3>
+                <p className="text-lg italic mb-6 text-gray-700 dark:text-gray-300">"{result.message}"</p>
+
+                <div className="space-y-2 text-left bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                    {result.fanGain > 0 && <p><strong className="text-green-500">+{result.fanGain.toLocaleString()}</strong> domestic fans.</p>}
+                    {result.internationalFanGain > 0 && <p><strong className="text-blue-500">+{result.internationalFanGain.toLocaleString()}</strong> international fans.</p>}
+                    {result.repGain > 0 && <p><strong className="text-yellow-500">+{result.repGain}</strong> Group Reputation.</p>}
+                    {result.moneyGain > 0 && <p><strong className="text-green-500">+¥{result.moneyGain.toLocaleString()}</strong> prize money.</p>}
+                </div>
+                
+                <button onClick={() => setShowModal(null)} className="mt-6 px-6 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700">
+                    Awesome!
+                </button>
+            </div>
+        </ModalWrapper>
+    );
+};
+
+
 const KouhakuResultModal = () => {
     if (!modalData) return null;
     const { songName, fanGain, performers } = modalData;
@@ -12658,6 +12919,29 @@ if (!gameStarted) {
         )}
     </div>
 
+{/* Annual Festivals Panel */}
+<div className="md:col-span-1 p-3 rounded-lg shadow-md bg-green-800 text-white border-2 border-green-400 flex flex-col justify-between">
+    <div>
+        <h3 className="text-lg font-bold mb-2 flex items-center">
+            <Calendar size={20} className="mr-2 text-green-300"/> Annual Festivals
+        </h3>
+        <p className="text-sm mb-3">Prestigious annual events that offer huge rewards if you meet the requirements.</p>
+    </div>
+    <div className="mt-4">
+        {availableFestivals.length > 0 ? (
+            <button
+                onClick={() => setShowModal('annualFestivals')}
+                className="w-full p-3 text-base bg-green-500 hover:bg-green-400 text-white font-bold transition-colors animate-pulse"
+            >
+                View {availableFestivals.length} Available Festival(s)
+            </button>
+        ) : (
+            <p className="text-center text-sm p-2 bg-black bg-opacity-20 rounded-md">No festival invitations this month.</p>
+        )}
+    </div>
+</div>
+
+
 {/* Request Hour Panel */}
 <div className="md:col-span-1 p-3 rounded-lg shadow-md bg-cyan-800 text-white border-2 border-cyan-400 flex flex-col justify-between">
     <div>
@@ -13930,6 +14214,9 @@ if (!gameStarted) {
         {showModal === 'historyDetail' && <HistoryDetailModal />}
         {showModal === 'jankenTournamentStart' && <JankenTournamentStartModal />}
         {showModal === 'kouhakuResult' && <KouhakuResultModal />}
+        {showModal === 'annualFestivals' && <AnnualFestivalsModal />}
+        {showModal === 'festivalPerformerSelection' && <FestivalPerformerSelectionModal />}
+        {showModal === 'festivalResult' && <FestivalResultModal />}
         {showModal === 'kouhakuInvite' && <KouhakuInvitationModal />}
         {showModal === 'kouhakuPrep' && <KouhakuPreparationModal />}
         {showModal === 'startSurvivalShow' && <SurvivalShowStartModal />}

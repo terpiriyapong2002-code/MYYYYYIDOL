@@ -1353,6 +1353,229 @@ export const musicShowTypes = {
     },
 };
 
+export const annualFestivals = {
+    // Japanese Festivals
+    fns: {
+        id: 'fns',
+        name: 'FNS Music Festival',
+        week: 49, // Early December
+        location: 'Japan',
+        description: 'The prestigious winter TV special, famous for collaboration stages with legendary veteran singers.',
+        requirements: {
+            reputation: 70,
+            hitSingleSales: 750000,
+            message: "Reputation 70+, and a recent single with 750k+ sales."
+        },
+        cost: 250000,
+        effect: (performers) => {
+            const vocalLeader = performers.sort((a,b) => b.singing - a.singing)[0];
+            const fanGain = 80000;
+            const repGain = 5;
+            const specificMemberFanGain = { id: vocalLeader.rosterId, gain: 40000 };
+            return {
+                fanGain,
+                repGain,
+                specificMemberFanGain,
+                message: `The collaboration stage at FNS was a huge success! ${vocalLeader.name}'s performance with a veteran singer earned her national acclaim. Gained ${fanGain.toLocaleString()} fans and +${repGain} Reputation.`
+            };
+        }
+    },
+    tif: {
+        id: 'tif',
+        name: 'TOKYO IDOL FESTIVAL (TIF)',
+        week: 32, // Early August
+        location: 'Japan',
+        description: 'The "Holy Land" of idols. A grueling multi-stage summer event to win over new, dedicated fans.',
+        requirements: {
+            reputation: 25,
+            totalFans: 100000,
+            message: "Reputation 25+, and 100k+ total fans."
+        },
+        cost: 150000,
+        effect: (performers) => {
+            const fanGain = 120000;
+            const conversionRate = 0.25;
+            return {
+                fanGain,
+                conversionRate,
+                message: `The group survived the heat of TIF! Their energetic performances won over the hardcore idol crowd, gaining ${fanGain.toLocaleString()} new fans and converting many more.`
+            };
+        }
+    },
+    rockInJapan: {
+        id: 'rij',
+        name: 'Rock In Japan Festival',
+        week: 33, // Mid-August
+        location: 'Japan',
+        description: 'The biggest mainstream festival in Japan. Performing here signals that your group has crossed over to be respected musical artists.',
+        requirements: {
+            reputation: 80,
+            hitSingleSales: 1000000,
+            message: "Reputation 80+, and a recent Million-selling single."
+        },
+        cost: 500000,
+        effect: (performers) => {
+            const fanGain = 200000;
+            const repGain = 10;
+            return {
+                fanGain,
+                repGain,
+                message: `A legendary performance at Rock In Japan! The group has been accepted by the mainstream music scene. Gained ${fanGain.toLocaleString()} fans and a massive +${repGain} Reputation.`
+            };
+        }
+    },
+    japanRecordAwards: {
+        id: 'jra',
+        name: 'The Japan Record Awards',
+        week: 52, // End of December
+        location: 'Japan',
+        description: "A formal ceremony where the 'Best New Artist' and 'Grand Prix' are awarded. Very high prestige.",
+        requirements: {
+            reputation: 50,
+            hitSingleSales: 500000,
+            message: "Reputation 50+, and a recent single with 500k+ sales."
+        },
+        cost: 100000,
+        effect: (performers, allSongs, groupName) => {
+            const yearStartWeek = Math.floor((week - 1) / 52) * 52 + 1;
+            const songsThisYear = allSongs.filter(s => s.releaseWeek >= yearStartWeek && (s.targetGroup === 'main' || s.targetGroup === groupName));
+            const bestSong = songsThisYear.sort((a,b) => (b.totalSales || 0) - (a.totalSales || 0))[0];
+
+            if (bestSong && bestSong.totalSales > 1000000) {
+                return {
+                    repGain: 15,
+                    moneyGain: 1000000,
+                    message: `UNBELIEVABLE! Your group won the Grand Prix at the Japan Record Awards for "${bestSong.name}"! This is the highest honor in the industry. (+15 Rep, +¥1,000,000)`
+                };
+            }
+            return {
+                repGain: 2,
+                fanGain: 25000,
+                message: "The group gave a respectable performance at the Japan Record Awards, gaining prestige and exposure. (+2 Rep, +25,000 fans)"
+            };
+        }
+    },
+    // Global Festivals
+    coachella: {
+        id: 'coachella',
+        name: 'Coachella',
+        week: 16, // Mid-April
+        location: 'Global',
+        description: "The ultimate 'cool' factor. Performing here (specifically in the Sahara Tent) is the peak of Western viral success.",
+        requirements: {
+            reputation: 85,
+            internationalFans: 500000,
+            message: "Reputation 85+, and 500k+ International Fans."
+        },
+        cost: 1200000,
+        effect: (performers) => ({
+            fanGain: 300000,
+            internationalFanGain: 400000,
+            repGain: 8,
+            message: "The Sahara Tent performance was a viral hit! The group is the talk of the internet, gaining massive international recognition. (+8 Rep, +700k total fans)"
+        })
+    },
+    lollapalooza: {
+        id: 'lolla',
+        name: 'Lollapalooza',
+        week: 30, // End of July
+        location: 'Global',
+        description: 'A high-energy festival known for massive crowds. Perfect for showing off synchronized choreography to a global audience.',
+        requirements: {
+            reputation: 65,
+            internationalFans: 200000,
+            message: "Reputation 65+, and 200k+ International Fans."
+        },
+        cost: 800000,
+        effect: (performers) => {
+            const danceLeader = performers.sort((a,b) => b.dancing - a.dancing)[0];
+            return {
+                fanGain: 150000,
+                internationalFanGain: 250000,
+                repGain: 4,
+                specificMemberFanGain: { id: danceLeader.rosterId, gain: 50000 },
+                message: `The crowd was mesmerized by the group's sharp dancing, especially ${danceLeader.name}. A huge success! (+4 Rep, +400k total fans)`
+            };
+        }
+    },
+    kcon: {
+        id: 'kcon',
+        name: 'KCON',
+        week: 37, // Mid-September
+        location: 'Global',
+        description: "The biggest annual 'Pan-Asian' pop convention. A great place to meet international hardcore fans.",
+        requirements: {
+            reputation: 40,
+            internationalFans: 150000,
+            message: "Reputation 40+, and 150k+ International Fans."
+        },
+        cost: 400000,
+        effect: (performers) => ({
+            fanGain: 50000,
+            internationalFanGain: 100000,
+            conversionRate: 0.30,
+            message: "The group's fan service at KCON was a huge hit, converting many international fans into hardcore supporters. (+150k total fans)"
+        })
+    },
+    animeExpo: {
+        id: 'ax',
+        name: 'Anime Expo',
+        week: 28, // Early July
+        location: 'Global',
+        description: "The 'gateway' event for J-Pop acts going global. Perform at the 'Anisong World Matsuri' concert.",
+        requirements: {
+            reputation: 30,
+            totalFans: 250000,
+            message: "Reputation 30+, and 250k+ total fans."
+        },
+        cost: 300000,
+        effect: (performers) => ({
+            fanGain: 50000,
+            internationalFanGain: 150000,
+            repGain: 3,
+            message: "The Anisong performance was a success! The group has gained a foothold with the international anime community. (+3 Rep, +200k total fans)"
+        })
+    },
+    primavera: {
+        id: 'primavera',
+        name: 'Primavera Sound',
+        week: 23, // Early June
+        location: 'Global',
+        description: "The European 'prestige' stage for groups that want to be seen as 'artsy' or 'indie-cool'.",
+        requirements: {
+            reputation: 75,
+            internationalFans: 300000,
+            message: "Reputation 75+, and 300k+ International Fans."
+        },
+        cost: 900000,
+        effect: (performers) => ({
+            fanGain: 100000,
+            internationalFanGain: 200000,
+            repGain: 12,
+            message: "Music critics are raving! The performance at Primavera Sound has cemented the group's status as 'artists', not just idols. (+12 Rep, +300k total fans)"
+        })
+    },
+    musicBank: {
+        id: 'musicbank',
+        name: 'Music Bank Global Festival',
+        week: 46, // Mid-November
+        location: 'Global',
+        description: 'A massive year-end touring festival that brings the biggest Asian pop stars to a worldwide TV audience.',
+        requirements: {
+            reputation: 60,
+            internationalFans: 400000,
+            message: "Reputation 60+, and 400k+ International Fans."
+        },
+        cost: 1000000,
+        effect: (performers) => ({
+            fanGain: 120000,
+            internationalFanGain: 350000,
+            repGain: 6,
+            message: "The Music Bank broadcast was a huge ratings hit. The group's performance reached millions of new potential fans worldwide. (+6 Rep, +470k total fans)"
+        })
+    }
+};
+
 
 // --- NEW: Global Fan Calculation Helper ---
 export const getTotalFansForMember = (member) => {
@@ -2110,6 +2333,7 @@ const [pendingMerch, setPendingMerch] = useState([]);
     const [liveSportsFestival, setLiveSportsFestival] = useState(null);
     const [kouhakuInvitationOffered, setKouhakuInvitationOffered] = useState(false);
     const [kouhakuPrep, setKouhakuPrep] = useState(null);
+    const [availableFestivals, setAvailableFestivals] = useState([]);
     const [requestHourStatus, setRequestHourStatus] = useState(null); // { isActive: boolean, endWeek: number, votes: { [songId: string]: number } }
     const [votingTickets, setVotingTickets] = useState(0);
     const [requestHourHistory, setRequestHourHistory] = useState([]);
@@ -2189,6 +2413,8 @@ const [pendingMerch, setPendingMerch] = useState([]);
                 kouhakuHistory: JSON.stringify(kouhakuHistory),
                 kouhakuInvitationOffered,
                 kouhakuPrep: JSON.stringify(kouhakuPrep),
+                availableFestivals: JSON.stringify(availableFestivals),
+                timestamp: Date.now(),                
                 requestHourStatus: JSON.stringify(requestHourStatus),
                 votingTickets,
                 requestHourHistory: JSON.stringify(requestHourHistory),
@@ -2387,6 +2613,8 @@ const [pendingMerch, setPendingMerch] = useState([]);
             setKouhakuHistory(JSON.parse(data.kouhakuHistory || "[]"));
             setKouhakuInvitationOffered(data.kouhakuInvitationOffered || false);
             setKouhakuPrep(JSON.parse(data.kouhakuPrep || "null"));
+            setAvailableFestivals(JSON.parse(data.availableFestivals || "[]"));
+            setGameStarted(true);
             setRequestHourStatus(JSON.parse(data.requestHourStatus || "null"));
             setVotingTickets(data.votingTickets || 0);
             setRequestHourHistory(JSON.parse(data.requestHourHistory || "[]"));
@@ -2678,6 +2906,27 @@ if (exchangeStudents && exchangeStudents.length > 0) {
         return uniqueMembers;
     };
     
+const createMemberSnapshot = (member) => {
+    if (!member) return null;
+    return {
+        id: member.id,
+        rosterId: member.rosterId,
+        name: member.name,
+        teamId: member.teamId,
+        teamName: member.teamName,
+        homeGroup: member.homeGroup,
+        isSisterMember: member.isSisterMember,
+        displayGroupName: member.displayGroupName,
+        isExchangeStudent: member.isExchangeStudent,
+        kenninGroups: member.kenninGroups || [],
+        kennin: member.kennin,
+        isRivalKennin: member.isRivalKennin,
+        kenninInfo: member.kenninInfo,
+        generation: member.generation,
+    };
+};
+
+
 const getMemberById = (memberId) => {
     const memberIdStr = String(memberId);
 
@@ -7335,7 +7584,7 @@ const allNewPosts = [...(generatedPosts || []), announcementPost];
             fansGained: fanGain,
             attendance: totalTicketsSold,
             capacity: venue.capacity,
-            members: performingMembers.map(m => m.rosterId || m.id),
+            members: performingMembers.map(createMemberSnapshot),
             tracks: setlist,
             targetGroup: targetGroup,
             kageAna: details.kageAna,
@@ -7433,7 +7682,7 @@ const allNewPosts = [...(generatedPosts || []), announcementPost];
             revenue: totalRevenue,
             profit: agencyProfit,
             fansGained: fanGain,
-            members: performingMembers.map(m => m.rosterId || m.id),
+            members: performingMembers.map(createMemberSnapshot),
             tracks: setlist,
         };
         setPerformanceHistory(prev => [newEntry, ...prev]);
@@ -10076,7 +10325,7 @@ const runAnnualAwards = () => {
 
             const kouhakuPerformanceForHistory = {
     id: Date.now(),
-    name: `Kouhaku Uta Gassen`,
+    name: `${historyEntry.year} Kouhaku Uta Gassen`,
     category: "Special Event",
     week: week,
     cost: 5000000, // The participation fee
@@ -10085,7 +10334,7 @@ const runAnnualAwards = () => {
     fansGained: fanGain,
     attendance: 0, // Not applicable for this event type
     capacity: 0,
-    members: performerIds,
+    members: performers.map(createMemberSnapshot),
     tracks: [{ type: 'song', item: { name: historyEntry.songName } }],
     targetGroup: 'All',
     kageAna: '',
@@ -10132,8 +10381,11 @@ if ((newWeek - 1) % 52 === 45) { // Trigger at the end of Week 45 for Week 46 re
             setKouhakuInvitationOffered(false);
             setKouhakuInvitationAccepted(false);
         }
+
+        checkForAnnualFestivals();
         if ((newWeek -1) % 52 === 47) { // At the end of week 47
           checkForKouhakuInvitation();
+
         }
 
         // Create temporary, "draft" copies of all state variables that will be changed.
@@ -14907,6 +15159,108 @@ const simulateLivestream = () => {
     });
 };
 
+const checkForAnnualFestivals = () => {
+    const currentWeekOfYear = ((week - 1) % 52) + 1;
+    const newlyAvailable = [];
+
+    const yearStartWeek = Math.floor((week - 1) / 52) * 52 + 1;
+    const performancesThisYear = performanceHistory.filter(p => p.week >= yearStartWeek);
+
+    for (const festival of Object.values(annualFestivals)) {
+        // Check if it's the right week of the year and if it hasn't been performed this year
+        if (festival.week === currentWeekOfYear && !performancesThisYear.some(p => p.name.includes(festival.name))) {
+            
+            // FOR TESTING: This 'if (true)' block bypasses all requirements.
+            if (true) {
+                newlyAvailable.push(festival);
+            }
+        }
+    }
+    setAvailableFestivals(newlyAvailable);
+    if (newlyAvailable.length > 0) {
+        addNotification({ type: 'Event', message: `Invitations for major festivals have arrived! Check the Activities tab.` });
+        setShowModal('annualFestivals');
+    }
+};
+
+const startFestivalPerformance = (festivalId) => {
+    const festival = Object.values(annualFestivals).find(f => f.id === festivalId);
+    if (!festival) return setMessage("Festival not found.");
+    if (money < festival.cost) return setMessage("Not enough money for this festival.");
+
+    // Open the selection modal
+    setModalData({ festival });
+    setShowModal('festivalPerformerSelection');
+};
+
+const executeFestivalPerformance = (festival, performerIds, setlist) => {
+    if (performerIds.length === 0) return setMessage("You must select at least one performer.");
+    if (setlist.filter(i => i.type === 'song').length === 0) return setMessage("Setlist must contain at least one song.");
+    
+    setMoney(prev => prev - festival.cost);
+
+    const performers = performerIds.map(id => getMemberById(id));
+    const result = festival.effect(performers, songs, groupName);
+
+    // Standard performance stat changes
+    performers.forEach(member => {
+        updateMemberState(member.rosterId, m => ({                
+            ...m,
+            stamina: Math.max(0, (m.stamina || 100) - 45),
+            stress: Math.min(100, m.stress + 30),
+            morale: Math.min(100, (m.morale || 0) + 15),
+        }));
+    });
+    
+    // Apply festival-specific effects
+    if (result.fanGain) distributeFans(result.fanGain, performerIds);
+    if (result.internationalFanGain) {
+        const overseasGroups = sisterGroups.filter(sg => sg.type === 'overseas');
+        if (overseasGroups.length > 0) {
+            const gainPerGroup = Math.floor(result.internationalFanGain / overseasGroups.length);
+            overseasGroups.forEach(sg => {
+                setSisterGroups(prev => prev.map(g => g.id === sg.id ? { ...g, fans: (g.fans || 0) + gainPerGroup } : g));
+            });
+        } else {
+            distributeFans(result.internationalFanGain, performerIds);
+        }
+    }
+    if (result.repGain) setGroupReputation(prev => prev + result.repGain);
+    if (result.moneyGain) setMoney(prev => prev + result.moneyGain);
+    if (result.specificMemberFanGain) {
+        updateMemberState(result.specificMemberFanGain.id, m => ({ ...m, fans: { ...m.fans, casual: (m.fans.casual || 0) + result.specificMemberFanGain.gain } }));
+    }
+    if (result.conversionRate) {
+        performerIds.forEach(id => {
+            updateMemberState(id, m => {
+                const toConvert = Math.floor((m.fans.casual || 0) * result.conversionRate);
+                return { ...m, fans: { hardcore: (m.fans.hardcore || 0) + toConvert, casual: (m.fans.casual || 0) - toConvert } };
+            });
+        });
+    }
+
+    // Create detailed history entry
+    const newEntry = {
+        id: Date.now(),
+        name: `${Math.floor((week - 1) / 52) + 2025} ${festival.name}`,
+        category: "Annual Festival",
+        venueName: festival.location,
+        week,
+        cost: festival.cost,
+        revenue: (result.moneyGain || 0),
+        profit: (result.moneyGain || 0) - festival.cost,
+        fansGained: result.fanGain || 0,
+        members: performers.map(createMemberSnapshot),
+        tracks: setlist
+    };
+    setPerformanceHistory(prev => [newEntry, ...prev]);
+    setHasPerformedThisWeek(true);
+
+    setAvailableFestivals(prev => prev.filter(f => f.id !== festival.id));
+    setModalData({ festival, result });
+    setShowModal('festivalResult');
+};
+
 return {
     // State
     activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm, setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
@@ -14915,6 +15269,6 @@ return {
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
-    startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, resolveSurvivalMission, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent,  startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
+    executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, resolveSurvivalMission, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent,  startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
     };
     };
