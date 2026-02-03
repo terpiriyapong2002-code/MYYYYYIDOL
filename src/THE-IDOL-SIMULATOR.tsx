@@ -37,7 +37,7 @@ const App = () => {
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
-    executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference,  completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
+    unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference,  completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
 
     } = useIdolManager();
 
@@ -8488,6 +8488,149 @@ const JankenResultModal = () => {
     );
 };
 
+const UnitVoteSummaryModal = ({ modalData, onHide }) => {
+    const { participating, nonParticipating, onConfirm, unitName } = modalData;
+
+    if (!participating) return null;
+
+    return (
+        <ModalWrapper title={`Confirm Vote for "${unitName}"`} maxWidth="max-w-3xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-green-100/50 dark:bg-green-900/50 p-3 rounded-lg">
+                    <h3 className="font-bold text-lg text-green-700 dark:text-green-300 mb-2">
+                        Participating ({participating.length})
+                    </h3>
+                    <div className="max-h-64 overflow-y-auto space-y-1">
+                        {participating.map(member => (
+                            <div key={member.rosterId} className="text-sm p-1 bg-white/50 dark:bg-slate-700/50 rounded-md">
+                                {member.name}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                <div className="bg-red-100/50 dark:bg-red-900/50 p-3 rounded-lg">
+                    <h3 className="font-bold text-lg text-red-700 dark:text-red-300 mb-2">
+                        Not Participating ({nonParticipating.length})
+                    </h3>
+                    <div className="max-h-64 overflow-y-auto space-y-1">
+                        {nonParticipating.length > 0 ? nonParticipating.map(({ member, reason }) => (
+                            <div key={member.rosterId} className="text-sm p-1 bg-white/50 dark:bg-slate-700/50 rounded-md">
+                                <span className="font-semibold">{member.name}</span>
+                                <span className="text-gray-500 dark:text-gray-400 text-xs"> - {reason}</span>
+                            </div>
+                        )) : <p className="text-gray-500 italic text-sm p-2">All eligible members are participating.</p>}
+                    </div>
+                </div>
+            </div>
+            <div className="flex justify-end gap-3 mt-6 pt-4 border-t dark:border-gray-600">
+                <button onClick={onHide} className="px-5 py-2 bg-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-400">Cancel</button>
+                <button onClick={onConfirm} className="px-6 py-2 bg-pink-500 text-white rounded-lg font-bold hover:bg-pink-600">
+                    Start Voting Period
+                </button>
+            </div>
+        </ModalWrapper>
+    );
+};
+
+
+const UnitVoteStartModal = () => {
+    const [unitName, setUnitName] = useState('');
+    const [memberCount, setMemberCount] = useState(7);
+    const UNIT_VOTE_COST = 150000;
+
+    const handleConfirm = () => {
+        if (unitName.trim()) {
+            startUnitVote(unitName, memberCount);
+        } else {
+            setMessage("Unit Name is required.");
+        }
+    }
+
+    return (
+        <ModalWrapper title="Create Unit via Fan Vote" maxWidth="max-w-lg">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                Host a 4-week fan vote to create a new special unit. The voting power is inversely weighted by fan count, giving less popular members a much higher chance to be selected.
+            </p>
+            <div className="space-y-4">
+                <div>
+                    <label className="font-semibold text-sm">New Unit Name</label>
+                    <input
+                        type="text"
+                        value={unitName}
+                        onChange={(e) => setUnitName(e.target.value)}
+                        className="w-full p-2 border rounded mt-1 bg-white dark:bg-gray-700"
+                        placeholder="e.g., Future Girls"
+                    />
+                </div>
+                <div>
+                    <label className="font-semibold text-sm">Number of Members</label>
+                    <select
+                        value={memberCount}
+                        onChange={(e) => setMemberCount(parseInt(e.target.value))}
+                        className="w-full p-2 border rounded mt-1 bg-white dark:bg-gray-700"
+                    >
+                        <option value={7}>7 Members</option>
+                        <option value={9}>9 Members</option>
+                        <option value={12}>12 Members</option>
+                        <option value={16}>16 Members</option>
+                    </select>
+                </div>
+            </div>
+
+            <div className="p-3 bg-yellow-50 dark:bg-gray-900 rounded-lg border border-yellow-200 dark:border-gray-700 text-center my-4">
+                <p className="font-bold text-lg text-red-600 dark:text-yellow-300">Total Cost: ¥{UNIT_VOTE_COST.toLocaleString()}</p>
+            </div>
+
+            <div className="flex justify-end gap-2 mt-6 pt-4 border-t dark:border-gray-600">
+                <button onClick={() => setShowModal(null)} className="p-2 bg-gray-300 dark:bg-gray-600 rounded px-4">Cancel</button>
+                <button
+                    onClick={handleConfirm}
+                    disabled={!unitName.trim() || money < UNIT_VOTE_COST}
+                    className="p-2 bg-green-700 text-white rounded px-4 font-bold disabled:bg-gray-400"
+                >
+                    Start Fan Vote
+                </button>
+            </div>
+        </ModalWrapper>
+    );
+};
+
+const UnitVoteResultModal = () => {
+    if (!lastUnitVoteResult) return null;
+
+    const { unitName, winners } = lastUnitVoteResult;
+
+    const handleClose = () => {
+        setLastUnitVoteResult(null);
+        setShowModal(null);
+    }
+
+    return (
+        <ModalWrapper title={`Fan Vote Results: "${unitName}"`} maxWidth="max-w-xl">
+            <p className="text-center text-gray-600 dark:text-gray-400 mb-4">The fans have spoken! The new unit, "{unitName}", has been formed with these members.</p>
+            <div className="space-y-2 max-h-80 overflow-y-auto p-2 bg-gray-100 dark:bg-gray-900 rounded-lg">
+                {winners.map((member, index) => (
+                    <div key={member.rosterId} className="p-3 bg-white dark:bg-gray-800 rounded-md flex items-center justify-between">
+                        <div className="flex items-center">
+                            <span className="font-black text-2xl w-12 text-pink-500">#{index + 1}</span>
+                            <div>
+                                <p className="font-bold">{member.name}</p>
+                                <p className="text-xs text-gray-500">{getMemberGroupStatus(member)}</p>
+                            </div>
+                        </div>
+                        <p className="text-xs text-gray-500">Fans: {getTotalFansForMember(member).toLocaleString()}</p>
+                    </div>
+                ))}
+            </div>
+            <div className="flex justify-end gap-2 mt-6 pt-4 border-t dark:border-gray-600">
+                <button onClick={handleClose} className="p-3 bg-green-500 text-white rounded font-bold">
+                    OK
+                </button>
+            </div>
+        </ModalWrapper>
+    );
+};
+
 const FilmPromotionResultModal = () => {
     if (!modalData) return null;
 
@@ -12235,6 +12378,14 @@ if (!gameStarted) {
                             Create All Appeal Videos (¥20k/member)
                         </button>
 
+                {unitVote && unitVote.isActive && <div className="p-2 bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 text-center text-sm font-bold flex items-center justify-center border-y border-cyan-500/20">
+                    <Star size={16} className='mr-2'/> UNIT VOTE ACTIVE! Ends in {unitVote.endWeek - week} week(s).
+                </div>}
+
+                <button onClick={() => setShowModal('unitVote')} className="w-full p-1.5 text-sm bg-cyan-600 text-white rounded font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed">
+                    Create Unit via Fan Vote (¥150k)
+                </button>
+
 
                 <div className="flex flex-col gap-1.5">
                     <button onClick={() => holdElection('main')} disabled={isCampaignActive || electionVotePool <= 0} className="w-full p-1.5 text-sm bg-purple-500 text-white rounded font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed">
@@ -14212,6 +14363,9 @@ if (!gameStarted) {
         {showModal === 'bsidePromotionResult' && <BsidePromotionResultModal />}
         {showModal === 'allPromotionsResult' && <AllPromotionsResultModal />}
         {showModal === 'jankenTournament' && <JankenTournamentModal />}
+        {showModal === 'unitVoteSummary' && <UnitVoteSummaryModal modalData={modalData} onHide={() => setShowModal(null)} />}
+        {showModal === 'unitVote' && <UnitVoteStartModal />}
+        {showModal === 'unitVoteResult' && <UnitVoteResultModal />}
         {showModal === 'historyDetail' && <HistoryDetailModal />}
         {showModal === 'jankenTournamentStart' && <JankenTournamentStartModal />}
         {showModal === 'kouhakuResult' && <KouhakuResultModal />}

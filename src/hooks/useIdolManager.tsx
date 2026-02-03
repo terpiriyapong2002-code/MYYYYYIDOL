@@ -2322,6 +2322,10 @@ const [pendingMerch, setPendingMerch] = useState([]);
     const [isCampaignActive, setIsCampaignActive] = useState(false);
     const [campaignEndWeek, setCampaignEndWeek] = useState(0);
     const [isElectionSingleFinished, setIsElectionSingleFinished] = useState(false);
+    const [unitVote, setUnitVote] = useState(null); // To track the active unit vote
+    const [lastUnitVoteResult, setLastUnitVoteResult] = useState(null); // To store the results
+    const UNIT_VOTE_COST = 150000;
+
     const [lastElectionResult, setLastElectionResult] = useState(null);
     const [electionHistory, setElectionHistory] = useState([]);
     const [gameHistory, setGameHistory] = useState([]);
@@ -5819,6 +5823,89 @@ universallySortedMembers.forEach(member => {
     setLastElectionResult(universallySortedMembers);
     setElectionHistory(prev => [...prev, { week: week, results: universallySortedMembers, trivia: electionTrivia, spots: numberOfSpots }]);
 };
+
+const runUnitVote = () => {
+    if (!unitVote) return;
+
+    const { unitName, memberCount, participants: participantIds } = unitVote;
+    const participants = participantIds.map(id => getMemberById(id)).filter(Boolean);
+
+    // Inverse vote power logic: less popular members get a huge boost.
+    const rankedMembers = participants.map(member => {
+        const fanPower = getTotalFansForMember(member);
+        const voteScore = (1 / (fanPower + 1)) * (Math.random() * 0.8 + 0.2);
+        return { ...member, votes: voteScore };
+    }).sort((a, b) => b.votes - a.votes);
+
+    const winners = rankedMembers.slice(0, memberCount);
+
+    // --- AUTOMATICALLY CREATE THE UNIT ---
+    const newUnitId = confirmCreateSisterGroup({
+        groupName: unitName,
+        type: 'unit',
+        location: 'Special Project'
+    }, winners.map(w => w.rosterId));
+
+    if (newUnitId) {
+        addNotification({ type: 'Management', message: `The fan-voted unit "${unitName}" has been officially formed!` });
+    }
+    // --- END AUTOMATIC CREATION ---
+
+    setUnitVote(null); // End the vote
+    setModalData({ unitName, winners }); // Set data for the informational result modal
+    setShowModal('unitVoteResult');
+
+    const message = `Voting for "${unitName}" has concluded! The new unit has been formed.`;
+    setMessage(message);
+};
+
+
+const startUnitVote = (unitName, memberCount) => {
+    const UNIT_VOTE_COST = 150000;
+    if (money < UNIT_VOTE_COST) {
+        return setMessage(`A Unit Vote costs ¥${UNIT_VOTE_COST.toLocaleString()}!`);
+    }
+
+    const participantsPool = getAllAvailableMembers(true).filter(m => m.isAvailable && !m.isGraduating);
+    const participatingMembers = [];
+    const nonParticipatingMembers = [];
+
+    participantsPool.forEach(member => {
+        const fanCount = getTotalFansForMember(member);
+        // Popular members, centers, or stressed members are less likely to join
+        if (fanCount > 200000 && Math.random() < 0.5) {
+            nonParticipatingMembers.push({ member, reason: 'Focusing on main group activities' });
+        } else if (member.isCurrentCenter) {
+            nonParticipatingMembers.push({ member, reason: 'Current Center' });
+        } else if (member.stress > 70) {
+            nonParticipatingMembers.push({ member, reason: 'High Stress' });
+        } else {
+            participatingMembers.push(member);
+        }
+    });
+
+    setModalData({
+        participating: participatingMembers,
+        nonParticipating: nonParticipatingMembers,
+        unitName: unitName,
+        onConfirm: () => {
+            setMoney(prev => prev - UNIT_VOTE_COST);
+            setUnitVote({
+                isActive: true,
+                unitName: unitName,
+                memberCount: memberCount,
+                participants: participatingMembers.map(m => m.rosterId), // Store IDs for the vote
+                endWeek: week + 4,
+            });
+            const successMessage = `A 4-week fan vote has begun for "${unitName}"!`;
+            setMessage(successMessage);
+            addNotification({ type: 'Event', message: successMessage });
+            setShowModal(null);
+        }
+    });
+    setShowModal('unitVoteSummary');
+};
+
 
 const createSong = () => {
         setModalData({ 
@@ -10505,6 +10592,13 @@ if (requestHourStatus && requestHourStatus.isActive && newWeek > requestHourStat
     return; // Pause the game loop to show the results.
 }
 
+// --- UNIT VOTE COMPLETION ---
+if (unitVote && unitVote.isActive && newWeek >= unitVote.endWeek) {
+    runUnitVote();
+    return; // Pause the game to show results
+}
+
+
                 // --- ELECTION CAMPAIGN COMPLETION ---
         // This checks if the campaign period is over and if we are waiting for an election single to finish charting.
         const isChartingElectionSingle = songs.some(s => s.isElectionSingle && s.chartWeeksLeft > 0);
@@ -14966,68 +15060,157 @@ const memberFans = isAce ? rival.ace.fans : 100000 + Math.floor(Math.random() * 
     };
 
     const createUnitFromSurvival = (winners, unitName, allPlayerParticipants) => {
-        // 1. Create the new unit first, but keep it empty for now.
-        const newUnitId = confirmCreateSisterGroup({
-            groupName: unitName,
-            type: 'unit',
-            location: 'Special Project'
-        }, []); // Pass an empty member list
+        const cost = 50000;
+        const contractFee = 15000;
+        const outsiderWinners = (winners || []).filter(w => w.isOutsider);
+        const playerMemberWinners = (winners || []).filter(w => w.isPlayer);
+        const totalCost = cost + (outsiderWinners.length * contractFee);
 
-        if (!newUnitId) {
-            setMessage("Error: Could not create the new unit. Please try again.");
+        if (money < totalCost) {
+            setMessage("Not enough money to form the unit and sign new trainees.");
             return;
         }
 
-        // 2. Recruit winning "Independent Trainees" directly into the new unit.
-        const outsiderWinners = (winners || []).filter(w => w.isOutsider);
-        if (outsiderWinners.length > 0) {
-            const newCandidates = outsiderWinners.map(c => ({
-                name: c.name, hometown: c.hometown, vocal: c.vocal, dance: c.dance,
-                visual: c.visual, charisma: c.charisma, intelligence: c.intelligence, variety: 50,
-                potential: c.potential, personality: c.personality, age: c.age,
-            }));
-            // The key change: Target the new unit's ID during recruitment.
-                confirmRecruitment(newCandidates, { targetGroup: newUnitId, generationName: '1st Generation', contractFee: 15000 });
-        }
+        // --- All state updates will be based on these new variables ---
+        let updatedMembers = [...members];
+        let updatedSisterGroups = [...sisterGroups];
 
-        // 3. Assign winning members a CONCURRENT position in the new unit.
-        const playerMemberWinners = (winners || []).filter(w => w.isPlayer);
+        // 1. Create full member objects for the outsider trainees
+        const allCurrentIds = [...members.map(m => m.id), ...sisterGroups.flatMap(sg => (sg.members || []).map(m => m.id))];
+        const startingId = allCurrentIds.length > 0 ? Math.max(0, ...allCurrentIds.map(id => parseInt(id, 10)).filter(id => !isNaN(id))) : 0;
         
-        // Get the FULL member objects for the winners using their IDs.
-        const playerWinnerObjects = playerMemberWinners.map(winner => getMemberById(winner.id)).filter(Boolean);
-
-        // Add these existing members to the unit's official member list
-        setSisterGroups(prevSGs => prevSGs.map(sg => {
-            if (sg.id === newUnitId) {
-                // sg.members already contains new recruit OBJECTS from the confirmRecruitment call.
-                // We add the winner OBJECTS to this array.
-                const updatedMembers = [...(sg.members || []), ...playerWinnerObjects];
-                
-                // Ensure no duplicates by creating a Map based on a unique ID.
-                const uniqueMembers = Array.from(new Map(updatedMembers.map(m => [m.rosterId || m.id, m])).values());
-
-                return { ...sg, members: uniqueMembers };
-            }
-            return sg;
-        }));
-        // Now, update each winner's personal profile to reflect the new concurrent position
-        playerMemberWinners.forEach(winner => {
-            updateMemberState(winner.id, m => ({
-                ...m,
-                // Add the new unit's ID to the member's concurrent groups for display purposes
-                kenninGroups: [...(m.kenninGroups || []), newUnitId],
-                // Add a history entry for this event
-                teamHistory: [...(m.teamHistory || []), { week: week, event: `Joined unit "${unitName}" as a concurrent member.` }]
-            }));
+        const newTraineeMembers = outsiderWinners.map((trainee, index) => {
+            const newId = startingId + 1 + index;
+            return {
+                id: newId,
+                rosterId: `sg-temp-${newId}`, // Temporary, will be updated when added to the group
+                name: trainee.name,
+                hometown: trainee.hometown,
+                age: trainee.age,
+                singing: trainee.vocal,
+                dancing: trainee.dance,
+                visual: trainee.visual,
+                charisma: trainee.charisma,
+                intelligence: trainee.intelligence,
+                variety: trainee.variety || 50,
+                potential: trainee.potential,
+                personality: trainee.personality,
+                fans: { hardcore: 0, casual: 500 },
+                stamina: 100,
+                morale: 100,
+                stress: 0,
+                isAvailable: true,
+                generation: '1st Generation',
+                homeGroup: unitName,
+                teamHistory: [{ week: week, event: `Joined unit "${unitName}" via survival show.` }],
+                nickname: trainee.name.split(' ')[0],
+                position: 'under',
+                birthday: Math.floor(Math.random() * 52) + 1,
+                graduated: false,
+                isGraduating: false,
+                rank: 999,
+                trainingFocus: 'none',
+                singlesParticipation: [],
+                songsParticipation: [],
+                centerHistory: [],
+                kenninGroups: [],
+                electionHype: 0,
+                isCurrentCenter: false,
+                chemistry: {},
+                filmHistory: [],
+                graduationWindow: { min: 4, max: 8 },
+                graduationUrgency: 0,
+                ambition: 'Pursue a Solo Dream'
+            };
         });
 
-        addNotification({ type: 'Success', message: `The new unit "${unitName}" has been formed from the survival show winners!`});
+        // 2. Add kennin status to the ORIGINAL player members
+        playerMemberWinners.forEach(winner => {
+            const memberId = winner.id;
+            let memberFoundAndUpdated = false;
 
-        // 4. Make all your participating members available again.
+            // Update in main group
+            updatedMembers = updatedMembers.map(m => {
+                if (String(m.id) === String(memberId) || m.rosterId === memberId) {
+                    memberFoundAndUpdated = true;
+                    return {
+                        ...m,
+                        kenninGroups: [...(m.kenninGroups || []), unitName],
+                        teamHistory: [...(m.teamHistory || []), { week: week, event: `Joined unit "${unitName}" as a concurrent member.` }]
+                    };
+                }
+                return m;
+            });
+
+            // Update in sister groups if not found in main
+            if (!memberFoundAndUpdated) {
+                updatedSisterGroups = updatedSisterGroups.map(sg => {
+                    const memberIndex = (sg.members || []).findIndex(m => `sg-${sg.id}-${m.id}` === memberId);
+                    if (memberIndex > -1) {
+                        const updatedMember = {
+                            ...(sg.members[memberIndex]),
+                            kenninGroups: [...(sg.members[memberIndex].kenninGroups || []), unitName],
+                            teamHistory: [...(sg.members[memberIndex].teamHistory || []), { week: week, event: `Joined unit "${unitName}" as a concurrent member.` }]
+                        };
+                        sg.members[memberIndex] = updatedMember;
+                    }
+                    return sg;
+                });
+            }
+        });
+
+        // 3. Create the new unit with the correct member structure
+        const newUnitId = (sisterGroups.length > 0 ? Math.max(0, ...sisterGroups.map(sg => sg.id)) : 0) + 1;
+        
+        // Correctly get full objects of player winners
+        const playerWinnerObjects = playerMemberWinners.map(w => getMemberById(w.id)).filter(Boolean);
+
+        const newUnit = {
+            id: newUnitId,
+            name: unitName,
+            type: 'unit',
+            location: 'Special Project',
+            members: [
+                ...newTraineeMembers.map(m => ({...m, rosterId: `sg-${newUnitId}-${m.id}`, groupId: newUnitId})),
+                ...playerWinnerObjects.map(m => ({...m, rosterId: m.rosterId, isKennin: true}))
+            ],
+            fans: 100, songs: [], income: 0, isAutonomous: false, money: 0, licensedSongs: []
+        };
+        
+        updatedSisterGroups.push(newUnit);
+        
+        // 4. Set all state at once
+        setMoney(prev => prev - totalCost);
+        setMembers(updatedMembers);
+        setSisterGroups(updatedSisterGroups);
+
+        addNotification({ type: 'Success', message: `The new unit "${unitName}" has been formed!` });
+
+        // 5. Make all participants available again
         (allPlayerParticipants || []).forEach(p => {
             updateMemberState(p.id, m => ({ ...m, isAvailable: true, currentActivity: null, activityEnd: null }));
         });
     };
+
+const confirmUnitFromVote = () => {
+    if (!lastUnitVoteResult) return;
+    const { unitName, winners } = lastUnitVoteResult;
+
+    // Use the existing sister group creation logic with type 'unit'
+    const newUnitId = confirmCreateSisterGroup({
+        groupName: unitName,
+        type: 'unit',
+        location: 'Special Project'
+    }, winners.map(w => w.rosterId)); // Immediately assign members
+
+    if (newUnitId) {
+        addNotification({ type: 'Management', message: `The fan-voted unit "${unitName}" has been officially formed!` });
+    }
+    
+    setLastUnitVoteResult(null);
+    setShowModal(null);
+};
+
 
 const generateSponsorships = () => {
     if (Math.random() > 0.65) { // 65% chance to generate new offers each week
@@ -15273,6 +15456,6 @@ return {
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
-    executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, resolveSurvivalMission, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent,  startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
+    unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, resolveSurvivalMission, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent,  startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
     };
     };
