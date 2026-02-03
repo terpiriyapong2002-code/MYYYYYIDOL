@@ -2429,7 +2429,7 @@ const [pendingMerch, setPendingMerch] = useState([]);
                 warehouse: JSON.stringify(warehouse),
                 pendingMerch: JSON.stringify(pendingMerch),
                 outfits: JSON.stringify(outfits),
-                pushedMembers: JSON.stringify(pushedMembers),
+                pushedMembers: JSON.stringify(pushedMembers.map(String)),
                 tours: JSON.stringify(tours),
                 activeTour: JSON.stringify(activeTour),
                 musicVideos: JSON.stringify(musicVideos),
@@ -2559,7 +2559,8 @@ const [pendingMerch, setPendingMerch] = useState([]);
                 let migratedMembers = sg.members || [];
                 if (sg.members) {
                     migratedMembers = sg.members.map(rawMember => {
-                        const member = { ...rawMember };
+                            const member = { ...rawMember, rosterId: `sg-${sg.id}-${rawMember.id}` };
+
                         // --- NEW MIGRATION ---
                         if (member.relationships && !member.chemistry) {
                             member.chemistry = {};
@@ -12559,7 +12560,7 @@ const executeRequestHourConcert = () => {
             location: groupData.location || 'Special Project',
             type: newGroupType,
             members: initialMemberIds,
-            fans: 100, songs: [], income: 0, isAutonomous: false, money: 0, licensedSongs: []
+            fans: 100, songs: [], income: 0, isAutonomous: newGroupType === 'overseas', money: 0, licensedSongs: []
         };
         
         if (newGroupType === 'unit' && initialMemberIds.length > 0) {
