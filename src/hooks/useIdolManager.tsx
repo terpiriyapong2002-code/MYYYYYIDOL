@@ -14992,20 +14992,24 @@ const memberFans = isAce ? rival.ace.fans : 100000 + Math.floor(Math.random() * 
 
         // 3. Assign winning members a CONCURRENT position in the new unit.
         const playerMemberWinners = (winners || []).filter(w => w.isPlayer);
-
-        // Get the IDs of the winning player members
-        const playerWinnerIds = playerMemberWinners.map(winner => winner.id);
+        
+        // Get the FULL member objects for the winners using their IDs.
+        const playerWinnerObjects = playerMemberWinners.map(winner => getMemberById(winner.id)).filter(Boolean);
 
         // Add these existing members to the unit's official member list
         setSisterGroups(prevSGs => prevSGs.map(sg => {
             if (sg.id === newUnitId) {
-                // Use a Set to ensure there are no duplicate member IDs
-                const updatedMembers = [...new Set([...(sg.members || []), ...playerWinnerIds])];
-                return { ...sg, members: updatedMembers };
+                // sg.members already contains new recruit OBJECTS from the confirmRecruitment call.
+                // We add the winner OBJECTS to this array.
+                const updatedMembers = [...(sg.members || []), ...playerWinnerObjects];
+                
+                // Ensure no duplicates by creating a Map based on a unique ID.
+                const uniqueMembers = Array.from(new Map(updatedMembers.map(m => [m.rosterId || m.id, m])).values());
+
+                return { ...sg, members: uniqueMembers };
             }
             return sg;
         }));
-
         // Now, update each winner's personal profile to reflect the new concurrent position
         playerMemberWinners.forEach(winner => {
             updateMemberState(winner.id, m => ({
