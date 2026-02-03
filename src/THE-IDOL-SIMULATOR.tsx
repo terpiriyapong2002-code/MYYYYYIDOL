@@ -493,7 +493,7 @@ const HoldAuditionModal = ({ startAudition, groupName, sisterGroups, setShowModa
                     <label className="font-semibold text-sm text-blue-800 dark:text-blue-200 mb-1">Target Group</label>
                     <select value={targetGroup} onChange={(e) => setTargetGroup(e.target.value)} className="w-full p-2 border border-blue-200/50 rounded-lg bg-blue-50/50 dark:bg-slate-700/50 dark:text-gray-200 dark:border-blue-800/50 focus:ring-2 focus:ring-pink-300 focus:outline-none">
                         <option key="main" value="main">{groupName} (Main Group)</option>
-                        {(sisterGroups || []).map(sg => <option key={sg.id} value={sg.id}>{sg.name}</option>)}
+                        {(sisterGroups || []).filter(sg => !sg.isDisbanded).map(sg => <option key={sg.id} value={sg.id}>{sg.name}</option>)}
                     </select>
                 </div>
 
@@ -1088,7 +1088,7 @@ const AnnualAwardsResultModal = () => {
 
     // --- Basic Song State ---
     const { targetGroupId, songs, sisterGroups } = modalData;    
-    const allGroups = [{ id: 'main', name: groupName, isSister: false }, ...(sisterGroups || []).map(sg => ({ id: sg.id, name: sg.name, isSister: true }))];
+    const allGroups = [{ id: 'main', name: groupName, isSister: false }, ...(sisterGroups || []).filter(g => !g.isDisbanded).map(sg => ({ id: sg.id, name: sg.name, isSister: true }))];
     const [targetGroup, setTargetGroup] = useState(targetGroupId || allGroups[0].name);
     const [songName, setSongName] = useState('');
     const [tracks, setTracks] = useState([
@@ -2204,7 +2204,7 @@ const renderSelectGraduatingMemberStep = () => {
                             <h4 className="font-semibold mb-1 dark:text-gray-200">Target Group</h4>
                             <select value={targetGroup} onChange={(e) => { setTargetGroup(e.target.value); setFilterKey('All'); setTracks([{ name: 'Title Track', unitName: 'Senbatsu', type: 'title', members: [], center: null, lineup: {} }, { name: 'B-Side 1', unitName: 'Universe Girls', type: 'b-side', members: [], center: null, lineup: {}, cdType: 'common' }]); }} className="w-full p-2 border rounded bg-white dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">
                                 <option key="main" value="main">{groupName} (Main)</option>
-                                {(sisterGroups || []).map(sg => <option key={sg.id} value={sg.name}>{sg.name}</option>)}
+                                {(sisterGroups || []).filter(g => !g.isDisbanded).map(sg => <option key={sg.id} value={sg.name}>{sg.name}</option>)}
                             </select>
                         </div>
                         <div>
@@ -6426,7 +6426,7 @@ const TeamManagementModal = ({ isEditing = false, team = null }) => {
                 
                 <select value={groupId} onChange={e => setGroupId(e.target.value)} className="w-full p-2 border rounded bg-gray-50 dark:bg-gray-700" disabled={isEditing}>
                     <option value="main">Team for: {groupName} (Main)</option>
-                    {sisterGroups.map(sg => <option key={sg.id} value={sg.id}>Team for: {sg.name}</option>)}
+                    {sisterGroups.filter(sg => !sg.isDisbanded).map(sg => <option key={sg.id} value={sg.id}>Team for: {sg.name}</option>)}
                 </select>
 
                 <select value={selectedSetlist || ''} onChange={e => setSelectedSetlist(Number(e.target.value))} className="w-full p-2 border rounded bg-gray-50 dark:bg-gray-700">
@@ -6670,7 +6670,7 @@ const MoveMemberModal = ({ member, setShowModal }) => {
 
     const isRival = !!member.isRivalKennin;
 
-    const allPlayerGroups = [{ id: 'main', name: groupName }, ...(sisterGroups || [])];
+    const allPlayerGroups = [{ id: 'main', name: groupName }, ...(sisterGroups || []).filter(g => !g.isDisbanded)];
 const allGroups = isRival
     ? [{ id: 'rival_home_group', name: member.homeGroup }, ...allPlayerGroups]
     : allPlayerGroups;
@@ -12671,7 +12671,8 @@ if (!gameStarted) {
                 </div>
             </div>
 
-            {(sisterGroups || []).map(sg => {
+            {(sisterGroups || []).filter(sg => !sg.isDisbanded).map(sg => {
+
                 // For each sister group, their releases are now all in their own `songs` array.
                 const sgReleases = (sg.songs || []).sort((a, b) => b.releaseWeek - a.releaseWeek);
                 
