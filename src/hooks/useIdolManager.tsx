@@ -908,7 +908,7 @@ const thaiHometowns = [
     'Moon', 'Son', 'Bae', 'Baek', 'Heo', 'Nam', 'Shim', 'Yoo', 'Ko', 'Cha'
   ];
   const koreanFirstNames = [
-    // --- Original Generic List ---
+    // --- Original Generic List (70) ---
     'Seo-yeon', 'Ji-woo', 'Ha-eun', 'Ji-yoo', 'Soo-ah', 'Ji-ah', 'Seo-ah', 'Da-eun', 'Chae-won', 'Eun-seo',
     'Seo-yun', 'Min-seo', 'Ji-min', 'Ji-yoon', 'Ha-yoon', 'Ye-eun', 'Yoon-seo', 'Ji-won', 'Soo-bin', 'Hyun-ah',
     'Young-shin', 'Hye-won', 'Seo-hyeon', 'Min-ji', 'Sung-hee', 'Ji-hye', 'Eun-ji', 'Bo-ra', 'Chae-young', 'Da-in',
@@ -916,7 +916,7 @@ const thaiHometowns = [
     'Yoo-jin', 'Bo-young', 'Da-hee', 'Eun-bi', 'Ha-rin', 'Ju-hyun', 'Mi-rae', 'Na-eun', 'Seul-ki', 'Ye-ji',
     'Ye-won', 'Yoon-ah', 'Ah-reum', 'Chae-yoon', 'Da-young', 'Eun-chae', 'Hye-jin', 'Ji-eun', 'Min-ah', 'So-ra',
     'Soo-jin', 'Yu-na', 'Ga-eun', 'Hye-ri', 'Ji-soo', 'Min-kyung', 'Seo-young', 'Ye-jin', 'Yoo-na', 'Da-bin',
-  
+
     // --- 150 New Generic Additions ---
     'Seo-hui', 'Seo-eun', 'Seo-jin', 'Seo-rim', 'Seo-rin', 'Seo-woo', 'Seo-ha', 'Seo-i', 'Seo-kyung', 'Seo-ju',
     'Ji-eul', 'Ji-hyeon', 'Ji-young', 'Ji-sun', 'Ji-yu', 'Ji-an', 'Ji-hyo', 'Ji-eun', 'Ji-su', 'Ji-won',
@@ -932,8 +932,18 @@ const thaiHometowns = [
     'Ah-young', 'Ah-rin', 'Ah-ra', 'Ah-in', 'Ah-yeon', 'Ah-hyeon', 'Ah-ran', 'Ah-yoon', 'Ah-sol', 'Ah-jin',
     'Chae-eun', 'Chae-ri', 'Chae-rin', 'Chae-yoon', 'Chae-min', 'Chae-eul', 'Chae-hee', 'Chae-ha', 'Chae-sol', 'Chae-a',
     'Bo-mi', 'Bo-bae', 'Bo-ram', 'Bo-kyung', 'Bo-eun', 'Bo-min', 'Bo-ha', 'Bo-yoon', 'Bo-hye', 'Bo-seo',
-    'Na-ra', 'Na-kyung', 'Na-yoon', 'Na-hee', 'Na-rin', 'Na-eun', 'Na-yeon', 'Na-rae', 'Na-hye', 'Na-bin'
-  ];
+    'Na-ra', 'Na-kyung', 'Na-yoon', 'Na-hee', 'Na-rin', 'Na-eun', 'Na-yeon', 'Na-rae', 'Na-hye', 'Na-bin',
+
+    // --- 80 Final Expansion Additions (to reach 300) ---
+    'Ga-yul', 'Ga-won', 'Ga-bin', 'Geum-bi', 'Gyu-ri', 'Gyu-bin', 'Da-ul', 'Da-won', 'Da-yul', 'Dan-mi',
+    'Do-won', 'Do-i', 'Do-ah', 'Ra-yoon', 'Ra-on', 'Ra-ul', 'Ru-ah', 'Ru-bi', 'Ru-da', 'Ri-won',
+    'Ri-eul', 'Rin-ah', 'Mi-na', 'Mi-yeon', 'Mi-yu', 'Min-seol', 'Min-hyo', 'Beul-li', 'Bi-joo', 'Sae-ron',
+    'Sae-bom', 'Sae-byeol', 'Seo-ul', 'Seo-i', 'Seol-hwa', 'Seol-yi', 'Seom-yi', 'Seong-yeon', 'Se-bin', 'Se-ah',
+    'Se-rin', 'Se-yeon', 'So-yi', 'So-yul', 'Song-ah', 'Soo-ul', 'Syu-a', 'Syu-bi', 'Ah-in', 'Ah-jin',
+    'Ah-ra', 'Ah-ron', 'Yeon-woo', 'Ye-ul', 'Ye-ji', 'Ye-jin', 'Ye-chae', 'Ye-ha', 'Oh-yoon', 'On-yu',
+    'Woo-ri', 'Woo-bin', 'Won-hee', 'Yoo-ul', 'Yoon-ha', 'Yoon-jin', 'Yi-eul', 'Yi-seo', 'In-ah', 'Jae-i',
+    'Jae-in', 'Jeong-ah', 'Ji-ul', 'Chae-eul', 'Ha-yul', 'Ha-gyeong', 'Hae-sol', 'Hyo-rin', 'Hyo-yeon', 'Hee-won'
+  ];  
   const kpopCompanyNames = [
     // --- Original List ---
     'Starship', 'JYP', 'YG', 'SM', 'Cube', 'Pledis', 'HYBE', 'FNC', 'Woollim', 'Fantagio',
@@ -14556,6 +14566,7 @@ const finishSportsFestival = () => {
             // 2. Passive fan growth
             const passiveFanGain = Math.floor(newSg.fans * 0.01) + 10;
             newSg.fans += passiveFanGain;
+
 
             // 3. Pay salaries monthly (every 4 weeks)
             if (week % 4 === 0 && newSg.members.length > 0) {

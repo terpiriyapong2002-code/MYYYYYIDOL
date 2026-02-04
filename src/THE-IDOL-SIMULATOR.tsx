@@ -12111,16 +12111,6 @@ if (!gameStarted) {
                                         </div>
                                         <p className="text-xs text-gray-500 mb-0.5">{m.teamHistory.find(e => e.event.includes('Graduated'))?.event || 'Graduated'}</p>
                                         <p className="text-xs text-gray-500 mb-1.5">{`${m.generation ? `${m.generation} | ` : ''}${m.hometown} | ${m.personality} | ${m.age} y.o. | Fans: ${getTotalFansForMember(m).toLocaleString()}`}</p>                                                     
-                                        <StatBar label="Singing" value={m.singing} color="bg-blue-500" />
-                                        <StatBar label="Dancing" value={m.dancing} color="bg-green-500" />
-                                        <StatBar label="Variety" value={m.variety} color="bg-pink-500" />
-                                        <StatBar label="Visual" value={m.visual} color="bg-cyan-500" />
-                                        <StatBar label="Charisma" value={m.charisma} color="bg-rose-500" />
-                                        <StatBar label="Intelligence" value={m.intelligence} color="bg-orange-500" />
-                                        <hr className="my-1 border-dashed dark:border-gray-700"/>
-                                        <StatBar label="Stamina" value={m.stamina} color="bg-gray-400" />
-                                        <StatBar label="Stress" value={m.stress} color="bg-indigo-500" />
-                                        <StatBar label="Morale" value={m.morale} color="bg-purple-500" />
                                     </div>
                                   </div>
                                 ))}
