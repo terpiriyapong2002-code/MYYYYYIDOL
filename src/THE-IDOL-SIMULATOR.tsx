@@ -87,6 +87,7 @@ const App = () => {
     const [memberSearch, setMemberSearch] = useState('');
     const [selectedSingleForPromo, setSelectedSingleForPromo] = useState(null);
     const [pushMemberFilter, setPushMemberFilter] = useState('all');
+    const [showRecentOnly, setShowRecentOnly] = useState(true);
     const allMembers = getMainGroupRoster();
     const mainGroupGenerations = [...new Set(allMembers.filter(m => !m.isSisterMember).map(m => m.generation).filter(Boolean))];
     const sisterGroupDetails = sisterGroups.map(sg => ({
@@ -2232,9 +2233,9 @@ const renderSelectGraduatingMemberStep = () => {
                                         <div className='flex justify-between items-center mb-1'>
                                             <span className={`font-bold text-sm ${selectedTrackIndex === index ? 'text-white' : 'dark:text-gray-200'}`}>{track.type === 'title' ? 'Title' : `B-Side ${index}`}</span>
                                             <div className="flex items-center gap-2">
-                                                <button onClick={(e) => { e.stopPropagation(); updateTrackName(index, generateSongTitle()); }} className="p-1 rounded-md bg-pink-300 text-white hover:bg-pink-400 transition-colors" title="Generate Random Name">
-                                                    <Shuffle size={14} />
-                                                </button>
+                                    <button onClick={(e) => { e.stopPropagation(); updateTrackName(index, generateUniqueRandomName()); }} className="p-1 rounded-md bg-pink-300 text-white hover:bg-pink-400 transition-colors" title="Generate Random Name">
+                                        <Shuffle size={14} />
+                                    </button>
                                                 <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${track.type === 'title' ? 'bg-red-200 text-red-800' : 'bg-green-200 text-green-800'}`}>{track.type.toUpperCase()}</span>
                                             </div>
                                         </div>
@@ -2510,7 +2511,7 @@ const renderSelectGraduatingMemberStep = () => {
                                         <div className='flex justify-between items-center mb-1'>
                                             <span className={`font-bold text-sm ${selectedAlbumTrackIndex === index ? 'text-white' : 'dark:text-gray-200'}`}>{track.type === 'title' ? 'Lead Track' : `B-Side ${index}`}</span>
                                             <div className="flex items-center gap-2">
-                                                <button onClick={(e) => { e.stopPropagation(); updateAlbumTrackName(index, generateSongTitle()); }} className="p-1 rounded-md bg-pink-300 text-white hover:bg-pink-400 transition-colors" title="Generate Random Name">
+                                                <button onClick={(e) => { e.stopPropagation(); updateTrackName(index, generateUniqueRandomName()); }} className="p-1 rounded-md bg-pink-300 text-white hover:bg-pink-400 transition-colors" title="Generate Random Name">
                                                     <Shuffle size={14} />
                                                 </button>
                                                 <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${track.type === 'title' ? 'bg-red-200 text-red-800' : 'bg-green-200 text-green-800'}`}>{track.type === 'title' ? 'LEAD' : 'B-SIDE'}</span>
@@ -3011,69 +3012,89 @@ return (
         return <p className="text-gray-500 italic">Could not display member data for this entry.</p>;
     }
 
-    const memberGroups = memberObjects.reduce((acc, member) => {
-        if (!member) return acc;
-        let groupKey;
-        const mainGroupName = groupName || 'Hoshimi01';
+        const memberGroups = memberObjects.reduce((acc, member) => {
+            if (!member) return acc;
+            let groupKey;
+            const mainGroupName = groupName || 'Hoshimi01';
 
-        if (member.isExchangeStudent) {
-            groupKey = `${member.homeGroup}`;
-        }
-        else if (member.isSisterMember) {
-            const sgName = member.displayGroupName || 'Sister Group';
-            groupKey = member.teamName 
-                ? `${sgName} Team ${member.teamName}` 
-                : `${sgName} Kenkyuusei`;
-        } else {
-            groupKey = member.teamName 
-                ? `${mainGroupName} Team ${member.teamName}` 
-                : `${mainGroupName} Kenkyuusei`;
-        }
-    
-        if (!acc[groupKey]) {
-            acc[groupKey] = [];
-        }
-        acc[groupKey].push(member);
-        return acc;
-    }, {});
+            // Find the team using the historical teamId from the member object.
+            const team = teams.find(t => t.id === member.teamId);
+            let groupNameForDisplay = null;
 
-    return (
-        <div className="space-y-2">
-            {Object.keys(memberGroups)
-                .sort((a, b) => {
-                    const mainGroupName = groupName || 'Hoshimi01';
-
-                    const getScore = (key) => {
-                        const isMain = key.startsWith(mainGroupName);
-                        const isKKS = key.includes('Kenkyuusei');
-
-                        if (isMain && !isKKS) return 1;
-                        if (isMain && isKKS) return 2;
-                        if (!isMain && !isKKS) return 3;
-                        if (!isMain && isKKS) return 4;
-                        return 5;
-                    };
-
-                    const scoreA = getScore(a);
-                    const scoreB = getScore(b);
-
-                    if (scoreA !== scoreB) {
-                        return scoreA - scoreB;
+            if (team) {
+                // If the team has a groupId that isn't 'main', find the sister group's name.
+                if (team.groupId && team.groupId !== 'main') {
+                    const sg = sisterGroups.find(g => g.id === team.groupId);
+                    if (sg) {
+                        groupNameForDisplay = sg.name;
                     }
-                    return a.localeCompare(b);
-                })
-                .map(groupKeyName => (
-                    <div key={groupKeyName}>
-                        <p className="font-semibold text-pink-600 dark:text-pink-400">
-                            {groupKeyName}: <span className="font-normal text-gray-700 dark:text-gray-300">
-                                {memberGroups[groupKeyName].map(m => m.name).join(', ')}
-                            </span>
-                        </p>
-                    </div>
-                ))}
-        </div>
-    );
-})()}
+                }
+            }
+
+            // If a group name was found through the team, use it.
+            // Otherwise, fall back to the member's properties (for Kenkyuusei and older data).
+            if (!groupNameForDisplay) {
+                if (member.isSisterMember) {
+                    groupNameForDisplay = member.displayGroupName || member.homeGroup || 'Sister Group';
+                } else {
+                    groupNameForDisplay = mainGroupName;
+                }
+            }
+            
+            // Construct the final key for grouping.
+            if (member.isExchangeStudent) {
+                // Exchange students are a special case, always grouped by their home (rival) group.
+                groupKey = `${member.homeGroup}`;
+            } else {
+                groupKey = member.teamName 
+                    ? `${groupNameForDisplay} Team ${member.teamName}` 
+                    : `${groupNameForDisplay} Kenkyuusei`;
+            }
+
+            if (!acc[groupKey]) {
+                acc[groupKey] = [];
+            }
+            acc[groupKey].push(member);
+            return acc;
+        }, {});
+    
+        return (
+            <div className="space-y-2">
+                {Object.keys(memberGroups)
+                    .sort((a, b) => {
+                        const mainGroupName = groupName || 'Hoshimi01';
+
+                        const getScore = (key) => {
+                            const isMain = key.startsWith(mainGroupName);
+                            const isKKS = key.includes('Kenkyuusei');
+
+                            if (isMain && !isKKS) return 1;
+                            if (isMain && isKKS) return 2;
+                            if (!isMain && !isKKS) return 3;
+                            if (!isMain && isKKS) return 4;
+                            return 5;
+                        };
+
+                        const scoreA = getScore(a);
+                        const scoreB = getScore(b);
+
+                        if (scoreA !== scoreB) {
+                            return scoreA - scoreB;
+                        }
+                        return a.localeCompare(b);
+                    })
+                    .map(groupKeyName => (
+                        <div key={groupKeyName}>
+                            <p className="font-semibold text-pink-600 dark:text-pink-400">
+                                {groupKeyName}: <span className="font-normal text-gray-700 dark:text-gray-300">
+                                    {memberGroups[groupKeyName].map(m => m.name).join(', ')}
+                                </span>
+                            </p>
+                        </div>
+                    ))}
+            </div>
+        );
+    })()}
             </div>
 
               <div className="flex justify-end gap-2 mt-4 pt-4 border-t">
@@ -12801,18 +12822,33 @@ if (!gameStarted) {
         );
     };
 
-        // Filter main group releases (now includes albums from the 'songs' list)
-    const mainGroupReleases = (songs || [])
-        .filter(s => 
-            (s.targetGroup === 'main' || s.targetGroup === groupName) || // Catches singles
-            s.artist === groupName                                      // Catches albums
-        )
-        .sort((a, b) => b.releaseWeek - a.releaseWeek);
+// Filter main group releases (now includes albums from the 'songs' list)
+let mainGroupReleases = (songs || [])
+    .filter(s => 
+        (s.targetGroup === 'main' || s.targetGroup === groupName) || // Catches singles
+        s.artist === groupName                                      // Catches albums
+    )
+    .sort((a, b) => b.releaseWeek - a.releaseWeek);
+
+if (showRecentOnly) {
+    mainGroupReleases = mainGroupReleases.slice(0, 5);
+}
 
     return (
         <div className="space-y-4">
             <div>
-                <h2 className="text-base font-bold mb-2 text-gray-900 dark:text-gray-100">Discography</h2>
+                <div className="flex justify-between items-center mb-2">
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Discography</h2>
+                    <label className="flex items-center text-sm cursor-pointer">
+                        <input
+                            type="checkbox"
+                            checked={showRecentOnly}
+                            onChange={(e) => setShowRecentOnly(e.target.checked)}
+                            className="form-checkbox h-4 w-4 rounded text-blue-600 dark:bg-gray-700 dark:border-gray-600"
+                        />
+                        <span className="ml-2 text-gray-700 dark:text-gray-300">Last 5 Releases</span>
+                    </label>
+                </div>
                 <button onClick={createSong} className="px-3 py-1.5 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-md mb-2 flex items-center">
                     <Plus size={16} className="mr-1" /> Produce New Release
                 </button>
@@ -12822,12 +12858,16 @@ if (!gameStarted) {
                 </div>
             </div>
 
-            {(sisterGroups || []).filter(sg => !sg.isDisbanded).map(sg => {
+        {(sisterGroups || []).filter(sg => !sg.isDisbanded).map(sg => {
 
-                // For each sister group, their releases are now all in their own `songs` array.
-                const sgReleases = (sg.songs || []).sort((a, b) => b.releaseWeek - a.releaseWeek);
-                
-                if (sgReleases.length === 0) return null;
+            // For each sister group, their releases are now all in their own `songs` array.
+            let sgReleases = (sg.songs || []).sort((a, b) => b.releaseWeek - a.releaseWeek);
+
+            if (showRecentOnly) {
+                sgReleases = sgReleases.slice(0, 5);
+            }
+            
+            if (sgReleases.length === 0) return null;
                 
                 return (
                     <div key={sg.id} className="pt-2 border-t border-gray-300 dark:border-gray-700">

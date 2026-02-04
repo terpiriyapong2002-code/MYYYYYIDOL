@@ -11803,7 +11803,8 @@ for (const [groupId, captainId] of Object.entries(groupRoles)) {
         allMembersForWeeklyUpdate.forEach(member => {
             if (!member.rosterId) return;
 
-            const currentWeekOfYear = (newWeek - 1) % 52 + 1;
+            const currentWeekOfYear = (week - 1) % 52 + 1;
+
             if (member.birthday === currentWeekOfYear) {
                 localUpdateMemberState(member.rosterId, m => ({ ...m, age: m.age + 1 }));
                 addNotificationInLoop({ type: 'Event', message: `🎂 It's ${member.name}'s birthday! They are now ${member.age + 1} years old.` });
