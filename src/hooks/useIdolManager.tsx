@@ -3912,34 +3912,47 @@ const executeShuffle = (shuffleType, mode, manualAssignments = null) => {
 
     const memberMap = new Map(masterRoster.map(m => [m.rosterId, m]));
     const acesAndCaptains = Object.values(groupRoles);
-
+    const teamsToShuffleInto = teamsCopy.filter(t => {
+        if (shuffleType === 'world') return true;
+        const sg = sisterGroupsCopy.find(sg => String(sg.id) === String(t.groupId));
+        return !sg || sg.type !== 'overseas';
+    });
     if (mode === 'auto') {
         // --- NEW: Balanced Capacity Calculation ---
-const teamsToShuffleInto = teamsCopy.filter(t => {
-    if (shuffleType === 'world') return true;
-    const sg = sisterGroupsCopy.find(sg => String(sg.id) === String(t.groupId));
-    return !sg || sg.type !== 'overseas';
-});
+    const allPlayerGroupsForShuffle = [{ id: 'main', name: groupName }, ...sisterGroupsCopy.filter(sg => {
+        if (shuffleType === 'world') return true;
+        return sg.type !== 'overseas';
+    })];
 
-const totalMemberCount = masterRoster.length;
-const numTeams = teamsToShuffleInto.length;
-const baseCapacity = Math.floor(totalMemberCount / numTeams);
-let extraSlots = totalMemberCount % numTeams;
+    const groupCapacities = {};
+    allPlayerGroupsForShuffle.forEach(group => {
+        const groupId = group.id;
+        const allMembersInThisGroup = masterRoster.filter(m => (m.isSisterMember ? String(m.groupId) : 'main') === String(groupId));
+        const teamsOfThisGroup = teamsToShuffleInto.filter(t => String(t.groupId) === String(groupId));
+        
+        if (teamsOfThisGroup.length === 0) return;
 
-const teamSlots = teamsCopy.map(t => {
-    const isTeamInShuffle = teamsToShuffleInto.some(st => st.id === t.id);
-    if (!isTeamInShuffle) {
-        // For teams not in the shuffle (e.g., overseas in a normal shuffle), capacity is their current size.
-        return { id: t.id, groupId: t.groupId, capacity: t.members.length, filled: 0 };
-    }
+        const totalMemberCountInGroup = allMembersInThisGroup.length;
+        const numTeamsInGroup = teamsOfThisGroup.length;
+        const baseCapacity = Math.floor(totalMemberCountInGroup / numTeamsInGroup);
+        let extraSlots = totalMemberCountInGroup % numTeamsInGroup;
 
-    let capacity = baseCapacity;
-    if (extraSlots > 0) {
-        capacity++;
-        extraSlots--;
-    }
-    return { id: t.id, groupId: t.groupId, capacity: capacity, filled: 0 };
-});
+        teamsOfThisGroup.forEach(team => {
+            let capacity = baseCapacity;
+            if (extraSlots > 0) {
+                capacity++;
+                extraSlots--;
+            }
+            groupCapacities[team.id] = capacity;
+        });
+    });
+
+    const teamSlots = teamsToShuffleInto.map(t => ({
+        id: t.id,
+        groupId: t.groupId,
+        capacity: groupCapacities[t.id] || t.members.length,
+        filled: 0
+    }));
 // --- END: Balanced Capacity Calculation ---
 
         const unassignedMembers = [];
@@ -3948,6 +3961,8 @@ const teamSlots = teamsCopy.map(t => {
             const stayChance = isProtected ? 0.95 : 0.60;
             const teamSlot = teamSlots.find(s => s.id === member.teamId);
 
+            // This is the fix: Check if teamSlot exists *before* trying to use it.
+            // If it doesn't exist (e.g., an overseas team in a normal shuffle), the member automatically goes to the unassigned pool.
             if (teamSlot && Math.random() < stayChance) {
                 finalAssignments[member.rosterId] = { primaryTeamId: member.teamId };
                 teamSlot.filled++;
@@ -4052,34 +4067,42 @@ const remainingUnassigned = [...unassignedMain, ...unassignedSister];
 allPlayerGroups.forEach(group => {
     const groupId = group.id;
 
-    // 1. Get all unassigned members BELONGING to the current group.
-    const membersOfThisGroup = remainingUnassigned.filter(m => {
-        const memberGroupId = m.isSisterMember ? m.groupId : 'main';
-        return String(memberGroupId) === String(groupId);
-    });
-    
-    // Get all teams for the current group.
-    const teamsOfThisGroup = teamsCopy.filter(t => String(t.groupId) === String(groupId));
+// 1. Get all members (assigned and unassigned) for this group from the master roster
+const allMembersInThisGroup = masterRoster.filter(m => {
+    const memberGroupId = m.isSisterMember ? m.groupId : 'main';
+    return String(memberGroupId) === String(groupId);
+});
+const teamsOfThisGroup = teamsCopy.filter(t => String(t.groupId) === String(groupId));
 
-    if (teamsOfThisGroup.length === 0 || membersOfThisGroup.length === 0) {
-        return; // Skip this group if it has no teams or no members to shuffle.
+if (teamsOfThisGroup.length === 0 || allMembersInThisGroup.length === 0) {
+    return; // Skip group if it has no teams or members
+}
+
+// 2. Correctly calculate total capacity and initial filled slots per team
+const totalMemberCountInGroup = allMembersInThisGroup.length;
+const numTeamsInGroup = teamsOfThisGroup.length;
+const baseCapacity = Math.floor(totalMemberCountInGroup / numTeamsInGroup);
+let extraSlots = totalMemberCountInGroup % numTeamsInGroup;
+
+const groupTeamSlots = teamsOfThisGroup.map(t => {
+    let capacity = baseCapacity;
+    if (extraSlots > 0) {
+        capacity++;
+        extraSlots--;
     }
+    // Correctly count members ALREADY retained in this team
+    const filled = allMembersInThisGroup.filter(m => 
+        finalAssignments[m.rosterId]?.primaryTeamId === t.id
+    ).length;
 
-    // 2. Re-calculate capacity for THIS GROUP'S teams to balance them.
-    const totalMemberCountInGroup = membersOfThisGroup.length;
-    const numTeamsInGroup = teamsOfThisGroup.length;
-    const baseCapacity = Math.floor(totalMemberCountInGroup / numTeamsInGroup);
-    let extraSlots = totalMemberCountInGroup % numTeamsInGroup;
+    return { id: t.id, capacity: capacity, filled: filled };
+});
 
-    // Create a temporary slot mapping for just this group's shuffle
-    const groupTeamSlots = teamsOfThisGroup.map(t => {
-        let capacity = baseCapacity;
-        if (extraSlots > 0) {
-            capacity++;
-            extraSlots--;
-        }
-        return { id: t.id, capacity: capacity, filled: 0 };
-    });
+// 3. Get only the UNASSIGNED members for distribution
+const membersOfThisGroup = remainingUnassigned.filter(m => {
+    const memberGroupId = m.isSisterMember ? m.groupId : 'main';
+    return String(memberGroupId) === String(groupId);
+});
 
     // 3. Separate trainees from tenured members for THIS GROUP.
     const traineesToPromote = membersOfThisGroup.filter(m => !m.teamId);
@@ -4262,7 +4285,12 @@ allPlayerGroups.forEach(group => {
         }
     });
 
-    teamsCopy.forEach(team => { team.members = []; });
+    const teamsInShuffleIds = new Set(teamsToShuffleInto.map(t => t.id));
+teamsCopy.forEach(team => { 
+    if (teamsInShuffleIds.has(team.id)) {
+        team.members = []; 
+    }
+});
 
     Object.keys(finalAssignments).forEach(rosterId => {
         const assignment = finalAssignments[rosterId];
@@ -5373,37 +5401,12 @@ if (exchangeStudents && exchangeStudents.length > 0) {
             if (oldRank === 999 && newRank <= 80) {
                 if (newRank <= 7) electionTrivia.push(`${member.name} makes a stunning debut, entering the Kami 7 at rank #${newRank}!`);
                 else if (newRank <= 16) electionTrivia.push(`From unranked to stardom! ${member.name} enters Senbatsu for the first time at rank #${newRank}.`);
-            } else if (newRank < oldRank && (!previousRanks.some(pr => pr < newRank))) {
-                 electionTrivia.push(`Career High! ${member.name} achieves her best-ever rank at #${newRank}.`);
-            }
+            } 
 
             if (oldRank > 7 && newRank <= 7) {
                 electionTrivia.push(`${member.name} breaks into the prestigious Kami 7 for the first time at rank #${newRank}.`);
             }
 
-            // Ambition & Role Stories
-            if (member.ambition === 'Prove My Worth' && (oldRank - newRank) > 20) {
-                electionTrivia.push(`A Worth Proven: Fulfilling her personal goal, ${member.name} proves her worth with a massive jump into rank #${newRank}.`);
-            }
-            if (member.ambition === 'The Unwilling Idol' && newRank <= 16) {
-                electionTrivia.push(`Against all odds, the 'Unwilling Idol' ${member.name} has been pushed into the Senbatsu by the fans.`);
-            }
-            if (captainIds.includes(member.rosterId || member.id)) {
-                electionTrivia.push(`Leader's Reward: The group's captain, ${member.name}, is rewarded by fans with a rank of #${newRank}.`);
-            }
-
-            // Rivalry's Climax
-            if (member.chemistry) {
-                const rivalries = Object.keys(member.chemistry).filter(id => member.chemistry[id] < -50);
-                rivalries.forEach(rivalId => {
-                    const rival = universallySortedMembers.find(m => (m.rosterId || m.id) === rivalId);
-                    if (rival && newRank < rival.rank) {
-                        if (!rivalriesClimaxed.some(r => r.winner === rival.name && r.loser === member.name)) {
-                            rivalriesClimaxed.push({winner: member.name, loser: rival.name});
-                        }
-                    }
-                });
-            }
         });
 
         if (biggestJump.spots > 10) electionTrivia.push(`The Biggest Jump: ${biggestJump.name} jumped an incredible ${biggestJump.spots} spots to rank #${biggestJump.newRank}!`);
@@ -7530,6 +7533,8 @@ const allNewPosts = [...(generatedPosts || []), announcementPost];
         const avgSkill = (avgSinging * 0.3 + avgDancing * 0.4 + avgVisual * 0.2 + avgCharisma * 0.1) / 100;
         // --- END UPDATED ---
 
+        const newEntryName = details.name || `${venue.name} Concert`;
+
         const standardPrices = {
             s: 6000 + Math.floor(venue.capacity / 10),
             a: 4000 + Math.floor(venue.capacity / 20),
@@ -7653,6 +7658,7 @@ const allNewPosts = [...(generatedPosts || []), announcementPost];
                 morale: Math.min(100, m.morale + 10),
                 singing: Math.min(100, m.singing + Math.floor(skillImprovement * 0.5)),
                 dancing: Math.min(100, m.dancing + Math.floor(skillImprovement * 0.5)),
+                teamHistory: [...(m.teamHistory || []), { week: week, event: `Performed in concert: "${newEntryName}"` }]
             }));
         });
 
@@ -7672,7 +7678,7 @@ const allNewPosts = [...(generatedPosts || []), announcementPost];
 
         const newEntry = {
             id: Date.now(),
-            name: details.name || `${venue.name} Concert`,
+            name: newEntryName,
             category: "Major Concert",
             venueName: venue.name,
             week,
@@ -8179,15 +8185,25 @@ const beginActivity = (memberId, activityType) => {
 };
 
 
-    const openHandshakeModal = () => {
-        const eligibleSingle = songs.find(s => s.includeHandshakeTickets && !s.handshakeEventHeld && s.chartWeeksLeft > 0);
-        if (!eligibleSingle) {
-            return setMessage("No single is currently eligible for a handshake event.");
-        }
-        // Pass the single to the modal so it knows which event we're holding
-        setModalData({ eligibleSingle }); 
-        setShowModal('handshakeSelection');
-    };
+const openHandshakeModal = () => {
+    // --- THIS IS THE FIX ---
+    // 1. Combine songs from the main group and all sister groups.
+    const allReleases = [
+        ...songs,
+        ...sisterGroups.flatMap(sg => sg.songs || [])
+    ];
+
+    // 2. Find the first eligible single from the combined list.
+    const eligibleSingle = allReleases.find(s => s.includeHandshakeTickets && !s.handshakeEventHeld && s.chartWeeksLeft > 0);
+    // --- END OF FIX ---
+
+    if (!eligibleSingle) {
+        return setMessage("No single is currently eligible for a handshake event.");
+    }
+    // Pass the single to the modal so it knows which event we're holding
+    setModalData({ eligibleSingle }); 
+    setShowModal('handshakeSelection');
+};
 
 const generateHandshakeFanPosts = (handshakeData, currentSingle, previousSingle) => {
     const { singleName, results } = handshakeData;
@@ -13467,14 +13483,25 @@ const executeKouhakuPerformance = (membersForUpdate, sisterGroupsForUpdate) => {
     const getMemberFromDrafts = (rosterId) => {
         if (!String(rosterId).startsWith('sg-')) {
             const member = membersForUpdate.find(m => String(m.id) === String(rosterId));
-            if (member) return { ...member, rosterId };
+            if (member) return { 
+                ...member, 
+                rosterId,
+                isSisterMember: false,
+                displayGroupName: groupName
+            };
             return null;
         }
         const [, sgId, mId] = String(rosterId).split('-');
         const sg = sisterGroupsForUpdate.find(g => String(g.id) === sgId);
         if (!sg) return null;
         const member = (sg.members || []).find(m => String(m.id) === mId);
-        if (member) return { ...member, rosterId };
+        if (member) return { 
+            ...member, 
+            rosterId,
+            isSisterMember: true,
+            displayGroupName: sg.name,
+            groupId: sg.id
+        };
         return null;
     }
 
@@ -15403,15 +15430,16 @@ const executeFestivalPerformance = (festival, performerIds, setlist) => {
     const result = festival.effect(performers, songs, groupName);
 
     // Standard performance stat changes
-    performers.forEach(member => {
-        updateMemberState(member.rosterId, m => ({                
-            ...m,
-            stamina: Math.max(0, (m.stamina || 100) - 45),
-            stress: Math.min(100, m.stress + 30),
-            morale: Math.min(100, (m.morale || 0) + 15),
-        }));
-    });
-    
+performers.forEach(member => {
+    updateMemberState(member.rosterId, m => ({                
+        ...m,
+        stamina: Math.max(0, (m.stamina || 100) - 45),
+        stress: Math.min(100, m.stress + 30),
+        morale: Math.min(100, (m.morale || 0) + 15),
+        teamHistory: [...(m.teamHistory || []), { week: week, event: `Participated in ${festival.name}` }]
+    }));
+});
+
     // Apply festival-specific effects
     if (result.fanGain) distributeFans(result.fanGain, performerIds);
     if (result.internationalFanGain) {

@@ -46,6 +46,33 @@ const App = () => {
     const [startGroupName, setStartGroupName] = useState('');
     const [savedGames, setSavedGames] = useState([]);
     const fileInputRef = useRef(null);
+    const mainContentRef = useRef(null);
+    const [showScrollTop, setShowScrollTop] = useState(true);
+
+
+const scrollToTop = () => {
+    mainContentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+useEffect(() => {
+    const mainEl = mainContentRef.current;
+    const handleScroll = () => {
+        if (mainContentRef.current) {
+            setShowScrollTop(mainContentRef.current.scrollTop > 300);
+        }
+    };
+
+    if (mainEl) {
+        mainEl.addEventListener('scroll', handleScroll);
+    }
+
+    return () => {
+        if (mainEl) {
+            mainEl.removeEventListener('scroll', handleScroll);
+        }
+    };
+}, []); // Empty dependency array ensures this runs only once
+
     const [isDarkMode, setIsDarkMode] = useState(() => {
         // Initialize state based on the class on the <html> element
         return document.documentElement.classList.contains('dark');
@@ -79,6 +106,7 @@ const App = () => {
             setPendingGraduationAnnouncement(null);
         }
     }, [pendingGraduationAnnouncement]);
+
 
     // --- NEW STATE FOR SORT/FILTER ---
     const [memberSort, setMemberSort] = useState({ key: 'rank', asc: true });
@@ -11825,7 +11853,7 @@ if (!gameStarted) {
 
 
           {/* Main Content Area */}
-          <main className="flex-1 overflow-y-auto p-2 sm:p-4 lg:p-6">
+          <main ref={mainContentRef} className="flex-1 overflow-y-auto p-2 sm:p-4 lg:p-6 relative">            
             {/* ----- MEMBERS TAB ----- */}
                 {currentTab === 'members' && (
                   <div>
@@ -13759,6 +13787,7 @@ if (showRecentOnly) {
                     hireStaff={hireStaff}
                 />
             )}
+            
          </main>
 
           {/* Bottom Nav (Mobile) */}
@@ -13780,7 +13809,18 @@ if (showRecentOnly) {
         <aside className="w-full lg:w-96 flex flex-col bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 transition-colors duration-300">
           {/* Main Stats */}
                   <div className="p-1 lg:p-4 border-b">
-                    <h3 className="font-semibold text-sm mb-1">Group Status</h3>
+                    <div className="flex justify-between items-center mb-1">
+                        <h3 className="font-semibold text-sm">Group Status</h3>
+                        {showScrollTop && (
+                            <button
+                                onClick={scrollToTop}
+                                className="p-2 bg-pink-500 text-white rounded-full shadow-lg hover:bg-pink-600 transition-all duration-300 animate-in fade-in"
+                                aria-label="Scroll to top"
+                            >
+                                <ChevronUp size={18} />
+                            </button>
+                        )}
+                    </div>
                     <div className="flex items-center mb-0.5">
                       <DollarSign className="text-green-500 mr-1.5" size={14} />
                       <span className="text-xs lg:text-lg font-bold">¥{money.toLocaleString()}</span>
@@ -13801,12 +13841,12 @@ if (showRecentOnly) {
                       </div>
                     )}
 
- <button
-                      onClick={activeTour ? progressTour : nextWeek}
-                      className="w-full p-1 bg-blue-600 text-white rounded font-bold mt-2 hover:bg-blue-700 disabled:bg-gray-400"
-                    >
-                      {activeTour ? `Advance Tour (${activeTour.weeksLeft} Wk Left)` : 'Next Week'}
-                    </button>
+        <button
+            onClick={activeTour ? progressTour : nextWeek}
+            className="w-full p-1 bg-blue-600 text-white rounded font-bold mt-2 hover:bg-blue-700 disabled:bg-gray-400"
+        >
+            {activeTour ? `Advance Tour (${activeTour.weeksLeft} Wk Left)` : 'Next Week'}
+        </button>
                   </div>
     {/* Member Detail Panel */}
     {showModal === 'memberDetails' && selectedMember && (
