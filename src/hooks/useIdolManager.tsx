@@ -7658,7 +7658,6 @@ const allNewPosts = [...(generatedPosts || []), announcementPost];
                 morale: Math.min(100, m.morale + 10),
                 singing: Math.min(100, m.singing + Math.floor(skillImprovement * 0.5)),
                 dancing: Math.min(100, m.dancing + Math.floor(skillImprovement * 0.5)),
-                teamHistory: [...(m.teamHistory || []), { week: week, event: `Performed in concert: "${newEntryName}"` }]
             }));
         });
 
@@ -7780,7 +7779,7 @@ const allNewPosts = [...(generatedPosts || []), announcementPost];
         const newEntry = {
             id: Date.now(),
             name: performanceName || typeData.label,
-            category: typeData.label,
+            category: typeData.category,
             week,
             cost: typeData.cost,
             revenue: totalRevenue,
@@ -15436,7 +15435,6 @@ performers.forEach(member => {
         stamina: Math.max(0, (m.stamina || 100) - 45),
         stress: Math.min(100, m.stress + 30),
         morale: Math.min(100, (m.morale || 0) + 15),
-        teamHistory: [...(m.teamHistory || []), { week: week, event: `Participated in ${festival.name}` }]
     }));
 });
 

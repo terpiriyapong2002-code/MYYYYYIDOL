@@ -1715,24 +1715,24 @@ const setAlbumCenter = (memberId) => {
     };
     const addTrack = () => { setTracks(prev => [...prev, { name: `B-Side ${prev.length}`, unitName: `Unit ${prev.length}`, type: 'b-side', members: [], center: [], lineup: {}, cdType: 'common' }]); setSelectedTrackIndex(tracks.length); };
     const handleLineupChange = (memberId, row) => setTracks(prev => prev.map((track, index) => index === selectedTrackIndex ? { ...track, lineup: { ...track.lineup, [String(memberId)]: row } } : track));
-    const handleRandomizeMembers = (trackIndex, numToSelect) => {
-    const currentTrack = releaseType === 'album' ? albumTracks[trackIndex] : tracks[trackIndex];
-    if (!currentTrack) return;
-
-    const allMemberIdsInRelease = (releaseType === 'album' ? albumTracks : tracks).flatMap(t => t.members);
-    const availablePool = selectableMembers.filter(m => !allMemberIdsInRelease.includes(String(m.rosterId)));
+const handleRandomizeMembers = (trackIndex, numToSelect) => {
+    const currentIndex = releaseType === 'album' ? selectedAlbumTrackIndex : selectedTrackIndex;
+    const allTracks = releaseType === 'album' ? albumTracks : tracks;
     
-    if (availablePool.length === 0) {
+    const allChosenMemberIds = new Set(allTracks.flatMap(t => t.members.map(String)));
+    const unchosenPool = visibleRoster.filter(m => !allChosenMemberIds.has(String(m.rosterId)));
+
+    if (unchosenPool.length === 0) {
         setMessage("No unchosen members available to randomize.");
         return;
     }
 
-    const num = Math.min(numToSelect, availablePool.length);
-    const shuffled = [...availablePool].sort(() => 0.5 - Math.random());
+    const num = Math.min(numToSelect, unchosenPool.length);
+    const shuffled = [...unchosenPool].sort(() => 0.5 - Math.random());
     const selected = shuffled.slice(0, num).map(m => String(m.rosterId));
     
     const updateFn = (prevTracks) => prevTracks.map((track, index) => {
-        if (index !== trackIndex) return track;
+        if (index !== currentIndex) return track;
         
         const newMembers = [...new Set([...track.members, ...selected])];
         const newLineup = { ...track.lineup };
@@ -11347,7 +11347,8 @@ const DraftKaigiModal = () => {
          const filmHistory = (member.filmHistory || []);
          const albumTrackHistory = songHistory.filter(s => s.type === 'album');
          const bSideTrackHistory = songHistory.filter(s => s.type === 'b-side'); // This is the new line
-         const memberPerformances = performanceHistory.filter(p => (p.members || []).map(String).includes(String(member.rosterId || member.id)));
+         const memberPerformances = performanceHistory.filter(p => (p.members || []).some(m => String(m.rosterId || m.id) === String(member.rosterId || member.id)));
+
          const titleTrackHistory = songHistory.filter(s => s.type === 'title');
          const majorConcertHistory = memberPerformances.filter(p => p.category === "Major Concert");
          const otherPerformanceHistory = memberPerformances.filter(p => p.category !== "Major Concert");
