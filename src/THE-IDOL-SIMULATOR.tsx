@@ -3265,6 +3265,72 @@ return (
                 </div>
             );
         };
+
+        const GenerationGroupedLineup = ({ track }) => {
+            if (!track || !track.members || track.members.length === 0) return null;
+            if (typeof track.members[0] !== 'object') return null;
+
+            const membersByGeneration = track.members.reduce((acc, member) => {
+                if (!member || !member.generation) return acc;
+
+                // --- START: Logic to find member's original group ---
+                let groupNameForGen;
+                // Find the first "Joined" event in the member's history to determine their origin group.
+                const joinEvent = (member.teamHistory || []).find(e => e.event && e.event.includes('Joined'));
+        
+                if (joinEvent) {
+                    const match = joinEvent.event.match(/Joined (.*?) as/);
+                    if (match && match[1]) {
+                        groupNameForGen = match[1];
+                    }
+                }
+        
+                // Fallback for older data or members without a clear "Joined" event
+                if (!groupNameForGen) {
+                    groupNameForGen = member.homeGroup === 'main' ? groupName : (member.homeGroup || groupName);
+                }
+                // --- END: Logic to find member's original group ---
+
+                const gen = member.generation;
+                const generationKey = `${groupNameForGen} - ${gen}`; // New key combines group and generation
+                
+                if (!acc[generationKey]) {
+                    acc[generationKey] = [];
+                }
+                acc[generationKey].push(member);
+                return acc;
+            }, {});
+            
+            // Sort keys to group by main group, then sister groups, then by generation number.
+            const sortedGenerationKeys = Object.keys(membersByGeneration).sort((a, b) => {
+                const [groupA, genA] = a.split(' - ');
+                const [groupB, genB] = b.split(' - ');
+
+                if (groupA === groupName && groupB !== groupName) return -1;
+                if (groupA !== groupName && groupB === groupName) return 1;
+                
+                if (groupA !== groupB) return groupA.localeCompare(groupB);
+
+                const numA = parseInt(genA.match(/\d+/)?.[0] || '99');
+                const numB = parseInt(genB.match(/\d+/)?.[0] || '99');
+                return numA - numB;
+            });
+
+            return (
+                <div className="mt-3 pt-3 border-t border-dashed dark:border-gray-600">
+                    {sortedGenerationKeys.map(genKey => (
+                        <div key={genKey} className="mt-1 text-sm">
+                            <p className="font-semibold text-blue-600 dark:text-blue-400">
+                                {genKey}: <span className="font-normal text-gray-700 dark:text-gray-300">
+                                {membersByGeneration[genKey].map(member => member.name).join(', ')}
+                                </span>
+                            </p>
+                        </div>
+                    ))}
+                </div>
+            );
+        };
+        
     const Trivia = () => {
         // --- NEW: Prioritize pre-generated trivia from the release object ---
         if (release.trivia && release.trivia.length > 0) {
@@ -3516,6 +3582,7 @@ return (
                                                     )}
                                                 </div>
                                                 <TeamGroupedLineup track={track} />
+                                                <GenerationGroupedLineup track={track} />
                                             </div>
                                         );
                                     };

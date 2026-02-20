@@ -14730,48 +14730,94 @@ if (songToRelease && newSg.members.length >= 16) {
 
 const simulateRivalActions = (currentRivals, currentWeek, addNotificationInLoop) => {
     let updatedRivals = currentRivals.map(rival => {
-        let newRival = { ...rival, history: rival.history || [] };
-        let baseFanGrowth = 0.01;
-        let singleReleaseChance = 0.08;
-        let recruitmentChance = 0.04;
+        let newRival = { ...rival, history: rival.history || [], members: rival.members || [] };
+        
+        // --- Yearly Aging and Graduation Check ---
+        if (currentWeek > 1 && currentWeek % 52 === 0) {
+            let graduatedThisYear = [];
+            newRival.members.forEach(member => {
+                member.age += 1;
+                const careerLength = Math.floor((currentWeek - member.joinWeek) / 52);
+                let gradChance = 0;
+                if (member.age > 24 || careerLength > 6) {
+                    gradChance = (member.age - 24) * 0.05 + (careerLength - 6) * 0.1;
+                }
+                if (member.id === newRival.aceId) {
+                    gradChance *= 0.3; // Aces are less likely to graduate
+                }
 
-        // Archetype modifiers
-        switch (rival.archetype) {
-            case 'Powerhouse':
-                baseFanGrowth = 0.015;
-                singleReleaseChance = 0.12;
-                break;
-            case 'Visual Queens':
-                // Higher chance for a special "commercial" event
-                if (Math.random() < 0.05) {
-                    const event = { week: currentWeek, event: `Landed a major commercial deal.` };
-                    newRival.history.push(event);
-                    newRival.fans += 5000 + Math.floor(Math.random() * 10000);
-                    addNotificationInLoop({
+                if (Math.random() < gradChance) {
+                    graduatedThisYear.push(member);
+                }
+            });
+
+            if (graduatedThisYear.length > 0) {
+                newRival.members = newRival.members.filter(m => !graduatedThisYear.some(g => g.id === m.id));
+                const gradNames = graduatedThisYear.map(m => m.name).join(', ');
+                const event = { week: currentWeek, event: `Member(s) Graduated: ${gradNames}.` };
+                newRival.history.push(event);
+                addNotificationInLoop({
+                    type: 'Rival',
+                    message: `${rival.name} saw members graduate: ${gradNames}.`
+                });
+
+                // Check for Ace graduation
+                if (graduatedThisYear.some(g => g.id === newRival.aceId) && newRival.members.length > 0) {
+                    const newAce = newRival.members.sort((a,b) => b.fans - a.fans)[0];
+                    newRival.aceId = newAce.id;
+                    const aceEvent = { week: currentWeek, event: `${newAce.name} has been promoted to the new Ace.` };
+                    newRival.history.push(aceEvent);
+                     addNotificationInLoop({
                         type: 'Rival',
-                        message: `${rival.name} landed a major commercial deal, boosting their popularity!`
+                        message: `Following a graduation, ${newAce.name} is the new ace of ${rival.name}!`
                     });
                 }
-                break;
-            case 'Critical Darlings':
-                baseFanGrowth = 0.007;
-                singleReleaseChance = 0.05;
-                break;
-            case 'Rising Stars':
-                recruitmentChance = 0.08;
-                break;
+            }
+        }
+        
+        // --- Recruitment ---
+        let recruitmentChance = 0.04;
+        if (rival.archetype === 'Rising Stars') recruitmentChance = 0.08;
+        if (Math.random() < recruitmentChance && newRival.members.length < 25) {
+             const newMemberName = generateRandomMemberName();
+             const newMember = {
+                id: `rival-${rival.id}-${currentWeek}`,
+                name: newMemberName,
+                age: 15 + Math.floor(Math.random() * 3),
+                joinWeek: currentWeek,
+                fans: 500 + Math.floor(Math.random() * 1000)
+             };
+             newRival.members.push(newMember);
+             const event = { week: currentWeek, event: `Recruited new member: ${newMemberName}` };
+             newRival.history.push(event);
         }
 
-        // Basic fan growth for the group
-        let newFans = Math.floor((newRival.fans || 0) * baseFanGrowth * (0.5 + Math.random()));
-        newRival.fans += newFans;
+        // --- Fan Growth & Saturation ---
+        let baseFanGrowth = 0.01;
+        if (rival.archetype === 'Powerhouse') baseFanGrowth = 0.015;
 
-        // Ace fan growth
-        if (newRival.ace) {
-            newRival.ace.fans += Math.floor(newFans * (0.1 + Math.random() * 0.2));
+        // Market Saturation to prevent infinite growth
+        let totalFans = newRival.members.reduce((sum, m) => sum + m.fans, 0);
+        if (totalFans > 20000000) {
+            baseFanGrowth *= 0.1; // 90% reduction
+        } else if (totalFans > 5000000) {
+            baseFanGrowth *= 0.4; // 60% reduction
         }
+        
+        // Distribute new fans among members
+        let newFansTotal = 0;
+        newRival.members.forEach(member => {
+            const fansForMember = Math.floor(member.fans * baseFanGrowth * (0.5 + Math.random()));
+            member.fans += fansForMember;
+            newFansTotal += fansForMember;
+        });
+        newRival.fans = newRival.members.reduce((sum, m) => sum + m.fans, 0);
 
-        // Chance to release a new single
+
+        // --- Other actions (Song release, etc.) ---
+        let singleReleaseChance = 0.08;
+        if (rival.archetype === 'Powerhouse') singleReleaseChance = 0.12;
+
         if (Math.random() < singleReleaseChance) {
             const newSongName = generateSongTitle();
             newRival.songs = [...(newRival.songs || []), { name: newSongName, sales: 0, releaseWeek: currentWeek }];
@@ -14782,31 +14828,17 @@ const simulateRivalActions = (currentRivals, currentWeek, addNotificationInLoop)
                 message: `${rival.name} has released a new single titled "${newSongName}"!`
             });
         }
+        
+        newRoval.membersCount = newRival.members.length;
 
         // Update sales for existing songs
         if (newRival.songs) {
             newRival.songs = newRival.songs.map(song => {
-                const salesThisWeek = Math.floor(Math.random() * 4000) + 1000;
-                const newTotalSales = (song.sales || 0) + salesThisWeek;
-                const newSalesHistory = [...(song.salesHistory || []), { week: currentWeek, sales: salesThisWeek }];
-
-                return {
-                    ...song,
-                    sales: newTotalSales,
-                    salesHistory: newSalesHistory
-                };
-            });
-        }
-
-        // Chance to recruit a new member
-        if (Math.random() < recruitmentChance) {
-            newRival.membersCount = (newRival.membersCount || 10) + 1;
-            const newMemberName = generateRandomMemberName();
-            const event = { week: currentWeek, event: `Recruited new member: ${newMemberName}` };
-            newRival.history.push(event);
-            addNotificationInLoop({
-                type: 'Rival',
-                message: `${rival.name} recruited a new member, ${newMemberName}, bringing their total to ${newRival.membersCount}.`
+                if(currentWeek - song.releaseWeek < 8) { // Chart for 8 weeks
+                    const salesThisWeek = Math.floor(Math.random() * 4000) + 1000;
+                    return { ...song, sales: (song.sales || 0) + salesThisWeek };
+                }
+                return song;
             });
         }
         
@@ -14818,8 +14850,8 @@ const simulateRivalActions = (currentRivals, currentWeek, addNotificationInLoop)
         return newRival;
     });
 
-
-    // Chance for a new rival group to appear
+    // Handle new rival group appearance
+    // (This part remains the same)
     const rivalNames = [
         'Lunar Princesses', 'Project Nova', 'Sapphire Kiss', 'Onyx7', 'Solstice', 
         'Equinox', 'Galaxy Girls', 'Cosmic Charm', 'Nebula Stars', 'Pixel Pop', 
@@ -14831,7 +14863,6 @@ const simulateRivalActions = (currentRivals, currentWeek, addNotificationInLoop)
         'Vivid Soul', 'Aozora Sisters', 'Techno-Tale', 'Goth-Loli Punk', 'Sugar Rush', 
         'Metal Maidens', 'Silent Siren', 'Aura-Blast', 'Future-Mix', 'Starlight 7', 
         'Honey-BEE', 'Lunar Eclipse', 'Paradox-G', 'Miracle-Step', 'Last-Piece',
-        // --- New Rivals Added Below ---
         'Shadow Senbatsu', 'Kaminari Girls', 'Zenith 10', 'Ethereal Flow', 'Rubies of Tokyo',
         'Midnight Protocol', 'Seifuku Rebellion', 'Afterglow 5', 'Digital Diva Project', 'Heart-Link',
         'Neon Valkyries', 'Ametrine Dreams', 'Sonic Sweethearts', 'Hyper-Bloom', 'Aozora Project',
@@ -14847,18 +14878,26 @@ const simulateRivalActions = (currentRivals, currentWeek, addNotificationInLoop)
          const newRivalName = rivalNames.find(name => !updatedRivals.some(r => r.name === name));
          if (newRivalName) {
             const archetypes = ['Powerhouse', 'Visual Queens', 'Critical Darlings', 'Rising Stars'];
-            const aceName = generateRandomMemberName();
+            const membersCount = 8 + Math.floor(Math.random() * 8);
+            const members = Array.from({ length: membersCount }, (_, i) => ({
+                id: `rival-${updatedRivals.length}-${i}`,
+                name: generateRandomMemberName(),
+                age: 16 + Math.floor(Math.random() * 5),
+                joinWeek: currentWeek,
+                fans: 1000 + Math.floor(Math.random() * 4000),
+            }));
+            const ace = members.sort((a,b) => b.fans - a.fans)[0];
+            const totalFans = members.reduce((sum, m) => sum + m.fans, 0);
+
             updatedRivals.push({
                 id: Date.now(),
                 name: newRivalName,
-                fans: 5000 + Math.floor(Math.random() * 10000),
-                membersCount: 8 + Math.floor(Math.random() * 8),
+                fans: totalFans,
+                membersCount: members.length,
+                members: members,
+                aceId: ace.id,
                 songs: [],
                 archetype: archetypes[Math.floor(Math.random() * archetypes.length)],
-                ace: {
-                    name: aceName,
-                    fans: 3000 + Math.floor(Math.random() * 5000)
-                },
                 aggression: Math.floor(Math.random() * 50) + 25,
                 history: [{ week: currentWeek, event: `Formed as a new rival group.` }]
             });
