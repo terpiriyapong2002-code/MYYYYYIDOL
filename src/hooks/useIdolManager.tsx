@@ -90,6 +90,7 @@ export const productionTiers = {
         { label: "TV Appearance", category: "Promotional", cost: 12000, fanImpact: 0.15, skillImpact: 0.1, staminaDrain: 20, stressGain: 15, desc: "Non-music TV guest slot with a short performance segment." },
       
         // Added Promotional
+        { label: "Unit Stage", category: "Promotional", cost: 12000, fanImpact: 0.12, skillImpact: 0.08, staminaDrain: 20, stressGain: 10, desc: "A special performance dedicated to a sub-unit and their song." },
         { label: "Rookie Showcase", category: "Promotional", cost: 7000, fanImpact: 0.1, skillImpact: 0.1, staminaDrain: 20, stressGain: 15, desc: "Small-scale stage to build early supporters and press." },
         { label: "Local TV Stage", category: "Promotional", cost: 6000, fanImpact: 0.08, skillImpact: 0.05, staminaDrain: 15, stressGain: 10, desc: "Regional broadcast performance; steady local growth." },
         { label: "Radio Showcase Stage", category: "Promotional", cost: 5000, fanImpact: 0.06, skillImpact: 0.08, staminaDrain: 12, stressGain: 10, desc: "Short performance + talk segment; boosts recognition." },
@@ -9762,6 +9763,37 @@ switch (promo.id) {
         setShowModal('bsidePromotionResult');
     };
     
+const holdUnitPerformance = (singleId, trackName) => {
+    const allReleases = [...songs, ...sisterGroups.flatMap(sg => sg.songs || [])];
+    const single = allReleases.find(s => s.id === singleId);
+    if (!single) return setMessage("Single not found.");
+
+    const track = single.tracks.find(t => t.name === trackName && t.type === 'b-side');
+    if (!track) return setMessage("B-side track not found.");
+
+    const unitMemberIds = (track.members || []).map(m => String(m.id));
+    const unitMembers = unitMemberIds.map(id => getMemberById(id)).filter(Boolean);
+
+    if (unitMembers.length === 0) return setMessage("No members in this unit to perform.");
+
+    // Use the "Road Show" performance type for this unit live
+    const performanceData = performanceTypes.find(p => p.label === 'Unit Stage');
+    if (!performanceData) return setMessage("Performance type 'Unit Stage' not found.");
+
+    // The name of the performance for the history log
+    const ownerGroupName = single.targetGroup === 'main' ? groupName : single.targetGroup;
+    const performanceName = `${ownerGroupName} ${track.unitName} "${track.name}" Live`;
+    
+    // The setlist is just this one song
+    const setlist = [{ type: 'song', item: { id: track.id, name: track.name } }];
+
+    // Call the generic performance recorder
+    recordPerformance(performanceData, setlist, unitMemberIds, performanceName);
+
+    // Optional: Add a specific notification
+    addNotification({ type: 'Performance', message: `${performanceName} was held successfully!`});
+};
+    
         const holdPressConference = (memberId) => {
         const cost = 50000;
         if (money < cost) {
@@ -14829,7 +14861,7 @@ const simulateRivalActions = (currentRivals, currentWeek, addNotificationInLoop)
             });
         }
         
-        newRoval.membersCount = newRival.members.length;
+        newRival.membersCount = newRival.members.length;
 
         // Update sales for existing songs
         if (newRival.songs) {
@@ -15534,6 +15566,6 @@ return {
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
-    unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, resolveSurvivalMission, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent,  startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
+    holdUnitPerformance, unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, resolveSurvivalMission, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent,  startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
     };
     };
