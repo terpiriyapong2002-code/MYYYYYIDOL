@@ -9770,30 +9770,99 @@ const holdUnitPerformance = (singleId, trackName) => {
 
     const track = single.tracks.find(t => t.name === trackName && t.type === 'b-side');
     if (!track) return setMessage("B-side track not found.");
-
+    
     const unitMemberIds = (track.members || []).map(m => String(m.id));
-    const unitMembers = unitMemberIds.map(id => getMemberById(id)).filter(Boolean);
+    
+    const typeData = performanceTypes.find(p => p.label === 'Unit Stage');
+    if (!typeData) return setMessage("Performance type 'Unit Stage' not found.");
 
-    if (unitMembers.length === 0) return setMessage("No members in this unit to perform.");
+    if (hasPerformedThisWeek) {
+        return setMessage("You can only hold one performance activity per week.");
+    }
 
-    // Use the "Road Show" performance type for this unit live
-    const performanceData = performanceTypes.find(p => p.label === 'Unit Stage');
-    if (!performanceData) return setMessage("Performance type 'Unit Stage' not found.");
+    const performingMembers = unitMemberIds.map(id => getMemberById(id)).filter(m => m && m.isAvailable);
+    if (performingMembers.length === 0) return setMessage("No members in this unit are available to perform.");
+    
+    const cost = typeData.cost;
+    if (money < cost) return setMessage(`Insufficient funds! This performance costs ¥${cost.toLocaleString()}.`);
+    
+    const memberCount = performingMembers.length || 1;
+    const avgSinging = performingMembers.reduce((s, m) => s + (m.singing || 0), 0) / memberCount;
+    const avgDancing = performingMembers.reduce((s, m) => s + (m.dancing || 0), 0) / memberCount;
+    const avgVisual = performingMembers.reduce((s, m) => s + (m.visual || 0), 0) / memberCount;
+    const avgCharisma = performingMembers.reduce((s, m) => s + (m.charisma || 0), 0) / memberCount;
+    const avgSkill = (avgSinging * 0.3 + avgDancing * 0.4 + avgVisual * 0.2 + avgCharisma * 0.1) / 100;
 
-    // The name of the performance for the history log
+    // --- CUSTOM FAN GAIN LOGIC ---
+    let totalFanGain = 0;
+    performingMembers.forEach(member => {
+        const currentFans = getTotalFansForMember(member);
+        // Each member gains 20% of their current fans, modified by skill.
+        const fanGainForMember = Math.floor(currentFans * 0.20 * (1 + avgSkill));
+        
+        // This directly updates the member's fans, bypassing distributeFans for this special case.
+        updateMemberState(member.rosterId, m => ({
+            ...m,
+            fans: {
+                ...m.fans,
+                casual: (m.fans.casual || 0) + fanGainForMember
+            }
+        }));
+        totalFanGain += fanGainForMember;
+    });
+    // --- END CUSTOM FAN LOGIC ---
+
+    const skillImprovement = typeData.skillImpact * 10;
+    const totalRevenue = typeData.cost * (1 + avgSkill * 0.5);
+    const netProfit = totalRevenue - cost;
+    const agencyProfit = Math.floor(netProfit * 0.6);
+    const idolShare = netProfit - agencyProfit;
+
+    setMoney(prev => prev + agencyProfit);
+    setStatistics(prev => ({ ...prev, totalRevenue: (prev.totalRevenue || 0) + totalRevenue, totalConcerts: (prev.totalConcerts || 0) + 1 }));
+
+    performingMembers.forEach(member => {
+        updateMemberState(member.rosterId, m => ({
+            ...m,
+            stamina: Math.max(0, (m.stamina || 100) - typeData.staminaDrain),
+            stress: Math.min(100, (m.stress || 0) + (typeData.stressGain || 0)),
+            singing: Math.min(100, (m.singing || 0) + Math.floor(skillImprovement * 0.5)),
+            dancing: Math.min(100, (m.dancing || 0) + Math.floor(skillImprovement * 0.5)),
+        }));
+    });
+
     const ownerGroupName = single.targetGroup === 'main' ? groupName : single.targetGroup;
     const performanceName = `${ownerGroupName} ${track.unitName} "${track.name}" Live`;
-    
-    // The setlist is just this one song
     const setlist = [{ type: 'song', item: { id: track.id, name: track.name } }];
 
-    // Call the generic performance recorder
-    recordPerformance(performanceData, setlist, unitMemberIds, performanceName);
-
-    // Optional: Add a specific notification
-    addNotification({ type: 'Performance', message: `${performanceName} was held successfully!`});
-};
+    const newEntry = {
+        id: Date.now(),
+        name: performanceName,
+        category: typeData.category,
+        week,
+        cost: typeData.cost,
+        revenue: totalRevenue,
+        profit: agencyProfit,
+        fansGained: totalFanGain,
+        members: performingMembers.map(createMemberSnapshot),
+        tracks: setlist,
+    };
+    setPerformanceHistory(prev => [newEntry, ...prev]);
+    const summaryMessage = `Performance "${newEntry.name}": +${totalFanGain.toLocaleString()} fans, Agency Profit: ¥${agencyProfit.toLocaleString()}.`;
     
+    setHasPerformedThisWeek(true);
+    setMessage(summaryMessage);
+    addNotification({ type: 'Performance', message: summaryMessage });
+
+    setModalData({
+      title: `Performance: "${newEntry.name}"`,
+      message: `The performance was a success! External Costs (Idols, Staff, etc.): ¥${idolShare.toLocaleString()}`,
+      fansGained: totalFanGain,
+      revenue: totalRevenue,
+      performanceStats: { singing: avgSinging, dancing: avgDancing, visual: avgVisual, charisma: avgCharisma }
+    });
+    setShowModal('performanceResult');
+};
         const holdPressConference = (memberId) => {
         const cost = 50000;
         if (money < cost) {
