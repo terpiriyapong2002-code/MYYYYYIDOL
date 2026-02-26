@@ -4354,22 +4354,70 @@ teamsCopy.forEach(team => {
         }
     });
 
-    // --- START: Fix for Pushed Members & Captains during Shuffle ---
-        const nextPushedMembers = pushedMembers.map(id => String(idChangeMap.get(String(id)) || id));
-            
-                let nextGroupRoles = { ...groupRoles };
-                    Object.entries(groupRoles).forEach(([groupId, captainId]) => {
-                            // If a captain's ID is in the change map, it means they were transferred out of their original group.
-                                    if (captainId && idChangeMap.has(captainId)) {
-                                                nextGroupRoles[groupId] = null; // Vacate the captain role for the original group.
-                                                        }
-                                                            });
+// --- START: Fix for Pushed Members & Captains during Shuffle ---
+// Update pushed members list with new IDs if they were transferred
+const nextPushedMembers = pushedMembers.map(id => {
+    const stringId = String(id);
+    const newId = idChangeMap.get(stringId);
+    // Be explicit: if a new ID was mapped, use it; otherwise, use the original.
+    return newId ? String(newId) : stringId;
+});
+setPushedMembers(nextPushedMembers);
 
-                                                                setPushedMembers(nextPushedMembers);
-                                                                    setGroupRoles(nextGroupRoles);
-                                                                        // --- END: Fix for Pushed Members & Captains ---
-                                                                        
+// Update captain roles
+const nextGroupRoles = { ...groupRoles };
+const allPlayerGroupIds = ['main', ...sisterGroupsCopy.map(sg => String(sg.id))];
 
+Object.entries(groupRoles).forEach(([roleOwnerId, captainRosterId]) => {
+    if (!captainRosterId) return;
+
+    const finalCaptainAssignment = finalAssignments[captainRosterId];
+    if (!finalCaptainAssignment) {
+        // Captain wasn't in the shuffle pool, so their role is preserved.
+        return;
+    }
+
+    const newTeamForCaptain = getTeamById(finalCaptainAssignment.primaryTeamId);
+    if (!newTeamForCaptain) {
+        console.error(`Could not find new team for captain: ${captainRosterId}`);
+        return;
+    }
+
+    const isGroupCaptainRole = allPlayerGroupIds.includes(roleOwnerId);
+
+    if (isGroupCaptainRole) {
+        // This is a GROUP Captain.
+        const captainCurrentGroup = String(roleOwnerId);
+        const captainNewGroup = String(newTeamForCaptain.groupId);
+        // If the captain was transferred to a DIFFERENT group, they lose their original GROUP captaincy.
+        if (captainNewGroup !== captainCurrentGroup) {
+            nextGroupRoles[roleOwnerId] = null;
+        }
+    } else {
+        // This is a TEAM Captain.
+        const captainCurrentTeam = String(roleOwnerId);
+        const captainNewTeam = String(newTeamForCaptain.id);
+        // If the captain was moved to a DIFFERENT team, they lose their original TEAM captaincy.
+        if (captainNewTeam !== captainCurrentTeam) {
+            nextGroupRoles[roleOwnerId] = null;
+        }
+    }
+});
+
+// After nullifying roles, update the rosterId for any remaining captains who were transferred.
+for (const roleId in nextGroupRoles) {
+    const oldCaptainId = nextGroupRoles[roleId];
+    if (oldCaptainId) { // Check if a captain is still assigned to this role
+        const newCaptainId = idChangeMap.get(String(oldCaptainId));
+        if (newCaptainId) {
+            // If the captain's ID was changed via transfer, update the roles object.
+            nextGroupRoles[roleId] = newCaptainId;
+        }
+    }
+}
+
+setGroupRoles(nextGroupRoles);
+// --- END: Fix for Pushed Members & Captains ---
     const shuffleHistoryEvent = {
         week,
         type: 'Grand Shuffle',
