@@ -3861,7 +3861,7 @@ const executeShuffle = (shuffleType, mode, manualAssignments = null) => {
     let teamsCopy = JSON.parse(JSON.stringify(teams));
     let exchangeStudentsForUpdate = JSON.parse(JSON.stringify(exchangeStudents)); // FIX 1
     const getTeamById = (id) => teamsCopy.find(t => t.id === id);
-
+    const idChangeMap = new Map();
     // Helper to get formatted team/group string for the shuffle result modal
     const getFormattedFromLocation = (member) => {
         if (!member) return 'N/A';
@@ -4322,6 +4322,8 @@ teamsCopy.forEach(team => {
                     memberObjectRef.homeGroup = groupName;
                     membersCopy.push(memberObjectRef);
                     finalRosterId = String(newId);
+                        idChangeMap.set(rosterId, finalRosterId);
+
                 } else {
                     const destSg = sisterGroupsCopy.find(sg => String(sg.id) === String(newGroupId));
                     if (destSg) {
@@ -4331,6 +4333,8 @@ teamsCopy.forEach(team => {
                         memberObjectRef.homeGroup = destSg.name;
                         destSg.members.push(memberObjectRef);
                         finalRosterId = `sg-${destSg.id}-${newId}`;
+                        idChangeMap.set(rosterId, finalRosterId);
+
                     }
                 }
              }
@@ -4349,6 +4353,22 @@ teamsCopy.forEach(team => {
             }
         }
     });
+
+    // --- START: Fix for Pushed Members & Captains during Shuffle ---
+        const nextPushedMembers = pushedMembers.map(id => String(idChangeMap.get(String(id)) || id));
+            
+                let nextGroupRoles = { ...groupRoles };
+                    Object.entries(groupRoles).forEach(([groupId, captainId]) => {
+                            // If a captain's ID is in the change map, it means they were transferred out of their original group.
+                                    if (captainId && idChangeMap.has(captainId)) {
+                                                nextGroupRoles[groupId] = null; // Vacate the captain role for the original group.
+                                                        }
+                                                            });
+
+                                                                setPushedMembers(nextPushedMembers);
+                                                                    setGroupRoles(nextGroupRoles);
+                                                                        // --- END: Fix for Pushed Members & Captains ---
+                                                                        
 
     const shuffleHistoryEvent = {
         week,
