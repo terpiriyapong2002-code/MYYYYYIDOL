@@ -315,6 +315,16 @@ export const productionTiers = {
             "Heart Aerobic", "Starlight Resort", "Tokyo Glow", "Retro Romance", "Digital Dance",
             "Palm Avenue", "Doyobi Fever", "Cocktail Hour", "Metallic Tsuki", "Velvet Michi",
             "After Hours", "Kirakira Sea", "Natsu Illusion", "Machi Waltz", "Saishū Ressha",
+            "Kinyobi Cruising", "Tasogare Highway", "Hoshizora Signal", "Airport Memory", "Skyline Freeway",
+            "Machikado Connection", "Ginza Shadow", "Urban Moonlight", "Gekkou Dance", "Yoru no Breeze",
+            "Shinjuku Signal", "Plastic Melody", "Himitsu No Call", "Omoide Memory", "Sayonara Goodbye",
+            "Denwa Line", "Tokyo Affair", "Ame no Heartbreak", "Midori no Shore", "Nettai Night",
+            "Poolside Soda", "Aoi Mirage", "Tasogare Boulevard", "Umibe no Love", "Naminori Girl",
+            "Minami no Shima", "Radio No Oto", "Analog Record", "Shashin Memory", "Pink Champagne",
+            "Yoru no Perfume", "Kutsu no Step", "Window Shopping", "Kinyobi No High Heel", "Nichiyobi Brunch",
+            "Asa no City", "Afternoon Tea", "Tanoshii Weekend", "Yukan Flight", "Disco Kioku",
+            "Pop Candy", "Yumemiru Skyline", "Ame no Station", "Kiri no Night", "Kaze no Silhouette",
+            "Niji no Bridge", "Natsu no Suspicion", "Shūmatsu Cinderella", "Diamond Dust", "Mizu no Fantasy",
         ],        
         AnimeRock: [
             "Tamashii Ignite", "Akai Chihei", "Brave Shinka", "Resonance Phase", "Sora e",
@@ -323,7 +333,18 @@ export const productionTiers = {
             "Saigo Flash", "Shinjitsu Ken", "Justice Sanka", "Hangyaku Unmei", "Asahi Rising",
             "Tenku Senso", "Spirit Kizuna", "Cyber Dream", "Gravity Break", "Kaminari Clap",
             "Owari naki", "Vanguard Force", "Kyojin Roar", "Maboroshi Edge", "Omega Riron",
-        ],        
+"Guren no Impact", "Hagane no Will", "Aoi Inazuma", "Starlight Kiseki", "Burning Shounen",
+            "Zankoku na Verse", "Mirai no Echo", "Blazing Spirits", "Inochi no Spark", "Gekitou Drive",
+            "Crimson Rebirth", "Shippu no Blade", "Infinity Kizu", "Seigi no Fist", "Phantom Kodou",
+            "Ryusei Burst", "Hono no Wings", "Eternal Yakusoku", "Gekidou Beat", "Chaos no Mori",
+            "Brave Heartbeat", "Diamond Shards", "Kuroi Shadow", "Ultimate Kakusei", "Kaze no Melody",
+            "Silver Bullet", "Shura no Michi", "Final Shokei", "Dragon no Sakebi", "Electric Senkou",
+            "Unmei no Chain", "Rising Sunbeam", "Mugen no Sky", "Battle Saisei", "Iron Soul",
+            "Hikari no Arrow", "Shadow Step", "Kessen no Hi", "Sonic Wave", "Tenchi Souzou",
+            "Power no Kagi", "Valkyrie Ride", "Shinku no Rose", "Gear Change", "Kami no Ikari",
+            "Meteor Rain", "Shingeki no Beat", "Zero Distance", "Kizuna no Power", "Astral Gate"
+        ],            
+        
         Theater: [
             "Seifuku Resistance", "Riverbank Rendezvous", "Bicycle Bell Blues", 
             "Summer Salt Memory", "Theater Light Tears", "Heavy Rotation Heart", 
@@ -334,7 +355,18 @@ export const productionTiers = {
             "Intermission Kiss", "Sunday's Setlist", "Avenue of Idols", "Cinderella in Sneakers", 
             "Blue Sky Canvas", "Curtain Call Courage", "Train Window Reflection", 
             "Starlight Senbatsu", "Infinite Encore", "Idol", "Story", "Stage", "Theater", "Spotlight", "Encore", "Senbatsu", "Center",
+            "Backstage Butterfly", "Rooftop Revolution", "Library Loneliness", "Penlight Prayer", "Costume Change Chaos",
+            "Mirror Image Magic", "Gymnasium Glow", "Umbrella for Two", "Graduation Gown", "Rehearsal Romance",
+            "Third Row Thump", "Makeup Mirror Memories", "Glowstick Galaxy", "Secret Setlist", "Rainy Day Rooftop",
+            "Bus Stop Ballad", "Heartbeat High", "Sparkling Seishun", "Kimono Kiss", "Fireworks Feeling",
+            "Silent Stage", "Overture of Love", "Unit Song Universe", "Graduation Gate", "First Love Finale",
+            "Backstage Whispers", "Costume Room Crush", "Midnight Lesson", "Morning Greeting Magic", "Bicycle Built for Two",
+            "Sunset Soda", "Blackboard Bouquet", "Locker Room Legend", "Starry Sky Stage", "Dancing in the Rain",
+            "Dreamer's Dress", "Idol Identity", "Next Generation Now", "Step and Spin", "Tears in the Wings",
+            "Understudy Update", "Shiny Showbiz", "Blue Sky Balloon", "Memory of the Wings", "Love's Lesson",
+            "Heart-Shaped Box", "Sweet Setlist", "One-Two-Three Waltz", "Forever Fans", "Final Performance"
         ],
+
         Heisei: [
             "Automatic Love", "First Kiss", "Midnight Distance", "Flavor of", "Automatic Blue",
             "Groovy Night", "Flavor Groove", "Saigo no", "Sweet Escape", "Distant Echo",
@@ -355,9 +387,18 @@ export const productionTiers = {
             "Moon & Sunrise", "Shiny Day", "Umi no", "First Impression", "True Blue",
             "Aishiteru", "Never End", "Heart of", "Kimi ni", "Last Message",
             "White Love", "Winter Song", "Ano Koro", "Dreamer’s High", "Soul Sister",
-            "Automatic Dream", "Final Distance", "Wait & See", "First Step", "Heisei Love"
+            "Automatic Dream", "Final Distance", "Wait & See", "First Step", "Heisei Love",
+            "Automatic Kiss", "Automatic Sky", "Ai no Melody", "Sweet Emotion", "Dreaming On", 
+            "Kimi no Koe", "Midnight Runner", "Forever Yours", "Kokoro no Door", "Feel My Soul", 
+            "Blue Sunshine", "Precious Time", "Ashita no Kaze", "My Graduation", "Love is Real", 
+            "Rainy Blue", "Step by Step", "Hikari no Naka", "Endless Summer", "Winter Bell", 
+            "Urban Romance", "Galaxy Kiss", "Toki o Koete", "Butterfly Effect", "Shiny Star", 
+            "Kimi to Boku", "Techno Love", "Dancing Heart", "Private Eyes", "Sora no Shita", 
+            "Future Love", "Brand New Day", "Miracle Night", "Kimi ni Muchu", "White Breath", 
+            "Stay Gold", "Soul Vibration", "Koi no Yokan", "Eternal Love", "Heart Beat", 
+            "Destiny Sky", "Moonlight Destiny", "Yume no Tsuzuki", "Kiss Me", "Baby Don't Cry", 
+            "Rainbow Bridge", "Suki da yo", "Virtual Love", "Electric Lady", "Heisei Memory"
         ],
-
         Cinematic: [
             "Aozora Saka", "Garasu no", "Kaze no", 
             "Ame Monologue", "Kodoku Sync", "Ai-iro Seifuku", 
@@ -367,7 +408,17 @@ export const productionTiers = {
             "Mikan Map", "Tosho Labyrinth", "Izumi Namida", "Tokei Seishun", 
             "Tsubasa Kage", "Azure Suihei", "Velvet Yozora", "Majority Heart", 
             "Koukai Prism", "Umibe Tetsugaku", "Kagami Genjitsu", "Hakanai Yuki",
-        ],
+            "Tasogare Frame", "Sayonara no Shutter", "Rinkaku no Sora", "Suna no Chronos", "Monochrome Michi",
+            "Suisou no Sakana", "Kyokou no Machi", "Eien no Pause", "Hidarigawa no Keshiki", "Ryuusei no Fragment",
+            "Kousaten no Kodoku", "Ginka no Curtain", "Namida no Teiten", "Asahi no Silhouette", "Kyoushuu no Blue",
+            "Madoi no Glass", "Kaze no Dialogue", "Yureru Suimen", "Hakusei no Yume", "Tsunagu Kizuna",
+            "Kioku no Palette", "Sora no Boundary", "Umi no Metaphor", "Inori no Horizon", "Gekkou no Episode",
+            "Hoshizora no Archive", "Futashika na Mirai", "Shiroi Note", "Kagerou no Machi", "Kodou no Resonance",
+            "Suihei-sen no Uso", "Omoide no Exposure", "Tokei no Hari", "Kohaku no Toki", "Ame no Quintet",
+            "Kiseki no Sequence", "Shizukana Prologue", "Seijaku no Noise", "Hikari no Spectrum", "Yoru no Monologue",
+            "Kimi no Landscape", "Yume no Aperture", "Hakanai Exposure", "Utsuroi no Season", "Kokoro no Lens",
+            "Asamoya no Station", "Gogatsu no Rain", "Komorebi no Etude", "Mishiranu Town", "Last Scene no Kaze"
+        ],        
         Dreamy: [
             "Moonlight Marshmallow", "Yume-Yume Sleepy", "Twinkle Pillow", "Lavender Lullaby", "Star-Candy Orbit",
             "Cloud-Cotton Waltz", "Milk-Tea Nebula", "Fantasy Pajama", "Pastel Comet", "Utopia Balloon",
@@ -378,8 +429,18 @@ export const productionTiers = {
             "Prism Lullaby", "Teddy Bear Whisper", "Yura-Yura Star", "Chiffon Journey", "Moonlight Parfait",
             "Night-Sky Swing", "Bubbling Dream", "Kimi to Sleepy", "Magic Hour Dust", "Pastel Palette",
             "Starry Soda", "Angel Wing Waltz", "Misty Morning", "Sweetie Nap", "Nebula Ribbon",
-            "Wonderland Gate", "Milky Way Tea", "Sleepless Sheep", "Sparkle Blanket", "Yume-Kawaii Day"
-        ],
+            "Wonderland Gate", "Milky Way Tea", "Sleepless Sheep", "Sparkle Blanket", "Yume-Kawaii Day",
+                "Vanilla Stardust", "Kuma-san Hug", "Cotton Candy Halo", "Mofumofu Cloud", "Strawberry Comet",
+            "Muku-Muku Sheep", "Gumi no Hoshi", "Soda Pop Galaxy", "Pajama Party Night", "Lollipop Orbit",
+            "Hoshi no Crepe", "Dreamy Pancake", "Marshmallow Castle", "Suisai no Yume", "Melting Snowball",
+            "Magic Carpet Nap", "Kira-Kira Jelly", "Moonlight Cocoa", "Baby Blue Dream", "Cherry Blossom Sleep",
+            "Uchuu no Candy", "Niko-Niko Star", "Pudding Planet", "Tutu no Kumo", "Dream-Boat Drift",
+            "Honey-Dew Nebula", "Yume-iro Ribbon", "Twinkle Teacup", "Balloon Journey", "Pastel Rainfall",
+            "Hoshikuzu Cookie", "Fluffy Pillow Talk", "Silver Lining Waltz", "Dreaming Dolphin", "Snoozing Sunbeam",
+            "Meringue Moon", "Colorful Shizuku", "Sweet Dreams Delivery", "Starlight Syrup", "Glittering Pajamas",
+            "Yume-Yume Carousel", "Soft-Serve Shooting Star", "Aurora Blanket", "Berry-Good Night", "Plushie Paradise",
+            "Milky Way Marshmallow", "Candy Cane Lane", "Sleepyhead Symphony", "Starry Night Smoothie", "Oyasumi Magic"
+        ],        
         Foodie: [
             "Peko-Peko Pancake", "Chocolate Fountain Fall", "Mogu-Mogu Magic", "Strawberry Parfait Panic", "Custard Castle",
             "Berry-Berry Go-Round", "Sugar Rush Step", "Gummy Galaxy", "Waffle Wonderland", "Syrup Smile",
@@ -390,7 +451,17 @@ export const productionTiers = {
             "Jam Session Love", "Candy Cane Lane", "Syrup-iro Sky", "Mochi-Mochi Pop", "Gourmet Girl",
             "Kitchen Kingdom", "Shortcake Shinkirou", "Yashoku Night", "Donut Worry", "Pudding Princess",
             "Tabetai Motto", "Flavor Finder", "Gohan no Jikan", "Crispy Colorful", "Marshmallow Meadow",
-            "Cocoa Warmth", "Berry-Full Life", "Kitchen Rhythm", "Bon Appetit Kiss", "Delicious Dream"
+            "Cocoa Warmth", "Berry-Full Life", "Kitchen Rhythm", "Bon Appetit Kiss", "Delicious Dream",
+            "Pachi-Pachi Candy", "Toro-Toro Cheese", "Taiyaki Twilight", "Ramune Rainbow", "Bento Box Bravo",
+            "Makin' Macaron", "Crepe-colored Afternoon", "Curry Rice Rush", "Popcorn Party", "Takoyaki Tango",
+            "Sweets Hunter", "Ice Cream Island", "Fruit Punch Palette", "Gummy Bear Groove", "Choco-Banana Boat",
+            "Ube Universe", "Matcha Mountain", "Sakura Mochi Memory", "Caramel Corn Carnival", "Cider Sparkle",
+            "Dango Dango Dance", "Honey-Lemon High", "Waku-Waku Waitress", "Soufflé Soft", "Cinnamon Roll Road",
+            "Anpan Adventure", "Bubbly Boba", "Kitchen Concerto", "Yaki-Soba Youth", "Pudding-iro Sunset",
+            "Munchy Melody", "Sundae Sunday", "Bitter Chocolate Blue", "Vanilla Bean Vibes", "Gingerbread Gate",
+            "Lemon Squash Love", "Tarte Tatin Time", "Ramen Romance", "Melty Marshmallow", "Savory Secret",
+            "Pikari Peach", "Mogu-Mogu Monster", "Donut Dash", "Eclair Escape", "Shaved Ice Smile",
+            "Yum-Yum Yard", "Oishii Overdrive", "Sugar-High Holiday", "Gohan Gallery", "Tabetai Tomorrow"
         ],
         MagicalGirl: [
             "Prism Transformation", "Starlight Baton", "Majestic Ribbon", "Miracle Compact", "Lyrical Sparkle",
@@ -402,8 +473,19 @@ export const productionTiers = {
             "Henshin Heroine", "Dazzling Destiny", "Magic Wand Waltz", "Starlight Soul", "Moonlight Mission",
             "Ribbon Ray", "Kiseki no Spell", "Wonder Wand", "Shiny Silhouette", "Prism Protector",
             "Dreamy Defender", "Amulet Angel", "Legendary Love", "Magic Circle", "Sparkling Spirit",
-            "Cosmo Charge", "Glow-up Girl", "Wish Upon A Wand", "Shining Scepter", "Final Form Flash"
+            "Cosmo Charge", "Glow-up Girl", "Wish Upon A Wand", "Shining Scepter", "Final Form Flash",
+            "Aura Awakening", "Spiral Sparkle", "Dimension Dress-up", "Tiara Torrent", "Love-Arrow Launch",
+            "Maboroshi Mirror", "Crystal Courage", "Stardust Seal", "Milky Way Masquerade", "Mahou no Melody",
+            "Prism Polka", "Starlight Sanctuary", "Rainbow Resonance", "Moonlight Medal", "Jewel Jam",
+            "Glitzy Guardian", "Mystic Marbles", "Shooting Star Staff", "Heroine High-Kick", "Chara-Change",
+            "Ethereal Emblem", "Glittering Gravity", "Lyrical Lavender", "Compact Confession", "Shiny Shimmer",
+            "Majestic Moon-tiara", "Cosmic Compass", "Heart-Ring Hurricane", "Spirit Scepter", "Fantasy Flare",
+            "Eternal Enchanter", "Precious Pendant", "Dazzling Dash", "Winged Wish", "Amulet Adventure",
+            "Miracle Mirage", "Twinkle Tornado", "Secret Symbol", "Radiant Ribbon-cut", "Magical Moon-shadow",
+            "Glow-up Galaxy", "Starlight Strike", "Jewel-box Journey", "Henshin Harmony", "Cyber-Magic Code",
+            "Kira-Kira Kingdom", "Celestial Charm", "Wonder Wing", "Pure Power Prism", "Justice Jingle"
         ],
+
         Retro80s: [
             "Seaside Radio", "Polka-Dot Date", "Showa Silhouette", "Nagisa no Step", "Vintage Valentine",
             "Telephone Card Love", "Cassette Memories", "Soda-iro Summer", "Ribbon no Yume", "Bayside Blue",
@@ -414,7 +496,17 @@ export const productionTiers = {
             "Retro Romance", "Summer Cinema", "Wink and Kiss", "Pocketful of Stars", "Analog Angel",
             "Candy Pop Station", "Record Player Rain", "Seifuku Swing", "Marina Bay Melody", "Love Letter Line",
             "Sparkling Soda", "Dancing Heroine", "Pinky Promise", "Neon Nostalgia", "Fancy Free",
-            "Dreamy Drive", "Twinkle Town", "Sweet 16 Shine", "Misty Moonlight", "Showa Sweetheart"
+            "Dreamy Drive", "Twinkle Town", "Sweet 16 Shine", "Misty Moonlight", "Showa Sweetheart",
+            "Lace-up Love", "Minitel Memory", "Cream Soda Sunset", "Boutique Baby", "Tuxedo Night",
+            "Polka-Dot Promenade", "Sugar-Cube Secret", "Nagisa no Darling", "Friday's Fantasy", "Wink and Sparkle",
+            "Walkman Waltz", "Checkered Skirt", "Bayside Boulevard", "Roller-Skate Romance", "Telephone Box Tears",
+            "Pastel Parfait", "Harajuku Holiday", "Neon Ribbon", "Seaside Shuffle", "Cologne and Candy",
+            "Sunday Drive", "Moonlight Milkshake", "Fancy Paper Love", "Retro Station", "Sweet Seventeen",
+            "Polaroid Palette", "Misty Marina", "Rainbow Roller", "Kimi no Silhouette", "Popsicle Paradise",
+            "Chiffon Summer", "Boutique Blue", "Starlight Scooter", "Tennis Court Crush", "Vinyl Valentine",
+            "Seifuku Summer", "Pocket Radio", "Dreamy Dresser", "Marina Memory", "Soda-iro Sky",
+            "Garasu no Heart", "Showa Signal", "After-School Arcade", "Lemon Tea Love", "Sparkling Step",
+            "Nagisa no Blue", "Cherry Pop Cruise", "Vintage Video", "Bayside Balloon", "Sayonara Summer"
         ],
         GameCenter: [
             "Level Up Love", "Pixel Heartbeat", "Game Over Kiss", "Bonus Stage", "Joystick Journey",
@@ -450,8 +542,18 @@ export const productionTiers = {
             "Library no Shizuke", "Natsu-fuku Change", "Kutsu-zumi Waltz", "Tomodachi no Distance", "Sensei ni Naisho",
             "Gokaku no Smile", "School Bag no Omosa", "Bukatsu no Sweat", "Hajimari no Chime", "Kyoushou no Kaze",
             "Ink-stained Finger", "Gakkou no Kaidan", "Sotugyou no Shiroi", "Shinjirou Seishun", "Kokuban no Message",
-            "Zekkei no Rooftop", "Kyoukasho no Sumi", "Fuyu-fuku no Nukumori", "Hajimete no Kokuhaku", "Eien no School Day"
-        ],
+            "Zekkei no Rooftop", "Kyoukasho no Sumi", "Fuyu-fuku no Nukumori", "Hajimete no Kokuhaku", "Eien no School Day",
+            "Kaze no Gymnasium", "Houkago Honey", "Mado-giwa no Monologue", "Seifuku no Silhouette", "First Chime Magic",
+            "Koutei no Mirage", "Notebook no Heroine", "Kyoushitsu no Sunshine", "Megane no Cupid", "Bukatsu no Bond",
+            "Sotugyou-shiki no Blue", "Kutsu-bako Destiny", "Chalk-iro no Yume", "School-bus Serenade", "Pocket no Secret",
+            "Bicycle Love-call", "Kokuban no Rakugaki", "Asa no Radio-taisou", "Library no Cinderella", "Test-paper Tears",
+            "Seishun Overdrive", "Natsu-fuku no Teikou", "Lunch-time Gossip", "Sensei no Silhouette", "Roof-top Wind",
+            "Kaze no Corridors", "Hajimete no Pair-look", "Bukatsu no Hero", "Kyuushoku no Memory", "Gakuen-sai Rhythm",
+            "Seifuku no Button", "Shiken-jigoku Blues", "Aozora no Blackboard", "Kyoukasho no Hana-biru", "Houkago no Echo",
+            "Kutsu-zumi no Step", "Locker Room Legend", "School Bag no Ribbon", "Kimi to Classroom", "Yuuhi no Kousaten",
+            "Sleepless Study-night", "Chime no Kanata", "Kokoro no Semester", "Winter-fuku Hug", "Koutei no Snowman",
+            "Note-book no Page", "Hajimete no Bento", "Sensei no Lesson", "Seishun no Horizon", "Forever School-days"
+        ],        
         BoutiqueFashion: [
             "Oshare-iro Palette", "Lipstick no Mahou", "Kira-Kira Mirror", "High-Heel no Rhythm", "Ribbon no Coordination",
             "Machi-kado Boutique", "Pastel-iro Polish", "Wardrobe no Himitsu", "Kyou no Outfit", "Check-gara Chic",
@@ -486,8 +588,18 @@ export const productionTiers = {
             "Everyday no Kiseki", "Kimi dake no Heroine", "Seishun no Bookmark", "Aozora no Shita de", "Mabushii Kimi no Yokogao",
             "Komorebi no Waltz", "Tsugi no Stop de Aimashou", "Kaze ni Natte Kimi e", "One-Way Love Street", "Seifuku no Sparkle",
             "Ano Natsu no High-Touch", "Kokoro no Lens", "Yuuhi ni Somaru School-yard", "Kimi to no Parallel Line", "Hakanai Haru no Kaze",
-            "Mirai Palette no Yume", "Seishun wa Doko e?", "Bokura no Adventure", "Kimi ga Iru kara", "Final Chime no Ato de"
-        ],
+            "Mirai Palette no Yume", "Seishun wa Doko e?", "Bokura no Adventure", "Kimi ga Iru kara", "Final Chime no Ato de",
+            "Kimi to Boku no Panorama", "Aozora no Finale", "Seifuku no Breath", "Haru-kaze no Letter", "Mabushii Mirai e",
+            "Kousha no Kage no Secret", "Sora no Boundary", "Nagisa no Milestone", "Seishun no Overdrive", "Hoshizora no Campus",
+            "Ano Natsu no Route 134", "Kimi no Yokogao no Kiseki", "Graduation no Chime", "Bokura no Horizon", "Yume no Tsubasa",
+            "Kaze no Naka no High-Touch", "Sunlight no Echo", "Kokoro no Notebook", "Seifuku no Rakugaki", "Aoi Haru no Shutter",
+            "Kimi ga Warau Keshiki", "Hajimete no Ferris Wheel", "Tsugi no Station de", "Seishun no Prism", "Komorebi no Melody",
+            "Kousaten no Monologue", "Boku no Heroine Syndrome", "Sakura-michi no Step", "Yuuhi no Last Scene", "Kimi ni Todoku Kaze",
+            "School Bag no Diary", "Seifuku no Spark", "Ano Hi no Bookmark", "Mirai e no Rail", "Kizuna no Playlist",
+            "Mado-giwa no Afternoon", "Kimi no Namida no Canvas", "Seishun no Countdown", "Saka-michi no High-Five", "Blue Sky no Ripple",
+            "Kimi to no Parallel World", "Haru-iro no Distance", "Seifuku no Rebellion", "Bokura no Adventure Road", "Kaze no Palette",
+            "Kimi no Te o Tsunagu", "Hajimari no Overture", "Seishun no Bookmark", "Final Chime no Echo", "Eien no Seifuku"
+        ],        
         IdolSpirit: [
             "Zettai Center Position", "Stage no Ue no Tenshi", "Kira-Kira no Spotlight", "Oshimen no Magic", "Senbatsu no Inori",
             "Mirror-ball Revolution", "Idol no Namida", "Garasu no Stage", "Doki-Doki Setlist", "Kimi no tame no Encore",
@@ -498,8 +610,18 @@ export const productionTiers = {
             "Zettai ni Akiramenai", "Hajimete no Solo Single", "Unit no Kizuna", "Kimi no Scent wa Flower", "Glitter na Everyday",
             "Idol no Pride", "Ouen-ka for You", "Theater no Kami-sama", "First Row no Keshiki", "Kimi no Namae o Yobitai",
             "Star-dust no Sute-ji", "Idol no Glass Heart", "Pika-Pika no My Heart", "Dokkyun no Mahou", "Oshi-hen Kinshi!",
-            "Kimi to no Hi-Touch", "Future no Center", "Kira-Kira Sunshine", "Idol no Mirai-zu", "Sekai de Ichiban Kawaii"
-        ],
+            "Kimi to no Hi-Touch", "Future no Center", "Kira-Kira Sunshine", "Idol no Mirai-zu", "Sekai de Ichiban Kawaii",
+    "Zettai Absolute Center", "Kami-7 no Kiseki", "Sousenkyo no Arashi", "Penlight Ocean", "Backstage Butterfly",
+            "Lesson-gi no Sweat", "Kimi no Oshi-men Badge", "Stage no Shinkirou", "Mirror-ball Destiny", "Kira-Kira no Overture",
+            "Maboroshi no Unit", "Solo Debut no Kaze", "Idol no Hanabira", "Encore no Te-byoushi", "Oshi-goto Holic",
+            "Zennou no Idol-ryoku", "Undergirl no Gyakushuu", "Center no Kodoku", "Gekijou no Megami", "Kimi to no 2-Shot",
+            "Handshake Memory", "Penlight no Umi", "Idol no Saisenshuu", "Stage-ura no Inori", "Sparkling Graduation",
+            "Next Generation Ace", "Yume no Setlist", "Kira-Kira no Fighter", "Theater no Hana", "Kimi e no Message-song",
+            "Glitter na Training", "First Row no Inazuma", "Oshi-hen Shinaide", "Zettai-teki na Presence", "Idol no Tsubasa",
+            "Pika-Pika no Lesson-ba", "Stardust no Senbatsu", "Rainbow-colored Cheer", "Kimi no Tame no Fanfare", "Dancing in the Light",
+            "Idol-michi no Shizuku", "Kami-Taiou Magic", "Shining no Senchimentaru", "Stage no Ue no Soul", "Kimi no Voice ni Koi shite",
+            "Oshimen no Silhouette", "Future no Spotlight", "Idol no Kizuato", "Kira-Kira no Rebellion", "Sekaijuu no Ouen-ka"
+        ],        
         UrbanKawaii: [
             "Tokyo Neon Girl", "Shibuya de Rendezvous", "Harajuku no Pancake", "Subway no Cinderella", "Midnight no Soda-sui",
             "Digital na Love-Letter", "City Lights and You", "Neon no Machi-kado", "Sky-line no Yume", "Asphalt no Daisy",
@@ -675,9 +797,18 @@ export const productionTiers = {
             "Owari no Natsu Matsuri", "Semi ga Yanda Asa", "Mada Atsui Yoru", "Natsu no Kage", "Yuugure Signal",
             "Natsu ni Narenakatta", "Hajimari no Natsu", "Shiranai Natsu", "Kimi to Saigo no Hi", "Natsu no Kaori",
             "Kaze ga Kawatta Hi", "Aoi Aoi Natsu", "Natsu no Kakera", "Yoru ni Nokoru Netsu", "Natsu no Soba de",
-            "Semi no Nai Machi", "Omoide ni Naru Mae", "Natsu no Kanashimi", "Mata Natsu ni Aou"
-        ],
-        
+            "Semi no Nai Machi", "Omoide ni Naru Mae", "Natsu no Kanashimi", "Mata Natsu ni Aou",
+            "Mizu-ame no Suka-sh", "Natsu-gusa no Kaori", "Himawari no Kage", "Aoiro no Kazekiri", "Kimi to Jitensha",
+            "Kagerou no Machikado", "Suika to Sorairo", "Ame-agari no Semi", "Natsu no Owari no Overture", "Yuu-nagi no Umibe",
+            "Suihei-sen no Kioku", "Kin-gyo Sukui no Yoru", "Toketa Ice Cream", "Sunahama no Step", "Natsu no Tasogare",
+            "Nijiiro no Sprinkler", "Semi-shigure no Saka-michi", "Kimi no Shiroi One-piece", "Natsu-yasumi no Last-day", "Atsui Kaze no Echo",
+            "Aoiro no Parasol", "Maboroshi no Natsu-matsuri", "Nagisa no Monologue", "Kimi to Mita Hanabi", "Natsu no Hikari no Fragment",
+            "Radio-taisou no Asa", "Nureta Fuurin", "Semi ga Naku Gogo", "Kimi no Ase no Nioi", "Yoru no Pool no Shizuku",
+            "Natsu-fuku no Kizuato", "Amai Ramune no Bin", "Yuudachi no Mae", "Natsu no Hi no Silhouette", "Kou-tei no Kagerou",
+            "Kimi to Aruita Teibou", "Natsu no Omoide no Page", "Hakanai Senkou-hanabi", "Aoi Umi no Fugue", "Semi no Nukigara",
+            "Natsu no Shizukesa", "Kimi no Inai Natsu", "Mada Same-nai Netsu", "Natsu no Kaeritai Basho", "Nagisa no Radio",
+            "Kimi to Boku no Season", "Ame no Natsu-bi", "Natsu no Owari no Chime", "Moshimo Natsu ga Owaranai nara", "Eien no Natsu-zora"
+        ],        
         AmbiguousLove: [
             "Aimai na Kimochi", "Suki to Ienai", "Kimi no Koto ka na", "Chikaku te Tooi",
             "Tomodachi Ijou", "Kotae no Nai Koi", "Sukoshi Dake Aitai", "Kimi ga Wakaranai", "Mada Koi Janai", "Koi no You na Mono",
@@ -2714,73 +2845,132 @@ const [pendingMerch, setPendingMerch] = useState([]);
             case 'Seoul':
                 return generateKoreanMemberName();
             default: // Fallback to Japanese names
-            const firstNames = [
-                'Yui', 'Sakura', 'Miku', 'Haruka', 'Rina', 'Nana', 'Akari', 'Yuki', 'Aoi', 'Hana', 
-                'Karin', 'Miyu', 'Saki', 'Hinata', 'Riko', 'Ayaka', 'Mei', 'Eri', 'Mio', 'Yuna', 
-                'Kotone', 'Sumire', 'Reina', 'Noa', 'Tomomi', 'Hiyori', 'Ami', 'Nao', 'Sayaka', 'Asuka', 
-                'Chihiro', 'Emi', 'Kokona', 'Misaki', 'Saeko', 'Nanami', 'Shiori', 'Aya', 'Kazumi', 'Arisa', 
-                'Marina', 'Kanna', 'Azusa', 'Rin', 'Fumika', 'Suzuka', 'Nene', 'Akane', 'Mai', 'Yuuri', 
-                'Seira', 'Momoka', 'Rei', 'Tsukasa', 'Ichika', 'Mafuyu', 'Yume', 'Kyouka', 'Maho', 'Sena', 
-                'Tsumugi', 'Yurina', 'Himari', 'Mirei', 'Honoka', 'Ririka', 'Natsuki', 'Hikaru', 'Aina', 'Shizuku', 
-                'Ryou', 'Kaho', 'Minori', 'Mariya', 'Ayame', 'Kokoro', 'Misao', 'Rion', 'Moeka', 'Haruna', 
-                'Yuuna', 'Mizuki', 'Kanako', 'Ema', 'Suzu', 'Kotoha', 'Nagisa', 'Ayumi', 'Riona', 'Yuzuki', 
-                'Mina', 'Chiaki', 'Nozomi', 'Miharu', 'Haruno', 'Risa', 'Saaya', 'Airu', 'Koharu', 'Rio', 
-                'Fuka', 'Ruka', 'Hina', 'Sana', 'Mana', 'Kiri', 'Miki', 'Aira', 'Kiyomi', 'Satomi', 
-                'Chisato', 'Miho', 'Yua', 'Meisa', 'Natsumi', 'Yuka', 'Sora', 'Riho', 'Ena', 'Kanon', 
-                'Yuzuka', 'Moka', 'Himeka', 'Rika', 'Shio', 'Chiharu', 'Kumi', 'Aika', 'Natsue', 'Sae', 
-                'Mikoto', 'Manami', 'Yoshino', 'Asumi', 'Sayo', 'Reika', 'Miyabi', 'Kaede', 'Aiko', 'Akiko', 
-                'Atsuko', 'Ayano', 'Emiko', 'Eriko', 'Fujiko', 'Fumiko', 'Haruko', 'Hideko', 'Hiroko', 'Hitomi', 
-                'Izumi', 'Junko', 'Katsumi', 'Kayoko', 'Keiko', 'Kimiko', 'Kumiko', 'Kyoko', 'Machiko', 'Madoka', 
-                'Maiko', 'Makiko', 'Mariko', 'Masako', 'Mayu', 'Mayumi', 'Michiko', 'Midori', 'Mieko', 'Miya', 
-                'Miyoko', 'Momoko', 'Nagako', 'Namiko', 'Naoko', 'Naomi', 'Narumi', 'Noriko', 'Reiko', 'Rie', 
-                'Rikako', 'Rumiko', 'Ryoko', 'Sachiko', 'Sakiko', 'Satoko', 'Setsuko', 'Shigeko', 'Shizuka', 'Sumiko', 
-                'Takako', 'Tamiko', 'Teruko', 'Tomoko', 'Toshiko', 'Wakana', 'Yasuko', 'Yayoi', 'Yoko', 'Yoshiko',
-                'Yumiko', 'Yuriko', 'Kozue', 'Natsuko', 'Sachi', 'Shino', 'Mitsu', 'Ruriko', 'Kiyoko', 'Tomi', 
-                'Fumi', 'Michi', 'Hisako', 'Kazuko', 'Maki', 'Mari', 'Yuko', 'Akemi', 'Asako', 'Atsumi', 
-                'Chie', 'Chieko', 'Chika', 'Chiyo', 'Etsuko', 'Harue', 'Hiroe', 'Ikuko', 'Itsumi', 'Kanade', 
-                'Kayo', 'Kazue', 'Kiwa', 'Koto', 'Kumie', 'Kyomi', 'Machie', 'Masae', 'Masami', 'Michie', 
-                'Mikiho', 'Minao', 'Mineko', 'Misako', 'Mitsue', 'Mitsuki', 'Miyae', 'Miyuki', 'Motoko', 'Mutsumi', 
-                'Nadeshiko', 'Nae', 'Naoe', 'Narue', 'Natsuhiko', 'Natsuyo', 'Nobuko', 'Norie', 'Ran', 'Reiichi', 
-                'Rimiko', 'Ritsuko', 'Rurika', 'Sachie', 'Sadako', 'Saori', 'Sayoko', 'Sayuri', 'Shigemi', 'Shizue', 
-                'Sumie', 'Taeko', 'Takami', 'Tamaki', 'Tamao', 'Terue', 'Terumi', 'Tokiko', 'Tomie', 'Tomoe', 
-                'Toyoko', 'Tsuki', 'Tsuru', 'Ume', 'Utako', 'Waka', 'Yae', 'Yaeko', 'Yasue', 'Yemi', 
-                'Yone', 'Yoshie', 'Yuiho', 'Yukako', 'Yukari', 'Yukie', 'Yukiko', 'Yumi', 'Yurika', 'Yuzue'
-              ];
-              const lastNames = [
-                'Tanaka', 'Sato', 'Suzuki', 'Takahashi', 'Watanabe', 'Yamamoto', 'Kobayashi', 'Nakamura', 'Ito', 'Kato', 
-                'Yoshida', 'Yamada', 'Sasaki', 'Yamaguchi', 'Matsumoto', 'Inoue', 'Kimura', 'Shimizu', 'Hayashi', 'Saito', 
-                'Abe', 'Fujita', 'Okada', 'Goto', 'Kondo', 'Ishikawa', 'Nakajima', 'Harada', 'Otsuka', 'Hasegawa', 
-                'Murakami', 'Kojima', 'Takagi', 'Kuroda', 'Takeda', 'Imai', 'Ando', 'Fukuda', 'Miyazaki', 'Ueda', 
-                'Shibata', 'Kawai', 'Nagano', 'Hirano', 'Mizuno', 'Ono', 'Fujii', 'Sugiyama', 'Kishida', 'Endo', 
-                'Noguchi', 'Oshima', 'Sakurai', 'Mochizuki', 'Tsukada', 'Aoki', 'Morimoto', 'Tamura', 'Oda', 'Matsuda', 
-                'Azuma', 'Nishida', 'Sugimoto', 'Kubota', 'Kawamura', 'Ishii', 'Nakano', 'Kanda', 'Morita', 'Nagata', 
-                'Ogawa', 'Kinoshita', 'Mori', 'Yoshikawa', 'Kawasaki', 'Higuchi', 'Suenaga', 'Kaneko', 'Miyamoto', 'Shinozaki', 
-                'Kawaguchi', 'Hosoda', 'Koga', 'Okamoto', 'Kamei', 'Tsutsui', 'Arakawa', 'Imamura', 'Furukawa', 'Nishimura', 
-                'Kubo', 'Okumura', 'Masuda', 'Ishida', 'Asano', 'Fukumoto', 'Sakai', 'Matsui', 'Iwasaki', 'Nakagawa', 
-                'Haruna', 'Ueno', 'Fujiwara', 'Seki', 'Nojima', 'Hoshino', 'Chiba', 'Kikuchi', 'Tanimoto', 'Fukui', 
-                'Ota', 'Umezu', 'Ohashi', 'Yano', 'Katayama', 'Maki', 'Kuroki', 'Hatta', 'Koike', 'Mogi', 
-                'Inagaki', 'Mita', 'Sano', 'Yoshioka', 'Komatsu', 'Sogabe', 'Horii', 'Tsuchiya', 'Kurata', 'Sugawara', 
-                'Tsuji', 'Ishizuka', 'Amano', 'Takeuchi', 'Nakata', 'Honma', 'Kitamura', 'Enomoto', 'Sawada', 'Uchida', 
-                'Yura', 'Hamada', 'Nishio', 'Shima', 'Hada', 'Kishimoto', 'Sakamoto', 'Nomura', 'Ishibashi', 'Taki', 
-                'Kurokawa', 'Morinaga', 'Oishi', 'Uchiyama', 'Nishino', 'Hiraoka', 'Yashiro', 'Kamada', 'Mizutani', 'Yagisawa', 
-                'Kawashima', 'Ogasawara', 'Terada', 'Inaba', 'Shiraishi', 'Nishiura', 'Sugisaki', 'Katsura', 'Yamazaki', 'Horiguchi', 
-                'Murota', 'Fujino', 'Nishikori', 'Miyake', 'Miyata', 'Shimada', 'Okazaki', 'Miyashiro', 'Fujimori', 'Nagasawa', 
-                'Takada', 'Yamane', 'Nishitani', 'Asada', 'Hamasaki', 'Matsuno', 'Onozawa', 'Takano', 'Kitagawa', 'Nakahara', 
-                'Shiba', 'Yoda', 'Kanamori', 'Umeda', 'Irie', 'Kurihara', 'Hirasawa', 'Kawahara', 'Nagai', 'Tsujimura', 
-                'Horikawa', 'Nishikawa', 'Murata', 'Miyagi', 'Shibasaki', 'Miyamura', 'Yamanaka', 'Hosokawa', 'Ichikawa', 'Kajiwara', 
-                'Obara', 'Suga', 'Nagahama', 'Katsumata', 'Nishimori', 'Fujisawa', 'Numata', 'Hirai', 'Nakamoto', 'Okabe', 
-                'Matsubara', 'Hino', 'Oshita', 'Shioya', 'Takaoka', 'Inui', 'Nishi', 'Nagao', 'Kumagai', 'Tashiro', 
-                'Kawano', 'Eto', 'Fukuzawa', 'Kawade', 'Ogiwara', 'Hirose', 'Asai', 'Yusa', 'Shintani', 'Mitsuoka', 
-                'Sone', 'Tsuda', 'Okuyama', 'Miyoshi', 'Furusawa', 'Kurosu', 'Nishimaki', 'Toba', 'Kase', 'Mizuguchi', 
-                'Teramoto', 'Hanyu', 'Sawamura', 'Okura', 'Kusano', 'Mizushima', 'Arima', 'Fujimoto', 'Iidaka', 'Kido',
-                'Nanba', 'Omiya', 'Shimamura', 'Takase', 'Uehara', 'Yajima', 'Asahina', 'Fukuyama', 'Inami', 'Komiya',
-                'Matsuyama', 'Nishio', 'Okino', 'Shirai', 'Takei', 'Yoshimatsu', 'Eguchi', 'Hoshina', 'Iwanaga', 'Kasai',
-                'Mizoguchi', 'Ogata', 'Sano', 'Tachibana', 'Uchiumi', 'Wakabayashi', 'Yokoyama', 'Aizawa', 'Iidaka', 'Kusaka',
-                'Miyakoshi', 'Okuda', 'Senda', 'Tanabe', 'Uematsu', 'Yasuoka', 'Fujimaki', 'Ikeda', 'Koshino', 'Makino'
-              ];
-                  const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
-              const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
-              return `${firstName} ${lastName}`;
+            let { first: shuffledFirst, last: shuffledLast } = shuffledNames;
+            let currentIndex = nameIndex;
+
+            // Check if lists are empty or if we've used all names
+            if (shuffledFirst.length === 0 || currentIndex >= shuffledFirst.length) {
+                const firstNames = [
+                    'Yui', 'Sakura', 'Miku', 'Haruka', 'Rina', 'Nana', 'Akari', 'Yuki', 'Aoi', 'Hana', 
+                    'Karin', 'Miyu', 'Saki', 'Hinata', 'Riko', 'Ayaka', 'Mei', 'Eri', 'Mio', 'Yuna', 
+                    'Kotone', 'Sumire', 'Reina', 'Noa', 'Tomomi', 'Hiyori', 'Ami', 'Nao', 'Sayaka', 'Asuka', 
+                    'Chihiro', 'Emi', 'Kokona', 'Misaki', 'Saeko', 'Nanami', 'Shiori', 'Aya', 'Kazumi', 'Arisa', 
+                    'Marina', 'Kanna', 'Azusa', 'Rin', 'Fumika', 'Suzuka', 'Nene', 'Akane', 'Mai', 'Yuuri', 
+                    'Seira', 'Momoka', 'Rei', 'Tsukasa', 'Ichika', 'Mafuyu', 'Yume', 'Kyouka', 'Maho', 'Sena', 
+                    'Tsumugi', 'Yurina', 'Himari', 'Mirei', 'Honoka', 'Ririka', 'Natsuki', 'Hikaru', 'Aina', 'Shizuku', 
+                    'Ryou', 'Kaho', 'Minori', 'Mariya', 'Ayame', 'Kokoro', 'Misao', 'Rion', 'Moeka', 'Haruna', 
+                    'Yuuna', 'Mizuki', 'Kanako', 'Ema', 'Suzu', 'Kotoha', 'Nagisa', 'Ayumi', 'Riona', 'Yuzuki', 
+                    'Mina', 'Chiaki', 'Nozomi', 'Miharu', 'Haruno', 'Risa', 'Saaya', 'Airu', 'Koharu', 'Rio', 
+                    'Fuka', 'Ruka', 'Hina', 'Sana', 'Mana', 'Kiri', 'Miki', 'Aira', 'Kiyomi', 'Satomi', 
+                    'Chisato', 'Miho', 'Yua', 'Meisa', 'Natsumi', 'Yuka', 'Sora', 'Riho', 'Ena', 'Kanon', 
+                    'Yuzuka', 'Moka', 'Himeka', 'Rika', 'Shio', 'Chiharu', 'Kumi', 'Aika', 'Natsue', 'Sae', 
+                    'Mikoto', 'Manami', 'Yoshino', 'Asumi', 'Sayo', 'Reika', 'Miyabi', 'Kaede', 'Aiko', 'Akiko', 
+                    'Atsuko', 'Ayano', 'Emiko', 'Eriko', 'Fujiko', 'Fumiko', 'Haruko', 'Hideko', 'Hiroko', 'Hitomi', 
+                    'Izumi', 'Junko', 'Katsumi', 'Kayoko', 'Keiko', 'Kimiko', 'Kumiko', 'Kyoko', 'Machiko', 'Madoka', 
+                    'Maiko', 'Makiko', 'Mariko', 'Masako', 'Mayu', 'Mayumi', 'Michiko', 'Midori', 'Mieko', 'Miya', 
+                    'Miyoko', 'Momoko', 'Nagako', 'Namiko', 'Naoko', 'Naomi', 'Narumi', 'Noriko', 'Reiko', 'Rie', 
+                    'Rikako', 'Rumiko', 'Ryoko', 'Sachiko', 'Sakiko', 'Satoko', 'Setsuko', 'Shigeko', 'Shizuka', 'Sumiko', 
+                    'Takako', 'Tamiko', 'Teruko', 'Tomoko', 'Toshiko', 'Wakana', 'Yasuko', 'Yayoi', 'Yoko', 'Yoshiko',
+                    'Yumiko', 'Yuriko', 'Kozue', 'Natsuko', 'Sachi', 'Shino', 'Mitsu', 'Ruriko', 'Kiyoko', 'Tomi', 
+                    'Fumi', 'Michi', 'Hisako', 'Kazuko', 'Maki', 'Mari', 'Yuko', 'Akemi', 'Asako', 'Atsumi', 
+                    'Chie', 'Chieko', 'Chika', 'Chiyo', 'Etsuko', 'Harue', 'Hiroe', 'Ikuko', 'Itsumi', 'Kanade', 
+                    'Kayo', 'Kazue', 'Kiwa', 'Koto', 'Kumie', 'Kyomi', 'Machie', 'Masae', 'Masami', 'Michie', 
+                    'Mikiho', 'Minao', 'Mineko', 'Misako', 'Mitsue', 'Mitsuki', 'Miyae', 'Miyuki', 'Motoko', 'Mutsumi', 
+                    'Nadeshiko', 'Nae', 'Naoe', 'Narue', 'Natsuhiko', 'Natsuyo', 'Nobuko', 'Norie', 'Ran', 'Reiichi', 
+                    'Rimiko', 'Ritsuko', 'Rurika', 'Sachie', 'Sadako', 'Saori', 'Sayoko', 'Sayuri', 'Shigemi', 'Shizue', 
+                    'Sumie', 'Taeko', 'Takami', 'Tamaki', 'Tamao', 'Terue', 'Terumi', 'Tokiko', 'Tomie', 'Tomoe', 
+                    'Toyoko', 'Tsuki', 'Tsuru', 'Ume', 'Utako', 'Waka', 'Yae', 'Yaeko', 'Yasue', 'Yemi', 
+                    'Yone', 'Yoshie', 'Yuiho', 'Yukako', 'Yukari', 'Yukie', 'Yukiko', 'Yumi', 'Yurika', 'Yuzue',
+                    
+                    'Kohane', 'Himena', 'Rinka', 'Meru', 'Anzu', 'Nonoka', 'Ichigo', 'Mikasa', 'Rara', 'Karen', 
+                    'Miwa', 'Saku', 'Kirara', 'Mihaya', 'Yuno', 'Anari', 'Cocoro', 'Rimi', 'Seina', 'Hime', 
+                    'Kotoe', 'Niina', 'Raine', 'Miu', 'Momiji', 'Kinu', 'Hasumi', 'Kaori', 'Misora', 'Wakaba', 
+                    'Akiho', 'Hotaru', 'Suzuha', 'Fuyuko', 'Haru', 'Natsuo', 'Yukina', 'Tsugumi', 'Nanaho', 'Isuzu', 
+                    'Mitsuha', 'Tokino', 'Minami', 'Asahina', 'Shizuno', 'Miina', 'Kokoa', 'Mashiro', 'Ayaha', 'Kurumi', 
+                    'Tsubaki', 'Kirari', 'Mihane', 'Nanako', 'Mikuri', 'Ritsu', 'Yurari', 'Sakurako', 'Kahoko', 'Mihona', 
+                    'Shiho', 'Yuina', 'Chisaki', 'Mayuko', 'Sachika', 'Yoriko', 'Chiyoko', 'Shuko', 'Ria', 'Noe', 
+                    'Ako', 'Aki', 'Eru', 'Kio', 'Nia', 'Utano', 'Maharu', 'Rui', 'Mimi', 'Uta', 
+                    'Koko', 'Lili', 'Non', 'Shiki', 'Runa', 'Haya', 'Nanae', 'Amika', 'Mikako', 'Shiina', 
+                    'Rinako', 'Konomi', 'Mariho', 'Sawa', 'Mitsuki', 'Kae', 'Umi', 'Hisano', 'Ririko', 'Kohana',
+
+                    'Airi', 'Akina', 'Akiyo', 'Amane', 'Amari', 'Arisu', 'Ayaho', 'Ayumu', 'Botan', 'Chihaya', 
+                    'Chizu', 'Chizuru', 'Eimi', 'Emiri', 'Erena', 'Fuyumi', 'Hanae', 'Hanako', 'Hanami', 'Haruhi', 
+                    'Haruyo', 'Hatsune', 'Hazuki', 'Hijiri', 'Hinako', 'Hiroe', 'Hiromi', 'Hisaki', 'Hiroyo', 'Homare', 
+                    'Honami', 'Hotaka', 'Ikue', 'Inori', 'Iroha', 'Itsuki', 'Izuyo', 'Junna', 'Kanami', 'Kahori', 
+                    'Kazusa', 'Kiho', 'Kiko', 'Kimika', 'Kirina', 'Kisara', 'Kiyoha', 'Kohaku', 'Kokone', 'Kotomi', 
+                    'Kou', 'Kuniko', 'Kurara', 'Kureha', 'Kyoumi', 'Mahiro', 'Makari', 'Makie', 'Manaka', 'Mao', 
+                    'Matsuri', 'Meiko', 'Michiru', 'Minako', 'Mito', 'Mitsuko', 'Miyako', 'Miyo', 'Mizuho', 'Momoe', 
+                    'Mone', 'Motoka', 'Mutsuki', 'Nako', 'Nami', 'Nanase', 'Nayuki', 'Natsume', 'Niko', 'Nino', 
+                    'Otoha', 'Ranka', 'Remi', 'Rihoko', 'Rino', 'Rira', 'Ruri', 'Sanae', 'Sawako', 'Sayu', 
+                    'Senri', 'Shieri', 'Shika', 'Shoko', 'Suzuna', 'Tamae', 'Tamayo', 'Tsubame', 'Tsukiho', 'Umeko',
+
+                    'Aguri', 'Akiha', 'Akino', 'Amiko', 'Anju', 'Arina', 'Asahi', 'Asami', 'Ayane', 'Ayuna',
+                    'Azumi', 'Chiana', 'Chiduru', 'Chikako', 'Chinami', 'Chino', 'Chisa', 'Chisayo', 'Chitose', 'Chiyoe',
+                    'Chiyomi', 'Eika', 'Eina', 'Emika', 'Enako', 'Erika', 'Etsumi', 'Fujie', 'Fujimi', 'Fukako',
+                    'Fuki', 'Fumie', 'Fumino', 'Futaba', 'Fuyu', 'Haiko', 'Hakumi', 'Hamako', 'Hanaka', 'Hanayo',
+                    'Haruha', 'Harumi', 'Hasuka', 'Hayame', 'Hibari', 'Hideyo', 'Hikari', 'Himiko', 'Hinao', 'Hinano',
+                    'Hiran', 'Hisae', 'Hisaka', 'Hisami', 'Hiyoko', 'Hoyumi', 'Hyue', 'Ichi', 'Ichino', 'Ikumi',
+                    'Imari', 'Inari', 'Iori', 'Isako', 'Isora', 'Itoe', 'Iyo', 'Izumiko', 'Jun', 'Kagari',
+                    'Kagome', 'Kahomi', 'Kai', 'Kairi', 'Kamo', 'Kane', 'Karumi', 'Kasumi', 'Katari', 'Katsuko',
+                    'Kayako', 'Kazuna', 'Keimi', 'Keira', 'Kiako', 'Kichi', 'Kie', 'Kikue', 'Kikuko', 'Kikumi',
+                    'Kikuno', 'Kikuyo', 'Kimie', 'Kimiyo', 'Kina', 'Kinako', 'Kinuko', 'Kinuyo', 'Kirie', 'Kisaki',
+                    'Kiwa', 'Kiyono', 'Kochiyo', 'Kohina', 'Kokowa', 'Komachi', 'Komako', 'Konami', 'Konatsu', 'Korin',
+                    'Kosue', 'Kotoyo', 'Kumiyo', 'Kyou', 'Machi', 'Madoi', 'Marika', 'Maru', 'Mihoko', 'Mikano',
+                    'Mikomi', 'Mikura', 'Minamo', 'Minato', 'Mine', 'Mioko', 'Mirai', 'Misane', 'Mizuha', 'Moe',
+                    'Mokako', 'Momone', 'Motomi', 'Nagiko', 'Nagimi', 'Namie', 'Namiho', 'Nanaka', 'Nanane', 'Naori',
+                    'Naruka', 'Natsuha', 'Natsuri', 'Nozome', 'Nyoko', 'Orie', 'Orime', 'Otome', 'Rai', 'Ranko',
+                    'Reia', 'Ren', 'Rieko', 'Riina', 'Rikami', 'Riri', 'Rinami', 'Rine', 'Rinno', 'Rizu',
+                    'Ririno', 'Risako', 'Ritsumi', 'Riya', 'Roka', 'Romi', 'Ruika', 'Rumi', 'Rumina', 'Runako',
+                    'Rurine', 'Sachimi', 'Sachina', 'Sadae', 'Sadami', 'Saeka', 'Saemi', 'Sakina', 'Sakumi', 'Sanako',
+                    'Sanami', 'Saoria', 'Sarako', 'Sari', 'Sasa', 'Satomu', 'Sawane', 'Sayomi', 'Sayoe', 'Sayuki',
+                    'Seiko', 'Setsumi', 'Shia', 'Shiena', 'Shione', 'Shizuha', 'Sumina', 'Suzuko', 'Takana', 'Tamako'
+                ];
+                const lastNames = [
+                    'Tanaka', 'Sato', 'Suzuki', 'Takahashi', 'Watanabe', 'Yamamoto', 'Kobayashi', 'Nakamura', 'Ito', 'Kato', 
+                    'Yoshida', 'Yamada', 'Sasaki', 'Yamaguchi', 'Matsumoto', 'Inoue', 'Kimura', 'Shimizu', 'Hayashi', 'Saito', 
+                    'Abe', 'Fujita', 'Okada', 'Goto', 'Kondo', 'Ishikawa', 'Nakajima', 'Harada', 'Otsuka', 'Hasegawa', 
+                    'Murakami', 'Kojima', 'Takagi', 'Kuroda', 'Takeda', 'Imai', 'Ando', 'Fukuda', 'Miyazaki', 'Ueda', 
+                    'Shibata', 'Kawai', 'Nagano', 'Hirano', 'Mizuno', 'Ono', 'Fujii', 'Sugiyama', 'Kishida', 'Endo', 
+                    'Noguchi', 'Oshima', 'Sakurai', 'Mochizuki', 'Tsukada', 'Aoki', 'Morimoto', 'Tamura', 'Oda', 'Matsuda', 
+                    'Azuma', 'Nishida', 'Sugimoto', 'Kubota', 'Kawamura', 'Ishii', 'Nakano', 'Kanda', 'Morita', 'Nagata', 
+                    'Ogawa', 'Kinoshita', 'Mori', 'Yoshikawa', 'Kawasaki', 'Higuchi', 'Suenaga', 'Kaneko', 'Miyamoto', 'Shinozaki', 
+                    'Kawaguchi', 'Hosoda', 'Koga', 'Okamoto', 'Kamei', 'Tsutsui', 'Arakawa', 'Imamura', 'Furukawa', 'Nishimura', 
+                    'Kubo', 'Okumura', 'Masuda', 'Ishida', 'Asano', 'Fukumoto', 'Sakai', 'Matsui', 'Iwasaki', 'Nakagawa', 
+                    'Haruna', 'Ueno', 'Fujiwara', 'Seki', 'Nojima', 'Hoshino', 'Chiba', 'Kikuchi', 'Tanimoto', 'Fukui', 
+                    'Ota', 'Umezu', 'Ohashi', 'Yano', 'Katayama', 'Maki', 'Kuroki', 'Hatta', 'Koike', 'Mogi', 
+                    'Inagaki', 'Mita', 'Sano', 'Yoshioka', 'Komatsu', 'Sogabe', 'Horii', 'Tsuchiya', 'Kurata', 'Sugawara', 
+                    'Tsuji', 'Ishizuka', 'Amano', 'Takeuchi', 'Nakata', 'Honma', 'Kitamura', 'Enomoto', 'Sawada', 'Uchida', 
+                    'Yura', 'Hamada', 'Nishio', 'Shima', 'Hada', 'Kishimoto', 'Sakamoto', 'Nomura', 'Ishibashi', 'Taki', 
+                    'Kurokawa', 'Morinaga', 'Oishi', 'Uchiyama', 'Nishino', 'Hiraoka', 'Yashiro', 'Kamada', 'Mizutani', 'Yagisawa', 
+                    'Kawashima', 'Ogasawara', 'Terada', 'Inaba', 'Shiraishi', 'Nishiura', 'Sugisaki', 'Katsura', 'Yamazaki', 'Horiguchi', 
+                    'Murota', 'Fujino', 'Nishikori', 'Miyake', 'Miyata', 'Shimada', 'Okazaki', 'Miyashiro', 'Fujimori', 'Nagasawa', 
+                    'Takada', 'Yamane', 'Nishitani', 'Asada', 'Hamasaki', 'Matsuno', 'Onozawa', 'Takano', 'Kitagawa', 'Nakahara', 
+                    'Shiba', 'Yoda', 'Kanamori', 'Umeda', 'Irie', 'Kurihara', 'Hirasawa', 'Kawahara', 'Nagai', 'Tsujimura', 
+                    'Horikawa', 'Nishikawa', 'Murata', 'Miyagi', 'Shibasaki', 'Miyamura', 'Yamanaka', 'Hosokawa', 'Ichikawa', 'Kajiwara', 
+                    'Obara', 'Suga', 'Nagahama', 'Katsumata', 'Nishimori', 'Fujisawa', 'Numata', 'Hirai', 'Nakamoto', 'Okabe', 
+                    'Matsubara', 'Hino', 'Oshita', 'Shioya', 'Takaoka', 'Inui', 'Nishi', 'Nagao', 'Kumagai', 'Tashiro', 
+                    'Kawano', 'Eto', 'Fukuzawa', 'Kawade', 'Ogiwara', 'Hirose', 'Asai', 'Yusa', 'Shintani', 'Mitsuoka', 
+                    'Sone', 'Tsuda', 'Okuyama', 'Miyoshi', 'Furusawa', 'Kurosu', 'Nishimaki', 'Toba', 'Kase', 'Mizuguchi', 
+                    'Teramoto', 'Hanyu', 'Sawamura', 'Okura', 'Kusano', 'Mizushima', 'Arima', 'Fujimoto', 'Iidaka', 'Kido',
+                    'Nanba', 'Omiya', 'Shimamura', 'Takase', 'Uehara', 'Yajima', 'Asahina', 'Fukuyama', 'Inami', 'Komiya',
+                    'Matsuyama', 'Nishio', 'Okino', 'Shirai', 'Takei', 'Yoshimatsu', 'Eguchi', 'Hoshina', 'Iwanaga', 'Kasai',
+                    'Mizoguchi', 'Ogata', 'Sano', 'Tachibana', 'Uchiumi', 'Wakabayashi', 'Yokoyama', 'Aizawa', 'Iidaka', 'Kusaka',
+                    'Miyakoshi', 'Okuda', 'Senda', 'Tanabe', 'Uematsu', 'Yasuoka', 'Fujimaki', 'Ikeda', 'Koshino', 'Makino'
+                ];
+
+                shuffledFirst = [...firstNames].sort(() => 0.5 - Math.random());
+                shuffledLast = [...lastNames].sort(() => 0.5 - Math.random());
+
+                setShuffledNames({ first: shuffledFirst, last: shuffledLast });
+                currentIndex = 0;
+            }
+
+            const firstName = shuffledFirst[currentIndex];
+            const lastName = shuffledLast[currentIndex % shuffledLast.length];
+
+            setNameIndex(currentIndex + 1);
+
+            return `${firstName} ${lastName}`;
         }
     };
 const generateUnitCandidates = (count = 5) => {
@@ -3958,8 +4148,18 @@ const executeShuffle = (shuffleType, mode, manualAssignments = null) => {
 
         const unassignedMembers = [];
         masterRoster.forEach(member => {
-            const isProtected = acesAndCaptains.includes(member.rosterId) || getTotalFansForMember(member) > 250000;
-            const stayChance = isProtected ? 0.95 : 0.60;
+            const fanCount = getTotalFansForMember(member);
+            // Base stay chance is 40%. It increases with fans.
+            // A member with 500k fans will have a 40% + 50% = 90% chance.
+            let stayChance = 0.40 + (fanCount / 1000000);
+
+            // Captains and Aces get a bonus chance to stay.
+            if (acesAndCaptains.includes(member.rosterId)) {
+                stayChance += 0.15;
+            }
+
+            // Cap the chance at 98% to ensure there's always a small possibility of being shuffled.
+            stayChance = Math.min(0.98, stayChance);
             const teamSlot = teamSlots.find(s => s.id === member.teamId);
 
             // This is the fix: Check if teamSlot exists *before* trying to use it.
@@ -3973,12 +4173,12 @@ const executeShuffle = (shuffleType, mode, manualAssignments = null) => {
             }
         });
 
-        const chanceOfSisterToMainTransfer = 0.50;
-        const chanceOfMainToSisterTransfer = 0.05;
+        const chanceOfSisterToMainTransfer = 0.10;
+        const chanceOfMainToSisterTransfer = 0.05; // This was already low, which is good.
         const chanceOfSisterToMainKennin = 0.80;
         const chanceOfMainToSisterKennin = 0.50;
         let crossGroupMoves = 0;
-        const MAX_CROSS_GROUP_MOVES = 5;
+        const MAX_CROSS_GROUP_MOVES = 3; // Reducing the max number of cross-group moves.
 
         let unassignedMain = unassignedMembers.filter(m => !m.isSisterMember);
         let unassignedSister = unassignedMembers.filter(m => m.isSisterMember);
