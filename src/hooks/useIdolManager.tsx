@@ -2017,6 +2017,8 @@ export const useIdolManager = () => {
     const [week, setWeek] = useState(1);
     const [members, setMembers] = useState([]);
     const [selectedMember, setSelectedMember] = useState(null);
+    const [shuffledNames, setShuffledNames] = useState({ first: [], last: [] });
+    const [nameIndex, setNameIndex] = useState(0);
     const [message, setMessage] = useState('');
     const [totalFans, setTotalFans] = useState(0);
     const [currentTab, setCurrentTab] = useState('members');
