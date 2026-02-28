@@ -2817,7 +2817,7 @@ const [pendingMerch, setPendingMerch] = useState([]);
 
     // --- MEMBER/GROUP UTILITIES ---
 
-    const generateRandomMemberName = (location = 'Japan') => {
+    const generateRandomMemberName = (location = 'Japan', indexOffset = 0) => {
         // --- NEW: International Name Generators ---
         const generateKoreanMemberName = () => {
             const firstName = koreanFirstNames[Math.floor(Math.random() * koreanFirstNames.length)];
@@ -2848,7 +2848,7 @@ const [pendingMerch, setPendingMerch] = useState([]);
                 return generateKoreanMemberName();
             default: // Fallback to Japanese names
             let { first: shuffledFirst, last: shuffledLast } = shuffledNames;
-            let currentIndex = nameIndex;
+            let currentIndex = nameIndex + indexOffset;
 
             // Check if lists are empty or if we've used all names
             if (shuffledFirst.length === 0 || currentIndex >= shuffledFirst.length) {
@@ -2969,8 +2969,6 @@ const [pendingMerch, setPendingMerch] = useState([]);
 
             const firstName = shuffledFirst[currentIndex];
             const lastName = shuffledLast[currentIndex % shuffledLast.length];
-
-            setNameIndex(currentIndex + 1);
 
             return `${firstName} ${lastName}`;
         }
@@ -10394,7 +10392,7 @@ let updatedRivalGroups = rivalGroups ? JSON.parse(JSON.stringify(rivalGroups)) :
 
             return {
                 id: `prospect_${i}`,
-                name: generateRandomMemberName(randomLocation),
+                name: generateRandomMemberName(randomLocation, i),
                 hometown: generateRandomHometown(randomLocation),
                 vocal: Math.floor(Math.random() * 40) + 30,
                 dance: Math.floor(Math.random() * 40) + 30,
@@ -10413,7 +10411,7 @@ let updatedRivalGroups = rivalGroups ? JSON.parse(JSON.stringify(rivalGroups)) :
 // --- END OF REPLACEMENT ---
 
         setDraftProspects(prospects);
-
+        setNameIndex(prev => prev + 20);
         const allDraftingTeams = [
             { id: 'main', name: groupName, type: 'player' },
             ...sisterGroups.map(sg => ({ id: sg.id, name: sg.name, type: 'player' })),
@@ -13145,7 +13143,7 @@ const startStudyAbroad = (memberId, destinationGroupId) => {
 
             return {
                 id: `candidate-${i}`,
-                name: generateRandomMemberName(finalAuditionLocation),
+                name: generateRandomMemberName(finalAuditionLocation, i),
                 hometown: generateRandomHometown(finalAuditionLocation),
                 vocal: generateStat(selectedTier.statMin, selectedTier.statMax),
                 dance: generateStat(selectedTier.statMin + danceBonus, selectedTier.statMax + danceBonus),
@@ -13159,6 +13157,8 @@ const startStudyAbroad = (memberId, destinationGroupId) => {
         });
         
         setAuditionCandidates(candidates);
+        setNameIndex(prev => prev + poolSize);
+
         setModalData({ 
             targetGroup, 
             generationName, 

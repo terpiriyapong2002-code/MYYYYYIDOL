@@ -12713,8 +12713,55 @@ if (!gameStarted) {
                 Select members to receive a "push". Pushed members will receive a larger share of fans from group activities.
               </p>
 
-              {/* NEW: Filter Dropdown */}
+              {/* NEW SELF-CONTAINED LOGIC AND JSX BLOCK */}
               {(() => {
+                  // --- Start of new code for Push Member filter/sort ---
+
+                  // 1. Create the filtered and sorted roster
+                  let filteredPushRoster = getMainGroupRoster();
+
+                  if (pushMemberFilter !== 'all') {
+                      if (pushMemberFilter.startsWith('team-')) {
+                          const teamId = parseInt(pushMemberFilter.replace('team-', ''), 10);
+                          const team = teams.find(t => t.id === teamId);
+                          const teamMemberIds = new Set((team?.members || []).map(String));
+                          filteredPushRoster = filteredPushRoster.filter(m => teamMemberIds.has(String(m.rosterId || m.id)));
+                      } else if (pushMemberFilter === 'main') {
+                          filteredPushRoster = filteredPushRoster.filter(m => !m.isSisterMember);
+                      } else if (pushMemberFilter.startsWith('main-gen-')) {
+                          const gen = pushMemberFilter.replace('main-gen-', '');
+                          filteredPushRoster = filteredPushRoster.filter(m => !m.isSisterMember && m.generation === gen);
+                      } else if (pushMemberFilter.startsWith('sg-')) {
+                           if (pushMemberFilter.includes('-gen-')) {
+                              const [sgIdStr, gen] = pushMemberFilter.replace('sg-', '').split('-gen-');
+                              filteredPushRoster = filteredPushRoster.filter(m => String(m.groupId) === sgIdStr && m.generation === gen);
+                           } else {
+                              const sg = sisterGroups.find(g => `sg-${g.id}` === pushMemberFilter);
+                              if (sg) {
+                                  filteredPushRoster = filteredPushRoster.filter(m => String(m.groupId) === String(sg.id));
+                              }
+                           }
+                      } else { // Fallback for filtering by sister group name
+                          filteredPushRoster = filteredPushRoster.filter(m => m.isSisterMember && m.displayGroupName === pushMemberFilter);
+                      }
+                  }
+                  
+                  // 2. Sort the filtered roster by average skill
+                  filteredPushRoster.sort((a, b) => getAvgSkill(b) - getAvgSkill(a));
+
+                  // 3. Handlers for the new buttons
+                  const handleSelectAllFilteredPushMembers = () => {
+                      const filteredIds = filteredPushRoster.map(m => String(m.rosterId));
+                      setPushedMembers(prev => [...new Set([...prev, ...filteredIds])]);
+                  };
+
+                  const handleDeselectAllFilteredPushMembers = () => {
+                      const filteredIds = new Set(filteredPushRoster.map(m => String(m.rosterId)));
+                      setPushedMembers(prev => prev.filter(id => !filteredIds.has(String(id))));
+                  };
+
+                  // --- End of new code ---
+
                   const roster = getMainGroupRoster();
                   const mainGroupGenerations = [...new Set(roster.filter(m => !m.isSisterMember).map(m => m.generation).filter(Boolean))];
                   const sisterGroupDetails = sisterGroups.map(sg => ({
@@ -12723,98 +12770,80 @@ if (!gameStarted) {
                   }));
 
                   return (
-                      <div className="mb-3">
-                          <label htmlFor="push-member-filter" className="text-xs font-semibold mr-2 text-gray-600 dark:text-gray-300">Filter:</label>
-                          <select
-                              id="push-member-filter"
-                              value={pushMemberFilter}
-                              onChange={e => setPushMemberFilter(e.target.value)}
-                              className="p-1.5 text-xs border border-pink-200/80 dark:border-pink-800/50 rounded-md bg-white/50 dark:bg-slate-700/50 focus:ring-2 focus:ring-pink-300"
-                          >
-                              <option value="all">All Groups</option>
-                              <optgroup label="Groups">
-                                  <option value="main">{groupName}</option>
-                                  {(sisterGroups || []).map(sg => <option key={`filter-sg-${sg.id}`} value={sg.name}>{sg.name}</option>)}
-                              </optgroup>
-                              <optgroup label="Teams">
-                                  {(teams || []).map(t => <option key={`filter-team-${t.id}`} value={`team-${t.id}`}>{t.name}</option>)}
-                              </optgroup>
-                              {mainGroupGenerations.length > 0 && (
-                                  <optgroup label={`${groupName} Generations`}>
-                                      {mainGroupGenerations.map(gen => (
-                                          <option key={`main-gen-${gen}`} value={`main-gen-${gen}`}>{gen}</option>
-                                      ))}
+                      <>
+                          {/* Filter Dropdown */}
+                          <div className="mb-3">
+                              <label htmlFor="push-member-filter" className="text-xs font-semibold mr-2 text-gray-600 dark:text-gray-300">Filter:</label>
+                              <select
+                                  id="push-member-filter"
+                                  value={pushMemberFilter}
+                                  onChange={e => setPushMemberFilter(e.target.value)}
+                                  className="p-1.5 text-xs border border-pink-200/80 dark:border-pink-800/50 rounded-md bg-white/50 dark:bg-slate-700/50 focus:ring-2 focus:ring-pink-300"
+                              >
+                                  <option value="all">All Groups</option>
+                                  <optgroup label="Groups">
+                                      <option value="main">{groupName}</option>
+                                      {(sisterGroups || []).map(sg => <option key={`filter-sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>)}
                                   </optgroup>
-                              )}
-                              {sisterGroupDetails.map(sg => (
-                                  sg.generations.length > 0 && (
-                                      <optgroup key={`sg-gen-group-${sg.id}`} label={`${sg.name} Generations`}>
-                                          {sg.generations.map(gen => (
-                                              <option key={`sg-${sg.id}-gen-${gen}`} value={`sg-${sg.id}-gen-${gen}`}>{gen}</option>
+                                  <optgroup label="Teams">
+                                      {(teams || []).map(t => <option key={`filter-team-${t.id}`} value={`team-${t.id}`}>{t.name}</option>)}
+                                  </optgroup>
+                                  {mainGroupGenerations.length > 0 && (
+                                      <optgroup label={`${groupName} Generations`}>
+                                          {mainGroupGenerations.map(gen => (
+                                              <option key={`main-gen-${gen}`} value={`main-gen-${gen}`}>{gen}</option>
                                           ))}
                                       </optgroup>
-                                  )
-                              ))}
-                          </select>
-                      </div>
+                                  )}
+                                  {sisterGroupDetails.map(sg => (
+                                      sg.generations.length > 0 && (
+                                          <optgroup key={`sg-gen-group-${sg.id}`} label={`${sg.name} Generations`}>
+                                              {sg.generations.map(gen => (
+                                                  <option key={`sg-${sg.id}-gen-${gen}`} value={`sg-${sg.id}-gen-${gen}`}>{gen}</option>
+                                              ))}
+                                          </optgroup>
+                                      )
+                                  ))}
+                              </select>
+                          </div>
+
+                          {/* Select/Deselect Buttons */}
+                          <div className="flex gap-2 mb-2">
+                              <button onClick={handleSelectAllFilteredPushMembers} className="px-3 py-1 text-xs bg-blue-100 text-blue-800 rounded font-semibold hover:bg-blue-200">Select All (Filtered)</button>
+                              <button onClick={handleDeselectAllFilteredPushMembers} className="px-3 py-1 text-xs bg-gray-200 text-gray-800 rounded font-semibold hover:bg-gray-300">Deselect All (Filtered)</button>
+                          </div>
+
+                          {/* Member List */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2 bg-black/5 dark:bg-black/20 rounded-lg shadow-inner">
+                            {filteredPushRoster.length === 0 ? (
+                                 <p className="text-gray-500 italic col-span-full text-center p-4">No members match the current filter.</p>
+                            ) : (
+                                filteredPushRoster.map(member => (
+                                    <div key={member.rosterId || member.id}>
+                                        <label className={`p-2 rounded-lg cursor-pointer flex items-center transition-all duration-200 border-2 ${pushedMembers.map(String).includes(String(member.rosterId)) ? 'bg-pink-100 dark:bg-pink-900/80 border-pink-300 dark:border-pink-600' : 'bg-white/80 dark:bg-slate-800/80 border-transparent hover:bg-pink-50 dark:hover:bg-slate-700/80'}`}>
+                                            <input 
+                                                type="checkbox"
+                                                checked={pushedMembers.map(String).includes(String(member.rosterId))}
+                                                onChange={() => handleTogglePushMember(member.rosterId)}
+                                                className="mr-3 form-checkbox h-5 w-5 text-pink-500 bg-gray-200 border-gray-300 rounded-md focus:ring-pink-400 focus:ring-offset-0"
+                                            />
+                                            <div>
+                                                <span className="text-sm font-bold text-gray-800 dark:text-gray-100">{member.name}</span>
+                                                <div className="text-xs text-gray-500 dark:text-gray-400">
+                                                    <span>{member.displayGroupName || groupName}</span>
+                                                    <span className="mx-1">|</span>
+                                                    <span className="font-mono">Fans: {getTotalFansForMember(member).toLocaleString()}</span>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                ))
+                            )}
+                          </div>
+                      </>
                   );
               })()}
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2 bg-black/5 dark:bg-black/20 rounded-lg shadow-inner">
-                {(() => {
-                    let roster = getMainGroupRoster();
-
-                    if (pushMemberFilter !== 'all') {
-                        if (pushMemberFilter.startsWith('team-')) {
-                            const teamId = parseInt(pushMemberFilter.replace('team-', ''), 10);
-                            const team = teams.find(t => t.id === teamId);
-                            const teamMemberIds = new Set((team?.members || []).map(String));
-                            roster = roster.filter(m => teamMemberIds.has(String(m.rosterId || m.id)));
-                        } else if (pushMemberFilter === 'main') {
-                            roster = roster.filter(m => !m.isSisterMember);
-                        } else if (pushMemberFilter.startsWith('main-gen-')) {
-                            const gen = pushMemberFilter.replace('main-gen-', '');
-                            roster = roster.filter(m => !m.isSisterMember && m.generation === gen);
-                        } else if (pushMemberFilter.startsWith('sg-')) {
-                            const [sgIdStr, gen] = pushMemberFilter.replace('sg-', '').split('-gen-');
-                             if (gen) { // This means it's a generation filter like 'sg-1-gen-1st'
-                                roster = roster.filter(m => String(m.groupId) === sgIdStr && m.generation === gen);
-                             } else { // This means it's just a group filter like 'sg-1'
-                                roster = roster.filter(m => String(m.groupId) === sgIdStr);
-                             }
-                        } else {
-                            roster = roster.filter(m => m.isSisterMember && m.displayGroupName === pushMemberFilter);
-                        }
-                    }
-                    
-                    if (roster.length === 0) {
-                         return <p className="text-gray-500 italic col-span-full text-center p-4">No members match the current filter.</p>;
-                    }
-
-                    return roster.map(member => (
-                        <div key={member.rosterId || member.id}>
-                            <label className={`p-2 rounded-lg cursor-pointer flex items-center transition-all duration-200 border-2 ${pushedMembers.map(String).includes(String(member.rosterId)) ? 'bg-pink-100 dark:bg-pink-900/80 border-pink-300 dark:border-pink-600' : 'bg-white/80 dark:bg-slate-800/80 border-transparent hover:bg-pink-50 dark:hover:bg-slate-700/80'}`}>
-                                <input 
-                                    type="checkbox"
-                                    checked={pushedMembers.map(String).includes(String(member.rosterId))}
-                                    onChange={() => handleTogglePushMember(member.rosterId)}
-                                    className="mr-3 form-checkbox h-5 w-5 text-pink-500 bg-gray-200 border-gray-300 rounded-md focus:ring-pink-400 focus:ring-offset-0"
-                                />
-                                <div>
-                                    <span className="text-sm font-bold text-gray-800 dark:text-gray-100">{member.name}</span>
-                                    <div className="text-xs text-gray-500 dark:text-gray-400">
-                                        <span>{member.displayGroupName || groupName}</span>
-                                        <span className="mx-1">|</span>
-                                        <span className="font-mono">Fans: {getTotalFansForMember(member).toLocaleString()}</span>
-                                    </div>
-                                </div>
-                            </label>
-                        </div>
-                    ));
-                })()}
-              </div>
             </div>
-
 
             {/* App Settings */}
             <div className="p-2 rounded-lg shadow-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
