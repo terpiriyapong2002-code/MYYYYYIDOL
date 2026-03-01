@@ -5337,7 +5337,7 @@ const HandshakeEventResultModal = () => {
                 
                 <div className="max-h-[60vh] overflow-y-auto p-4 space-y-2">
                     {results.map(({ member, soldSlots, totalSlots, pendingSlots, isSoldOut, fansConverted }) => (
-                        <div key={member.id} className="p-3 bg-white/60 dark:bg-gray-800/50 rounded-xl flex justify-between items-center shadow-md">
+                        <div key={member.rosterId || member.id} className="p-3 bg-white/60 dark:bg-gray-800/50 rounded-xl flex justify-between items-center shadow-md">
                             <div>
                                 <p className="font-bold text-lg">{member.name}</p>
                                 <p className="text-xs text-gray-500 dark:text-gray-400">{getMemberGroupStatus(member)}</p>
@@ -7287,12 +7287,12 @@ const handleConfirmMove = () => {
                     {/* --- MODIFIED: Now maps over 'filteredMembers' --- */}
                     <div className="space-y-1 max-h-[400px] overflow-y-auto border-t border-b dark:border-gray-700 p-1">
                         {filteredMembers.map(member => (
-                            <div key={member.rosterId} className={`flex items-center justify-between p-2 rounded cursor-pointer ${selectedMemberIds.includes(member.id) ? 'bg-blue-100 dark:bg-blue-800' : 'bg-white dark:bg-gray-700/50 hover:bg-gray-50'}`} onClick={() => toggleMember(member.rosterId)}>
+                            <div key={member.rosterId} className={`flex items-center justify-between p-2 rounded cursor-pointer ${selectedMemberIds.includes(member.rosterId) ? 'bg-blue-100 dark:bg-blue-800' : 'bg-white dark:bg-gray-700/50 hover:bg-gray-50'}`} onClick={() => toggleMember(member.rosterId)}>
                                 <div>
                                     <p className="font-semibold text-sm">{member.name} {member.isSisterMember && <span className="text-xs text-gray-500">({member.displayGroupName})</span>}</p>
                                     <p className="text-xs text-gray-500 dark:text-gray-400">Fans: {getTotalFansForMember(member).toLocaleString()}</p>
                                 </div>
-                                <input type="checkbox" checked={selectedMemberIds.includes(member.id)} readOnly className="form-checkbox h-4 w-4 text-blue-600"/>
+                                <input type="checkbox" checked={selectedMemberIds.includes(member.rosterId)} readOnly className="form-checkbox h-4 w-4 text-blue-600"/>
                             </div>
                         ))}
                     </div>
@@ -13428,18 +13428,28 @@ if (showRecentOnly) {
     <div className="p-2 rounded-lg shadow-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
       <h3 className="text-base font-bold mb-2 flex items-center"><Hand size={18} className="mr-2"/> Fan Events</h3>
       <div className="flex flex-col gap-1.5">
-        <button
-          onClick={openHandshakeModal}
-          disabled={!songs.some(s => s.includeHandshakeTickets && !s.handshakeEventHeld && s.chartWeeksLeft > 0)}
-          className="w-full p-2 text-sm bg-green-500 text-white rounded disabled:bg-gray-500 disabled:cursor-not-allowed"
-        >
-            <div className="flex justify-center items-center gap-1 font-semibold">
-                <Hand size={16} /> Hold Post-Release Handshake Event
-            </div>
-            <span className="text-xs font-normal">
-                {songs.find(s => s.includeHandshakeTickets && !s.handshakeEventHeld && s.chartWeeksLeft > 0)?.name || '(Requires a single with Handshake Tickets)'}
-            </span>
-        </button>
+    {/* Handshake Event Button */}
+    {(() => {
+        // First, find the first eligible single from ANY group.
+        const allReleases = [...songs, ...sisterGroups.flatMap(sg => sg.songs || [])];
+        const eligibleSingle = allReleases.find(s => s.includeHandshakeTickets && !s.handshakeEventHeld && s.chartWeeksLeft > 0);
+
+        return (
+            <button
+            onClick={openHandshakeModal}
+            disabled={!eligibleSingle} // The disabled check now uses the correct variable
+            className="w-full p-2 text-sm bg-green-500 text-white rounded disabled:bg-gray-500 disabled:cursor-not-allowed"
+            >
+                <div className="flex justify-center items-center gap-1 font-semibold">
+                    <Hand size={16} /> Hold Post-Release Handshake Event
+                </div>
+                <span className="text-xs font-normal">
+                    {/* The displayed name also uses the correct variable */}
+                    {eligibleSingle?.name || '(Requires a single with Handshake Tickets)'}
+                </span>
+            </button>
+        );
+    })()}
 
         <button onClick={() => setShowModal('sportsFestival')} className="w-full p-2 text-sm bg-red-500 text-white rounded">
             <div className="flex justify-center items-center gap-1 font-semibold"><Trophy size={16} /> Hold Sports Festival</div>

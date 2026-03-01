@@ -23,9 +23,11 @@ export const getFormattedDateForWeek = (weekNumber) => {
 
 
 export const getTheaterCapacity = (level) => {
-    if (level === 1) return 100;
-    if (level === 2) return 250;
-    if (level === 3) return 500;
+    if (level === 1) return 250;
+    if (level === 2) return 450;
+    if (level === 3) return 700;
+    if (level === 4) return 1000;
+    if (level === 5) return 1350;
     return 0;
 };
 
@@ -33,6 +35,8 @@ export const getTicketPrice = (level) => {
     if (level === 1) return 1000;
     if (level === 2) return 1500;
     if (level === 3) return 2000;
+    if (level === 4) return 2500;
+    if (level === 5) return 3000;
     return 0;
 };
 
@@ -3448,7 +3452,8 @@ const assignRandomTraining = (membersToTrain) => {
 };
 const assignLowestVocalDanceTraining = (membersToTrain) => {
     const members = Array.isArray(membersToTrain) && membersToTrain.length > 0 ? membersToTrain : getAllAvailableMembers(true);
-    members.forEach(member => {
+    const trainableMembers = members.filter(m => (m.singing || 0) < 100 && (m.dancing || 0) < 100);
+    trainableMembers.forEach(member => {
     const skills = {
         singing: member.singing || 0,
         dancing: member.dancing || 0,
@@ -3459,7 +3464,7 @@ const assignLowestVocalDanceTraining = (membersToTrain) => {
 
     updateMemberState(member.rosterId, m => ({ ...m, trainingFocus: lowestSkill }));
     });
-    setMessage(`Assigned training focus to lowest Vocal/Dance skill for ${members.length} members.`);
+    setMessage(`Assigned training focus to lowest Vocal/Dance skill for ${trainableMembers.length} eligible members.`);
 };
 const assignLowestSkillTraining = (membersToTrain) => {
   const members = Array.isArray(membersToTrain) && membersToTrain.length > 0 ? membersToTrain : getAllAvailableMembers(true);
@@ -8579,7 +8584,8 @@ const generateHandshakeFanPosts = (handshakeData, currentSingle, previousSingle)
 };
 
 const executeHandshakeEvent = (selectedMemberIds, singleId) => {
-    const eligibleSingle = songs.find(s => s.id === singleId);
+    const allReleases = [...songs, ...sisterGroups.flatMap(sg => sg.songs || [])];
+    const eligibleSingle = allReleases.find(s => s.id === singleId);
 
     if (!eligibleSingle) {
         return setMessage("Error: Could not find the single for this handshake event.");
@@ -8633,9 +8639,22 @@ const executeHandshakeEvent = (selectedMemberIds, singleId) => {
         };
     }).sort((a,b) => b.soldSlots - a.soldSlots);
 
-    setSongs(prevSongs => prevSongs.map(s => 
-        s.id === eligibleSingle.id ? { ...s, handshakeEventHeld: true } : s
-    ));
+    const isMainGroupSingle = songs.some(s => s.id === eligibleSingle.id);
+    if (isMainGroupSingle) {
+        setSongs(prevSongs => prevSongs.map(s => 
+            s.id === eligibleSingle.id ? { ...s, handshakeEventHeld: true } : s
+        ));
+    } else {
+        setSisterGroups(prevGroups => prevGroups.map(sg => {
+            const songIndex = (sg.songs || []).findIndex(s => s.id === eligibleSingle.id);
+            if (songIndex > -1) {
+                const newSongs = [...sg.songs];
+                newSongs[songIndex] = { ...newSongs[songIndex], handshakeEventHeld: true };
+                return { ...sg, songs: newSongs };
+            }
+            return sg;
+        }));
+    }
 
 const handshakeData = {
         singleName: eligibleSingle.name,
@@ -8643,7 +8662,7 @@ const handshakeData = {
         results
     };
 
-    const songListOfGroup = songs;
+    const songListOfGroup = isMainGroupSingle ? songs : (sisterGroups.find(sg => sg.name === eligibleSingle.targetGroup)?.songs || []);
     const previousSingle = songListOfGroup.filter(s => s.type === 'single' && s.releaseWeek < eligibleSingle.releaseWeek).sort((a,b) => b.releaseWeek - a.releaseWeek)[0];
 
     generateHandshakeFanPosts(handshakeData, eligibleSingle, previousSingle);
