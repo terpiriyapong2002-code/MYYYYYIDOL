@@ -1187,10 +1187,15 @@ const generateUniqueRandomName = () => {
                     if (centerId) newLineup[centerId] = '1st Row';
     
                     shuffled.forEach((id, i) => {
-                        if (i < 5) newLineup[id] = '2nd Row';
-                        else if (i < 10) newLineup[id] = '3rd Row';
-                        else if (i < 16) newLineup[id] = '4th Row';
-                        else newLineup[id] = '5th Row';
+                        if (i < 4) {
+                            newLineup[id] = '2nd Row';
+                        } else if (i < 11) {
+                            newLineup[id] = '3rd Row';
+                        } else if (i < 21) {
+                            newLineup[id] = '4th Row';
+                        } else {
+                            newLineup[id] = '5th Row';
+                        }
                     });
                     return { ...track, lineup: newLineup };
                 });
@@ -1279,17 +1284,20 @@ const generateUniqueRandomName = () => {
                     (((b.singing || 0) + (b.dancing || 0) + (b.visual || 0)) / 3) -
                     (((a.singing || 0) + (a.dancing || 0) + (a.visual || 0)) / 3)
             );
-
-            const newLineup = { ...track.lineup };
-            const totalToRank = membersToRank.length;
-            const secondRowSize = Math.ceil(totalToRank * 0.3);
-            const thirdRowSize = Math.floor(totalToRank * 0.4);
+            
+const newLineup = { ...track.lineup };
 
             membersToRank.forEach((member, memberIndex) => {
                 const memberIdStr = String(member.rosterId || member.id);
-                if (memberIndex < secondRowSize) newLineup[memberIdStr] = '2nd Row';
-                else if (memberIndex < secondRowSize + thirdRowSize) newLineup[memberIdStr] = '3rd Row';
-                else newLineup[memberIdStr] = '4th Row';
+                if (memberIndex < 4) {
+                    newLineup[memberIdStr] = '2nd Row';
+                } else if (memberIndex < 11) { // 4 (2nd row) + 7 (3rd row) = 11
+                    newLineup[memberIdStr] = '3rd Row';
+                } else if (memberIndex < 21) { // 11 (prev) + 10 (4th row) = 21
+                    newLineup[memberIdStr] = '4th Row';
+                } else {
+                    newLineup[memberIdStr] = '5th Row';
+                }
             });
             
             centerIds.forEach(id => {
@@ -1319,17 +1327,18 @@ const generateUniqueRandomName = () => {
             membersToRank.sort((a, b) => getTotalFansForMember(b) - getTotalFansForMember(a));
 
             const newLineup = { ...track.lineup };
-            const totalToRank = membersToRank.length;
-            const secondRowSize = Math.ceil(totalToRank * 0.3);
-            const thirdRowSize = Math.floor(totalToRank * 0.4);
-
             membersToRank.forEach((member, memberIndex) => {
                 const memberIdStr = String(member.rosterId || member.id);
-                if (memberIndex < secondRowSize) newLineup[memberIdStr] = '2nd Row';
-                else if (memberIndex < secondRowSize + thirdRowSize) newLineup[memberIdStr] = '3rd Row';
-                else newLineup[memberIdStr] = '4th Row';
+                if (memberIndex < 4) {
+                    newLineup[memberIdStr] = '2nd Row';
+                } else if (memberIndex < 11) { // 4 (2nd row) + 7 (3rd row) = 11
+                    newLineup[memberIdStr] = '3rd Row';
+                } else if (memberIndex < 21) { // 11 (prev) + 10 (4th row) = 21
+                    newLineup[memberIdStr] = '4th Row';
+                } else {
+                    newLineup[memberIdStr] = '5th Row';
+                }
             });
-            
             centerIds.forEach(id => {
     newLineup[id] = '1st Row';
 });
@@ -10226,7 +10235,11 @@ const FestivalPerformerSelectionModal = () => {
     const [memberFilter, setMemberFilter] = useState('all');
 
     const availableMembers = getAllAvailableMembers(true).filter(m => m.isAvailable);
-    const allTracks = [...songs.flatMap(s => s.tracks.map(t => ({ id: `${s.id}-${t.name}`, name: `${t.name} (from ${s.name})`, item: { id: t.id, name: t.name } }))), ...theaterSongs.map(song => ({ id: `theater-${song.id}`, name: `${song.name} (Theater)`, item: { id: song.id, name: song.name } }))];
+    const allTracks = [
+    ...songs.flatMap(s => (s.tracks || []).map(t => ({ id: `${s.id}-${t.name}`, name: `${t.name} (from ${s.name})`, item: { id: t.id, name: t.name } }))),
+    ...sisterGroups.flatMap(sg => (sg.songs || []).flatMap(s => (s.tracks || []).map(t => ({ id: `sg-${sg.id}-${s.id}-${t.name}`, name: `${t.name} (from ${s.name})`, item: { id: t.id, name: t.name } })))),
+    ...(theaterSongs || []).map(song => ({ id: `theater-${song.id}`, name: `${song.name} (Theater)`, item: { id: song.id, name: song.name } }))
+].filter((track, index, self) => index === self.findIndex((t) => t.id === track.id));
     const allReleases = [...(songs || []), ...(sisterGroups || []).flatMap(sg => sg.songs || [])];
 
     const historicalTracks = allReleases
