@@ -37,7 +37,7 @@ const App = () => {
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
-    holdUnitPerformance, unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference,  completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
+    holdTitleTrackPerformance, holdUnitPerformance, unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference,  completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
 
     } = useIdolManager();
 
@@ -1212,11 +1212,17 @@ const generateUniqueRandomName = () => {
 
                 if (unchosenPool.length === 0) return;
 
-                // Sort by the average of singing and dancing skill
-                unchosenPool.sort((a, b) =>
-                    (((b.singing || 0) + (b.dancing || 0) + (b.visual || 0)) / 3) -
-                    (((a.singing || 0) + (a.dancing || 0) + (a.visual || 0)) / 3)
-                );
+                // Sort by the average of singing, dancing, and visual skill, with fans as a tie-breaker
+                unchosenPool.sort((a, b) => {
+                    const avgSkillA = (((a.singing || 0) + (a.dancing || 0) + (a.visual || 0)) / 3);
+                    const avgSkillB = (((b.singing || 0) + (b.dancing || 0) + (b.visual || 0)) / 3);
+
+                    if (avgSkillB !== avgSkillA) {
+                        return avgSkillB - avgSkillA;
+                    }
+                    // If average skills are equal, sort by total fans
+                    return getTotalFansForMember(b) - getTotalFansForMember(a);
+                });
 
                 const num = Math.min(numToSelect, unchosenPool.length);
                 const selectedIds = unchosenPool.slice(0, num).map(m => String(m.rosterId));
@@ -1279,11 +1285,17 @@ const generateUniqueRandomName = () => {
             const centerIds = Array.isArray(track.center) ? track.center.map(String) : (track.center ? [String(track.center)] : []);
             const membersToRank = trackMembers.filter(m => !centerIds.includes(String(m.rosterId || m.id)));
 
-            // Sort by the average of singing and dancing skill
-            membersToRank.sort((a, b) =>
-                    (((b.singing || 0) + (b.dancing || 0) + (b.visual || 0)) / 3) -
-                    (((a.singing || 0) + (a.dancing || 0) + (a.visual || 0)) / 3)
-            );
+        // Sort by the average of singing, dancing, and visual skill, with fans as a tie-breaker
+        membersToRank.sort((a, b) => {
+            const avgSkillA = (((a.singing || 0) + (a.dancing || 0) + (a.visual || 0)) / 3);
+            const avgSkillB = (((b.singing || 0) + (b.dancing || 0) + (b.visual || 0)) / 3);
+
+            if (avgSkillB !== avgSkillA) {
+                return avgSkillB - avgSkillA;
+            }
+            // If average skills are equal, sort by total fans
+            return getTotalFansForMember(b) - getTotalFansForMember(a);
+        });
             
 const newLineup = { ...track.lineup };
 
@@ -12908,6 +12920,22 @@ if (!gameStarted) {
                     >
                         Details
                     </button>
+
+                    {/* --- NEW BUTTON FOR TITLE TRACK PERFORMANCE --- */}
+                    {!isAlbum && release.chartWeeksLeft > 0 && (
+                        <button
+                            onClick={() => {
+                                const titleTrack = release.tracks.find(t => t.type === 'title');
+                                if (titleTrack) {
+                                    holdTitleTrackPerformance(release.id, titleTrack.name);
+                                }
+                            }}
+                            className="px-4 py-2 text-sm font-semibold text-white bg-green-600 rounded-md hover:bg-green-700"
+                        >
+                            Hold Perf.
+                        </button>
+                    )}
+
 
                         {/* V-- INSERT NEW BUTTON LOGIC HERE --V */}
                         {!isAlbum && (release.targetGroup === 'main' || release.targetGroup === groupName) && (
