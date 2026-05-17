@@ -9,7 +9,7 @@ import { CSS } from '@dnd-kit/utilities';
 
 import DailyChartModal from './DailyChartModal';
 
-import { useIdolManager, getTotalFansForMember, getFormattedDateForWeek, productionTiers, getGraduationRisk, songTitles, generateSongTitle, electionSpeechTemplates, performanceTypes, scandalResponseOptions, tiers, getTheaterCapacity, getTicketPrice, hometowns, generateRandomHometown,  warehouseTiers, staffTiers, ambitions, varietyShowTypes, filmProjectTypes, scriptTiers, directorTiers, filmPromotionTypes, varietyWriterTiers, varietyProducerTiers, sponsorshipTiers, livestreamTypes, musicShowTypes, annualFestivals } from "./hooks/useIdolManager";
+import { useIdolManager, getTotalFansForMember, getFormattedDateForWeek, productionTiers, getGraduationRisk, songTitles, generateSongTitle, electionSpeechTemplates, performanceTypes, scandalResponseOptions, tiers, getTheaterCapacity, getTicketPrice, hometowns, generateRandomHometown,  warehouseTiers, staffTiers, ambitions, varietyShowTypes, filmProjectScales, filmGenres, scriptTiers, directorTiers, filmPromotionTypes, varietyWriterTiers, varietyProducerTiers, sponsorshipTiers, livestreamTypes, musicShowTypes, annualFestivals } from "./hooks/useIdolManager";
 
 import React, { useState, useEffect, useCallback, useRef, memo } from 'react';
 import { 
@@ -23,6 +23,66 @@ import {
 
 
 import { MerchTab } from './MerchTab';
+
+const applyMemberFilter = (member, filterKey, teams = [], sisterGroups = [], pushedMembers = []) => {
+    if (!member) return false;
+    if (filterKey === 'all' || filterKey === 'All') return true;
+
+    if (filterKey === 'pushed') {
+        return pushedMembers.map(String).includes(String(member.rosterId || member.id));
+    }
+
+    if (filterKey.startsWith('team-')) {
+        const teamId = parseInt(filterKey.replace('team-', ''), 10);
+        const team = teams.find(t => t.id === teamId);
+        if (!team) return false;
+        return (team.members || []).map(String).includes(String(member.rosterId || member.id));
+    }
+
+    if (filterKey === 'main') {
+        const groupName = 'main'; // Standard fallback for main group comparison
+        return !member.isSisterMember || 
+               (member.isSister === false) ||
+               (member.kenninGroups || []).includes('main') || 
+               (member.kennin && String(member.kennin.groupId) === 'main') ||
+               (member.homeGroup === 'main');
+    }
+
+    if (filterKey.startsWith('main-gen-')) {
+        const gen = filterKey.replace('main-gen-', '');
+        const isInMain = !member.isSisterMember || 
+                         (member.isSister === false) ||
+                         (member.isSisterMember === false) ||
+                         (member.kenninGroups || []).includes('main') || 
+                         (member.kennin && String(member.kennin.groupId) === 'main') ||
+                         (member.homeGroup === 'main');
+        return isInMain && member.generation === gen;
+    }
+
+    if (filterKey.startsWith('sg-')) {
+        const sgIdStr = filterKey.replace('sg-', '').split('-gen-')[0];
+        const sgId = parseInt(sgIdStr, 10);
+        const sg = sisterGroups.find(g => String(g.id) === String(sgId));
+        const sgName = sg?.name;
+        
+        const isInSG = String(member.groupId) === String(sgId) || 
+                       (sgName && (member.kenninGroups || []).includes(sgName)) ||
+                       (member.kennin && String(member.kennin.groupId) === String(sgId)) ||
+                       (sgName && member.homeGroup === sgName);
+
+        if (filterKey.includes('-gen-')) {
+            const gen = filterKey.split('-gen-')[1];
+            return isInSG && member.generation === gen;
+        }
+        return isInSG;
+    }
+
+    // Fallback for names
+    if (member.displayGroupName === filterKey) return true;
+    if (member.homeGroup === filterKey) return true;
+
+    return false;
+};
 
 
 const App = () => {
@@ -240,18 +300,8 @@ const MemberSelectionList = ({ members, selectedIds, toggleMember, disabled = fa
     const getFilteredMembers = () => {
         const memberList = members || [];
         if (activeTab === 'all') return memberList;
-        if (activeTab === 'main') return memberList.filter(m => !m.isSister || (m.kenninGroups || []).includes('main'));
-        if (activeTab.startsWith('team-')) {
-            const teamId = activeTab.split('-')[1];
-            const team = (teams || []).find(t => String(t.id) === teamId);
-            const teamMemberIds = (team?.members || []).map(String);
-            return memberList.filter(m => teamMemberIds.includes(String(m.id)));
-        }
-        if (activeTab.startsWith('sg-')) {
-            const sgId = activeTab.split('-')[1];
-            return memberList.filter(m => String(m.groupId) === sgId);
-        }
-        return [];
+        
+        return memberList.filter(m => applyMemberFilter(m, activeTab, teams, sisterGroups));
     };
     
     const filteredMembers = getFilteredMembers();
@@ -1845,8 +1895,12 @@ if (targetGroup === 'main') {
             });
             selectableMembers = unitMemberIds.map(id => getMemberById(id)).filter(Boolean);
         } else {
-            // It's a regular sister group. Find members by their groupId.
-            selectableMembers = allAvailableForSong.filter(m => String(m.groupId) === String(sg.id));
+            // It's a regular sister group. Find members by their groupId OR Kennin status.
+            selectableMembers = allAvailableForSong.filter(m => 
+                String(m.groupId) === String(sg.id) || 
+                (m.kennin && String(m.kennin.groupId) === String(sg.id)) ||
+                (m.kenninGroups || []).includes(sg.name)
+            );
         }
     }
 }
@@ -1878,59 +1932,13 @@ const sisterGroupDetails = sisterGroups.map(sg => ({
 // --- NEW: Logic to filter members based on the detailed dropdown selection ---
 let filteredMembers = selectableMembers;
 if (memberFilter !== 'all') {
-    if (memberFilter === 'main') {
-        filteredMembers = selectableMembers.filter(m => (!m.isSisterMember || m.homeGroup === 'main'));
-    } else if (memberFilter.startsWith('main-gen-')) {
-        const gen = memberFilter.replace('main-gen-', '');
-        filteredMembers = selectableMembers.filter(m => (!m.isSisterMember || m.homeGroup === 'main') && m.generation === gen);
-    } else if (memberFilter.startsWith('sg-')) {
-        if (memberFilter.includes('-gen-')) {
-            const [sgIdStr, gen] = memberFilter.replace('sg-', '').split('-gen-');
-            const sgId = parseInt(sgIdStr, 10);
-            filteredMembers = selectableMembers.filter(m => m.groupId === sgId && m.generation === gen);
-        } else {
-            const sgId = parseInt(memberFilter.replace('sg-', ''), 10);
-            filteredMembers = selectableMembers.filter(m => m.groupId === sgId);
-        }
-    }
+    filteredMembers = selectableMembers.filter(m => applyMemberFilter(m, memberFilter, teams, sisterGroups));
 }
 
     // --- UPDATED Function ---
     // Define the list of currently visible members based on the filter
     let visibleRoster = selectableMembers.filter(member => {
-        if (filterKey === 'All') return true;
-
-        if (filterKey.startsWith('team-')) {
-            const teamId = parseInt(filterKey.replace('team-', ''), 10);
-            const selectedTeam = teams.find(t => t.id === teamId);
-            if (!selectedTeam) return false;
-            // CORRECTED: Check if the member's unique rosterId is in the team's member list.
-            return (selectedTeam.members || []).map(String).includes(String(member.rosterId));
-        }
-
-            // CORRECTED: This now shows ONLY main group members.
-            if (filterKey === 'main') {
-                return !member.isSisterMember;
-            }
-
-        if (filterKey.startsWith('main-gen-')) {
-            const gen = filterKey.replace('main-gen-', '');
-            return (!member.isSisterMember || (member.kenninGroups || []).includes(groupName)) && member.generation === gen;
-        }
-
-        if (filterKey.startsWith('sg-')) {
-            const sgIdStr = filterKey.replace('sg-', '').split('-gen-')[0];
-            const sgId = parseInt(sgIdStr, 10);
-            
-            if (filterKey.includes('-gen-')) {
-                const gen = filterKey.split('-gen-')[1];
-                return member.groupId === sgId && member.generation === gen;
-            } else {
-                return member.groupId === sgId;
-            }
-        }
-        
-        return false;
+        return applyMemberFilter(member, filterKey, teams, sisterGroups);
     });
 
 if (showOnlyUnchosen) {
@@ -3159,16 +3167,28 @@ return (
 
             // --- FIXED HELPER VARIABLES ---
             const memberMap = {};
+
+            const getRosterIdForTrackMember = (memberId, singleObj) => {
+                const idStr = String(memberId);
+                if (idStr.startsWith('sg-') || idStr.startsWith('rival-')) return idStr;
+                if (singleObj.targetGroup && singleObj.targetGroup !== 'main') {
+                    const sg = sisterGroups.find(g => g.name === singleObj.targetGroup || String(g.id) === String(singleObj.targetGroup));
+                    if (sg) return `sg-${sg.id}-${idStr}`;
+                }
+                return idStr;
+            };
     
             // FIRST: Load the historical members from the single itself. This is the most accurate data and includes rivals.
             (release.tracks || []).flatMap(t => t.members || []).forEach(m => {
-                memberMap[String(m.id)] = m;
+                const rosterId = getRosterIdForTrackMember(m.id, release);
+                memberMap[rosterId] = { ...m, id: rosterId };
             });
     
             // SECOND: Add any currently active members as a fallback, but DO NOT overwrite the historical data.
             getAllAvailableMembers(true).forEach(m => {
-                if (!memberMap[String(m.id)]) {
-                    memberMap[String(m.id)] = m;
+                const rosterId = String(m.rosterId || m.id);
+                if (!memberMap[rosterId]) {
+                    memberMap[rosterId] = m;
                 }
             });
 
@@ -3203,20 +3223,22 @@ return (
         const TeamGroupedLineup = ({ track }) => {
             if (!track || !track.members || track.members.length === 0) return null;
 
-            // This handles old history entries that might just have IDs
-            if (typeof track.members[0] !== 'object') {
-                return <p className="text-sm italic mt-2 text-gray-500">Could not load historical team data for this old entry.</p>;
-            }
+            const resolvedMembers = track.members.map(m => {
+                if (typeof m === 'object' && m !== null) return m;
+                return memberMap[getRosterIdForTrackMember(m, release)];
+            }).filter(Boolean);
 
-            const memberGroups = track.members.reduce((acc, member) => {
+            if (resolvedMembers.length === 0) return null;
+
+            const memberGroups = resolvedMembers.reduce((acc, member) => {
                 if (!member) return acc;
                 let groupKey;
                 const mainGroupName = groupName || 'Hoshimi01';
 
-                    if (member.isExchangeStudent) {
-                        // ALWAYS group exchange students by their home group to separate them visually.
-                        groupKey = `${member.homeGroup}`;
-                    }
+                if (member.isExchangeStudent) {
+                    // ALWAYS group exchange students by their home group to separate them visually.
+                    groupKey = `${member.homeGroup}`;
+                }
                 else if (member.isSisterMember) {
                     const sgName = member.displayGroupName || 'Sister Group';
                     // If a sister member has a team, show the team name. Otherwise, they are a trainee.
@@ -3237,61 +3259,66 @@ return (
                 return acc;
             }, {});
 
-            const centerMemberIds = Array.isArray(track.center) ? track.center.map(String) : [String(track.center)];
+            const centerMemberIds = Array.isArray(track.center) ? track.center.map(id => getRosterIdForTrackMember(id, release)) : [getRosterIdForTrackMember(track.center, release)];
 
             return (
                 <div className="mt-3 pt-3 border-t border-dashed dark:border-gray-600">
                     {Object.keys(memberGroups)
+                        .sort((a, b) => {
+                            const mainGroupName = groupName || 'Hoshimi01'; // A safe fallback
 
-.sort((a, b) => {
-    const mainGroupName = groupName || 'Hoshimi01'; // A safe fallback
+                            const getScore = (key) => {
+                                const isMain = key.startsWith(mainGroupName);
+                                const isKKS = key.includes('Kenkyuusei');
 
-    const getScore = (key) => {
-        const isMain = key.startsWith(mainGroupName);
-        const isKKS = key.includes('Kenkyuusei');
+                                if (isMain && !isKKS) return 1;  // Main Group Team
+                                if (isMain && isKKS) return 2;   // Main Group KKS
+                                if (!isMain && !isKKS) return 3; // Sister Group Team
+                                if (!isMain && isKKS) return 4;  // Sister Group KKS
+                                return 5; // Fallback for any other cases
+                            };
 
-        if (isMain && !isKKS) return 1;  // Main Group Team
-        if (isMain && isKKS) return 2;   // Main Group KKS
-        if (!isMain && !isKKS) return 3; // Sister Group Team
-        if (!isMain && isKKS) return 4;  // Sister Group KKS
-        return 5; // Fallback for any other cases
-    };
+                            const scoreA = getScore(a);
+                            const scoreB = getScore(b);
 
-    const scoreA = getScore(a);
-    const scoreB = getScore(b);
+                            if (scoreA !== scoreB) {
+                                return scoreA - scoreB;
+                            }
 
-    if (scoreA !== scoreB) {
-        return scoreA - scoreB;
-    }
-
-    // If groups have the same score (e.g., two sister group teams), sort them alphabetically
-    return a.localeCompare(b);
-})
+                            // If groups have the same score (e.g., two sister group teams), sort them alphabetically
+                            return a.localeCompare(b);
+                        })
                         .map(groupKeyName => (
-                        <div key={groupKeyName} className="mt-1 text-sm">
-                            <p className="font-semibold text-pink-600 dark:text-pink-400">
-                                {groupKeyName}: <span className="font-normal text-gray-700 dark:text-gray-300">
-                                {memberGroups[groupKeyName].map((member, index) => (
-                                    <React.Fragment key={`${member.rosterId}-${index}`}>
-                                        <span className={centerMemberIds.includes(String(member.id)) ? 'font-bold' : ''}>
-                                            {member.name}
-                                        </span>
-                                        {index < memberGroups[groupKeyName].length - 1 && ', '}
-                                    </React.Fragment>
-                                ))}
-                                </span>
-                            </p>
-                        </div>
-                    ))}
+                            <div key={groupKeyName} className="mt-1 text-sm">
+                                <p className="font-semibold text-pink-600 dark:text-pink-400">
+                                    {groupKeyName}: <span className="font-normal text-gray-700 dark:text-gray-300">
+                                    {memberGroups[groupKeyName].map((member, index) => (
+                                        <React.Fragment key={`${member.rosterId || member.id}-${index}`}>
+                                            <span className={centerMemberIds.includes(String(member.rosterId || member.id)) ? 'font-bold' : ''}>
+                                                {member.name}
+                                            </span>
+                                            {index < memberGroups[groupKeyName].length - 1 && ', '}
+                                        </React.Fragment>
+                                    ))}
+                                    </span>
+                                </p>
+                            </div>
+                        ))}
                 </div>
             );
         };
 
         const GenerationGroupedLineup = ({ track }) => {
             if (!track || !track.members || track.members.length === 0) return null;
-            if (typeof track.members[0] !== 'object') return null;
 
-            const membersByGeneration = track.members.reduce((acc, member) => {
+            const resolvedMembers = track.members.map(m => {
+                if (typeof m === 'object' && m !== null) return m;
+                return memberMap[getRosterIdForTrackMember(m, release)];
+            }).filter(Boolean);
+
+            if (resolvedMembers.length === 0) return null;
+
+            const membersByGeneration = resolvedMembers.reduce((acc, member) => {
                 if (!member || !member.generation) return acc;
 
                 // --- START: Logic to find member's original group ---
@@ -3374,9 +3401,9 @@ return (
         if (release.isGraduationSingle) {
             const titleTrack = release.tracks.find(t => t.type === 'title');
             if (titleTrack && titleTrack.center && titleTrack.center.length > 0) {
-                const centerId = String(titleTrack.center[0]);
+                const centerId = getRosterIdForTrackMember(titleTrack.center[0], release);
                 // Find the member's name from the track data itself, as it's more reliable here
-                const centerMemberObject = (titleTrack.members || []).find(m => String(m.id) === centerId);
+                const centerMemberObject = (titleTrack.members || []).find(m => getRosterIdForTrackMember(m.id, release) === centerId);
 
                 if (centerMemberObject) {
                     const gradMemberName = centerMemberObject.name;
@@ -3391,14 +3418,14 @@ return (
         const formatNames = (nameArray) => {
             if (nameArray.length === 0) return '';
             if (nameArray.length === 1) return nameArray[0];
-            if (nameArray.length === 2) return nameArray.join(' and ');
-            return nameArray.slice(0, -1).join(', ') + ', and ' + nameArray.slice(-1);
+            if (nameArray.length === 2) return `${nameArray[0]} and ${nameArray[1]}`;
+            return `${nameArray.slice(0, -1).join(', ')}, and ${nameArray[nameArray.length - 1]}`;
         };
     
         const titleTrack = release.tracks.find(t => t.type === 'title');
         
         if (titleTrack) {
-            const firstTimeSenbatsu = (titleTrack.members || []).map(m => memberMap[String(m.id)]).filter(member => 
+            const firstTimeSenbatsu = (titleTrack.members || []).map(m => memberMap[getRosterIdForTrackMember(m.id, release)]).filter(member => 
                 member && (member.singlesParticipation || []).filter(p => p.isTitleTrackSenbatsu).length === 1
             );
     
@@ -3408,7 +3435,7 @@ return (
     
             if (titleTrack.center && titleTrack.center.length > 0) {
                 const firstTimeACenters = titleTrack.center
-                    .map(id => memberMap[String(id)])
+                    .map(id => memberMap[getRosterIdForTrackMember(id, release)])
                     .filter(member => {
                         if (!member) return false;
                         const titleCenterCount = (member.centerHistory || []).filter(h => h.type === 'title').length;
@@ -3426,13 +3453,13 @@ return (
             if (previousSingle) {
                 const prevTitleTrack = previousSingle.tracks.find(t => t.type === 'title');
                 if (prevTitleTrack) {
-                    const prevSenbatsuIds = (prevTitleTrack.members || []).map(m => String(m.id));
-                    const currentSenbatsuIds = (titleTrack.members || []).map(m => String(m.id));
+                    const prevSenbatsuIds = (prevTitleTrack.members || []).map(m => getRosterIdForTrackMember(m.id, previousSingle));
+                    const currentSenbatsuIds = (titleTrack.members || []).map(m => getRosterIdForTrackMember(m.id, release));
                     const droppedMemberIds = prevSenbatsuIds.filter(id => !currentSenbatsuIds.includes(id));
                     
                     if (droppedMemberIds.length > 0) {
                         const droppedMemberNames = droppedMemberIds.map(id => {
-                            const member = getMemberById(id);
+                            const member = memberMap[id];
                             return member ? member.name : '';
                         }).filter(Boolean);
                         
@@ -3444,8 +3471,8 @@ return (
             }
         }
         
-        const allParticipatingIds = [...new Set(release.tracks.flatMap(t => (t.members || []).map(m => m.id)))];
-        const firstTimeParticipation = allParticipatingIds.map(id => memberMap[String(id)]).filter(member =>
+        const allParticipatingIds = [...new Set(release.tracks.flatMap(t => (t.members || []).map(m => getRosterIdForTrackMember(m.id, release))))];
+        const firstTimeParticipation = allParticipatingIds.map(id => memberMap[id]).filter(member =>
             member && (member.singlesParticipation || []).filter(p => p.singleId === release.id).length > 0 && (member.singlesParticipation || []).length === 1
         );
     
@@ -3455,7 +3482,7 @@ return (
     
         const bSideTracks = release.tracks.filter(t => t.type === 'b-side');
         const firstTimeBSideCenters = bSideTracks
-            .map(track => track.center ? memberMap[String(track.center)] : null)
+            .map(track => track.center ? memberMap[getRosterIdForTrackMember(track.center, release)] : null)
             .filter(member => {
                 if (!member) return false;
                 const bSideCenterCount = (member.centerHistory || []).filter(h => h.type === 'b-side').length;
@@ -3463,8 +3490,7 @@ return (
             });
     
         if (firstTimeBSideCenters.length > 0) {
-            const uniqueNames = [...new Set(firstTimeBSideCenters.map(m => m.name))];
-            triviaItems.push(`First B-Side Center of ${formatNames(uniqueNames)}.`);
+            triviaItems.push(`First B-Side Center of ${formatNames(firstTimeBSideCenters.map(m => m.name))}.`);
         }
     
         if (triviaItems.length === 0) return null;
@@ -3498,7 +3524,7 @@ return (
                       </p>
                        {release.baseSalesPotential > 0 && (
                            <p><strong>Base Sales Potential:</strong> {Math.floor(release.baseSalesPotential).toLocaleString()}</p>
-                      )}
+                       )}
                   </div>
                   <ProductionInfo />
                 </div>
@@ -3557,8 +3583,8 @@ return (
   
                                     const TrackCard = ({ track, exclusiveType }) => {
                                         const centerNames = Array.isArray(track.center)
-                                        ? track.center.map(id => memberMap[String(id)]?.name).filter(Boolean).join(', ')
-                                        : (track.center && memberMap[String(track.center)] ? memberMap[String(track.center)].name : 'N/A');                                        const rows = { '1st Row': [], '2nd Row': [], '3rd Row': [], '4th Row': [], '5th Row': [] };
+                                        ? track.center.map(id => memberMap[getRosterIdForTrackMember(id, release)]?.name).filter(Boolean).join(', ')
+                                        : (track.center && memberMap[getRosterIdForTrackMember(track.center, release)] ? memberMap[getRosterIdForTrackMember(track.center, release)].name : 'N/A');                                        const rows = { '1st Row': [], '2nd Row': [], '3rd Row': [], '4th Row': [], '5th Row': [] };
                                         const unassigned = [];
                                             if (track.lineup && track.members) {
                                                 track.members.forEach(memberObject => {
@@ -3572,7 +3598,7 @@ return (
                                             
                                         } else if (track.members) {
                                             track.members.forEach(memberId => {
-                                                const member = memberMap[String(memberId)];
+                                                const member = memberMap[getRosterIdForTrackMember(memberId, release)];
                                                 if (member) unassigned.push(member.name);
                                             });
                                         }
@@ -3622,9 +3648,9 @@ return (
                             ) : (                          
                                 release.tracks.map((track, index) => {
                                     const centerNames = Array.isArray(track.center)
-                                        ? track.center.map(id => memberMap[String(id)]?.name).filter(Boolean).join(', ')
-                                        : (track.center && memberMap[String(track.center)] ? memberMap[String(track.center)].name : 'N/A');
-
+                                        ? track.center.map(id => memberMap[getRosterIdForTrackMember(id, release)]?.name).filter(Boolean).join(', ')
+                                        : (track.center && memberMap[getRosterIdForTrackMember(track.center, release)] ? memberMap[getRosterIdForTrackMember(track.center, release)].name : 'N/A');
+ 
                                     const rows = { '1st Row': [], '2nd Row': [], '3rd Row': [], '4th Row': [], '5th Row': [] };
                                     const unassigned = [];
                                     if (track.lineup && track.members) {
@@ -3636,14 +3662,14 @@ return (
                                                 unassigned.push(memberObject.name);
                                             }
                                         });
-
+ 
                                     } else if (track.members) {
                                         track.members.forEach(memberId => {
-                                            const member = memberMap[String(memberId)];
+                                            const member = memberMap[getRosterIdForTrackMember(memberId, release)];
                                             if (member) unassigned.push(member.name);
                                         });
                                     }
-
+ 
                                     return (
                                         <div key={index} className="p-4 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
                                             <div className="flex justify-between items-start">
@@ -3662,6 +3688,7 @@ return (
                                                 {unassigned.length > 0 && ( <p><span className="font-semibold">Members:</span> {unassigned.join(', ')}</p> )}
                                             </div>
                                             <TeamGroupedLineup track={track} />
+                                            <GenerationGroupedLineup track={track} />
                                         </div>
                                     );
                                 })
@@ -3669,12 +3696,12 @@ return (
                         ) : (
                         // UNIFIED LOGIC: Display all tracks with full details
                         release.tracks.map((track, index) => {
-                              const centerMember = track.center ? memberMap[String(track.center)] : null;
+                              const centerMember = track.center ? memberMap[getRosterIdForTrackMember(track.center, release)] : null;
                               const rows = { '1st Row': [], '2nd Row': [], '3rd Row': [], '4th Row': [], '5th Row': [] };
                               const unassigned = [];
                               if (track.lineup && track.members) {
                                   track.members.forEach(memberId => {
-                                      const member = memberMap[String(memberId)];
+                                      const member = memberMap[getRosterIdForTrackMember(memberId, release)];
                                       if (member) {
                                           const row = track.lineup[String(memberId)];
                                           if (row && rows[row]) { rows[row].push(member.name); } else { unassigned.push(member.name); }
@@ -3682,7 +3709,7 @@ return (
                                   });
                               } else if (track.members) {
                                    track.members.forEach(memberId => {
-                                      const member = memberMap[String(memberId)];
+                                      const member = memberMap[getRosterIdForTrackMember(memberId, release)];
                                       if (member) unassigned.push(member.name);
                                    });
                               }
@@ -3705,6 +3732,7 @@ return (
                                           {unassigned.length > 0 && ( <p><span className="font-semibold">Members:</span> {unassigned.join(', ')}</p> )}
                                       </div>
                                       <TeamGroupedLineup track={track} />
+                                      <GenerationGroupedLineup track={track} />
                                   </div>
                               );
                           })
@@ -3808,14 +3836,20 @@ return (
     // --- DERIVED DATA ---
     const selectedTypeData = performanceTypes.find(p => p.label === selectedTypeLabel);
     
+    const allReleasesSorted = [
+        ...songs.map(s => ({ ...s, isMain: true })),
+        ...sisterGroups.flatMap(sg => (sg.songs || []).map(s => ({ ...s, isMain: false, sgName: sg.name })))
+    ].sort((a, b) => (b.releaseWeek || 0) - (a.releaseWeek || 0));
+
     const allTracks = [
-        ...[...songs, ...sisterGroups.flatMap(sg => sg.songs || [])].flatMap(s => (s.tracks || []).map(t => {
+        ...allReleasesSorted.flatMap(s => (s.tracks || []).map(t => {
             const releaseType = s.type === 'album' ? 'Album' : 'Single';
-            const releaseArtist = s.artist || (s.targetGroup === 'main' ? groupName : s.targetGroup);
+            const releaseArtist = s.artist || (s.isMain ? groupName : s.sgName || s.targetGroup);
             return {
                 id: `${s.id}-${t.name}-${releaseArtist}`,
                 name: `${t.name} (${releaseType}: ${s.name})`,
-                type: 'release'
+                type: 'release',
+                item: { id: t.id, name: t.name }
             };
         })),
         ...(theaterSongs || []).map(song => {
@@ -3834,64 +3868,23 @@ return (
     const filteredTypes = filterCategory === 'All' ? performanceTypes : performanceTypes.filter(p => p.category === filterCategory);
 
     // --- NEW: Generate structured data for the new filter ---
-const mainGroupGenerations = [...new Set(availableMembers.filter(m => !m.isSisterMember).map(m => m.generation).filter(Boolean))];
-const sisterGroupDetails = sisterGroups.map(sg => ({
-    ...sg,
-    generations: [...new Set(availableMembers.filter(m => m.groupId === sg.id).map(m => m.generation).filter(Boolean))]
-}));
+    const mainGroupGenerations = [...new Set(availableMembers.filter(m => !m.isSisterMember).map(m => m.generation).filter(Boolean))];
+    const sisterGroupDetails = sisterGroups.map(sg => ({
+        ...sg,
+        generations: [...new Set(availableMembers.filter(m => m.groupId === sg.id).map(m => m.generation).filter(Boolean))]
+    }));
 
     // --- NEW: Logic to filter members based on the detailed dropdown selection ---
-let filteredMembers = availableMembers;
-if (memberFilter !== 'all') {
-    if (memberFilter.startsWith('team-')) {
-        const teamId = parseInt(memberFilter.replace('team-', ''), 10);
-        const selectedTeam = teams.find(t => t.id === teamId);
-
-        if (!selectedTeam) {
-            filteredMembers = [];
-        } else {
-            filteredMembers = availableMembers.filter(member => {
-                // Primary requirement: Member must be in the selected team. (Using String() for type safety)
-                if (String(member.teamId) !== String(teamId)) {
-                    return false;
-                }
-
-                // Secondary requirement: Member must belong to the correct group for that team.
-                const isMainGroupTeam = selectedTeam.groupId === 'main';
-
-                if (isMainGroupTeam) {
-                    // For a main group team, only show main group members.
-                    return !member.isSisterMember;
-                } else {
-                    // For a sister group team, only show members from that specific sister group.
-                    // Coercing both to String() prevents type-related comparison errors.
-                    return String(member.groupId) === String(selectedTeam.groupId);
-                }
-            });
-        }
-} else if (memberFilter === 'main') {
-    filteredMembers = availableMembers.filter(m => !m.isSisterMember || (m.kenninGroups || []).includes(groupName));
-}
-    else if (memberFilter.startsWith('main-gen-')) {
-        const gen = memberFilter.replace('main-gen-', '');
-        filteredMembers = availableMembers.filter(m => !m.isSisterMember && m.generation === gen);
-    } else if (memberFilter.startsWith('sg-')) {
-        if (memberFilter.includes('-gen-')) {
-            const [sgIdStr, gen] = memberFilter.replace('sg-', '').split('-gen-');
-            const sgId = parseInt(sgIdStr, 10);
-            filteredMembers = availableMembers.filter(m => m.groupId === sgId && m.generation === gen);
-        } else {
-            const sgId = parseInt(memberFilter.replace('sg-', ''), 10);
-            filteredMembers = availableMembers.filter(m => m.groupId === sgId);
-        }
+    let filteredMembers = availableMembers;
+    if (memberFilter !== 'all') {
+        filteredMembers = availableMembers.filter(m => applyMemberFilter(m, memberFilter, teams, sisterGroups));
     }
-}
 
     // --- SETLIST MANIPULATION ---
     const addTrackToSetlist = (trackId) => {
         const trackToAdd = allTracks.find(t => t.id === trackId);
         if(trackToAdd) {
-            setSetlist(prev => [...prev, { type: 'song', item: { id: trackToAdd.id, name: trackToAdd.name } }]);
+            setSetlist(prev => [...prev, { type: 'song', item: trackToAdd.item || { id: trackToAdd.id, name: trackToAdd.name } }]);
         }
     };
     const addSpecialItemToSetlist = (itemType) => {
@@ -4274,35 +4267,7 @@ const randomizeSetlist = (count = 20) => {
     // Corrected filtering logic
     let filteredMembers = availableMembers;
     if (memberFilter !== 'all') {
-        if (memberFilter.startsWith('team-')) {
-            const teamId = parseInt(memberFilter.replace('team-', ''), 10);
-            const selectedTeam = teams.find(t => t.id === teamId);
-            if (selectedTeam) {
-                filteredMembers = availableMembers.filter(member => {
-                    if (String(member.teamId) !== String(teamId)) return false;
-                    const isMainGroupTeam = selectedTeam.groupId === 'main';
-                    if (isMainGroupTeam) return !member.isSisterMember;
-                    return String(member.groupId) === String(selectedTeam.groupId);
-                });
-            } else {
-                filteredMembers = [];
-            }
-} else if (memberFilter === 'main') {
-    // Show main group members AND sister group members with a concurrent position
-    filteredMembers = availableMembers.filter(m => !m.isSisterMember || (m.kenninGroups || []).includes(groupName));
-}
-        else if (memberFilter.startsWith('main-gen-')) {
-            const gen = memberFilter.replace('main-gen-', '');
-            filteredMembers = availableMembers.filter(m => !m.isSisterMember && m.generation === gen);
-        } else if (memberFilter.startsWith('sg-')) {
-            if (memberFilter.includes('-gen-')) {
-                const [sgIdStr, gen] = memberFilter.replace('sg-', '').split('-gen-');
-                filteredMembers = availableMembers.filter(m => String(m.groupId) === sgIdStr && m.generation === gen);
-            } else {
-                const sgId = memberFilter.replace('sg-', '');
-                filteredMembers = availableMembers.filter(m => String(m.groupId) === sgId);
-            }
-        }
+        filteredMembers = availableMembers.filter(m => applyMemberFilter(m, memberFilter, teams, sisterGroups));
     }
 
     // --- MANIPULATION & CONFIRMATION ---
@@ -5835,10 +5800,38 @@ const SaveGameModal = () => {
         const GraduationAnnouncementModal = () => {
             const member = modalData;
             if (!member) return null;
+
+            // Calculate dynamic variables
+            const yearsActive = Math.max(1, Math.floor(member.age - (member.joinAge || 15)));
+            const centerSong = (member.centerHistory && member.centerHistory.length > 0) ? member.centerHistory[member.centerHistory.length - 1] : "our latest single";
+            const groupText = member.homeGroup === 'main' ? groupName : member.homeGroup;
+            
+            let rivalName = "my rival";
+            let bestFriendName = "my best friend";
+            if (member.chemistry && Object.keys(member.chemistry).length > 0) {
+                const chemEntries = Object.entries(member.chemistry);
+                chemEntries.sort((a, b) => a[1] - b[1]);
+                const rivalMember = getMemberById(chemEntries[0][0]);
+                if (rivalMember) rivalName = rivalMember.name;
+
+                chemEntries.sort((a, b) => b[1] - a[1]);
+                const friendMember = getMemberById(chemEntries[0][0]);
+                if (friendMember) bestFriendName = friendMember.name;
+            }
+
+            const processSpeech = (text) => {
+                let processed = text;
+                processed = processed.replace(/\[Years Active\]/g, yearsActive);
+                processed = processed.replace(/\[Center Song\]/g, centerSong);
+                processed = processed.replace(/\[Group\]/g, groupText);
+                processed = processed.replace(/\[Rival\]/g, rivalName);
+                processed = processed.replace(/\[Best Friend\]/g, bestFriendName);
+                return processed;
+            };
     
             const reasons = {
                 'Pursue a Solo Dream': [
-                    "I've spent a long time thinking about my future, and I’ve decided I want to challenge myself as an actress. To take that next step, I will be graduating.",
+                    "I've spent a long time thinking about my future, and after [Years Active] years, I’ve decided I want to challenge myself as an actress.",
                     "While performing on stage has been a joy, I’ve discovered a deep passion for songwriting. I want to see if my own voice can stand alone as a solo artist.",
                     "My dream since childhood was to be on the silver screen. I've learned everything I can here, and now I must dive headfirst into the world of acting.",
                     "I want to explore the world of fashion and design. To build my own brand and see my visions come to life, I need to dedicate all my time to this new path.",
@@ -5847,12 +5840,12 @@ const SaveGameModal = () => {
                 'Reaching the Goal': [
                     "When I joined, I promised myself I would stay until we reached this stage. Now that we've done it together, I feel I can leave with no regrets.",
                     "Performing at the Nippon Budokan was our ultimate dream. Now that the lights have dimmed on that performance, I feel my mission here is complete.",
-                    "We finally hit #1 on the charts. I’ve seen this group reach the summit, and I want to leave while my heart is full of this specific happiness.",
+                    "We finally hit #1 on the charts. I’ve seen this group reach the summit over the past [Years Active] years, and I want to leave while my heart is full of this specific happiness.",
                     "I promised to stay until our 10th anniversary. We made it. I’m so proud of what we built, and I can now smile as I say goodbye.",
-                    "Looking at the sea of light sticks tonight, I know we’ve succeeded in becoming a household name. I’m ready for what's next."
+                    "Standing center for [Center Song] made me realize we’ve succeeded in becoming a household name. I’m ready for what's next."
                 ],
                 'Prove My Worth': [
-                    "I joined this group to show everyone what I could do. I've given it my all, but I feel like my journey here has reached its limit. I'm going to find a new place where I can shine.",
+                    "I joined [Group] to show everyone what I could do. I've given it my all for [Years Active] years, but I feel like my journey here has reached its limit.",
                     "I’ve spent years in the back row. While I love my teammates, I have a hunger to be center. I’m graduating to find a stage where I am the protagonist.",
                     "I want to test my skills in a more competitive environment overseas. I don't want to wonder 'what if' for the rest of my life.",
                     "I have poured my soul into every dance. If I stay here, I fear I’ll become complacent. I need a new, harder challenge to keep growing.",
@@ -5860,17 +5853,17 @@ const SaveGameModal = () => {
                 ],
                 'Find Normal Happiness': [
                     "Being an idol has been a dream come true, but I’ve realized I want to experience life as a normal girl again, away from the bright lights.",
-                    "I want to walk down the street without a mask, go to a cafe with friends, and enjoy the simple things I’ve missed since I was a teenager.",
-                    "I’ve given my youth to the fans, and I don’t regret a second. But now, I want to find a different kind of love and build a quiet, ordinary life.",
+                    "I want to walk down the street without a mask, go to a cafe with friends, and enjoy the simple things I’ve missed.",
+                    "I’ve given my youth to the fans, and I don’t regret a second of these [Years Active] years. But now, I want to find a different kind of love and build a quiet, ordinary life.",
                     "The 'Idol' version of me is just one part of who I am. I want to rediscover the 'me' that existed before the makeup and the costumes.",
                     "I’ve decided to retire from the industry entirely. I want my next chapter to be private, peaceful, and entirely my own."
                 ],
                 'Space for Juniors': [
-                    "Seeing how much the younger members have grown lately makes me so happy. I feel like I can finally entrust the future of the group to them.",
-                    "I’ve been the pillar of this group for a long time. It’s time for me to step aside so a new ace can emerge and lead us into the next era.",
+                    "Seeing how much the younger members have grown lately makes me so happy. I feel like I can finally entrust the future of [Group] to them.",
+                    "I’ve been the pillar of this group for a long time. After [Years Active] years, it’s time for me to step aside so a new ace can emerge and lead us into the next era.",
                     "The juniors are ready. If I stay, I’m taking up a spot that belongs to the future. I want to watch them thrive from the audience.",
                     "I’ve taught them everything I know. Now, the greatest gift I can give the group is the room to grow without my shadow hanging over them.",
-                    "My role as a mentor is finished. Seeing their glittering eyes makes me realize the group is in safe hands. It’s my time to fly."
+                    "My role as a mentor is finished. Seeing their glittering eyes makes me realize [Group] is in safe hands. It’s my time to fly."
                 ],
                 'Academic Focus': [
                     "I've tried my best to balance school and my activities here, but I’ve reached a point where I need to focus 100% on my exams and my future education.",
@@ -5880,14 +5873,14 @@ const SaveGameModal = () => {
                     "I want to study art and history. To truly immerse myself in my studies, I’ve decided to put down the microphone and pick up the books."
                 ],
                 'The Rival': [
-                    "To my greatest rival... thank you. You pushed me to be better every single day. But I've found a new mountain to climb. I hope we'll meet again at the top.",
+                    "To [Rival]... thank you. You pushed me to be better every single day. But I've found a new mountain to climb. I hope we'll meet again at the top.",
                     "Watching you grow made me realize I can’t stay in this comfortable place anymore. I’m leaving to become someone who can truly stand equal to you.",
                     "We’ve fought for center for years. Now that you’ve finally taken it, I feel I can leave knowing the group has the best leader possible.",
                     "Our rivalry was the fire that kept me going. Without it, I feel my story here is finished. I’m off to find a new spark.",
                     "You were the wall I could never climb. Thank you for being my motivation. I’m graduating to find a path where I don’t have to follow you."
                 ],
                 'The Producer': [
-                    "I've always loved creating things for this group, from the songs to the stage. Now, I want to step behind the curtain and help create dreams for others.",
+                    "I've always loved creating things for [Group], from the songs to the stage. Now, I want to step behind the curtain and help create dreams for others.",
                     "I’ve spent more time in the editing room than the dance studio lately. I’ve realized my true calling is producing the next generation of stars.",
                     "I want to use my experience to protect and guide new idols. I’m graduating to start my own agency and build a healthier industry.",
                     "Choreographing our last single made me realize where my heart lies. I want to be a professional creator, not just a performer.",
@@ -5902,20 +5895,21 @@ const SaveGameModal = () => {
                 ],
                 'Heal from a Scandal': [
                     "The past has been difficult, and your support meant the world to me. However, I've decided that for my own peace of mind, I need to step away from the public eye.",
-                    "I’ve caused a lot of trouble for the members and the fans. To take responsibility and allow the group to move forward, I am graduating.",
+                    "I’ve caused a lot of trouble for the members and the fans. To take responsibility and allow [Group] to move forward, I am graduating.",
                     "I need time to reflect on my actions and grow as a person. I don’t think I can do that while remaining in the spotlight.",
                     "I want to apologize for the disappointment I caused. I’m leaving so that I can one day stand before you again as someone you can be proud of.",
                     "The scars from recent events haven't healed. I’m graduating to find a quiet place to breathe and start my life over from zero."
                 ],
                 'Family Matters': [
-                    "Because of my activities in this group, I've been able to support my family. Now, it's time for me to be there for them in a different way.",
+                    "Because of my activities in [Group], I've been able to support my family. Now, it's time for me to be there for them in a different way.",
                     "My family's business needs me. I’ve decided to move back to my hometown and take over the responsibilities my parents have carried for so long.",
                     "A family member is facing a health struggle, and I want to spend every possible moment by their side. My place is at home right now.",
                     "I’m the eldest daughter, and it’s time for me to support my siblings' dreams just as my family supported mine. I’m heading home to help.",
                     "I’ve spent too many years away from my parents. I want to go back to the countryside and live a life where I can see them every day."
                 ]
-            };            const speechOptions = reasons[member.ambition] || ["I have decided to graduate."];
-            const speech = speechOptions[Math.floor(Math.random() * speechOptions.length)];
+            };            
+            const speechOptions = reasons[member.ambition] || ["I have decided to graduate."];
+            const speech = processSpeech(speechOptions[Math.floor(Math.random() * speechOptions.length)]);
     
             const handleConfirm = () => {
                 // The member data is already in modalData, so we just need to switch the modal view.
@@ -7182,21 +7176,7 @@ const handleConfirmMove = () => {
         // --- NEW: Logic to filter members based on the dropdown selection ---
         let filteredMembers = availableMembers;
         if (memberFilter !== 'all') {
-            if (memberFilter === 'main') {
-                filteredMembers = availableMembers.filter(m => !m.isSisterMember);
-            } else if (memberFilter.startsWith('main-gen-')) {
-                const gen = memberFilter.replace('main-gen-', '');
-                filteredMembers = availableMembers.filter(m => !m.isSisterMember && m.generation === gen);
-            } else if (memberFilter.startsWith('sg-')) {
-                if (memberFilter.includes('-gen-')) {
-                    const [sgIdStr, gen] = memberFilter.replace('sg-', '').split('-gen-');
-                    const sgId = parseInt(sgIdStr, 10);
-                    filteredMembers = availableMembers.filter(m => m.groupId === sgId && m.generation === gen);
-                } else {
-                    const sgId = parseInt(memberFilter.replace('sg-', ''), 10);
-                    filteredMembers = availableMembers.filter(m => m.groupId === sgId);
-                }
-            }
+            filteredMembers = availableMembers.filter(m => applyMemberFilter(m, memberFilter, teams, sisterGroups));
         }
   
         // --- MODIFIED: selectAll and deselectAll now use the 'filteredMembers' list ---
@@ -8945,25 +8925,7 @@ const CreateVarietyShowModal = () => {
 
     let filteredMembers = availableMembers;
     if (memberFilter !== 'all') {
-        if (memberFilter.startsWith('team-')) {
-            const teamId = parseInt(memberFilter.replace('team-', ''), 10);
-            const team = teams.find(t => t.id === teamId);
-            const teamMemberIds = new Set((team?.members || []).map(String));
-            filteredMembers = availableMembers.filter(member => teamMemberIds.has(String(member.rosterId || member.id)));
-        } else if (memberFilter === 'main') {
-            filteredMembers = availableMembers.filter(m => !m.isSisterMember || (m.kenninGroups || []).includes(groupName));
-        } else if (memberFilter.startsWith('main-gen-')) {
-            const gen = memberFilter.replace('main-gen-', '');
-            filteredMembers = availableMembers.filter(m => !m.isSisterMember && m.generation === gen);
-        } else if (memberFilter.startsWith('sg-')) {
-            if (memberFilter.includes('-gen-')) {
-                const [sgIdStr, gen] = memberFilter.replace('sg-', '').split('-gen-');
-                filteredMembers = availableMembers.filter(m => String(m.groupId) === sgIdStr && m.generation === gen);
-            } else {
-                const sgId = memberFilter.replace('sg-', '');
-                filteredMembers = availableMembers.filter(m => String(m.groupId) === sgId);
-            }
-        }
+        filteredMembers = availableMembers.filter(m => applyMemberFilter(m, memberFilter, teams, sisterGroups));
     }
 
     const toggleMember = (id) => {
@@ -9112,7 +9074,8 @@ const RecastVarietyShowModal = () => {
 
 const FilmProductionModal = () => {
     const [title, setTitle] = useState('');
-    const [type, setType] = useState(Object.keys(filmProjectTypes)[0]);
+    const [type, setType] = useState(Object.keys(filmProjectScales)[0]);
+    const [genre, setGenre] = useState(Object.keys(filmGenres)[0]);
     const [cast, setCast] = useState({ lead: [], supporting: [], general: [] });
     const [currentRole, setCurrentRole] = useState('lead');
     const [memberFilter, setMemberFilter] = useState('all');
@@ -9130,26 +9093,7 @@ const FilmProductionModal = () => {
     }));
     let filteredMembers = availableMembers.filter(m => !allCastIds.has(m.rosterId));
     if (memberFilter !== 'all') {
-        if (memberFilter.startsWith('team-')) {
-            const teamId = parseInt(memberFilter.replace('team-', ''), 10);
-            const team = teams.find(t => t.id === teamId);
-            const teamMemberIds = new Set((team?.members || []).map(String));
-            filteredMembers = filteredMembers.filter(m => teamMemberIds.has(m.rosterId));
-        } else if (memberFilter === 'main') {
-            filteredMembers = filteredMembers.filter(m => !m.isSisterMember || (m.kenninGroups || []).includes(groupName));
-        } else if (memberFilter.startsWith('main-gen-')) {
-            const gen = memberFilter.replace('main-gen-', '');
-            filteredMembers = filteredMembers.filter(m => !m.isSisterMember && m.generation === gen);
-        } else if (memberFilter.startsWith('sg-')) {
-            if (memberFilter.includes('-gen-')) {
-                const [sgIdStr, gen] = memberFilter.replace('sg-', '').split('-gen-');
-                filteredMembers = filteredMembers.filter(m => String(m.groupId) === sgIdStr && m.generation === gen);
-            } else {
-                const sgId = memberFilter.replace('sg-', '');
-                filteredMembers = filteredMembers.filter(m => String(m.groupId) === sgId);
-            }
-        }
-
+        filteredMembers = filteredMembers.filter(m => applyMemberFilter(m, memberFilter, teams, sisterGroups));
     }
     filteredMembers.sort((a, b) => getTotalFansForMember(b) - getTotalFansForMember(a));
 
@@ -9168,13 +9112,13 @@ const FilmProductionModal = () => {
 
     const handleConfirm = () => {
         if (title.trim() && cast.lead.length > 0) {
-            startFilmProject(title, type, cast, scriptTier, directorTier);
+            startFilmProject(title, type, genre, cast, scriptTier, directorTier);
         } else {
             setMessage("A title and at least one lead actor are required.");
         }
     };
     
-    const projectType = filmProjectTypes[type];
+    const projectType = filmProjectScales[type];
     const script = scriptTiers[scriptTier];
     const director = directorTiers[directorTier];
     const baseTotalCost = projectType.cost + script.cost + director.cost;
@@ -9213,7 +9157,10 @@ const FilmProductionModal = () => {
                     <div className="space-y-4">
                         <input type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder="Project Title" className="w-full p-3 border-pink-200 dark:border-pink-800/50 rounded-lg bg-white/70 dark:bg-slate-700/50"/>
                         <select value={type} onChange={e => setType(e.target.value)} className="w-full p-3 border-pink-200 dark:border-pink-800/50 rounded-lg bg-white/70 dark:bg-slate-700/50">
-                            {Object.entries(filmProjectTypes).map(([t, data]) => <option key={t} value={t}>{t} ({data.genre})</option>)}
+                            {Object.entries(filmProjectScales).map(([t, data]) => <option key={t} value={t}>{t} (¥{data.cost.toLocaleString()})</option>)}
+                        </select>
+                        <select value={genre} onChange={e => setGenre(e.target.value)} className="w-full p-3 border-pink-200 dark:border-pink-800/50 rounded-lg bg-white/70 dark:bg-slate-700/50">
+                            {Object.entries(filmGenres).map(([g, data]) => <option key={g} value={g}>{data.name} (Core: {data.coreStats.map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(', ')})</option>)}
                         </select>
                         
                         <div>
@@ -9406,6 +9353,7 @@ const FilmographyModal = () => (
                 <div key={film.id} className="p-3 bg-gray-100 dark:bg-gray-800 rounded-lg flex justify-between items-center">
                     <div>
                         <p className="font-bold text-lg">{film.title} <span className="text-sm font-normal text-gray-500">({getFormattedDateForWeek(film.completedWeek)})</span></p>
+                        <p className="text-xs text-pink-600 font-semibold mb-1">{film.type} - {film.genre || 'Drama'}</p>
                         <p>Crit: <strong className="text-blue-500">{film.finalCriticalScore}</strong> | Comm: <strong className="text-green-500">{film.finalCommercialScore}</strong></p>
                     </div>
                     <button onClick={() => { setViewedFilm(film); setShowModal('filmDetails'); }} className="px-4 py-2 bg-purple-500 text-white font-semibold rounded-lg">
@@ -9444,6 +9392,8 @@ const FilmDetailsModal = ({ viewedFilm, setViewedFilm, setShowModal, getMemberBy
                 </div>
                 <div>
                     <h4 className="font-bold">Production Details</h4>
+                    <p className="text-sm">Scale: {viewedFilm.type}</p>
+                    <p className="text-sm">Genre: {viewedFilm.genre || 'Drama'}</p>
                     <p className="text-sm">Script: {viewedFilm.script.name} (+{viewedFilm.script.quality} Crit)</p>
                     <p className="text-sm">Director: {viewedFilm.director.name} (+{viewedFilm.director.qualityBonus} Crit)</p>
                 </div>
@@ -9502,28 +9452,7 @@ const FilmDetailsModal = ({ viewedFilm, setViewedFilm, setShowModal, getMemberBy
         let filteredEligibleMembers = eligibleMembers;
     
         if (memberFilter !== 'all') {
-            if (memberFilter === 'pushed') {
-                const pushedIds = new Set(pushedMembers.map(String));
-                filteredEligibleMembers = filteredEligibleMembers.filter(m => pushedIds.has(String(m.rosterId)));
-            } else if (memberFilter.startsWith('team-')) {
-                const teamId = parseInt(memberFilter.replace('team-', ''), 10);
-                const team = teams.find(t => t.id === teamId);
-                const teamMemberIds = new Set((team?.members || []).map(String));
-                filteredEligibleMembers = filteredEligibleMembers.filter(m => teamMemberIds.has(String(m.rosterId || m.id)));
-            } else if (memberFilter === 'main') {
-                filteredEligibleMembers = filteredEligibleMembers.filter(m => !m.isSisterMember || (m.kenninGroups || []).includes(groupName));
-            } else if (memberFilter.startsWith('main-gen-')) {
-                const gen = memberFilter.replace('main-gen-', '');
-                filteredEligibleMembers = filteredEligibleMembers.filter(m => !m.isSisterMember && m.generation === gen);
-            } else if (memberFilter.startsWith('sg-')) {
-                if (memberFilter.includes('-gen-')) {
-                    const [sgIdStr, gen] = memberFilter.replace('sg-', '').split('-gen-');
-                    filteredEligibleMembers = filteredEligibleMembers.filter(m => String(m.groupId) === sgIdStr && m.generation === gen);
-                } else {
-                    const sgId = memberFilter.replace('sg-', '');
-                    filteredEligibleMembers = filteredEligibleMembers.filter(m => String(m.groupId) === sgId);
-                }
-            }
+            filteredEligibleMembers = eligibleMembers.filter(m => applyMemberFilter(m, memberFilter, teams, sisterGroups, pushedMembers));
         }
     
         if (localMemberSearch.trim()) {
@@ -10091,30 +10020,7 @@ const KouhakuInvitationModal = () => {
 
         let filteredMembers = availableMembers;
         if (memberFilter !== 'all') {
-            if (memberFilter.startsWith('team-')) {
-                const teamId = parseInt(memberFilter.replace('team-', ''), 10);
-                const selectedTeam = teams.find(t => t.id === teamId);
-                if (selectedTeam) {
-                    const teamMemberIds = new Set(selectedTeam.members.map(String));
-                    filteredMembers = availableMembers.filter(member => teamMemberIds.has(String(member.rosterId || member.id)));
-                } else {
-                    filteredMembers = [];
-                }
-            } else if (memberFilter === 'main') {
-                filteredMembers = availableMembers.filter(m => !m.isSisterMember || (m.kenninGroups || []).includes(groupName));
-            }
-            else if (memberFilter.startsWith('main-gen-')) {
-                const gen = memberFilter.replace('main-gen-', '');
-                filteredMembers = availableMembers.filter(m => !m.isSisterMember && m.generation === gen);
-            } else if (memberFilter.startsWith('sg-')) {
-                if (memberFilter.includes('-gen-')) {
-                    const [sgIdStr, gen] = memberFilter.replace('sg-', '').split('-gen-');
-                    filteredMembers = availableMembers.filter(m => String(m.groupId) === sgIdStr && m.generation === gen);
-                } else {
-                    const sgId = memberFilter.replace('sg-', '');
-                    filteredMembers = availableMembers.filter(m => String(m.groupId) === sgId);
-                }
-            }
+            filteredMembers = availableMembers.filter(m => applyMemberFilter(m, memberFilter, teams, sisterGroups));
         }
 
         // --- HANDLERS ---
@@ -10247,11 +10153,32 @@ const FestivalPerformerSelectionModal = () => {
     const [memberFilter, setMemberFilter] = useState('all');
 
     const availableMembers = getAllAvailableMembers(true).filter(m => m.isAvailable);
+    const allReleasesSorted = [
+        ...songs.map(s => ({ ...s, isMain: true })),
+        ...sisterGroups.flatMap(sg => (sg.songs || []).map(s => ({ ...s, isMain: false, sgName: sg.name })))
+    ].sort((a, b) => (b.releaseWeek || 0) - (a.releaseWeek || 0));
+
     const allTracks = [
-    ...songs.flatMap(s => (s.tracks || []).map(t => ({ id: `${s.id}-${t.name}`, name: `${t.name} (from ${s.name})`, item: { id: t.id, name: t.name } }))),
-    ...sisterGroups.flatMap(sg => (sg.songs || []).flatMap(s => (s.tracks || []).map(t => ({ id: `sg-${sg.id}-${s.id}-${t.name}`, name: `${t.name} (from ${s.name})`, item: { id: t.id, name: t.name } })))),
-    ...(theaterSongs || []).map(song => ({ id: `theater-${song.id}`, name: `${song.name} (Theater)`, item: { id: song.id, name: song.name } }))
-].filter((track, index, self) => index === self.findIndex((t) => t.id === track.id));
+        ...allReleasesSorted.flatMap(s => (s.tracks || []).map(t => {
+            const releaseType = s.type === 'album' ? 'Album' : 'Single';
+            const releaseArtist = s.artist || (s.isMain ? groupName : s.sgName || s.targetGroup);
+            return {
+                id: `${s.id}-${t.name}-${releaseArtist}`,
+                name: `${t.name} (${releaseType}: ${s.name})`,
+                type: 'release',
+                item: { id: t.id, name: t.name }
+            };
+        })),
+        ...(theaterSongs || []).map(song => {
+            const originalSetlist = allSetlists.find(s => s.id === song.originalSetlistId);
+            return {
+                id: `theater-${song.id}`,
+                name: `${song.name} (Theater - ${originalSetlist ? originalSetlist.name : 'Original'})`,
+                item: { id: song.id, name: song.name },
+                type: 'theater'
+            };
+        })
+    ];
     const allReleases = [...(songs || []), ...(sisterGroups || []).flatMap(sg => sg.songs || [])];
 
     const historicalTracks = allReleases
@@ -10327,26 +10254,7 @@ const FestivalPerformerSelectionModal = () => {
 
     let filteredMembers = availableMembers;
     if (memberFilter !== 'all') {
-        if (memberFilter.startsWith('team-')) {
-            const teamId = parseInt(memberFilter.replace('team-', ''), 10);
-            const team = teams.find(t => t.id === teamId);
-            const teamMemberIds = new Set((team?.members || []).map(String));
-            filteredMembers = availableMembers.filter(m => teamMemberIds.has(String(m.rosterId || m.id)));
-        } else if (memberFilter === 'main') {
-            filteredMembers = availableMembers.filter(m => !m.isSisterMember || (m.kenninGroups || []).includes(groupName));
-        } else if (memberFilter.startsWith('main-gen-')) {
-            const gen = memberFilter.replace('main-gen-', '');
-            filteredMembers = availableMembers.filter(m => !m.isSisterMember && m.generation === gen);
-        } else if (memberFilter.startsWith('sg-')) {
-            if (memberFilter.includes('-gen-')) {
-                const [sgIdStr, gen] = memberFilter.replace('sg-', '').split('-gen-');
-                const sgId = parseInt(sgIdStr, 10);
-                filteredMembers = availableMembers.filter(m => m.groupId === sgId && m.generation === gen);
-            } else {
-                const sgId = parseInt(memberFilter.replace('sg-', ''), 10);
-                filteredMembers = availableMembers.filter(m => m.groupId === sgId);
-            }
-        }
+        filteredMembers = availableMembers.filter(m => applyMemberFilter(m, memberFilter, teams, sisterGroups));
     }
 
 filteredMembers.sort((a, b) => getTotalFansForMember(b) - getTotalFansForMember(a));
@@ -12035,31 +11943,7 @@ if (!gameStarted) {
                                         // 2. Filter Members
                                         let filteredMembers = allMembers;
                                         if (memberFilter !== 'all') {
-                                            if (memberFilter.startsWith('team-')) {
-                                                const teamId = parseInt(memberFilter.replace('team-', ''), 10);
-                                                const team = teams.find(t => t.id === teamId);
-                                                const teamMemberIds = new Set((team?.members || []).map(String));
-                                                filteredMembers = allMembers.filter(m => teamMemberIds.has(String(m.rosterId || m.id)));
-                                            } else if (memberFilter === 'main') {
-                                                filteredMembers = allMembers.filter(m => !m.isSisterMember);
-                                            } else if (memberFilter.startsWith('main-gen-')) {
-                                                const gen = memberFilter.replace('main-gen-', '');
-                                                filteredMembers = allMembers.filter(m => !m.isSisterMember && m.generation === gen);
-                                            } else if (memberFilter.startsWith('sg-')) {
-                                                if (memberFilter.includes('-gen-')) {
-                                                    const [sgIdStr, gen] = memberFilter.replace('sg-', '').split('-gen-');
-                                                    const sgId = parseInt(sgIdStr, 10);
-                                                    filteredMembers = allMembers.filter(m => m.groupId === sgId && m.generation === gen);
-                                                } else {
-                                                    // This now correctly finds the sister group by its string ID from the dropdown
-                                                    const sg = sisterGroups.find(g => `sg-${g.id}` === memberFilter);
-                                                    if (sg) {
-                                                        filteredMembers = allMembers.filter(m => String(m.groupId) === String(sg.id));
-                                                    }
-                                                }
-                                            } else { // Fallback for filtering by a sister group's name
-                                                filteredMembers = allMembers.filter(m => m.isSisterMember && m.displayGroupName === memberFilter);
-                                            }
+                                            filteredMembers = allMembers.filter(m => applyMemberFilter(m, memberFilter, teams, sisterGroups, pushedMembers));
                                         }
 
                                 // Apply search filter
@@ -12249,26 +12133,7 @@ if (!gameStarted) {
 
     // Filter logic
     if (trainingFilter !== 'all') {
-        if (trainingFilter.startsWith('team-')) {
-            const teamId = parseInt(trainingFilter.replace('team-', ''), 10);
-            const team = teams.find(t => t.id === teamId);
-            const teamMemberIds = new Set((team?.members || []).map(String));
-            filteredTrainingMembers = allAvailableMembers.filter(m => teamMemberIds.has(String(m.rosterId || m.id)));
-        } else if (trainingFilter === 'main') {
-            filteredTrainingMembers = allAvailableMembers.filter(m => !m.isSisterMember);
-        } else if (trainingFilter.startsWith('main-gen-')) {
-            const gen = trainingFilter.replace('main-gen-', '');
-            filteredTrainingMembers = allAvailableMembers.filter(m => !m.isSisterMember && m.generation === gen);
-        } else if (trainingFilter.startsWith('sg-')) {
-             if (trainingFilter.includes('-gen-')) {
-                const [sgIdStr, gen] = trainingFilter.replace('sg-', '').split('-gen-');
-                const sgId = parseInt(sgIdStr, 10);
-                filteredTrainingMembers = allAvailableMembers.filter(m => m.groupId === sgId && m.generation === gen);
-            } else {
-                const sgId = parseInt(trainingFilter.replace('sg-', ''), 10);
-                filteredTrainingMembers = allAvailableMembers.filter(m => m.groupId === sgId);
-            }
-        }
+        filteredTrainingMembers = allAvailableMembers.filter(m => applyMemberFilter(m, trainingFilter, teams, sisterGroups));
     }
 
     return (
@@ -12745,30 +12610,8 @@ if (!gameStarted) {
                   // 1. Create the filtered and sorted roster
                   let filteredPushRoster = getMainGroupRoster();
 
-                  if (pushMemberFilter !== 'all') {
-                      if (pushMemberFilter.startsWith('team-')) {
-                          const teamId = parseInt(pushMemberFilter.replace('team-', ''), 10);
-                          const team = teams.find(t => t.id === teamId);
-                          const teamMemberIds = new Set((team?.members || []).map(String));
-                          filteredPushRoster = filteredPushRoster.filter(m => teamMemberIds.has(String(m.rosterId || m.id)));
-                      } else if (pushMemberFilter === 'main') {
-                          filteredPushRoster = filteredPushRoster.filter(m => !m.isSisterMember);
-                      } else if (pushMemberFilter.startsWith('main-gen-')) {
-                          const gen = pushMemberFilter.replace('main-gen-', '');
-                          filteredPushRoster = filteredPushRoster.filter(m => !m.isSisterMember && m.generation === gen);
-                      } else if (pushMemberFilter.startsWith('sg-')) {
-                           if (pushMemberFilter.includes('-gen-')) {
-                              const [sgIdStr, gen] = pushMemberFilter.replace('sg-', '').split('-gen-');
-                              filteredPushRoster = filteredPushRoster.filter(m => String(m.groupId) === sgIdStr && m.generation === gen);
-                           } else {
-                              const sg = sisterGroups.find(g => `sg-${g.id}` === pushMemberFilter);
-                              if (sg) {
-                                  filteredPushRoster = filteredPushRoster.filter(m => String(m.groupId) === String(sg.id));
-                              }
-                           }
-                      } else { // Fallback for filtering by sister group name
-                          filteredPushRoster = filteredPushRoster.filter(m => m.isSisterMember && m.displayGroupName === pushMemberFilter);
-                      }
+                                    if (pushMemberFilter !== 'all') {
+                      filteredPushRoster = filteredPushRoster.filter(m => applyMemberFilter(m, pushMemberFilter, teams, sisterGroups, pushedMembers));
                   }
                   
                   // 2. Sort the filtered roster by average skill

@@ -1554,6 +1554,7 @@ export const annualFestivals = {
             message: "Reputation 70+, and a recent single with 750k+ sales."
         },
         cost: 250000,
+        fanMultiplier: 0.012, // 1.2%
         effect: (performers) => {
             const vocalLeader = performers.sort((a,b) => b.singing - a.singing)[0];
             const fanGain = 80000;
@@ -1579,6 +1580,7 @@ export const annualFestivals = {
             message: "Reputation 25+, and 100k+ total fans."
         },
         cost: 150000,
+        fanMultiplier: 0.005, // 0.5%
         effect: (performers) => {
             const fanGain = 120000;
             const conversionRate = 0.25;
@@ -1586,6 +1588,48 @@ export const annualFestivals = {
                 fanGain,
                 conversionRate,
                 message: `The group survived the heat of TIF! Their energetic performances won over the hardcore idol crowd, gaining ${fanGain.toLocaleString()} new fans and converting many more.`
+            };
+        }
+    },
+    koushien: {
+        id: 'koushien',
+        name: 'Idol Koushien',
+        week: 20, // Mid-May
+        location: 'Japan',
+        description: 'A high-energy, mid-sized idol festival showcasing rising groups on multiple outdoor stages.',
+        requirements: {
+            reputation: 15,
+            totalFans: 50000,
+            message: "Reputation 15+, and 50k+ total fans."
+        },
+        cost: 50000,
+        fanMultiplier: 0.003, // 0.3%
+        effect: (performers) => {
+            const fanGain = 30000;
+            return {
+                fanGain,
+                message: "The group rocked the main outdoor stage at Idol Koushien! They made a great impression on casual visitors, gaining 30,000 new fans."
+            };
+        }
+    },
+    summerStation: {
+        id: 'summerStation',
+        name: 'Summer Station Music Festival',
+        week: 28, // Mid-July
+        location: 'Japan',
+        description: 'An intimate, mid-sized summer concert series held on the TV Asahi rooftop garden.',
+        requirements: {
+            reputation: 35,
+            totalFans: 200000,
+            message: "Reputation 35+, and 200k+ total fans."
+        },
+        cost: 100000,
+        fanMultiplier: 0.006, // 0.6%
+        effect: (performers) => {
+            const fanGain = 50000;
+            return {
+                fanGain,
+                message: "The rooftop performance under the sunset was unforgettable! The group delivered a charming, breezy summer set. Gained 50,000 fans."
             };
         }
     },
@@ -1601,6 +1645,7 @@ export const annualFestivals = {
             message: "Reputation 80+, and a recent Million-selling single."
         },
         cost: 500000,
+        fanMultiplier: 0.015, // 1.5%
         effect: (performers) => {
             const fanGain = 200000;
             const repGain = 10;
@@ -1623,6 +1668,7 @@ export const annualFestivals = {
             message: "Reputation 50+, and a recent single with 500k+ sales."
         },
         cost: 100000,
+        fanMultiplier: 0.010, // 1.0%
         effect: (performers, allSongs, groupName) => {
             const yearStartWeek = Math.floor((week - 1) / 52) * 52 + 1;
             const songsThisYear = allSongs.filter(s => s.releaseWeek >= yearStartWeek && (s.targetGroup === 'main' || s.targetGroup === groupName));
@@ -1655,11 +1701,50 @@ export const annualFestivals = {
             message: "Reputation 85+, and 500k+ International Fans."
         },
         cost: 1200000,
+        fanMultiplier: 0.015, // 1.5%
         effect: (performers) => ({
             fanGain: 300000,
             internationalFanGain: 400000,
             repGain: 8,
             message: "The Sahara Tent performance was a viral hit! The group is the talk of the internet, gaining massive international recognition. (+8 Rep, +700k total fans)"
+        })
+    },
+    hyperJapan: {
+        id: 'hyperJapan',
+        name: 'Hyper Japan London',
+        week: 27, // Early July
+        location: 'Global',
+        description: 'A mid-to-small cultural expo in the UK, showcasing J-pop culture to enthusiastic European fans.',
+        requirements: {
+            reputation: 30,
+            internationalFans: 50000,
+            message: "Reputation 30+, and 50k+ International Fans."
+        },
+        cost: 200000,
+        fanMultiplier: 0.004, // 0.4%
+        effect: (performers) => ({
+            fanGain: 20000,
+            internationalFanGain: 40000,
+            message: "The London crowd absolutely loved the cute aesthetic and precise dancing! Gained 20,000 domestic and 40,000 international fans."
+        })
+    },
+    sxsw: {
+        id: 'sxsw',
+        name: 'SXSW Sahara Stage',
+        week: 11, // Mid-March
+        location: 'Global',
+        description: 'A trendy Austin festival where indie and international acts showcase to Western music critics.',
+        requirements: {
+            reputation: 45,
+            internationalFans: 100000,
+            message: "Reputation 45+, and 100k+ International Fans."
+        },
+        cost: 300000,
+        fanMultiplier: 0.008, // 0.8%
+        effect: (performers) => ({
+            fanGain: 40000,
+            internationalFanGain: 80000,
+            message: "Pitchfork and local music critics praised the group's unique sonic style at SXSW! Gained 40,000 domestic and 80,000 international fans."
         })
     },
     lollapalooza: {
@@ -1674,6 +1759,7 @@ export const annualFestivals = {
             message: "Reputation 65+, and 200k+ International Fans."
         },
         cost: 800000,
+        fanMultiplier: 0.010, // 1.0%
         effect: (performers) => {
             const danceLeader = performers.sort((a,b) => b.dancing - a.dancing)[0];
             return {
@@ -1697,6 +1783,7 @@ export const annualFestivals = {
             message: "Reputation 40+, and 150k+ International Fans."
         },
         cost: 400000,
+        fanMultiplier: 0.008, // 0.8%
         effect: (performers) => ({
             fanGain: 50000,
             internationalFanGain: 100000,
@@ -1716,6 +1803,7 @@ export const annualFestivals = {
             message: "Reputation 30+, and 250k+ total fans."
         },
         cost: 300000,
+        fanMultiplier: 0.006, // 0.6%
         effect: (performers) => ({
             fanGain: 50000,
             internationalFanGain: 150000,
@@ -1735,6 +1823,7 @@ export const annualFestivals = {
             message: "Reputation 75+, and 300k+ International Fans."
         },
         cost: 900000,
+        fanMultiplier: 0.010, // 1.0%
         effect: (performers) => ({
             fanGain: 100000,
             internationalFanGain: 200000,
@@ -1754,6 +1843,7 @@ export const annualFestivals = {
             message: "Reputation 60+, and 400k+ International Fans."
         },
         cost: 1000000,
+        fanMultiplier: 0.010, // 1.0%
         effect: (performers) => ({
             fanGain: 120000,
             internationalFanGain: 350000,
@@ -1804,6 +1894,7 @@ export const ambitions = {
     'Space for Juniors': {
         description: 'A veteran mindset. They want to see the group succeed and will stay longer to mentor younger members.',
         baseUrgency: 0.5,
+        canBeStarting: false,
     },
     'Academic Focus': {
         description: 'Prioritizes their education. Has a shorter expected career span from the start.',
@@ -1824,6 +1915,7 @@ export const ambitions = {
     'Heal from a Scandal': {
         description: 'Trying to overcome a past scandal, this idol is extremely dedicated and cautious, but also vulnerable to public opinion. Their graduation risk is high, especially if another scandal occurs.',
         baseUrgency: 1.7,
+        canBeStarting: false,
     },
     'Family Matters': {
         description: 'As the primary breadwinner for their family, they are motivated by financial success but also under immense pressure. They might stay longer if the pay is good, but could burn out from the stress.',
@@ -1894,106 +1986,129 @@ export const varietyShowTypes = {
 
 };
 
-export const filmProjectTypes = {
+export const filmGenres = {
+    'Slice of Life': {
+        name: 'Slice of Life',
+        coreStats: ['charisma', 'intelligence'],
+        description: 'Focuses on everyday situations. Relies on natural charm.'
+    },
+    'Romance': {
+        name: 'Romance',
+        coreStats: ['visual', 'charisma'],
+        description: 'A love story. Requires great looks and captivating presence.'
+    },
+    'Action': {
+        name: 'Action',
+        coreStats: ['dancing', 'stamina'],
+        description: 'High octane stunts. Demands extreme physical fitness.'
+    },
+    'Sci-Fi': {
+        name: 'Sci-Fi',
+        coreStats: ['singing', 'intelligence'],
+        description: 'Complex narratives. Requires vocal clarity and sharp mind.'
+    },
+    'Drama': {
+        name: 'Drama',
+        coreStats: ['intelligence', 'visual'],
+        description: 'Serious emotional themes. Demands intense acting skills.'
+    },
+    'Comedy': {
+        name: 'Comedy',
+        coreStats: ['variety', 'charisma'],
+        description: 'Lighthearted and funny. Needs excellent comedic timing.'
+    },
+    'Horror': {
+        name: 'Horror',
+        coreStats: ['variety', 'visual'],
+        description: 'Scary and suspenseful. Requires expressive reactions.'
+    },
+    'Musical': {
+        name: 'Musical',
+        coreStats: ['singing', 'dancing'],
+        description: 'Song and dance numbers. The ultimate idol test.'
+    }
+};
+
+export const filmProjectScales = {
     'Indie Short Film': {
         duration: 6,
-        cost: 75000,
-        rewards: { fanGain: 20000, repGain: 0 },
+        cost: 110000,
+        rewards: { fanGain: 25000, repGain: 0 },
         airingDuration: 4,
-        weeklyRevenue: 10000,
-        description: "A small, artistic project. Low impact, but a good way to get a member's feet wet.",
-        genre: 'Slice of Life',
-        coreStats: ['charisma', 'intelligence']
+        weeklyRevenue: 15000,
+        description: "A small, artistic project. Low impact, but a good way to get a member's feet wet."
     },
     'Web Drama': {
         duration: 8,
-        cost: 150000,
-        rewards: { fanGain: 50000, repGain: 1 },
+        cost: 225000,
+        rewards: { fanGain: 60000, repGain: 1 },
         airingDuration: 8,
-        weeklyRevenue: 25000,
-        description: "A short series for an online platform. Decent exposure for the cost.",
-        genre: 'Romance',
-        coreStats: ['visual', 'charisma']
+        weeklyRevenue: 35000,
+        description: "A short series for an online platform. Decent exposure for the cost."
     },
     'Straight-to-DVD Movie': {
         duration: 10,
-        cost: 250000,
-        rewards: { fanGain: 70000, repGain: 1 },
+        cost: 375000,
+        rewards: { fanGain: 85000, repGain: 1 },
         airingDuration: 10,
-        weeklyRevenue: 30000,
-        description: "A full-length feature that bypasses theaters. A bit old-school, but can be profitable.",
-        genre: 'Action',
-        coreStats: ['dancing', 'stamina']
+        weeklyRevenue: 45000,
+        description: "A full-length feature that bypasses theaters. A bit old-school, but can be profitable."
     },
     'Supporting TV Role': {
         duration: 12,
-        cost: 300000,
-        rewards: { fanGain: 120000, repGain: 2 },
+        cost: 450000,
+        rewards: { fanGain: 150000, repGain: 2 },
         airingDuration: 12,
-        weeklyRevenue: 40000,
-        description: "Secure a recurring role for an idol in a network television drama.",
-        genre: 'Slice of Life',
-        coreStats: ['intelligence', 'charisma']
+        weeklyRevenue: 60000,
+        description: "Secure a recurring role for an idol in a network television drama."
     },
     'Voice Acting (Anime)': {
         duration: 10,
-        cost: 100000,
-        rewards: { fanGain: 80000, repGain: 1 },
+        cost: 150000,
+        rewards: { fanGain: 100000, repGain: 1 },
         airingDuration: 12,
-        weeklyRevenue: 20000,
-        description: "The idol will voice a character in an upcoming anime series. Taps into a new market.",
-        genre: 'Sci-Fi',
-        coreStats: ['singing', 'intelligence']
+        weeklyRevenue: 30000,
+        description: "The idol will voice a character in an upcoming anime series. Taps into a new market."
     },
     'Stage Play / Musical': {
         duration: 14,
-        cost: 400000,
-        rewards: { fanGain: 150000, repGain: 2 },
+        cost: 600000,
+        rewards: { fanGain: 180000, repGain: 2 },
         airingDuration: 8,
-        weeklyRevenue: 60000,
-        description: "A live theatrical run. Grueling for the members, but proves their live talent.",
-        genre: 'Drama',
-        coreStats: ['singing', 'dancing']
+        weeklyRevenue: 90000,
+        description: "A live theatrical run. Grueling for the members, but proves their live talent."
     },
     'Feature Film': {
         duration: 16,
-        cost: 750000,
-        rewards: { fanGain: 200000, repGain: 3 },
+        cost: 1100000,
+        rewards: { fanGain: 240000, repGain: 3 },
         airingDuration: 8,
-        weeklyRevenue: 120000,
-        description: "A standard theatrical movie release. The bread-and-butter of the film world.",
-        genre: 'Comedy',
-        coreStats: ['variety', 'charisma']
+        weeklyRevenue: 180000,
+        description: "A standard theatrical movie release. The bread-and-butter of the film world."
     },
     'Historical Epic (Taiga)': {
         duration: 30,
-        cost: 1500000,
-        rewards: { fanGain: 400000, repGain: 4 },
+        cost: 2250000,
+        rewards: { fanGain: 480000, repGain: 4 },
         airingDuration: 26,
-        weeklyRevenue: 80000,
-        description: "A year-long commitment to a prestigious historical drama series. High prestige and fan gain.",
-        genre: 'Drama',
-        coreStats: ['intelligence', 'visual']
+        weeklyRevenue: 120000,
+        description: "A year-long commitment to a prestigious historical drama series. High prestige and fan gain."
     },
     'Major Series (Prime Time)': {
         duration: 24,
-        cost: 2000000,
-        rewards: { fanGain: 500000, repGain: 5 },
+        cost: 3000000,
+        rewards: { fanGain: 600000, repGain: 5 },
         airingDuration: 12,
-        weeklyRevenue: 250000,
-        description: "The lead role in a prime-time television series. A massive star-making opportunity.",
-        genre: 'Romance',
-        coreStats: ['charisma', 'visual']
+        weeklyRevenue: 375000,
+        description: "The lead role in a prime-time television series. A massive star-making opportunity."
     },
     'International Blockbuster': {
         duration: 36,
-        cost: 5000000,
-        rewards: { fanGain: 1000000, repGain: 10 },
+        cost: 7500000,
+        rewards: { fanGain: 1200000, repGain: 10 },
         airingDuration: 10,
-        weeklyRevenue: 500000,
-        description: "A role in a Hollywood-level production. Extremely expensive and a long commitment, but with legendary rewards.",
-        genre: 'Action',
-        coreStats: ['dancing', 'visual']
+        weeklyRevenue: 750000,
+        description: "A role in a Hollywood-level production. Extremely expensive and a long commitment, but with legendary rewards."
     }
 };
 export const scriptTiers = {
@@ -2579,66 +2694,65 @@ const [pendingMerch, setPendingMerch] = useState([]);
                 electionVotePool,
                 isCampaignActive,
                 campaignEndWeek,
-                lastElectionResult: JSON.stringify(lastElectionResult),
-                lastJankenResult: JSON.stringify(lastJankenResult),
-                members: JSON.stringify(members),
+                lastElectionResult,
+                lastJankenResult,
+                members,
                 totalFans,
-                songs: JSON.stringify(songs),
-                teams: JSON.stringify(teams),
-                allSetlists: JSON.stringify(allSetlists),
-                theaters: JSON.stringify(theaters),
-                buildings: JSON.stringify(buildings),
-                sisterGroups: JSON.stringify(sisterGroups),
-                rivalGroups: JSON.stringify(rivalGroups),
-                survivalShow: JSON.stringify(survivalShow),
-                survivalShowHistory: JSON.stringify(survivalShowHistory),
-                activeChart: JSON.stringify(activeChart),
-                achievements: JSON.stringify(achievements),
-                hallOfFame: JSON.stringify(hallOfFame),
-                events: JSON.stringify(events),
-                sponsorships: JSON.stringify(sponsorships),
+                songs,
+                teams,
+                allSetlists,
+                theaters,
+                buildings,
+                sisterGroups,
+                rivalGroups,
+                survivalShow,
+                survivalShowHistory,
+                activeChart,
+                achievements,
+                hallOfFame,
+                events,
+                sponsorships,
                 difficulty,
-                electionHistory: JSON.stringify(electionHistory),
-                jankenHistory: JSON.stringify(jankenHistory),
-                gameHistory: JSON.stringify(gameHistory),
+                electionHistory,
+                jankenHistory,
+                gameHistory,
                 groupReputation,
                 kouhakuInvitationAccepted,
-                kouhakuHistory: JSON.stringify(kouhakuHistory),
+                kouhakuHistory,
                 kouhakuInvitationOffered,
-                kouhakuPrep: JSON.stringify(kouhakuPrep),
-                availableFestivals: JSON.stringify(availableFestivals),
-                timestamp: Date.now(),                
-                requestHourStatus: JSON.stringify(requestHourStatus),
+                kouhakuPrep,
+                availableFestivals,
+                requestHourStatus,
                 votingTickets,
-                requestHourHistory: JSON.stringify(requestHourHistory),
-                lastRequestHourResult: JSON.stringify(lastRequestHourResult),
-                onlineStore: JSON.stringify(onlineStore),
-                staff: JSON.stringify(staff),
-                internationalMarkets: JSON.stringify(internationalMarkets),
-                warehouse: JSON.stringify(warehouse),
-                pendingMerch: JSON.stringify(pendingMerch),
-                outfits: JSON.stringify(outfits),
-                pushedMembers: JSON.stringify(pushedMembers.map(String)),
-                tours: JSON.stringify(tours),
-                activeTour: JSON.stringify(activeTour),
-                musicVideos: JSON.stringify(musicVideos),
-                varietyShows: JSON.stringify(varietyShows),
-                varietyStudio: JSON.stringify(varietyStudio),
-                filmProjects: JSON.stringify(filmProjects),
-                photoBooks: JSON.stringify(photoBooks),
-                documentaries: JSON.stringify(documentaries),
-                collaborations: JSON.stringify(collaborations),
-                exchangeStudents: JSON.stringify(exchangeStudents),
-                scandals: JSON.stringify(scandals),
-                statistics: JSON.stringify(statistics),
-                filmStudio: JSON.stringify(filmStudio),
-                merchInventory: JSON.stringify(merchInventory),
-                activeTrainingCamp: JSON.stringify(activeTrainingCamp),
+                requestHourHistory,
+                lastRequestHourResult,
+                onlineStore,
+                staff,
+                internationalMarkets,
+                warehouse,
+                pendingMerch,
+                outfits,
+                pushedMembers: pushedMembers.map(String),
+                tours,
+                activeTour,
+                musicVideos,
+                varietyShows,
+                varietyStudio,
+                filmProjects,
+                photoBooks,
+                documentaries,
+                collaborations,
+                exchangeStudents,
+                scandals,
+                statistics,
+                filmStudio,
+                merchInventory,
+                activeTrainingCamp,
                 username: gameUsername,
-                venues: JSON.stringify(venues),
-                performanceHistory: JSON.stringify(performanceHistory),
-                scheduledSingles: JSON.stringify(scheduledSingles),
-                groupRoles: JSON.stringify(groupRoles),
+                venues,
+                performanceHistory,
+                scheduledSingles,
+                groupRoles,
                 timestamp: Date.now(),
             };
 
@@ -2670,12 +2784,30 @@ const [pendingMerch, setPendingMerch] = useState([]);
             return;
         }
         try {
-            const data = JSON.parse(jsonData);
+            const rawData = JSON.parse(jsonData);
+            
+            const safeParse = (val, defaultVal) => {
+                if (val === undefined || val === null) return defaultVal;
+                if (typeof val === 'string') {
+                    try {
+                        const parsed = JSON.parse(val);
+                        return parsed !== undefined ? parsed : defaultVal;
+                    } catch (e) {
+                        return defaultVal;
+                    }
+                }
+                return val !== undefined ? val : defaultVal;
+            };
+
+            const data = {};
+            for (const key in rawData) {
+                data[key] = safeParse(rawData[key], rawData[key]);
+            }
             
             setGroupName(data.groupName || "");
             setMoney(data.money || 0);
             setWeek(data.week || 1);
-            const loadedMembers = JSON.parse(data.members || "[]").map(rawMember => {
+            const loadedMembers = (data.members || []).map(rawMember => {
                 const member = { ...rawMember };
                 if (member.relationships && !member.chemistry) {
                     member.chemistry = {};
@@ -2702,29 +2834,29 @@ const [pendingMerch, setPendingMerch] = useState([]);
             });
             setMembers(loadedMembers);
             setTotalFans(data.totalFans || 0);
-            setOnlineStore(JSON.parse(data.onlineStore || '{"level":0}'));
-            setStaff(JSON.parse(data.staff || '{"merchManager":0}'));
-            setWarehouse(JSON.parse(data.warehouse || '{"level":1}'));
-            setPendingMerch(JSON.parse(data.pendingMerch || '[]'));
+            setOnlineStore(data.onlineStore || {level:0});
+            setStaff(data.staff || {merchManager:0});
+            setWarehouse(data.warehouse || {level:1});
+            setPendingMerch(data.pendingMerch || []);
             setElectionVotePool(data.electionVotePool || 0);
             setIsCampaignActive(data.isCampaignActive || false);
             setCampaignEndWeek(data.campaignEndWeek || 0);
-            setLastElectionResult(JSON.parse(data.lastElectionResult || "null"));
+            setLastElectionResult(data.lastElectionResult || null);
 
-            const loadedSongs = JSON.parse(data.songs || "[]").map(song => ({
+            const loadedSongs = (data.songs || []).map(song => ({
                 ...song,
                 baseSalesPotential: song.baseSalesPotential || 0,
                 weeklySales: song.weeklySales || [],
                 chartWeeksLeft: song.chartWeeksLeft ?? 0,
             }));
             setSongs(loadedSongs);
-            setTeams(JSON.parse(data.teams || "[]"));
-            setTheaters(JSON.parse(data.theaters || "[]"));
+            setTeams(data.teams || []);
+            setTheaters(data.theaters || []);
 
-            const loadedBuildings = JSON.parse(data.buildings || "{}");
+            const loadedBuildings = data.buildings || {};
             if (loadedBuildings.hasOwnProperty('theater')) {
                 if (loadedBuildings.theater === true) {
-                    if (!data.theaters || JSON.parse(data.theaters).length === 0) {
+                    if (!data.theaters || data.theaters.length === 0) {
                         setTheaters([{
                             owner: 'main',
                             level: 1,
@@ -2744,7 +2876,7 @@ const [pendingMerch, setPendingMerch] = useState([]);
                 };
                 setBuildings({ practiceRooms: newPracticeRooms });
             }
-            const loadedSisterGroups = JSON.parse(data.sisterGroups || "[]").map(sg => {
+            const loadedSisterGroups = (data.sisterGroups || []).map(sg => {
                 let migratedMembers = sg.members || [];
                 if (sg.members) {
                     migratedMembers = sg.members.map(rawMember => {
@@ -2789,66 +2921,65 @@ const [pendingMerch, setPendingMerch] = useState([]);
             });
             setSisterGroups(loadedSisterGroups);
 
-            setRivalGroups(JSON.parse(data.rivalGroups || "[]"));
-            setActiveChart(JSON.parse(data.activeChart || "null"));
-            setExchangeStudents(JSON.parse(data.exchangeStudents || "null"));
-            setAchievements(JSON.parse(data.achievements || "[]"));
-            setHallOfFame(JSON.parse(data.hallOfFame || "[]"));
-            setSurvivalShow(JSON.parse(data.survivalShow || "null"));
-            setSurvivalShowHistory(JSON.parse(data.survivalShowHistory || "[]"));
-            setJankenTournament(JSON.parse(data.jankenTournament || "null"));
-            setLastJankenResult(JSON.parse(data.lastJankenResult || "null"));
-            setLastElectionResult(JSON.parse(data.lastElectionResult || "null"));
-            setElectionHistory(JSON.parse(data.electionHistory || "[]"));
-            setJankenHistory(JSON.parse(data.jankenHistory || "[]"));
-            setGameHistory(JSON.parse(data.gameHistory || "[]"));
+            setRivalGroups(data.rivalGroups || []);
+            setActiveChart(data.activeChart || null);
+            setExchangeStudents(data.exchangeStudents || []);
+            setAchievements(data.achievements || []);
+            setHallOfFame(data.hallOfFame || []);
+            setSurvivalShow(data.survivalShow || null);
+            setSurvivalShowHistory(data.survivalShowHistory || []);
+            setJankenTournament(data.jankenTournament || null);
+            setLastJankenResult(data.lastJankenResult || null);
+            setLastElectionResult(data.lastElectionResult || null);
+            setElectionHistory(data.electionHistory || []);
+            setJankenHistory(data.jankenHistory || []);
+            setGameHistory(data.gameHistory || []);
             setGroupReputation(data.groupReputation || 0);
             setKouhakuInvitationAccepted(data.kouhakuInvitationAccepted || false);
-            setKouhakuHistory(JSON.parse(data.kouhakuHistory || "[]"));
+            setKouhakuHistory(data.kouhakuHistory || []);
             setKouhakuInvitationOffered(data.kouhakuInvitationOffered || false);
-            setKouhakuPrep(JSON.parse(data.kouhakuPrep || "null"));
-            setAvailableFestivals(JSON.parse(data.availableFestivals || "[]"));
+            setKouhakuPrep(data.kouhakuPrep || null);
+            setAvailableFestivals(data.availableFestivals || []);
             setGameStarted(true);
-            setRequestHourStatus(JSON.parse(data.requestHourStatus || "null"));
+            setRequestHourStatus(data.requestHourStatus || null);
             setVotingTickets(data.votingTickets || 0);
-            setRequestHourHistory(JSON.parse(data.requestHourHistory || "[]"));
-            setLastRequestHourResult(JSON.parse(data.lastRequestHourResult || "null"));
-            setFilmProjects(JSON.parse(data.filmProjects || "[]"));
-            setEvents(JSON.parse(data.events || "[]"));
-            setSponsorships(JSON.parse(data.sponsorships || "[]"));
+            setRequestHourHistory(data.requestHourHistory || []);
+            setLastRequestHourResult(data.lastRequestHourResult || null);
+            setFilmProjects(data.filmProjects || []);
+            setEvents(data.events || []);
+            setSponsorships(data.sponsorships || []);
             setDifficulty(data.difficulty || "normal");
-            setInternationalMarkets(JSON.parse(data.internationalMarkets || "{}"));
-            setOutfits(JSON.parse(data.outfits || "[]"));
-            setTours(JSON.parse(data.tours || "[]"));
-            setActiveTour(JSON.parse(data.activeTour || "null"));
-            setPushedMembers(JSON.parse(data.pushedMembers || "[]"));
-            setMusicVideos(JSON.parse(data.musicVideos || "[]"));
-             const loadedShows = JSON.parse(data.varietyShows || "[]").map(show => ({
+            setInternationalMarkets(data.internationalMarkets || {});
+            setOutfits(data.outfits || []);
+            setTours(data.tours || []);
+            setActiveTour(data.activeTour || null);
+            setPushedMembers(data.pushedMembers || []);
+            setMusicVideos(data.musicVideos || []);
+             const loadedShows = (data.varietyShows || []).map(show => ({
                 ...show,
                 seasonDuration: show.seasonDuration || 12,
                 weeksAired: show.weeksAired || 0,
                 isActive: show.isActive === undefined ? true : show.isActive
             }));
             setVarietyShows(loadedShows);
-            setVarietyStudio(JSON.parse(data.varietyStudio || '{"level":0}'));
-            setFilmStudio(JSON.parse(data.filmStudio || '{"level":0}'));
-            setPhotoBooks(JSON.parse(data.photoBooks || "[]"));
-            setDocumentaries(JSON.parse(data.documentaries || "[]"));
-            setCollaborations(JSON.parse(data.collaborations || "[]"));
-            setScandals(JSON.parse(data.scandals || "[]"));
-            setStatistics(JSON.parse(data.statistics || "{}"));
-            setMerchInventory(JSON.parse(data.merchInventory || "{}"));
-            setActiveTrainingCamp(JSON.parse(data.activeTrainingCamp || "null"));
-            setPerformanceHistory(JSON.parse(data.performanceHistory || "[]"));
-            setScheduledSingles(JSON.parse(data.scheduledSingles || "[]"));
-            let loadedRoles = JSON.parse(data.groupRoles || '{}');
+            setVarietyStudio(data.varietyStudio || {level:0});
+            setFilmStudio(data.filmStudio || {level:0});
+            setPhotoBooks(data.photoBooks || []);
+            setDocumentaries(data.documentaries || []);
+            setCollaborations(data.collaborations || []);
+            setScandals(data.scandals || []);
+            setStatistics(data.statistics || {});
+            setMerchInventory(data.merchInventory || {});
+            setActiveTrainingCamp(data.activeTrainingCamp || null);
+            setPerformanceHistory(data.performanceHistory || []);
+            setScheduledSingles(data.scheduledSingles || []);
+            let loadedRoles = data.groupRoles || {};
             // Compatibility for old saves
             if (loadedRoles && loadedRoles.hasOwnProperty('captain')) {
                 loadedRoles = { 'main': loadedRoles.captain };
             }
             setGroupRoles(loadedRoles);
 
-            setGameStarted(true);
             setMessage(`🎮 Game loaded successfully from file!`);
             setShowModal(null);
             setUsername(data.username || 'Player');
@@ -3192,11 +3323,11 @@ if (foundExchangeStudent) {
     if (memberIdStr.startsWith('sg-')) {
         const parts = memberIdStr.split('-');
         if (parts.length === 3) {
-            const sgId = parseInt(parts[1], 10);
-            const mId = parseInt(parts[2], 10);
-            const sg = (sisterGroups || []).find(g => g.id === sgId);
+            const sgIdStr = parts[1];
+            const mIdStr = parts[2];
+            const sg = (sisterGroups || []).find(g => String(g.id) === sgIdStr);
             if (sg) {
-                const member = (sg.members || []).find(m => m.id === mId);
+                const member = (sg.members || []).find(m => String(m.id) === mIdStr);
                 if (member) {
                     return {
                         ...member,
@@ -3230,12 +3361,21 @@ for (const sg of (sisterGroups || [])) {
     if (member) {
         return {
             ...member,
-            rosterId: `sg-${sg.id}-${member.id}`, // Correctly format the unique ID
+            rosterId: `sg-${sg.id}-${member.id}`,
             isSisterMember: true,
             displayGroupName: sg.name,
             groupId: sg.id
         };
     }
+}
+
+// Fallback: Check graduated members in Hall of Fame
+const hallOfFameMember = (hallOfFame || []).find(m => String(m.id) === memberIdStr || String(m.rosterId) === memberIdStr);
+if (hallOfFameMember) {
+    return {
+        ...hallOfFameMember,
+        isGraduated: true,
+    };
 }
 
     return null; // Return null if no member is found anywhere.
@@ -4916,8 +5056,16 @@ setGroupRoles(nextGroupRoles);
             updateMemberState(member.id, m => {
                 const newHardcore = Math.max(0, (m.fans.hardcore || 0) - Math.floor(fanLoss * 0.7));
                 const newCasual = Math.max(0, (m.fans.casual || 0) - Math.floor(fanLoss * 0.3));
+                
+                let newAmbition = m.ambition;
+                if ((scandal.severity === 'High' || reputationLoss < -2) && m.ambition !== 'Heal from a Scandal' && Math.random() < 0.6) {
+                    newAmbition = 'Heal from a Scandal';
+                    setTimeout(() => addNotification({ type: 'Group', message: `The heavy toll of the recent scandal has changed ${m.name}'s ambition to "Heal from a Scandal".` }), 500);
+                }
+
                 return {
                     ...m,
+                    ambition: newAmbition,
                     fans: { hardcore: newHardcore, casual: newCasual },
                     morale: Math.max(0, m.morale - moraleHit),
                     stress: Math.min(100, m.stress + stressChange),
@@ -7209,20 +7357,29 @@ if (newGenInSenbatsu > senbatsuMembers.length / 2 && senbatsuMembers.length > 3)
             };
 
             // --- Create a map of all members in this single (including rivals) for easy lookup ---
+            const getRosterIdForTrackMember = (memberId, targetGroup) => {
+                const idStr = String(memberId);
+                if (idStr.startsWith('sg-') || idStr.startsWith('rival-')) return idStr;
+                if (targetGroup && targetGroup !== 'main') {
+                    const sg = initialSisterGroups.find(g => g.name === targetGroup || String(g.id) === String(targetGroup));
+                    if (sg) return `sg-${sg.id}-${idStr}`;
+                }
+                return idStr;
+            };
+
             const allMembersInSingleMap = new Map();
             songData.tracks.flatMap(t => t.members || []).forEach(m => {
                 if (m && m.id) {
-                    allMembersInSingleMap.set(String(m.id), m);
-                    // Also map by rosterId for lookups from previous singles or different data structures
-                    if (m.rosterId) {
-                        allMembersInSingleMap.set(String(m.rosterId), m);
-                    }
+                    const rosterId = getRosterIdForTrackMember(m.id, songData.targetGroup);
+                    allMembersInSingleMap.set(rosterId, m);
                 }
             });
 
             // Helper function that prioritizes the single's data, which includes rivals
             const getTriviaMember = (id) => {
-                return allMembersInSingleMap.get(String(id)) || getMemberById(id); // Fallback to global state for older data
+                const idStr = String(id);
+                const rosterId = getRosterIdForTrackMember(idStr, releasingGroupNameForTrivia);
+                return allMembersInSingleMap.get(rosterId) || getMemberById(rosterId); // Fallback to global state for older data
             };
 
             const allParticipatingMemberIds = new Set(songData.tracks.flatMap(t => (t.members || []).map(m => m.id)));
@@ -10125,8 +10282,8 @@ const holdUnitPerformance = (singleId, trackName) => {
     let totalFanGain = 0;
     performingMembers.forEach(member => {
         const currentFans = getTotalFansForMember(member);
-        // Each member gains 10% of their current fans, modified by skill.
-        const fanGainForMember = Math.floor(currentFans * 0.10 * (1 + avgSkill));
+        // Each member gains 0.1% of their current fans, modified by skill (nerfed from 10%).
+        const fanGainForMember = Math.floor(currentFans * 0.001 * (1 + avgSkill));
         
         // This directly updates the member's fans, bypassing distributeFans for this special case.
         updateMemberState(member.rosterId, m => ({
@@ -10224,8 +10381,8 @@ const holdTitleTrackPerformance = (singleId, trackName) => {
 
     let totalFanGain = 0;
     performingMembers.forEach(member => {
-        const currentFans = getTotalFansForMember(member);
-        const fanGainForMember = Math.floor(currentFans * 0.20 * (1 + avgSkill));
+        // Each member gains 0.2% of their current fans, modified by skill (nerfed from 20%).
+        const fanGainForMember = Math.floor(currentFans * 0.002 * (1 + avgSkill));
         
         updateMemberState(member.rosterId, m => ({
             ...m,
@@ -11488,7 +11645,7 @@ if (unitVote && unitVote.isActive && newWeek >= unitVote.endWeek) {
 
             setActiveScandal({ member: target, scandal: scandal });
             setShowModal('scandalDecision');
-            return; // Stop the rest of nextWeek to focus on the decision
+            // FIX: Removed early return to prevent game loop exploit
         }
 
         // --- 3. PROCESS SCHEDULED WEEKLY EVENTS ---
@@ -11629,9 +11786,7 @@ if (unitVote && unitVote.isActive && newWeek >= unitVote.endWeek) {
 
                 // 4. Clean up all of this week's events and potentially pause the game loop.
                 setScheduledEvents(prev => prev.filter(e => e.week !== newWeek));
-                if (shouldReturnAfterEvent && !graduationOccurredThisWeek) {
-                    return;
-                }
+                // FIX: Removed early return
             }
 
                 if (isCampaignActive && newWeek >= campaignEndWeek) {
@@ -12017,8 +12172,8 @@ if (result.updatedExchangeStudents) exchangeStudentsForUpdate = result.updatedEx
 
             addNotificationInLoop({ type: 'Variety', message: `\"${show.name}\" aired and ${weeklyMessage}` });
 
-            // Check for Season End
-            if (showsForUpdate[index].weeksAired >= showsForUpdate[index].seasonDuration) {
+            // Check for Season End (Fallback to 12 if undefined in older saves)
+            if (showsForUpdate[index].weeksAired >= (showsForUpdate[index].seasonDuration || 12)) {
                 showsForUpdate[index].isActive = false;
                 showsFinishedThisWeek.push(showsForUpdate[index]);
             }
@@ -12073,26 +12228,29 @@ if (result.updatedExchangeStudents) exchangeStudentsForUpdate = result.updatedEx
 
                 if (newWeeksLeft <= 0) {
                     // --- FILMING COMPLETE, CALCULATE SCORES ---
-                    const projectType = filmProjectTypes[currentProject.type];
+                    const projectType = filmProjectScales[currentProject.type];
+                    const genreData = filmGenres[currentProject.genre || 'Drama'];
+                    const stat1 = genreData.coreStats[0];
+                    const stat2 = genreData.coreStats[1];
                     
                     // Calculate Critical Score
                     let criticalScore = currentProject.baseCriticalScore + currentProject.director.qualityBonus;
                     const leadCast = currentProject.cast.lead.map(id => getMemberById(id)).filter(Boolean);
                     if (leadCast.length > 0) {
-                        let intelligenceBonus = leadCast.reduce((sum, m) => sum + (m.intelligence || 0), 0) / leadCast.length;
+                        let stat1Bonus = leadCast.reduce((sum, m) => sum + (m[stat1] || 0), 0) / leadCast.length;
                         if (currentProject.director.specialEffect === 'doubles_intelligence_bonus') {
-                            intelligenceBonus *= 2;
+                            stat1Bonus *= 2; // Keep special effect, just applied to stat1
                         }
-                        criticalScore += intelligenceBonus / 10; // Add up to 10 points for intelligence
+                        criticalScore += stat1Bonus / 10; // Add up to 10 points for core stat 1
                     }
                     currentProject.finalCriticalScore = Math.max(0, Math.min(100, Math.round(criticalScore)));
 
                     // Calculate Commercial Score
                     let commercialScore = 60 + (currentProject.commercialScoreBoost || 0); // Base score
                     if (leadCast.length > 0) {
-                        const charismaBonus = leadCast.reduce((sum, m) => sum + (m.charisma || 0), 0) / leadCast.length;
+                        const stat2Bonus = leadCast.reduce((sum, m) => sum + (m[stat2] || 0), 0) / leadCast.length;
                         const fanBonus = leadCast.reduce((sum, m) => sum + getTotalFansForMember(m), 0) / 100000; // 1 point per 100k fans
-                        commercialScore += (charismaBonus / 5) + fanBonus; // Up to 20 points for charisma, unlimited for fans
+                        commercialScore += (stat2Bonus / 5) + fanBonus; // Up to 20 points for core stat 2, unlimited for fans
                     }
                     currentProject.finalCommercialScore = Math.max(0, Math.min(100, Math.round(commercialScore)));
                     
@@ -12130,7 +12288,7 @@ if (result.updatedExchangeStudents) exchangeStudentsForUpdate = result.updatedEx
                 }
 
             } else if (currentProject.status === 'airing') {
-                const projectType = filmProjectTypes[currentProject.type];
+                const projectType = filmProjectScales[currentProject.type];
                 const revenueMultiplier = currentProject.finalCommercialScore / 75;
                 const revenue = Math.floor(projectType.weeklyRevenue * revenueMultiplier);
                 totalWeeklyIncome += revenue;
@@ -12340,7 +12498,9 @@ if (graduatingExchanges.length > 0) {
             }
         }
         
+        
         const allMembersForWeeklyUpdate = [...membersForUpdate.map(m => ({ ...m, rosterId: String(m.id) })), ...sisterGroupsForUpdate.flatMap(sg => (sg.members || []).map(m => ({ ...m, rosterId: `sg-${sg.id}-${m.id}` })))];
+        const memberLookupMap = new Map(allMembersForWeeklyUpdate.map(m => [m.rosterId, m]));
         
 const groupBonuses = {};
 for (const [groupId, captainId] of Object.entries(groupRoles)) {
@@ -12609,7 +12769,7 @@ if (member.teamId) {
                 const oldAmbition = member.ambition;
 
                 // Trigger: High potential but never been center
-                if (member.potential > 85 && (member.centerHistory || []).length === 0 && oldAmbition !== 'Prove My Worth') {
+                if (member.potential > 85 && (member.centerHistory || []).length === 0 && oldAmbition !== 'Prove My Worth' && yearsActive > 2 && Math.random() < 0.15) {
                     potentialNewAmbition = 'Prove My Worth';
                 }
                 // Trigger: Low morale and high stress
@@ -12705,7 +12865,7 @@ otherMemberIds.forEach(otherId => {
         member.chemistry[otherId] = (Math.random() * 20) - 10; // -10 to +10
     }
 
-    const otherMember = allMembersForWeeklyUpdate.find(m => m.rosterId === otherId);
+    const otherMember = memberLookupMap.get(otherId);
     if (!otherMember) return;
 
     let change = 0;
@@ -13404,8 +13564,8 @@ const startStudyAbroad = (memberId, destinationGroupId) => {
                 filmHistory: [],
             };
             
-            const ambitionKeys = Object.keys(ambitions);
-            baseMember.ambition = ambitionKeys[Math.floor(Math.random() * ambitionKeys.length)];
+            const validStartingAmbitions = Object.keys(ambitions).filter(key => ambitions[key].canBeStarting !== false);
+            baseMember.ambition = validStartingAmbitions[Math.floor(Math.random() * validStartingAmbitions.length)];
             let window = { min: 4, max: 8 }; // Default window
             switch (baseMember.ambition) {
                 case 'Study Abroad':
@@ -13715,8 +13875,8 @@ const startFilmPromotion = (projectId, promoType) => {
 };
 
 
-const startFilmProject = (title, type, cast, scriptTierId, directorTierId) => {
-    const projectType = filmProjectTypes[type];
+const startFilmProject = (title, type, genre, cast, scriptTierId, directorTierId) => {
+    const projectType = filmProjectScales[type];
     const script = scriptTiers[scriptTierId];
     const director = directorTiers[directorTierId];
     if (!projectType || !script || !director) return;
@@ -13738,6 +13898,7 @@ const startFilmProject = (title, type, cast, scriptTierId, directorTierId) => {
         id: `film-${Date.now()}`,
         title,
         type,
+        genre,
         cast,
         script,
         director,
@@ -15998,14 +16159,42 @@ const executeFestivalPerformance = (festival, performerIds, setlist) => {
     const result = festival.effect(performers, songs, groupName);
 
     // Standard performance stat changes
-performers.forEach(member => {
-    updateMemberState(member.rosterId, m => ({                
-        ...m,
-        stamina: Math.max(0, (m.stamina || 100) - 45),
-        stress: Math.min(100, m.stress + 30),
-        morale: Math.min(100, (m.morale || 0) + 15),
-    }));
-});
+    performers.forEach(member => {
+        if (member) {
+            updateMemberState(member.rosterId, m => ({                
+                ...m,
+                stamina: Math.max(0, (m.stamina || 100) - 45),
+                stress: Math.min(100, m.stress + 30),
+                morale: Math.min(100, (m.morale || 0) + 15),
+            }));
+        }
+    });
+
+    // Custom performer fan gains based on festival tier / size
+    const fanMultiplier = festival.fanMultiplier || 0.005; // Fallback to 0.5%
+    const memberCount = performers.length || 1;
+    const avgSinging = performers.reduce((s, m) => s + (m.singing || 0), 0) / memberCount;
+    const avgDancing = performers.reduce((s, m) => s + (m.dancing || 0), 0) / memberCount;
+    const avgVisual = performers.reduce((s, m) => s + (m.visual || 0), 0) / memberCount;
+    const avgCharisma = performers.reduce((s, m) => s + (m.charisma || 0), 0) / memberCount;
+    const avgSkill = (avgSinging * 0.3 + avgDancing * 0.4 + avgVisual * 0.2 + avgCharisma * 0.1) / 100;
+
+    let totalPerformerFanGain = 0;
+    performers.forEach(member => {
+        if (!member) return;
+        const currentFans = getTotalFansForMember(member);
+        const fanGainForMember = Math.floor(currentFans * fanMultiplier * (1 + avgSkill));
+        if (fanGainForMember > 0) {
+            updateMemberState(member.rosterId, m => ({
+                ...m,
+                fans: {
+                    ...m.fans,
+                    casual: (m.fans.casual || 0) + fanGainForMember
+                }
+            }));
+            totalPerformerFanGain += fanGainForMember;
+        }
+    });
 
     // Apply festival-specific effects
     if (result.fanGain) distributeFans(result.fanGain, performerIds);
@@ -16044,7 +16233,7 @@ performers.forEach(member => {
         cost: festival.cost,
         revenue: (result.moneyGain || 0),
         profit: (result.moneyGain || 0) - festival.cost,
-        fansGained: result.fanGain || 0,
+        fansGained: (result.fanGain || 0) + totalPerformerFanGain,
         members: performers.map(createMemberSnapshot),
         tracks: setlist
     };
