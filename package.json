@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "homepage": "https://terpiriyapong2002-code.github.io/THE-IDOL-SIMULATOR",
+  "homepage": "https://terpiriyapong2002-code.github.io/MYYYYYIDOL",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
