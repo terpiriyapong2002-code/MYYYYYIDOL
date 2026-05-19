@@ -3679,6 +3679,14 @@ const App = () => {
 
                                             <button onClick={() => {
                                                 const input = document.getElementById(`random-members-input-${selectedTrackIndex}`);
+                                                if (input) handleRandomizeMembers(selectedTrackIndex, parseInt(input.value, 10));
+                                            }} className="px-2 py-1 text-xs bg-purple-500 text-white rounded">Random Members</button>
+                                            <button onClick={() => {
+                                                const input = document.getElementById(`random-members-input-${selectedTrackIndex}`);
+                                                if (input) handleRandomizeByFans(selectedTrackIndex, parseInt(input.value, 10));
+                                            }} className="px-2 py-1 text-xs bg-teal-500 text-white rounded">Select by Fans</button>
+                                            <button onClick={() => {
+                                                const input = document.getElementById(`random-members-input-${selectedTrackIndex}`);
                                                 if (input) handleSelectByAvgSkill(selectedTrackIndex, parseInt(input.value, 10));
                                             }} className="px-2 py-1 text-xs bg-sky-500 text-white rounded">Select by Skill</button>
 
@@ -8476,7 +8484,7 @@ const App = () => {
                                     <div key={i} className="flex justify-between border-b pb-1 last:border-0 last:pb-0 dark:border-gray-700">
                                         <span className="font-semibold dark:text-gray-300">{sl ? sl.name : 'Unknown Setlist'}</span>
                                         <span className="text-xs text-gray-500 dark:text-gray-400">
-                                            Wk {h.startWeek} to {h.endWeek ? `Wk ${h.endWeek}` : 'Present'}
+                                            {getFormattedDateForWeek(h.startWeek)} to {h.endWeek ? getFormattedDateForWeek(h.endWeek) : 'Present'}
                                         </span>
                                     </div>
                                 );
@@ -8530,7 +8538,7 @@ const App = () => {
                                 <div key={index} className="p-2 bg-white dark:bg-gray-700 rounded shadow-sm text-sm">
                                     <p className="font-bold">{entry.teamName}</p>
                                     <p className="text-xs text-gray-500 dark:text-gray-400">
-                                        Wk {entry.startWeek} to {entry.endWeek ? `Wk ${entry.endWeek}` : 'Present'}
+                                        {getFormattedDateForWeek(entry.startWeek)} to {entry.endWeek ? getFormattedDateForWeek(entry.endWeek) : 'Present'}
                                     </p>
                                 </div>
                             )) : <p className="text-gray-500 italic text-sm">This setlist has not been used by any team yet.</p>}

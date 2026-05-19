@@ -8077,7 +8077,7 @@ export const useIdolManager = () => {
             const rookieObj = membersWithJoinWeek[membersWithJoinWeek.length - 1];
 
             if (veteranObj && rookieObj && (rookieObj.joinWeek - veteranObj.joinWeek) >= 15) {
-                triviaItems.push(`Generational Bridge: The senbatsu features a historic generational span, bridging veteran ${veteranObj.member.name} (joined Week ${veteranObj.joinWeek}) alongside rising rookie ${rookieObj.member.name} (joined Week ${rookieObj.joinWeek}).`);
+                triviaItems.push(`Generational Bridge: The senbatsu features a historic generational span, bridging veteran ${veteranObj.member.name} (joined ${getFormattedDateForWeek(veteranObj.joinWeek)}) alongside rising rookie ${rookieObj.member.name} (joined ${getFormattedDateForWeek(rookieObj.joinWeek)}).`);
 
             }
         }
