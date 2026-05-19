@@ -93,13 +93,13 @@ const App = () => {
     // Destructure everything from the custom hook
     const {
         // State
-        activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm, setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, resolveSurvivalMission, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, setGroupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, theaterSchedule, setTheaterSchedule, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
+        activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm, setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, resolveSurvivalMission, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, setGroupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, theaterSchedule, setTheaterSchedule, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch,         activeTour, setActiveTour, activeUnderTour, setActiveUnderTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
         // Firebase/Persistence
         getSavedGames, saveGame, loadGame,
         // Utilities
         startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
         // Logic
-        holdTitleTrackPerformance, holdUnitPerformance, unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, executeFanEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek: nextWeekHook, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
+        holdTitleTrackPerformance, holdUnitPerformance, unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, getUnderMembersPool, startUnderTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, executeFanEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek: nextWeekHook, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
 
     } = useIdolManager();
 
@@ -110,6 +110,8 @@ const App = () => {
     const fileInputRef = useRef(null);
     const mainContentRef = useRef(null);
     const [showScrollTop, setShowScrollTop] = useState(true);
+    const [selectedUnderTourGroup, setSelectedUnderTourGroup] = useState('main');
+    const [showUnderMembersPoolList, setShowUnderMembersPoolList] = useState(false);
 
 
     const scrollToTop = () => {
@@ -13974,6 +13976,7 @@ const App = () => {
 
                 {message && <div className="p-2 bg-gradient-to-r from-pink-100 to-purple-100 text-purple-800 dark:from-pink-900/50 dark:to-purple-900/50 dark:text-purple-200 text-center text-sm font-semibold border-y border-pink-200/50 dark:border-pink-800/50">{message}</div>}
                 {activeTour && <div className="p-2 bg-rose-500/10 text-rose-700 dark:text-rose-300 text-center text-sm font-bold flex items-center justify-center border-y border-rose-500/20"><Plane size={16} className='mr-2' /> Active Tour: {activeTour.name} ({activeTour.weeksLeft} weeks left)</div>}
+                {activeUnderTour && <div className="p-2 bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 text-center text-sm font-bold flex items-center justify-center border-y border-indigo-500/20"><Music size={16} className='mr-2' /> Active Under Live Tour: {activeUnderTour.name} ({activeUnderTour.weeksLeft} weeks left)</div>}
                 {isCampaignActive && <div className="p-2 bg-amber-500/10 text-amber-700 dark:text-amber-300 text-center text-sm font-bold flex items-center justify-center border-y border-amber-500/20">
                     <Zap size={16} className='mr-2' /> ELECTION CAMPAIGN ACTIVE! Ends in {campaignEndWeek - week} week(s).
                 </div>}
@@ -14513,6 +14516,117 @@ const App = () => {
                                     <button onClick={startTour} className="w-full p-1.5 text-sm bg-red-800 text-white rounded font-semibold" disabled={!!activeTour}>Start Tour (¥30k)</button>
                                 </div>
 
+                            </div>
+
+                            {/* Under Members & Under Lives */}
+                            <div className="p-3 rounded-xl shadow-lg bg-gradient-to-br from-white to-indigo-50/20 dark:from-gray-800 dark:to-indigo-950/10 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700/80 transition-all duration-300 hover:shadow-xl">
+                                <h3 className="text-base font-bold mb-2 flex items-center text-indigo-600 dark:text-indigo-400">
+                                    <Music size={18} className="mr-2" /> Under Lives & Under Members
+                                </h3>
+                                
+                                <div className="flex flex-col gap-2.5">
+                                    <div className="flex flex-col gap-1">
+                                        <label className="text-xs font-semibold text-gray-500 dark:text-gray-400">Select Group:</label>
+                                        <select
+                                            value={selectedUnderTourGroup}
+                                            onChange={(e) => setSelectedUnderTourGroup(e.target.value)}
+                                            className="w-full p-2 text-sm border rounded bg-white dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                        >
+                                            <option value="main">{groupName} (Main)</option>
+                                            {(sisterGroups || []).filter(sg => !sg.isDisbanded && sg.type !== 'unit').map(sg => (
+                                                <option key={sg.id} value={sg.name}>{sg.name}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    {(() => {
+                                        const pool = getUnderMembersPool(selectedUnderTourGroup);
+                                        const availablePool = pool.filter(m => m.isAvailable && !m.graduated);
+                                        
+                                        return (
+                                            <>
+                                                <div className="p-2.5 rounded-lg bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-100/50 dark:border-indigo-900/30 flex justify-between items-center">
+                                                    <div>
+                                                        <p className="text-xs text-indigo-500 dark:text-indigo-400 font-bold uppercase tracking-wider">Under Members</p>
+                                                        <p className="text-lg font-extrabold text-indigo-700 dark:text-indigo-300">
+                                                            {availablePool.length} <span className="text-xs font-medium text-gray-500 dark:text-gray-400">/ {pool.length} total</span>
+                                                        </p>
+                                                    </div>
+                                                    <button
+                                                        onClick={() => setShowUnderMembersPoolList(!showUnderMembersPoolList)}
+                                                        className="px-2.5 py-1 text-xs bg-indigo-100 text-indigo-700 hover:bg-indigo-200 dark:bg-indigo-900/50 dark:text-indigo-300 dark:hover:bg-indigo-800 rounded font-semibold transition"
+                                                    >
+                                                        {showUnderMembersPoolList ? 'Hide Pool' : 'View Pool'}
+                                                    </button>
+                                                </div>
+
+                                                {/* Under Members Pool Collapsible List */}
+                                                {showUnderMembersPoolList && (
+                                                    <div className="max-h-48 overflow-y-auto border border-gray-100 dark:border-gray-700/60 rounded-lg p-1.5 bg-gray-50/50 dark:bg-gray-900/30 flex flex-col gap-1">
+                                                        {pool.length === 0 ? (
+                                                            <p className="text-xs text-gray-500 text-center py-4">No Under Members found. Release a Single first!</p>
+                                                        ) : (
+                                                            pool.map(member => {
+                                                                const isAvailable = member.isAvailable && !member.graduated;
+                                                                return (
+                                                                    <div key={member.rosterId || member.id} className="p-1.5 rounded bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/40 flex justify-between items-center text-xs">
+                                                                        <div className="flex flex-col">
+                                                                            <span className="font-bold text-gray-800 dark:text-gray-200">{member.name}</span>
+                                                                            <span className="text-[10px] text-gray-400">
+                                                                                Vo: {Math.round(member.singing || 0)} | Da: {Math.round(member.dancing || 0)} | Vi: {Math.round(member.visual || 0)}
+                                                                            </span>
+                                                                        </div>
+                                                                        <div className="flex items-center gap-1.5">
+                                                                            <span className="text-[10px] text-gray-500 font-semibold">Fans: {((member.fans?.casual || 0) + (member.fans?.hardcore || 0)).toLocaleString()}</span>
+                                                                            {isAvailable ? (
+                                                                                <span className="px-1 py-0.5 rounded text-[8px] bg-green-100 text-green-700 dark:bg-green-950/40 dark:text-green-400 font-bold">READY</span>
+                                                                            ) : (
+                                                                                <span className="px-1 py-0.5 rounded text-[8px] bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 font-bold">BUSY</span>
+                                                                            )}
+                                                                        </div>
+                                                                    </div>
+                                                                );
+                                                            })
+                                                        )}
+                                                    </div>
+                                                )}
+
+                                                {/* Tour Controls */}
+                                                <div className="mt-1 border-t pt-2.5 dark:border-gray-700">
+                                                    {activeUnderTour ? (
+                                                        <div className="p-2.5 rounded-lg border border-teal-500/20 bg-teal-500/10 text-teal-800 dark:text-teal-300">
+                                                            <p className="text-xs font-bold flex items-center">
+                                                                <span className="w-2 h-2 rounded-full bg-teal-500 inline-block mr-1.5 animate-pulse"></span>
+                                                                Active: {activeUnderTour.name}
+                                                            </p>
+                                                            <div className="mt-1.5 flex justify-between text-[11px] font-semibold">
+                                                                <span>Duration: {activeUnderTour.weeksLeft} week(s) left</span>
+                                                                <span>Revenue: ¥{activeUnderTour.revenue.toLocaleString()}</span>
+                                                            </div>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="flex flex-col gap-2">
+                                                            <p className="text-[11px] text-gray-500 dark:text-gray-400 italic">
+                                                                Under Live Tours run in the background for 3 weeks, boosting Under members' skills, morale, and reducing graduation urgency, while earning background revenue and fans. Requires ¥15k cost and at least 3 available members.
+                                                            </p>
+                                                            <button
+                                                                onClick={() => startUnderTour(selectedUnderTourGroup)}
+                                                                disabled={!!activeUnderTour || money < 15000 || availablePool.length < 3}
+                                                                className="w-full p-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-300 dark:disabled:bg-gray-700 text-white rounded-lg font-bold text-sm shadow transition-all duration-200"
+                                                            >
+                                                                {availablePool.length < 3
+                                                                    ? `Need 3 Under Members (Have ${availablePool.length})`
+                                                                    : money < 15000
+                                                                    ? `Insufficient Funds (¥15,000 required)`
+                                                                    : `Start Under Live Tour (¥15k)`}
+                                                            </button>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </>
+                                        );
+                                    })()}
+                                </div>
                             </div>
 
                             {/* Facilities */}

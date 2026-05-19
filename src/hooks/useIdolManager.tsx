@@ -2593,6 +2593,7 @@ export const useIdolManager = () => {
     const [outfits, setOutfits] = useState([]);
     const [tours, setTours] = useState([]);
     const [activeTour, setActiveTour] = useState(null);
+    const [activeUnderTour, setActiveUnderTour] = useState(null);
     const [musicVideos, setMusicVideos] = useState([]);
     const [varietyShows, setVarietyShows] = useState([]);
 
@@ -2809,6 +2810,7 @@ export const useIdolManager = () => {
                 pushedMembers: pushedMembers.map(String),
                 tours,
                 activeTour,
+                activeUnderTour,
                 musicVideos,
                 varietyShows,
                 varietyStudio,
@@ -3033,6 +3035,7 @@ export const useIdolManager = () => {
             setOutfits(data.outfits || []);
             setTours(data.tours || []);
             setActiveTour(data.activeTour || null);
+            setActiveUnderTour(data.activeUnderTour || null);
             setPushedMembers(data.pushedMembers || []);
             setMusicVideos(data.musicVideos || []);
             const loadedShows = (data.varietyShows || []).map(show => ({
@@ -3988,6 +3991,91 @@ export const useIdolManager = () => {
             }));
             setMessage(`Tour week ${tour.weeksLeft} finished. Revenue: ¥${weekRevenue.toLocaleString()}. Remaining: ${weeksRemaining} weeks.`);
         }
+    };
+
+    const getUnderMembersPool = (targetGroup = 'main') => {
+        const groupNameStr = targetGroup === 'main' ? 'main' : targetGroup;
+        const targetSg = sisterGroups.find(sg => sg.name === groupNameStr || String(sg.id) === String(targetGroup));
+        const resolvedGroupName = targetSg ? targetSg.name : groupName;
+
+        const allGroupMembers = getAllAvailableMembers(true).filter(m => {
+            if (resolvedGroupName === groupName) {
+                return m.homeGroup === 'main' || (m.kenninGroups || []).includes(groupName);
+            } else {
+                return m.homeGroup === resolvedGroupName || (m.kenninGroups || []).includes(resolvedGroupName);
+            }
+        });
+
+        const groupSongs = songs.filter(s => {
+            const songArtist = s.targetGroup || s.artist;
+            if (resolvedGroupName === groupName) {
+                return songArtist === 'main' || songArtist === groupName;
+            } else {
+                return songArtist === resolvedGroupName || String(s.groupId) === String(targetSg?.id);
+            }
+        });
+
+        if (groupSongs.length === 0) {
+            return allGroupMembers;
+        }
+
+        const latestRelease = [...groupSongs].sort((a, b) => b.releaseWeek - a.releaseWeek)[0];
+        if (!latestRelease || !latestRelease.tracks) {
+            return allGroupMembers;
+        }
+
+        const titleTrack = latestRelease.tracks.find(t => t.type === 'title') || latestRelease.tracks[0];
+        if (!titleTrack) {
+            return allGroupMembers;
+        }
+
+        const titleTrackMemberIds = new Set((titleTrack.members || []).map(m => String(m.id || m.rosterId)));
+
+        return allGroupMembers.filter(m => !titleTrackMemberIds.has(String(m.id || m.rosterId)));
+    };
+
+    const startUnderTour = (targetGroup = 'main') => {
+        const cost = 15000;
+        const groupNameStr = targetGroup === 'main' ? 'main' : targetGroup;
+        const targetSg = sisterGroups.find(sg => sg.name === groupNameStr || String(sg.id) === String(targetGroup));
+        const resolvedGroupName = targetSg ? targetSg.name : groupName;
+
+        if (activeUnderTour) {
+            return setMessage("There is already an Under Live Tour running!");
+        }
+
+        if (money < cost) {
+            return setMessage(`An Under Live Tour costs ¥${cost.toLocaleString()}. You don't have enough funds.`);
+        }
+
+        const underPool = getUnderMembersPool(targetGroup).filter(m => m.isAvailable && !m.graduated);
+
+        if (underPool.length < 3) {
+            return setMessage(`You need at least 3 available Under Members in ${resolvedGroupName} to hold an Under Live Tour.`);
+        }
+
+        const participantIds = underPool.map(m => String(m.rosterId || m.id));
+        
+        setMoney(prev => prev - cost);
+        setActiveUnderTour({
+            name: `${resolvedGroupName} Under Live Tour`,
+            targetGroup: resolvedGroupName,
+            weeksLeft: 3,
+            revenue: 0,
+            memberIds: participantIds,
+            venueSize: 'hall'
+        });
+
+        participantIds.forEach(id => {
+            updateMemberState(id, m => ({
+                ...m,
+                isAvailable: false,
+                isUnderTouring: true
+            }));
+        });
+
+        addNotification({ type: 'Management', message: `The ${resolvedGroupName} Under Live Tour has commenced with ${underPool.length} members!` });
+        setMessage(`Under Live Tour started! It will run in the background for 3 weeks.`);
     };
 
     const createTeam = () => {
@@ -12291,6 +12379,115 @@ export const useIdolManager = () => {
             setScheduledSingles(prev => prev.filter(r => r.releaseWeek !== newWeek));
         }
 
+        // --- UNDER LIVE TOUR BACKGROUND PROGRESSION ---
+        if (activeUnderTour) {
+            const tour = activeUnderTour;
+            const participantIds = tour.memberIds || [];
+            
+            // Resolve participant draft objects from membersForUpdate or sisterGroupsForUpdate
+            let participants = [];
+            participantIds.forEach(id => {
+                let member = membersForUpdate.find(m => String(m.id) === String(id) || m.rosterId === String(id));
+                if (!member) {
+                    for (let i = 0; i < sisterGroupsForUpdate.length; i++) {
+                        const sg = sisterGroupsForUpdate[i];
+                        const m = (sg.members || []).find(m => `sg-${sg.id}-${m.id}` === String(id));
+                        if (m) {
+                            member = m;
+                            break;
+                        }
+                    }
+                }
+                if (member) participants.push(member);
+            });
+
+            const activeCount = participants.filter(m => !m.graduated).length;
+
+            if (activeCount === 0) {
+                setActiveUnderTour(null);
+                addNotificationInLoop({ type: 'Management', message: `The ${tour.name} was aborted because no active members remained.` });
+            } else {
+                const totalVocal = participants.reduce((sum, m) => sum + (m.singing || 0), 0);
+                const totalDance = participants.reduce((sum, m) => sum + (m.dancing || 0), 0);
+                const totalVisual = participants.reduce((sum, m) => sum + (m.visual || 0), 0);
+                
+                const avgPerformance = (totalVocal + totalDance + totalVisual) / (participants.length * 3);
+                
+                const weekRevenue = Math.floor(avgPerformance * activeCount * 600);
+                const fanGain = Math.floor(avgPerformance * activeCount * 3);
+
+                moneyForUpdate += weekRevenue;
+
+                let notificationEvents = [];
+                participants.forEach(m => {
+                    if (m.graduated) return;
+                    
+                    m.stamina = Math.max(0, (m.stamina || 100) - 20);
+                    m.stress = Math.min(100, (m.stress || 0) + 10);
+                    m.morale = Math.min(100, (m.morale || 0) + 15);
+                    m.graduationUrgency = Math.max(0, (m.graduationUrgency || 0) - 15);
+
+                    const hardcoreGain = Math.floor(fanGain * 0.3);
+                    const casualGain = fanGain - hardcoreGain;
+                    m.fans = m.fans || { casual: 0, hardcore: 0 };
+                    m.fans.casual = (m.fans.casual || 0) + casualGain;
+                    m.fans.hardcore = (m.fans.hardcore || 0) + hardcoreGain;
+
+                    const skillRoll = Math.random();
+                    const valGain = 1 + Math.floor(Math.random() * 2);
+                    if (skillRoll < 0.3) {
+                        m.singing = Math.min(100, (m.singing || 0) + valGain);
+                    } else if (skillRoll < 0.6) {
+                        m.dancing = Math.min(100, (m.dancing || 0) + valGain);
+                    } else {
+                        m.visual = Math.min(100, (m.visual || 0) + valGain);
+                    }
+
+                    if (Math.random() < 0.05) {
+                        m.popularity = (m.popularity || 0) + 8;
+                        m.charisma = Math.min(100, (m.charisma || 0) + 5);
+                        notificationEvents.push(`${m.name} had a Breakout Performance in the Under Live! Popularity +8, Charisma +5!`);
+                    }
+                });
+
+                const weeksRemaining = tour.weeksLeft - 1;
+
+                if (weeksRemaining <= 0) {
+                    participants.forEach(m => {
+                        m.isAvailable = true;
+                        m.isUnderTouring = false;
+                    });
+
+                    addNotificationInLoop({
+                        type: 'Management',
+                        message: `🎉 The ${tour.name} has concluded! Total Revenue: ¥${(tour.revenue + weekRevenue).toLocaleString()}. Under members' morale boosted and graduation urgency reduced!`
+                    });
+                    if (notificationEvents.length > 0) {
+                        notificationEvents.forEach(evt => {
+                            addNotificationInLoop({ type: 'Star Potential', message: evt });
+                        });
+                    }
+                    setActiveUnderTour(null);
+                } else {
+                    setActiveUnderTour(prev => ({
+                        ...prev,
+                        weeksLeft: weeksRemaining,
+                        revenue: (prev.revenue || 0) + weekRevenue
+                    }));
+
+                    addNotificationInLoop({
+                        type: 'Management',
+                        message: `🎸 ${tour.name} Week ${3 - weeksRemaining} report: ¥${weekRevenue.toLocaleString()} revenue earned! Morale and skills boosted.`
+                    });
+                    if (notificationEvents.length > 0) {
+                        notificationEvents.forEach(evt => {
+                            addNotificationInLoop({ type: 'Star Potential', message: evt });
+                        });
+                    }
+                }
+            }
+        }
+
 
         // --- 4. CALCULATE ALL INCOME STREAMS ---
 
@@ -17068,12 +17265,12 @@ const executeFestivalPerformance = (festival, performerIds, setlist) => {
 
 return {
     // State
-    activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm, setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, setGroupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, theaterSchedule, setTheaterSchedule, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
+    activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm, setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, setGroupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, theaterSchedule, setTheaterSchedule, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, activeUnderTour, setActiveUnderTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
     // Firebase/Persistence
     getSavedGames, saveGame, loadGame,
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
-    holdTitleTrackPerformance, holdUnitPerformance, unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, resolveSurvivalMission, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, executeFanEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
+    holdTitleTrackPerformance, holdUnitPerformance, unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, resolveSurvivalMission, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, getUnderMembersPool, startUnderTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, executeFanEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
 };
 };
