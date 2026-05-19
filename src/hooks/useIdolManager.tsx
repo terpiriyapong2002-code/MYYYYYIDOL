@@ -10821,6 +10821,7 @@ export const useIdolManager = () => {
 
         let totalFanGain = 0;
         performingMembers.forEach(member => {
+            const currentFans = getTotalFansForMember(member);
             // Each member gains 0.2% of their current fans, modified by skill (nerfed from 20%).
             const fanGainForMember = Math.floor(currentFans * 0.002 * (1 + avgSkill));
 
