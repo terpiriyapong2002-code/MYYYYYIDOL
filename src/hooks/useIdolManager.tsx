@@ -2285,6 +2285,10 @@ export const useIdolManager = () => {
 
     const [theaterSongs, setTheaterSongs] = useState([]);
     const [theaters, setTheaters] = useState([]);
+    const [theaterSchedule, setTheaterSchedule] = useState({
+        monday: [], tuesday: [], wednesday: [], thursday: [], friday: [],
+        saturday: { matinee: [], evening: [] }, sunday: { matinee: [], evening: [] }
+    });
     const [filmAwardsHistory, setFilmAwardsHistory] = useState([]);
     const [promotingFilm, setPromotingFilm] = useState(null);
     const [viewedFilm, setViewedFilm] = useState(null);
@@ -2771,6 +2775,7 @@ export const useIdolManager = () => {
                 teams,
                 allSetlists,
                 theaters,
+                theaterSchedule,
                 buildings,
                 sisterGroups,
                 rivalGroups,
@@ -2921,6 +2926,10 @@ export const useIdolManager = () => {
             setSongs(loadedSongs);
             setTeams(data.teams || []);
             setTheaters(data.theaters || []);
+            setTheaterSchedule(data.theaterSchedule || {
+                monday: [], tuesday: [], wednesday: [], thursday: [], friday: [],
+                saturday: { matinee: [], evening: [] }, sunday: { matinee: [], evening: [] }
+            });
 
             const loadedBuildings = data.buildings || {};
             if (loadedBuildings.hasOwnProperty('theater')) {
@@ -5202,20 +5211,43 @@ export const useIdolManager = () => {
         if (!venue) return setMessage("Error: Selected theater not found.");
         if (hasPerformedThisWeek) return setMessage("You can only hold one performance activity per week.");
 
-        let performingMembers;
+        let performingMembers = [];
+        let understudies = [];
+
         if (team) {
-            performingMembers = getMainGroupRoster().filter(m => team.members.includes(String(m.id)) && m.isAvailable);
+            const teamSize = team.members.length;
+            let cap = teamSize;
+            if (teamSize >= 20) cap = 16;
+            else if (teamSize >= 16) cap = 12;
+
+            const availableTeamMembers = getMainGroupRoster().filter(m => team.members.includes(String(m.id)) && m.isAvailable && (m.stamina || 0) >= 30);
+            
+            // Sort by stamina descending to rotate tired members out
+            availableTeamMembers.sort((a, b) => (b.stamina || 0) - (a.stamina || 0));
+
+            performingMembers = availableTeamMembers.slice(0, cap);
+
+            // Draft Kenkyuusei (Trainees) as understudies if below cap
+            if (performingMembers.length < cap) {
+                const needed = cap - performingMembers.length;
+                const availableTrainees = members.filter(m => m.status === 'Trainee' && m.isAvailable && (m.stamina || 0) >= 30)
+                    .sort((a, b) => (b.stamina || 0) - (a.stamina || 0));
+                
+                understudies = availableTrainees.slice(0, needed);
+                performingMembers = [...performingMembers, ...understudies];
+            }
         } else {
-            performingMembers = members.filter(m => m.isAvailable);
+            // General performance, standard 16 member cap
+            performingMembers = members.filter(m => m.isAvailable && (m.stamina || 0) >= 30)
+                .sort((a, b) => (b.stamina || 0) - (a.stamina || 0))
+                .slice(0, 16);
         }
+
         const performingMemberIds = performingMembers.map(m => m.rosterId || m.id);
 
         if (performingMembers.length === 0) {
-            return setMessage(team ? `${team.name} has no available members!` : 'No available members in the main group!');
+            return setMessage(team ? `${team.name} has no available members or trainees with enough stamina!` : 'No available members with enough stamina!');
         }
-
-        const avgStamina = performingMembers.reduce((sum, m) => sum + (m.stamina || 0), 0) / performingMembers.length;
-        if (avgStamina < 30) return setMessage('Performing members are too tired!');
 
         let fanGainMultiplier = 1.0;
         let revenueMultiplier = 1.0;
@@ -5396,13 +5428,30 @@ export const useIdolManager = () => {
         }
 
         performingMembers.forEach(member => {
-            updateMemberState(member.rosterId || member.id, m => ({
-                ...m,
-                stamina: Math.max(0, (m.stamina || 100) - staminaDrain),
-                stress: Math.min(100, (m.stress || 0) + stressGain),
-                morale: isSenshuuraku ? Math.min(100, (m.morale || 0) + 30) : m.morale
-            }));
+            const isUnderstudy = understudies.some(u => (u.rosterId || u.id) === (member.rosterId || member.id));
+            
+            updateMemberState(member.rosterId || member.id, m => {
+                let statBonusSinging = isUnderstudy ? Math.floor(Math.random() * 2) + 1 : 0; // 1-2 bonus
+                let statBonusDancing = isUnderstudy ? Math.floor(Math.random() * 2) + 1 : 0; // 1-2 bonus
+
+                return {
+                    ...m,
+                    stamina: Math.max(0, (m.stamina || 100) - staminaDrain),
+                    stress: Math.min(100, (m.stress || 0) + stressGain),
+                    morale: isSenshuuraku ? Math.min(100, (m.morale || 0) + 30) : m.morale,
+                    singing: Math.min(100, (m.singing || 0) + statBonusSinging),
+                    dancing: Math.min(100, (m.dancing || 0) + statBonusDancing),
+                    fans: {
+                        ...m.fans,
+                        casual: (m.fans?.casual || 0) + (isUnderstudy ? Math.floor(newFans * 0.1) : 0) // Bonus casual fans
+                    }
+                };
+            });
         });
+
+        if (understudies.length > 0) {
+            addNotification({ type: 'Event', message: `${understudies.length} Kenkyuusei stepped up as understudies and gained valuable experience!` });
+        }
 
         setMoney(prev => (prev || 0) + agencyProfit - totalCosts);
         setStatistics(prev => ({ ...prev, totalRevenue: (prev.totalRevenue || 0) + totalRevenue, totalConcerts: (prev.totalConcerts || 0) + 1 }));
@@ -5432,7 +5481,8 @@ export const useIdolManager = () => {
             revenue: agencyProfit,
             performanceStats: { singing: avgSinging, dancing: avgDancing, visual: avgVisual, charisma: avgCharisma },
             totalMerchRevenue: merchRevenue,
-            bestSellerName: bestSeller.name
+            bestSellerName: bestSeller.name,
+            understudies: understudies.map(u => u.name)
         });
         setShowModal('performanceResult');
     };
@@ -13475,6 +13525,125 @@ export const useIdolManager = () => {
         sisterGroupsForUpdate = simulateSisterGroupActions(sisterGroupsForUpdate, newWeek, addNotificationInLoop);
         rivalsForUpdate = simulateRivalActions(rivalsForUpdate, newWeek, addNotificationInLoop);
 
+        // --- 7.5. THEATER SCHEDULE SIMULATION ---
+        let totalTheaterRevenue = 0;
+        let totalTheaterFans = 0;
+        let totalTheaterShows = 0;
+
+        const simulateScheduledShow = (entityId, type, day) => {
+            let performingMembers = [];
+            let understudies = [];
+            let teamName = "Unknown";
+            let cap = 16;
+            
+            if (type === 'team') {
+                const team = teamsForUpdate.find(t => String(t.id) === String(entityId));
+                if (!team) return;
+                teamName = team.name;
+                const teamSize = team.members.length;
+                cap = teamSize >= 20 ? 16 : teamSize >= 16 ? 12 : teamSize;
+
+                let sourceMembers = membersForUpdate;
+                if (team.groupId && team.groupId !== 'main') {
+                    const sg = sisterGroupsForUpdate.find(g => String(g.id) === String(team.groupId));
+                    if (sg) sourceMembers = sg.members || [];
+                }
+
+                const availableTeamMembers = sourceMembers.filter(m => team.members.includes(String(m.id)) && m.isAvailable && (m.stamina || 0) >= 30)
+                    .sort((a, b) => (b.stamina || 0) - (a.stamina || 0));
+                
+                performingMembers = availableTeamMembers.slice(0, cap);
+
+                if (performingMembers.length < cap) {
+                    const needed = cap - performingMembers.length;
+                    const availableTrainees = sourceMembers.filter(m => m.status === 'Trainee' && m.isAvailable && (m.stamina || 0) >= 30)
+                        .sort((a, b) => (b.stamina || 0) - (a.stamina || 0));
+                    understudies = availableTrainees.slice(0, needed);
+                    performingMembers = [...performingMembers, ...understudies];
+                }
+            } else if (type === 'trainee') {
+                teamName = "Kenkyuusei";
+                cap = 16;
+                let sourceMembers = membersForUpdate;
+                if (entityId !== 'main') {
+                    const sg = sisterGroupsForUpdate.find(g => String(g.id) === String(entityId));
+                    if (sg) sourceMembers = sg.members || [];
+                }
+                
+                performingMembers = sourceMembers.filter(m => m.status === 'Trainee' && m.isAvailable && (m.stamina || 0) >= 30)
+                    .sort((a, b) => (b.stamina || 0) - (a.stamina || 0))
+                    .slice(0, cap);
+            }
+
+            if (performingMembers.length === 0) return;
+
+            totalTheaterShows++;
+            const memberCount = performingMembers.length || 1;
+            const avgCharisma = performingMembers.reduce((s, m) => s + (m.charisma || 0), 0) / memberCount;
+            
+            const performance = performingMembers.reduce((sum, m) => {
+                const memberScore = ((m.singing || 0) * 0.3 + (m.dancing || 0) * 0.4 + (m.visual || 0) * 0.2 + (m.charisma || 0) * 0.1);
+                return sum + (memberScore * ((m.stamina || 100) / 100));
+            }, 0);
+
+            let isBirthdayStage = false;
+            const currentWeekOfYear = (newWeek - 1) % 52 + 1;
+            performingMembers.forEach(m => {
+                if(m.birthday === currentWeekOfYear) isBirthdayStage = true;
+            });
+
+            const fanDemandHype = performingMembers.reduce((sum, m) => sum + (typeof m.fans === 'number' ? m.fans : (m.fans?.casual || 0) + (m.fans?.hardcore || 0)), 0);
+            const demandMultiplier = (0.5 + (avgCharisma / 200)) * (isBirthdayStage ? 1.5 : 1.0);
+            const venue = theaters[0]; // Assuming main theater
+            const capacity = venue ? venue.capacity : 250;
+            const attendance = Math.min(capacity, Math.floor(fanDemandHype * 0.05 * demandMultiplier));
+            const ticketPrice = venue ? (venue.level === 1 ? 3000 : venue.level === 2 ? 4000 : 5000) : 3000;
+            const ticketRevenue = Math.floor(attendance * ticketPrice);
+
+            let merchRevenue = Math.floor(attendance * (0.1 + (avgCharisma / 500)) * 1500 * (isBirthdayStage ? 1.5 : 1.0)); 
+            const agencyProfit = Math.floor((ticketRevenue + merchRevenue) * 0.6);
+            
+            const newFans = Math.floor(((attendance / 10) + (performance / 10)) * 1.0 * (isBirthdayStage ? 1.2 : 1.0));
+
+            totalTheaterRevenue += agencyProfit;
+            totalTheaterFans += newFans;
+            moneyForUpdate += agencyProfit;
+
+            const staminaDrain = isBirthdayStage ? 10 : 20; // less drain on birthday from adrenaline
+            const stressGain = 10;
+            const performingMemberIds = performingMembers.map(m => m.rosterId || m.id);
+
+            localDistributeFans(newFans, performingMemberIds);
+
+            performingMembers.forEach(member => {
+                const isUnderstudy = understudies.some(u => (u.rosterId || u.id) === (member.rosterId || member.id));
+                localUpdateMemberState(member.rosterId || member.id, m => ({
+                    ...m,
+                    stamina: Math.max(0, (m.stamina || 100) - staminaDrain),
+                    stress: Math.min(100, (m.stress || 0) + stressGain),
+                    morale: m.birthday === currentWeekOfYear ? 100 : m.morale,
+                    singing: Math.min(100, (m.singing || 0) + (isUnderstudy ? 1 : 0)),
+                    dancing: Math.min(100, (m.dancing || 0) + (isUnderstudy ? 1 : 0)),
+                    fans: { ...m.fans, casual: (m.fans?.casual || 0) + (isUnderstudy ? Math.floor(newFans * 0.1) : 0) }
+                }));
+            });
+        };
+
+        const scheduleDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+        scheduleDays.forEach(day => {
+            const dayData = theaterSchedule[day];
+            if (Array.isArray(dayData)) {
+                dayData.forEach(item => simulateScheduledShow(item.entityId, item.type, day));
+            } else if (dayData && typeof dayData === 'object') {
+                (dayData.matinee || []).forEach(item => simulateScheduledShow(item.entityId, item.type, `${day} (Matinee)`));
+                (dayData.evening || []).forEach(item => simulateScheduledShow(item.entityId, item.type, `${day} (Evening)`));
+            }
+        });
+
+        if (totalTheaterShows > 0) {
+            addNotificationInLoop({ type: 'Performance', message: `Held ${totalTheaterShows} theater shows this week! Earned ¥${totalTheaterRevenue.toLocaleString()} and gained ${totalTheaterFans.toLocaleString()} fans.` });
+        }
+
         // --- 8. FINAL MESSAGES & STATE COMMIT ---
 
         // Construct the final message for the UI
@@ -16833,7 +17002,7 @@ const executeFestivalPerformance = (festival, performerIds, setlist) => {
 
 return {
     // State
-    activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm, setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, setGroupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
+    activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm, setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, setGroupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, theaterSchedule, setTheaterSchedule, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
     // Firebase/Persistence
     getSavedGames, saveGame, loadGame,
     // Utilities

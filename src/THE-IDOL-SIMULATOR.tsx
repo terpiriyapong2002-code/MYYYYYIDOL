@@ -93,7 +93,7 @@ const App = () => {
     // Destructure everything from the custom hook
     const {
         // State
-        activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm, setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, resolveSurvivalMission, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, setGroupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
+        activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm, setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, resolveSurvivalMission, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, setGroupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, theaterSchedule, setTheaterSchedule, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
         // Firebase/Persistence
         getSavedGames, saveGame, loadGame,
         // Utilities
@@ -6085,44 +6085,139 @@ const App = () => {
     };
 
 
-    const TheaterShowPrepModal = () => {
-        const [theme, setTheme] = useState('classic');
-        const themes = ['classic', 'vocal', 'dance', 'idol', 'energy', 'theatrical', 'cool'];
+    const TheaterScheduleModal = () => {
+        const [localSchedule, setLocalSchedule] = useState(JSON.parse(JSON.stringify(theaterSchedule)));
+        
+        const updateSchedule = (day, slot, value) => {
+            setLocalSchedule(prev => {
+                const newSchedule = { ...prev };
+                if (slot) {
+                    newSchedule[day][slot] = value;
+                } else {
+                    newSchedule[day] = value;
+                }
+                return newSchedule;
+            });
+        };
 
-        const team = teams.find(t => t.id === selectedTheaterTeam);
-        const setlist = team ? allSetlists.find(s => s.id === team.currentSetlistId) : null;
+        const handleSave = () => {
+            // Clean up any empty selections before saving
+            const cleanedSchedule = { ...localSchedule };
+            const cleanArray = (arr) => arr.filter(item => item && item.type);
+            ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].forEach(d => {
+                cleanedSchedule[d] = cleanArray(cleanedSchedule[d]);
+            });
+            ['saturday', 'sunday'].forEach(d => {
+                cleanedSchedule[d].matinee = cleanArray(cleanedSchedule[d].matinee);
+                cleanedSchedule[d].evening = cleanArray(cleanedSchedule[d].evening);
+            });
+            
+            setTheaterSchedule(cleanedSchedule);
+            setShowModal(null);
+            addNotification({ type: 'Event', message: 'Weekly Theater Schedule updated and saved!' });
+        };
 
-        // Automatically select the setlist's theme as default if available
-        useEffect(() => {
-            if (setlist && setlist.theme) {
-                setTheme(setlist.theme);
-            }
-        }, [setlist]);
+        const SelectEntity = ({ value, onChange }) => {
+            const valObj = value && value.length > 0 ? value[0] : { type: '', entityId: '' };
+            const strVal = valObj.type ? `${valObj.type}___${valObj.entityId}` : '';
+
+            const handleSelect = (e) => {
+                const val = e.target.value;
+                if (!val) {
+                    onChange([]);
+                    return;
+                }
+                const [type, entityId] = val.split('___');
+                onChange([{ type, entityId }]);
+            };
+
+            return (
+                <div className="flex gap-1 items-center w-full">
+                    <select value={strVal} onChange={handleSelect} className="flex-1 p-1 text-sm border rounded bg-white dark:bg-gray-700 dark:border-gray-600">
+                        <option value="">-- Select a Group/Team --</option>
+                        <optgroup label="Main Group">
+                            {teams.filter(t => t.groupId === 'main').map(t => <option key={t.id} value={`team___${t.id}`}>{t.name} (Team)</option>)}
+                            <option value="trainee___main">Kenkyuusei Stage</option>
+                        </optgroup>
+                        {sisterGroups.map(sg => (
+                            <optgroup key={`sg-${sg.id}`} label={sg.name}>
+                                {teams.filter(t => String(t.groupId) === String(sg.id)).map(t => <option key={`sg-${t.id}`} value={`team___${t.id}`}>{t.name} (Team)</option>)}
+                                <option value={`trainee___${sg.id}`}>Kenkyuusei Stage</option>
+                            </optgroup>
+                        ))}
+                    </select>
+                    {strVal && <button onClick={() => onChange([])} className="text-red-500 hover:text-red-700 ml-1" title="Remove Show"><Trash2 size={16}/></button>}
+                </div>
+            );
+        };
 
         return (
-            <ModalWrapper title="Theater Show Preparation">
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Prepare for the upcoming theater show.</p>
+            <ModalWrapper title="Weekly Theater Schedule" maxWidth="max-w-2xl">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Assign teams or trainee groups to perform on specific days. You can schedule multiple shows per day if you have different theaters available (e.g. Main group in Akihabara, Sister group in Namba).</p>
 
-                {team && setlist ? (
-                    <div className="mb-4 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg border dark:border-gray-600">
-                        <p><strong>Team:</strong> <span className="font-semibold">{team.name}</span></p>
-                        <p><strong>Setlist:</strong> <span className="font-semibold">{setlist.name}</span></p>
-                        <p><strong>Recommended Theme:</strong> <span className="font-bold text-blue-600 dark:text-blue-400">{setlist.theme}</span></p>
-                    </div>
-                ) : (
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Performing with all available members.</p>
-                )}
+                <div className="space-y-2 mb-4 max-h-[60vh] overflow-y-auto pr-2">
+                    {['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].map(day => (
+                        <div key={day} className="flex flex-col md:flex-row md:items-start gap-2 md:gap-3 bg-gray-50 dark:bg-gray-800 p-2 rounded border dark:border-gray-700">
+                            <span className="w-24 font-bold text-gray-700 dark:text-gray-300 capitalize pt-1">{day}</span>
+                            <div className="flex-1 flex flex-col gap-1">
+                                {(localSchedule[day] || []).map((item, index) => (
+                                    <SelectEntity key={index} value={[item]} onChange={(val) => {
+                                        const newArr = [...localSchedule[day]];
+                                        if (val.length === 0) newArr.splice(index, 1);
+                                        else newArr[index] = val[0];
+                                        updateSchedule(day, null, newArr);
+                                    }} />
+                                ))}
+                                <button onClick={() => updateSchedule(day, null, [...(localSchedule[day] || []), { type: '', entityId: '' }])} className="text-xs text-blue-500 hover:text-blue-700 font-semibold self-start flex items-center mt-1">
+                                    <Plus size={14} className="mr-1" /> Add Show
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                    
+                    {['saturday', 'sunday'].map(day => (
+                        <div key={day} className="flex flex-col gap-2 bg-pink-50 dark:bg-gray-800 p-2 rounded border border-pink-200 dark:border-gray-700">
+                            <span className="font-bold text-pink-700 dark:text-pink-400 capitalize">{day}</span>
+                            <div className="flex flex-col md:flex-row md:items-start gap-2 pl-4">
+                                <span className="w-20 text-sm text-gray-600 dark:text-gray-400 pt-1">Matinee</span>
+                                <div className="flex-1 flex flex-col gap-1">
+                                    {(localSchedule[day].matinee || []).map((item, index) => (
+                                        <SelectEntity key={index} value={[item]} onChange={(val) => {
+                                            const newArr = [...localSchedule[day].matinee];
+                                            if (val.length === 0) newArr.splice(index, 1);
+                                            else newArr[index] = val[0];
+                                            updateSchedule(day, 'matinee', newArr);
+                                        }} />
+                                    ))}
+                                    <button onClick={() => updateSchedule(day, 'matinee', [...(localSchedule[day].matinee || []), { type: '', entityId: '' }])} className="text-xs text-pink-600 hover:text-pink-800 font-semibold self-start flex items-center mt-1">
+                                        <Plus size={14} className="mr-1" /> Add Show
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="flex flex-col md:flex-row md:items-start gap-2 pl-4 border-t border-pink-100 dark:border-gray-700 pt-2">
+                                <span className="w-20 text-sm text-gray-600 dark:text-gray-400 pt-1">Evening</span>
+                                <div className="flex-1 flex flex-col gap-1">
+                                    {(localSchedule[day].evening || []).map((item, index) => (
+                                        <SelectEntity key={index} value={[item]} onChange={(val) => {
+                                            const newArr = [...localSchedule[day].evening];
+                                            if (val.length === 0) newArr.splice(index, 1);
+                                            else newArr[index] = val[0];
+                                            updateSchedule(day, 'evening', newArr);
+                                        }} />
+                                    ))}
+                                    <button onClick={() => updateSchedule(day, 'evening', [...(localSchedule[day].evening || []), { type: '', entityId: '' }])} className="text-xs text-pink-600 hover:text-pink-800 font-semibold self-start flex items-center mt-1">
+                                        <Plus size={14} className="mr-1" /> Add Show
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
 
-                <h4 className="font-semibold mb-1 dark:text-gray-200">Select Performance Theme</h4>
-                <select value={theme} onChange={(e) => setTheme(e.target.value)} className="w-full p-2 border rounded mb-3 bg-white dark:bg-gray-700 dark:border-gray-600">
-                    {themes.map(t => <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>)}
-                </select>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">Matching the theme to the setlist's theme will provide a performance bonus.</p>
-
-                <div className="flex justify-end gap-2 mt-4 pt-4 border-t dark:border-gray-600">
+                <div className="flex justify-end gap-2 pt-4 border-t dark:border-gray-600">
                     <button onClick={() => setShowModal(null)} className="p-2 bg-gray-300 dark:bg-gray-600 rounded px-4">Cancel</button>
-                    <button onClick={() => holdTheaterShow({ teamId: selectedTheaterTeam, concertTheme: theme })} className="p-2 bg-green-500 text-white rounded px-4 font-bold">
-                        Start Show
+                    <button onClick={handleSave} className="p-2 bg-green-500 hover:bg-green-600 text-white rounded px-4 font-bold transition-colors">
+                        Save Schedule
                     </button>
                 </div>
             </ModalWrapper>
@@ -6276,6 +6371,22 @@ const App = () => {
                             <div className="grid grid-cols-2 gap-2 text-center">
                                 <div><p className="font-bold text-green-600 text-lg">¥{totalMerchRevenue.toLocaleString()}</p><p className="text-pink-900/70">Merch Revenue</p></div>
                                 <div><p className="font-bold text-yellow-600 text-lg truncate" title={bestSellerName}>{bestSellerName}</p><p className="text-pink-900/70">Best Seller</p></div>
+                            </div>
+                        </div>
+                    )}
+
+                    {modalData.understudies && modalData.understudies.length > 0 && (
+                        <div className="p-3 mt-4 rounded-lg bg-pink-100/50 text-xs backdrop-blur-sm border border-pink-300 shadow-sm">
+                            <h4 className="font-bold text-center text-pink-900/90 mb-1">Kenkyuusei Understudies</h4>
+                            <p className="text-pink-800/80 text-center text-xs italic mb-2">
+                                The following trainees stepped in to perform!
+                            </p>
+                            <div className="flex flex-wrap gap-2 justify-center">
+                                {modalData.understudies.map(name => (
+                                    <span key={name} className="px-2 py-1 bg-white/70 rounded-full font-semibold border border-pink-200 text-pink-900 shadow-sm">
+                                        {name}
+                                    </span>
+                                ))}
                             </div>
                         </div>
                     )}
@@ -14162,25 +14273,8 @@ const App = () => {
                                 <h3 className="text-base font-bold mb-2 flex items-center"><Star size={18} className="mr-2" /> Performance & Elections</h3>
                                 <div className="flex flex-col gap-1.5">
                                     <h4 className='font-semibold text-sm mt-1 mb-0.5 flex items-center'><Home size={16} className='mr-1 text-red-500' /> Theater Shows:</h4>
-                                    <div className="flex items-center gap-2 mb-1">
-                                        <select
-                                            value={selectedTheaterTeam || ''}
-                                            onChange={(e) => setSelectedTheaterTeam(e.target.value || null)}
-                                            className="flex-1 p-1.5 text-sm border rounded"
-                                            disabled={theaters.length === 0}
-                                        >
-                                            <option value="">All Available Members</option>
-                                            {sisterGroups.map(sg => (
-                                                <option key={`sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name} (Group)</option>
-                                            ))}
-                                            {(teams || []).map(team => {
-                                                const ownerName = team.groupId === 'main' ? groupName : (sisterGroups.find(sg => String(sg.id) === String(team.groupId))?.name || 'Unknown');
-                                                return <option key={team.id} value={team.id}>{team.name} ({ownerName})</option>;
-                                            })}
-                                        </select>
-                                    </div>
-                                    <button onClick={startTheaterShowPrep} className="w-full px-3 py-1.5 text-sm bg-green-500 text-white rounded disabled:bg-gray-400 font-semibold" disabled={theaters.length === 0 || !!activeTour}>
-                                        <Users size={16} className='inline mr-1' /> Hold Theater Show
+                                    <button onClick={() => setShowModal('theaterSchedule')} className="w-full px-3 py-1.5 mt-1 text-sm bg-green-500 text-white rounded disabled:bg-gray-400 font-semibold" disabled={theaters.length === 0 || !!activeTour}>
+                                        <Calendar size={16} className='inline mr-1' /> Manage Weekly Theater Schedule
                                     </button>
 
                                     <button onClick={startPerformancePrep} className="w-full p-1.5 text-sm bg-indigo-500 text-white rounded font-semibold" disabled={!!activeTour || songs.length === 0}>
@@ -16280,6 +16374,7 @@ const App = () => {
             {showModal === 'licenseSong' && <LicenseSongModal />}
             {showModal === 'assignKennin' && <AssignKenninModal />}
             {showModal === 'studyAbroad' && <StudyAbroadModal />}
+            {showModal === 'theaterSchedule' && <TheaterScheduleModal />}
             {showModal === 'theaterSelection' && <TheaterSelectionModal />}
             {showModal === 'rename' && modalData && <RenameMemberModal />}
             {showModal === 'moveMember' && <MoveMemberModal member={modalData} setShowModal={setShowModal} />}
