@@ -67,6 +67,8 @@ const applyMemberFilter = (member, filterKey, teams = [], sisterGroups = [], pus
         
         const isInSG = String(member.groupId) === String(sgId) || 
                        (sgName && (member.kenninGroups || []).includes(sgName)) ||
+                       (member.kenninGroups || []).includes(sgId) ||
+                       (member.kenninGroups || []).includes(String(sgId)) ||                       
                        (member.kennin && String(member.kennin.groupId) === String(sgId)) ||
                        (sgName && member.homeGroup === sgName);
 
@@ -91,13 +93,13 @@ const App = () => {
     // Destructure everything from the custom hook
     const {
     // State
-    activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm,setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, resolveSurvivalMission, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory,  merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
+    activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm,setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, resolveSurvivalMission, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, setGroupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory,  merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
     // Firebase/Persistence
     getSavedGames, saveGame, loadGame,
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
-    holdTitleTrackPerformance, holdUnitPerformance, unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference,  completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
+    holdTitleTrackPerformance, holdUnitPerformance, unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek: nextWeekHook, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference,  completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
 
     } = useIdolManager();
 
@@ -167,7 +169,380 @@ useEffect(() => {
         }
     }, [pendingGraduationAnnouncement]);
 
+    // --- DILEMMA AND NARRATIVE EVENTS STATES ---
+    const [activeDilemma, setActiveDilemma] = useState(null);
+    const [dilemmaResult, setDilemmaResult] = useState(null);
+    // Database of 8 randomized agency storyline choices
+    const weeklyDilemmas = [
+        {
+            id: 'sponsorship',
+            title: "Questionable Sponsorship",
+            text: "A sketchy energy drink brand 'HyperIdol' offers a ¥300,000 sponsorship. However, their television commercial requires the girls to do extremely goofy, embarrassing poses.",
+            choices: [
+                {
+                    text: "Accept the Sponsor (+¥300,000, +Stress)",
+                    description: "We need the cash! The budget comes first.",
+                    outcome: "The ad goes viral, but the girls are red with embarrassment! They refuse to drink it in real life.",
+                    effect: (setMoney, updateMemberState, addNotification, members) => {
+                        setMoney(prev => prev + 300000);
+                        const shuffled = [...members].sort(() => 0.5 - Math.random());
+                        shuffled.slice(0, 2).forEach(m => {
+                            updateMemberState(m.id, prev => ({
+                                ...prev,
+                                stress: Math.min(100, prev.stress + 25),
+                                morale: Math.max(0, prev.morale - 15)
+                            }));
+                        });
+                        addNotification({ type: 'Event', message: `Accepted HyperIdol sponsorship. Gained ¥300,000 but members gained stress.` });
+                    }
+                },
+                {
+                    text: "Reject for Integrity (+Reputation, +Morale)",
+                    description: "Our group has class. We won't humiliate ourselves.",
+                    outcome: "The girls are incredibly relieved and praise your leadership! Fans respect your high artistic standard.",
+                    effect: (setMoney, updateMemberState, addNotification, members, setGroupReputation) => {
+                        setGroupReputation(prev => prev + 5);
+                        members.forEach(m => {
+                            updateMemberState(m.id, prev => ({
+                                ...prev,
+                                morale: Math.min(100, prev.morale + 10)
+                            }));
+                        });
+                        addNotification({ type: 'Event', message: `Rejected sketchy sponsorship. Group reputation and morale increased!` });
+                    }
+                }
+            ]
+        },
+        {
+            id: 'dorm_dispute',
+            title: "The Great Dorm Dispute",
+            text: "Tension has erupted in the dorm! Members are arguing over who left dirty dishes in the kitchen sink, leading to silent treatments.",
+            choices: [
+                {
+                    text: "Buy a Dishwasher (-¥15,000, +Morale)",
+                    description: "Let technology solve this. A clean kitchen is a peaceful kitchen.",
+                    outcome: "Tension immediately evaporates! The girls gather in the kitchen to watch the new machine wash their dishes.",
+                    effect: (setMoney, updateMemberState, addNotification, members) => {
+                        setMoney(prev => prev - 15000);
+                        members.forEach(m => {
+                            updateMemberState(m.id, prev => ({
+                                ...prev,
+                                morale: Math.min(100, prev.morale + 10)
+                            }));
+                        });
+                        addNotification({ type: 'Event', message: `Purchased a dorm dishwasher. Dorm tension resolved!` });
+                    }
+                },
+                {
+                    text: "Host a Duet Choreo Session (+Dance, +Stress)",
+                    description: "Force the main combatants to cooperate on a new dance routine.",
+                    outcome: "Working together was stressful, but they managed to create a beautiful choreography and resolved their dispute in the process!",
+                    effect: (setMoney, updateMemberState, addNotification, members) => {
+                        const shuffled = [...members].sort(() => 0.5 - Math.random());
+                        shuffled.slice(0, 2).forEach(m => {
+                            updateMemberState(m.id, prev => ({
+                                ...prev,
+                                dancing: Math.min(100, prev.dancing + 8),
+                                stress: Math.min(100, prev.stress + 15)
+                            }));
+                        });
+                        addNotification({ type: 'Event', message: `Duet choreo session resolved dorm dispute and boosted dancing skills.` });
+                    }
+                },
+                {
+                    text: "Ignore it (-Morale)",
+                    description: "They are adults, they can deal with it themselves.",
+                    outcome: "The silence is deafening. Group harmony takes a hit as the dishes continue to pile up.",
+                    effect: (setMoney, updateMemberState, addNotification, members) => {
+                        members.forEach(m => {
+                            updateMemberState(m.id, prev => ({
+                                ...prev,
+                                morale: Math.max(0, prev.morale - 12)
+                            }));
+                        });
+                        addNotification({ type: 'Event', message: `Ignored dorm dispute. Member morale suffered.` });
+                    }
+                }
+            ]
+        },
+        {
+            id: 'prank_show',
+            title: "Late Night Prank Show",
+            text: "An influential producer invites one of your members to appear on a popular late-night variety program, where she will be surprise-pranked with flour and water.",
+            choices: [
+                {
+                    text: "Send Her In! (+Fans, +Variety, +Stress)",
+                    description: "Great variety TV exposure! She can handle it.",
+                    outcome: "She handled it like a champ! Her flour-covered shocked face becomes a popular reaction meme, gaining the agency massive fans.",
+                    effect: (setMoney, updateMemberState, addNotification, members, setGroupReputation, setTotalFans) => {
+                        const shuffled = [...members].sort(() => 0.5 - Math.random());
+                        const target = shuffled[0];
+                        updateMemberState(target.id, prev => ({
+                            ...prev,
+                            variety: Math.min(100, (prev.variety || 40) + 12),
+                            stress: Math.min(100, prev.stress + 25)
+                        }));
+                        setTotalFans(prev => prev + 12000);
+                        addNotification({ type: 'Event', message: `${target.name} starred on the prank show, boosting fans and variety skill!` });
+                    }
+                },
+                {
+                    text: "Politely Decline (+Morale, -Stress)",
+                    description: "Protect our girl's image and dignity. She shouldn't be a laughing stock.",
+                    outcome: "She is deeply grateful for your protection and feels valued by management. She spends the evening resting instead.",
+                    effect: (setMoney, updateMemberState, addNotification, members) => {
+                        const shuffled = [...members].sort(() => 0.5 - Math.random());
+                        const target = shuffled[0];
+                        updateMemberState(target.id, prev => ({
+                            ...prev,
+                            morale: Math.min(100, prev.morale + 20),
+                            stress: Math.max(0, prev.stress - 15)
+                        }));
+                        addNotification({ type: 'Event', message: `Declined prank show invitation. ${target.name} rested instead.` });
+                    }
+                }
+            ]
+        },
+        {
+            id: 'vocal_strategy',
+            title: "Vocal Strategy Dilemma",
+            text: "For the upcoming major live show, the organizers suggest lip-syncing to ensure a perfect backing track. However, the members want to sing 100% live.",
+            choices: [
+                {
+                    text: "Sing 100% Live (Risky Vocal Boost)",
+                    description: "Show the world our raw talent and authenticity!",
+                    outcome: "They performed! It was raw, passionate, and the crowd was absolutely blown away by their energy!",
+                    effect: (setMoney, updateMemberState, addNotification, members, setGroupReputation, setTotalFans) => {
+                        const success = Math.random() < 0.65;
+                        if (success) {
+                            members.forEach(m => {
+                                updateMemberState(m.id, prev => ({
+                                    ...prev,
+                                    singing: Math.min(100, prev.singing + 8),
+                                    morale: Math.min(100, prev.morale + 10)
+                                }));
+                            });
+                            setTotalFans(prev => prev + 20000);
+                            addNotification({ type: 'Event', message: `Live performance succeeded! Singing skill, morale, and fans increased!` });
+                        } else {
+                            members.forEach(m => {
+                                updateMemberState(m.id, prev => ({
+                                    ...prev,
+                                    morale: Math.max(0, prev.morale - 15),
+                                    stress: Math.min(100, prev.stress + 10)
+                                }));
+                            });
+                            addNotification({ type: 'Event', message: `Live performance was pitchy. Critics complained, lowering morale.` });
+                        }
+                    }
+                },
+                {
+                    text: "Lip-Sync Safely (+Dance, Safe Fans)",
+                    description: "Play it safe. Visual choreography and a polished TV look are what matters.",
+                    outcome: "The performance was visually flawless and looked incredibly slick, though core fans noted the complete lack of live vocals.",
+                    effect: (setMoney, updateMemberState, addNotification, members, setGroupReputation, setTotalFans) => {
+                        members.forEach(m => {
+                            updateMemberState(m.id, prev => ({
+                                ...prev,
+                                dancing: Math.min(100, prev.dancing + 4)
+                            }));
+                        });
+                        setTotalFans(prev => prev + 6000);
+                        addNotification({ type: 'Event', message: `Safely lip-synced. Visual choreography was praised.` });
+                    }
+                }
+            ]
+        },
+        {
+            id: 'stray_cat',
+            title: "The Stray Cat Mascot",
+            text: "A stray cat has snuck into the idol dorm. The girls have secretly been feeding it and are begging you to let them keep it as their official agency dorm mascot!",
+            choices: [
+                {
+                    text: "Allow It (-¥5,000, -Stress, +Morale)",
+                    description: "A cute pet cat will be a perfect stress reliever for the group.",
+                    outcome: "The dorm cat 'Neko-chan' is a massive success! The girls post adorable pictures with it online, which the fans absolutely adore.",
+                    effect: (setMoney, updateMemberState, addNotification, members, setGroupReputation, setTotalFans) => {
+                        setMoney(prev => prev - 5000);
+                        members.forEach(m => {
+                            updateMemberState(m.id, prev => ({
+                                ...prev,
+                                stress: Math.max(0, prev.stress - 25),
+                                morale: Math.min(100, prev.morale + 15)
+                            }));
+                        });
+                        setTotalFans(prev => prev + 4000);
+                        addNotification({ type: 'Event', message: `Adopted dorm cat mascot! Morale boosted and stress decayed.` });
+                    }
+                },
+                {
+                    text: "No Pets Allowed (Rule Compliance)",
+                    description: "Rules are rules. Also, some members might have allergies.",
+                    outcome: "A local shelter adopts the cat. The girls are extremely disappointed and mope in their rooms, but the dorm remains clean.",
+                    effect: (setMoney, updateMemberState, addNotification, members) => {
+                        members.forEach(m => {
+                            updateMemberState(m.id, prev => ({
+                                ...prev,
+                                stress: Math.min(100, prev.stress + 5)
+                            }));
+                        });
+                        addNotification({ type: 'Event', message: `Declined cat adoption due to allergy risks.` });
+                    }
+                }
+            ]
+        },
+        {
+            id: 'wardrobe_crisis',
+            title: "Stage Wardrobe Crisis",
+            text: "An hour before a sold-out theater show, the zipper on the center's main performance dress snaps completely! There are no spare outfits available.",
+            choices: [
+                {
+                    text: "Safety Pin Quick-Fix (Risk malfunction)",
+                    description: "Pin it up quickly and hope the zipper holds during the heavy dancing!",
+                    outcome: "The zipper was successfully pinned and the show went off without a hitch!",
+                    effect: (setMoney, updateMemberState, addNotification, members, setGroupReputation, setTotalFans) => {
+                        const success = Math.random() < 0.7;
+                        const shuffled = [...members].sort(() => 0.5 - Math.random());
+                        const center = shuffled[0];
+                        if (success) {
+                            setTotalFans(prev => prev + 5000);
+                            updateMemberState(center.id, prev => ({
+                                ...prev,
+                                morale: Math.min(100, prev.morale + 10)
+                            }));
+                            addNotification({ type: 'Event', message: `Safety pins held! ${center.name}'s costume survived the show.` });
+                        } else {
+                            updateMemberState(center.id, prev => ({
+                                ...prev,
+                                stress: Math.min(100, prev.stress + 30),
+                                morale: Math.max(0, prev.morale - 15)
+                            }));
+                            setGroupReputation(prev => Math.max(0, prev - 2));
+                            addNotification({ type: 'Event', message: `Costume pins burst on stage! ${center.name} suffered major stress.` });
+                        }
+                    }
+                },
+                {
+                    text: "Delay Show 30 mins (-¥8,000, Safe Repair)",
+                    description: "Refund delay vouchers and have the staff sew a proper repair.",
+                    outcome: "The show starts slightly late but the costume is fully sewn up. The performance goes flawlessly and the center is completely relaxed.",
+                    effect: (setMoney, updateMemberState, addNotification, members) => {
+                        setMoney(prev => prev - 8000);
+                        const shuffled = [...members].sort(() => 0.5 - Math.random());
+                        const center = shuffled[0];
+                        updateMemberState(center.id, prev => ({
+                            ...prev,
+                            stress: Math.max(0, prev.stress - 10)
+                        }));
+                        addNotification({ type: 'Event', message: `Delayed show for sewing repair. Costume restored safely.` });
+                    }
+                }
+            ]
+        },
+        {
+            id: 'dance_battle',
+            title: "Friendly Dance Battle",
+            text: "Members of a friendly rival group drop by your practice studio and suggest an off-the-record dance battle. It could be an amazing chance to sharpen skills.",
+            choices: [
+                {
+                    text: "Accept the Challenge (+Dance, +Morale)",
+                    description: "Show them what we're made of! Let's trade choreographies.",
+                    outcome: "It was an epic showdown! Both groups traded mind-blowing moves and ended up sharing pizzas and respect afterwards.",
+                    effect: (setMoney, updateMemberState, addNotification, members) => {
+                        members.forEach(m => {
+                            updateMemberState(m.id, prev => ({
+                                ...prev,
+                                dancing: Math.min(100, prev.dancing + 6),
+                                morale: Math.min(100, prev.morale + 12),
+                                stress: Math.max(0, prev.stress - 5)
+                            }));
+                        });
+                        addNotification({ type: 'Event', message: `Completed rival dance battle. Dancing skills and morale surged!` });
+                    }
+                },
+                {
+                    text: "Decline to Keep Focused",
+                    description: "Politely decline to avoid any physical exhaustion or studio drama.",
+                    outcome: "The girls are slightly disappointed. The rivals make a smug post on social media about having no competition.",
+                    effect: (setMoney, updateMemberState, addNotification, members) => {
+                        members.forEach(m => {
+                            updateMemberState(m.id, prev => ({
+                                ...prev,
+                                morale: Math.max(0, prev.morale - 5)
+                            }));
+                        });
+                        addNotification({ type: 'Event', message: `Declined dance battle challenge.` });
+                    }
+                }
+            ]
+        },
+        {
+            id: 'stalker_gift',
+            title: "Mysterious Gift Box",
+            text: "A beautifully wrapped luxury box arrives at the agency without a return address. It contains high-end makeup kits and a warm fan letter, but is anonymous.",
+            choices: [
+                {
+                    text: "Distribute to Members (Free Morale?)",
+                    description: "It's expensive and looks genuine. Let the girls enjoy it.",
+                    outcome: "The girls absolutely loved the cosmetics! Their complexions look radiant and their spirits are high.",
+                    effect: (setMoney, updateMemberState, addNotification, members) => {
+                        const safety = Math.random() < 0.5;
+                        if (safety) {
+                            members.forEach(m => {
+                                updateMemberState(m.id, prev => ({
+                                    ...prev,
+                                    morale: Math.min(100, prev.morale + 15)
+                                }));
+                            });
+                            addNotification({ type: 'Event', message: `Idols loved the mystery makeup gift! Morale increased.` });
+                        } else {
+                            members.forEach(m => {
+                                updateMemberState(m.id, prev => ({
+                                    ...prev,
+                                    stress: Math.min(100, prev.stress + 20)
+                                }));
+                            });
+                            addNotification({ type: 'Event', message: `Mystery gift was a stalker prank! Idols gained stress.` });
+                        }
+                    }
+                },
+                {
+                    text: "Dispose Safely (+Reputation, Strict Safety)",
+                    description: "Rule #1 of idol management: never accept anonymous gifts. Toss it.",
+                    outcome: "Safety first! The staff disposes of the box. The girls are disappointed but respect the professional security standard.",
+                    effect: (setMoney, updateMemberState, addNotification, members, setGroupReputation) => {
+                        setGroupReputation(prev => prev + 3);
+                        addNotification({ type: 'Event', message: `Disposed of anonymous package for safety. Reputation increased.` });
+                    }
+                }
+            ]
+        }
+    ];
+    // Intercept nextWeek to add 20% random agency dilemma chance
+    const nextWeek = () => {
+        if (members.length > 0 && Math.random() < 0.20 && !activeTour) {
+            const randomDilemma = weeklyDilemmas[Math.floor(Math.random() * weeklyDilemmas.length)];
+            setActiveDilemma(randomDilemma);
+            setShowModal('weeklyDilemma');
+        } else {
+            nextWeekHook();
+        }
+    };
+    const handleSelectChoice = (choice) => {
+        choice.effect(setMoney, updateMemberState, addNotification, members, setGroupReputation, setTotalFans);
+        setDilemmaResult({
+            choiceText: choice.text,
+            outcome: choice.outcome
+        });
+    };
+    const handleClose = () => {
+        setActiveDilemma(null);
+        setDilemmaResult(null);
+        setShowModal(null);
+        nextWeekHook();
+    };
 
+    
     // --- NEW STATE FOR SORT/FILTER ---
     const [memberSort, setMemberSort] = useState({ key: 'rank', asc: true });
     const [memberFilter, setMemberFilter] = useState('all');
@@ -178,7 +553,7 @@ useEffect(() => {
     const [showRecentOnly, setShowRecentOnly] = useState(true);
     const allMembers = getMainGroupRoster();
     const mainGroupGenerations = [...new Set(allMembers.filter(m => !m.isSisterMember).map(m => m.generation).filter(Boolean))];
-    const sisterGroupDetails = sisterGroups.map(sg => ({
+    const sisterGroupDetails = sisterGroups.filter(sg => !sg.isDisbanded).map(sg => ({        
         ...sg,
         generations: [...new Set(allMembers.filter(m => String(m.groupId) === String(sg.id)).map(m => m.generation).filter(Boolean))]
     }));
@@ -694,7 +1069,7 @@ const HoldAuditionModal = ({ startAudition, groupName, sisterGroups, setShowModa
                                 <tr>
                                     <th className="p-2 w-10"></th>
                                     <SortableHeader label="Name" sortKey="name" />
-                                    <SortableHeader label="Hometown" sortKey="hometown" />
+                                    <SortableHeader label="Specialty" sortKey="archetype" />                                    <SortableHeader label="Hometown" sortKey="hometown" />
                                     <SortableHeader label="Vo" sortKey="vocal" />
                                     <SortableHeader label="Da" sortKey="dance" />
                                     <SortableHeader label="Vi" sortKey="visual" />
@@ -715,6 +1090,17 @@ const HoldAuditionModal = ({ startAudition, groupName, sisterGroups, setShowModa
                                       />
                                   </td>
                                   <td className="p-2 font-medium">{c.name}</td>
+                                  <td className="p-2">
+                                      <span className={`px-2 py-0.5 text-[10px] rounded-full font-semibold border ${
+                                          c.archetype === 'Vocalist' ? 'bg-red-50 text-red-600 border-red-200 dark:bg-red-950/30 dark:text-red-400 dark:border-red-800' :
+                                          c.archetype === 'Dancer' ? 'bg-blue-50 text-blue-600 border-blue-200 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800' :
+                                          c.archetype === 'Visual/Ace' ? 'bg-pink-50 text-pink-600 border-pink-200 dark:bg-pink-950/30 dark:text-pink-400 dark:border-pink-800' :
+                                          c.archetype === 'Variety Star' ? 'bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-950/30 dark:text-yellow-450 dark:border-yellow-800' :
+                                          'bg-green-50 text-green-600 border-green-200 dark:bg-green-950/30 dark:text-green-400 dark:border-green-800'
+                                      }`}>
+                                          {c.archetype || 'All-Rounder'}
+                                      </span>
+                                  </td>                                  
                                   <td className="p-2">{c.hometown}</td>
                                     <td className="p-2">{Math.round(c.vocal)}</td>
                                     <td className="p-2">{Math.round(c.dance)}</td>
@@ -1196,8 +1582,125 @@ const AnnualAwardsResultModal = () => {
     const [physicalVersions, setPhysicalVersions] = useState(1);
     const [isElectionSingle, setIsElectionSingle] = useState(false);
     const [includeHandshakeTickets, setIncludeHandshakeTickets] = useState(false);
-    
-const generateUniqueRandomName = () => {
+    // --- New Genre & Theme State ---
+    const [songGenre, setSongGenre] = useState('Bubblegum Pop');
+    const [songTheme, setSongTheme] = useState('Sweet Hearts');
+    // --- New Single Formats State ---
+    const [singleSubType, setSingleSubType] = useState('group'); // 'group', 'unit', 'solo'
+    const [selectedSoloist, setSelectedSoloist] = useState(null);
+    const [selectedUnitGroup, setSelectedUnitGroup] = useState(null);
+    // --- Search & Filters for Solo & Sub-Unit Creation ---
+    const [searchFilter, setSearchFilter] = useState('');
+    const [teamFilter, setTeamFilter] = useState('All');
+    const [groupFilter, setGroupFilter] = useState('All');
+    const [genFilter, setGenFilter] = useState('All');
+    const [customUnitName, setCustomUnitName] = useState('');
+    const [customUnitMembers, setCustomUnitMembers] = useState([]);
+    const getProjectedSalesAndRank = () => {
+        // Resolve members in the Title Track (Senbatsu)
+        const titleTrack = releaseType === 'album' ? albumTracks[0] : tracks[0];
+        if (!titleTrack || !titleTrack.members || titleTrack.members.length === 0) {
+            return { sales: 0, rank: 'No Members Selected 🌸', rankColor: 'text-pink-400 font-semibold italic', cost: totalProductionCost, skillPower: 0, synergyFound: false, synergyMessage: 'Cast some members first!' };
+        }
+        const allAvailableForSong = getAllAvailableMembers(true);
+        const senbatsuMemberIds = titleTrack.members.map(String);
+        
+        const senbatsuWithBonuses = allAvailableForSong.filter(member => 
+            senbatsuMemberIds.includes(String(member.rosterId || member.id))
+        ).map(member => {
+            const trainingBuff = { standard: 0, workshop: 5, overseas: 15, bootcamp: 20, elite: 25, oneOnOne: 30 }[productionChoices.training] || 0;
+            const moraleBuff = ['custom', 'concept', 'luxury'].includes(productionChoices.outfits) ? 10 : 0;
+            return { 
+                ...member, 
+                singing: Math.min(100, (member.singing || 0) + trainingBuff), 
+                dancing: Math.min(100, (member.dancing || 0) + trainingBuff), 
+                morale: Math.min(100, (member.morale || 0) + moraleBuff) 
+            };
+        });
+        // Calculate fans and average skill
+        const fanSales = senbatsuWithBonuses.reduce((sum, m) => sum + ((m.fans?.hardcore || 0) * 0.2) + ((m.fans?.casual || 0) * 0.05), 0);
+        const avgSkill = senbatsuWithBonuses.reduce((sum, m) => sum + (((m.singing || 0) * 0.30) + ((m.dancing || 0) * 0.30) + ((m.visual || 0) * 0.20) + ((m.variety || 0) * 0.067) + ((m.charisma || 0) * 0.067) + ((m.intelligence || 0) * 0.066)), 0) / (senbatsuWithBonuses.length || 1);
+        const skillPower = avgSkill * 20;
+        let formatBonus = 1.0;
+        if (releaseFormat === 'physical') {
+            formatBonus += 0.10;
+            if (physicalVersions > 1) {
+                formatBonus += (physicalVersions - 1) * 0.05;
+            }
+        }
+        let potential = ((fanSales * 0.9) + (skillPower * 0.1)) * formatBonus;
+        // Add collaboration boost
+        const isCollaboration = releaseType === 'single' && tracks[0]?.isCollaboration && tracks[0]?.rivalPartner;
+        if (isCollaboration && tracks[0]?.rivalPartner) {
+            const rival = (modalData.rivalGroups || []).find(r => r.id === tracks[0].rivalPartner.id);
+            if (rival) {
+                potential += rival.fans * 0.15;
+            }
+        }
+        // Genre & Theme synergies
+        let synergyMultiplier = 1.0;
+        let synergyFound = false;
+        let synergyMessage = "Standard Blend";
+        if (songGenre === "Bubblegum Pop" && songTheme === "Sweet Hearts") {
+            synergyMultiplier = 1.15;
+            synergyFound = true;
+            synergyMessage = "Sweet Idol Synergy! (+15% Hype)";
+        } else if (songGenre === "Electro-Dance" && songTheme === "Cyber Dream") {
+            synergyMultiplier = 1.15;
+            synergyFound = true;
+            synergyMessage = "Cyber Techno Synergy! (+15% Hype)";
+        } else if (songGenre === "Idol Rock" && songTheme === "Girl Hype") {
+            synergyMultiplier = 1.15;
+            synergyFound = true;
+            synergyMessage = "Riot Grrrl Rock Synergy! (+15% Hype)";
+        } else if (songGenre === "Soft Ballad" && songTheme === "School Days") {
+            synergyMultiplier = 1.12;
+            synergyFound = true;
+            synergyMessage = "Nostalgic School Romance! (+12% Hype)";
+        } else if (songGenre === "Cute Disco" && songTheme === "Summer Splash") {
+            synergyMultiplier = 1.12;
+            synergyFound = true;
+            synergyMessage = "Summer Disco Fever! (+12% Hype)";
+        }
+        potential *= synergyMultiplier;
+        // Apply MV and Promo multipliers
+        const mvMult = { none: 1, standard: 1.1, storyboard: 1.25, highBudget: 1.4, storytelling: 1.5, cinematic: 1.75 }[productionChoices.mv] || 1;
+        const promoMult = { none: 1, social: 1.15, tv: 1.3, poster: 1.1, handshake: 1.4, festival: 1.5, global: 1.8 }[productionChoices.promo] || 1;
+        const finalProjectedSales = Math.floor(potential * mvMult * promoMult);
+        // Chart Rank
+        let chartRank = 'Out of Chart 😭';
+        let rankColor = 'text-gray-500';
+        if (finalProjectedSales > 1500000) {
+            chartRank = '🏆 Weekly #1 (Million Seller!)';
+            rankColor = 'text-yellow-600 font-extrabold animate-pulse';
+        } else if (finalProjectedSales > 750000) {
+            chartRank = '🌟 Weekly #1 (Super Hit!)';
+            rankColor = 'text-yellow-500 font-extrabold';
+        } else if (finalProjectedSales > 400000) {
+            chartRank = '✨ Weekly Top 3 🔥';
+            rankColor = 'text-pink-600 font-bold';
+        } else if (finalProjectedSales > 150000) {
+            chartRank = '🎵 Weekly Top 10 ⭐';
+            rankColor = 'text-purple-600 font-bold';
+        } else if (finalProjectedSales > 50000) {
+            chartRank = '📈 Weekly Top 30';
+            rankColor = 'text-blue-600 font-medium';
+        } else if (finalProjectedSales > 10000) {
+            chartRank = '📋 Weekly Top 100';
+            rankColor = 'text-slate-600';
+        }
+        return { 
+            sales: finalProjectedSales, 
+            rank: chartRank, 
+            rankColor,
+            cost: totalProductionCost, 
+            skillPower, 
+            synergyFound, 
+            synergyMessage 
+        };
+    };
+   
+    const generateUniqueRandomName = () => {
     const allSongNames = [
         ...(songs || []).map(s => s.name),
         ...(sisterGroups || []).flatMap(sg => (sg.songs || []).map(s => s.name))
@@ -1215,14 +1718,27 @@ const generateUniqueRandomName = () => {
 
         const productionChoicesCost = Object.keys(productionChoices).reduce((total, key) => total + productionTiers[key][productionChoices[key]].cost, 10000);
 
-        const totalProductionCost = 
-            productionChoicesCost + 
+        let costMultiplier = 1.0;
+        if (releaseType === 'single') {
+            if (singleSubType === 'solo') {
+                costMultiplier = 0.4;
+            } else if (singleSubType === 'unit') {
+                costMultiplier = 0.7;
+            }
+        }
+        const totalProductionCost = Math.round(
+
             (
-                releaseType === 'album' 
-                    ? baseCostAlbum + (releaseFormat === 'physical' ? albumPhysicalSurcharge : 0)
-                    : (releaseFormat === 'physical' ? baseCostPerVersion * physicalVersions : 0)
-            ) + 
-            (isElectionSingle ? electionBallotCost : 0) + (includeHandshakeTickets ? handshakeTicketCost : 0);
+
+               productionChoicesCost + 
+                (
+                    releaseType === 'album' 
+                        ? baseCostAlbum + (releaseFormat === 'physical' ? albumPhysicalSurcharge : 0)
+                        : (releaseFormat === 'physical' ? baseCostPerVersion * physicalVersions : 0)
+                ) + 
+                (isElectionSingle ? electionBallotCost : 0) + (includeHandshakeTickets ? handshakeTicketCost : 0)
+            ) * costMultiplier
+        );
 
             const handleRandomizeRows = () => {
                 const currentIndex = releaseType === 'album' ? selectedAlbumTrackIndex : selectedTrackIndex;
@@ -1415,30 +1931,44 @@ const newLineup = { ...track.lineup };
 
 
         const historicalTracks = [
-            ...(songs || []).flatMap(release =>
-                (release.tracks || []).map(track => ({
+
+            ...(songs || []).flatMap(release => {
+                let artistName = release.targetGroup === 'main' ? groupName : release.targetGroup;
+                if (release.singleSubType === 'solo') {
+                    const titleTrack = (release.tracks || []).find(t => t.type === 'title');
+                    artistName = `${titleTrack?.members?.[0]?.name || "Soloist"} (Solo)`;
+                }
+                return (release.tracks || []).map(track => ({
                     id: `${release.id}-${track.name}-${release.targetGroup}`,
-                    name: `${track.name} (from ${release.name})`,
+                    name: `${track.name} (from ${artistName}'s ${release.name})`,
                     data: {
                         members: (track.members || []).map(m => String(m.id)),
                         center: track.center || [],
                         lineup: track.lineup || {}
                     }
-                }))
-            ),
+                }));
+            }),
+
             ...(sisterGroups || []).flatMap(sg =>
-                (sg.songs || []).flatMap(release =>
-                    (release.tracks || []).map(track => ({
+
+                (sg.songs || []).flatMap(release => {
+                    let artistName = sg.name;
+                    if (release.singleSubType === 'solo') {
+                        const titleTrack = (release.tracks || []).find(t => t.type === 'title');
+                        artistName = `${titleTrack?.members?.[0]?.name || "Soloist"} (Solo)`;
+                    }
+                    return (release.tracks || []).map(track => ({
+
                         id: `${release.id}-${track.name}-${sg.id}`,
-                        name: `${track.name} (from ${sg.name}'s ${release.name})`,
+                        name: `${track.name} (from ${artistName}'s ${release.name})`,
                         data: {
                             members: (track.members || []).map(m => String(m.id)),
                             center: track.center ? String(track.center) : null,
                             lineup: track.lineup || {}
                         }
-                    }))
-                )
-            )
+                    }));
+                })
+             )
         ].sort((a, b) => {
             const idA = parseInt(a.id.split('-')[0], 10);
             const idB = parseInt(b.id.split('-')[0], 10);
@@ -1725,7 +2255,7 @@ const handleReleaseTypeSelect = (type) => {
     } else if (type === 'graduationSingle') {
         setStep('selectGraduatingMember'); // Go to our new step
     } else { // 'single'
-        setStep('selection');
+        setStep('selectSingleSubType');
     }
 };
     // --- Functions for Album Tracks ---
@@ -1764,9 +2294,28 @@ const setAlbumCenter = (memberId) => {
     }));
 };
     const handleAlbumLineupChange = (memberId, row) => setAlbumTracks(prev => prev.map((track, index) => index === selectedAlbumTrackIndex ? { ...track, lineup: { ...track.lineup, [String(memberId)]: row } } : track));
-    const toggleMember = (memberId) => setTracks(prev => prev.map((track, index) => { if (index !== selectedTrackIndex) return track; const memberIdStr = String(memberId); const isMemberSelected = track.members.map(String).includes(memberIdStr); let newMembers; let newLineup = { ...track.lineup }; if (isMemberSelected) { newMembers = track.members.filter(id => String(id) !== memberIdStr); delete newLineup[memberIdStr]; } else { newMembers = [...track.members.map(String), memberIdStr]; newLineup[memberIdStr] = '5th Row'; } let newCenter = (track.center || []).filter(centerId => newMembers.includes(String(centerId)));
- return { ...track, members: newMembers, center: newCenter, lineup: newLineup }; }));
-    const setCenter = (memberId) => {
+    const toggleMember = (memberId) => {
+        if (releaseType === 'single' && (singleSubType === 'solo' || singleSubType === 'unit')) {
+            return; // Lock member list changes for Solo/Sub-Units in single production
+        }
+        setTracks(prev => prev.map((track, index) => {
+            if (index !== selectedTrackIndex) return track;
+            const memberIdStr = String(memberId);
+            const isMemberSelected = track.members.map(String).includes(memberIdStr);
+            let newMembers;
+            let newLineup = { ...track.lineup };
+            if (isMemberSelected) {
+                newMembers = track.members.filter(id => String(id) !== memberIdStr);
+                delete newLineup[memberIdStr];
+            } else {
+                newMembers = [...track.members.map(String), memberIdStr];
+                newLineup[memberIdStr] = '5th Row';
+            }
+            let newCenter = (track.center || []).filter(centerId => newMembers.includes(String(centerId)));
+            return { ...track, members: newMembers, center: newCenter, lineup: newLineup };
+        }));
+    };    
+ const setCenter = (memberId) => {
         setTracks(prev => prev.map((track, index) => {
             if (index !== selectedTrackIndex) return track;
 
@@ -1785,6 +2334,16 @@ const setAlbumCenter = (memberId) => {
         }));
     };
     const addTrack = () => { setTracks(prev => [...prev, { name: `B-Side ${prev.length}`, unitName: `Unit ${prev.length}`, type: 'b-side', members: [], center: [], lineup: {}, cdType: 'common' }]); setSelectedTrackIndex(tracks.length); };
+    const removeTrack = (indexToRemove) => {
+        if (indexToRemove === 0) return; // Cannot delete title track
+        setTracks(prev => {
+            const newTracks = prev.filter((_, i) => i !== indexToRemove);
+            if (selectedTrackIndex >= indexToRemove) {
+                setSelectedTrackIndex(Math.max(0, selectedTrackIndex - 1));
+            }
+            return newTracks;
+        });
+    };    
     const handleLineupChange = (memberId, row) => setTracks(prev => prev.map((track, index) => index === selectedTrackIndex ? { ...track, lineup: { ...track.lineup, [String(memberId)]: row } } : track));
 const handleRandomizeMembers = (trackIndex, numToSelect) => {
     const currentIndex = releaseType === 'album' ? selectedAlbumTrackIndex : selectedTrackIndex;
@@ -2076,10 +2635,13 @@ const handleSchedule = () => {
         }),
         isGraduationSingle: releaseType === 'graduationSingle', // This is the new line
         isElectionSingle: isElectionSingle, 
-        isCollaboration: isCollaboration, // Add this line
-        rivalPartner: rivalPartner,     // Add this line        
-};
-            
+        isCollaboration: isCollaboration,
+        rivalPartner: rivalPartner,          
+        genre: songGenre,
+        theme: songTheme,
+        singleSubType: singleSubType
+    };
+
     scheduleNewSingle({ 
         songData, 
         productionData: productionChoices, 
@@ -2122,6 +2684,8 @@ const handleSchedule = () => {
                     lineup: t.lineup
                 };
             }),
+            genre: songGenre,
+            theme: songTheme        
         };
 
         scheduleNewAlbum({ albumData: albumDataObject, productionData: productionChoices, releaseWeek });
@@ -2131,12 +2695,31 @@ const handleSchedule = () => {
     const PyramidVisualization = ({ lineup, members, center, activeDragId }) => {
         const DraggableChip = memo(({ member }) => {
             const { attributes, listeners, setNodeRef } = useDraggable({ id: member.rosterId });
+            const isCenter = (center || []).includes(String(member.rosterId));
             return (
-                <div ref={setNodeRef} {...listeners} {...attributes} style={{ touchAction: 'none' }} className={`p-1 rounded text-center cursor-grab transition-all duration-200 ${(center || []).includes(String(member.rosterId)) ? 'bg-yellow-400 text-black ring-2 ring-yellow-200' : 'bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-100'}`}>
-                    <div className="flex flex-col items-center leading-tight" style={{ userSelect: 'none' }}>
-                        <span className="font-semibold text-[11px]">{member.nickname || member.name.split(' ')[0]}</span>
-                        <span className="text-[10px] text-gray-600 dark:text-gray-400">Vo:{Math.round(member.singing)} Da:{Math.round(member.dancing)} Vi.{Math.round(member.visual)}</span>
-                        <span className="text-[10px] text-blue-600 dark:text-blue-400 font-medium">Fans: {getTotalFansForMember(member).toLocaleString()}</span>
+                <div
+                    ref={setNodeRef}
+                    {...listeners}
+                    {...attributes}
+                    style={{ touchAction: 'none' }}
+                    className={`p-2 rounded-2xl text-center cursor-grab transition-all duration-200 shadow-md ${
+                        isCenter
+                            ? 'bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-300 text-amber-950 ring-4 ring-yellow-200 animate-pulse font-extrabold shadow-yellow-200/50 border border-yellow-400'
+                            : 'bg-white/95 border border-pink-200 dark:bg-slate-800 dark:border-pink-900/60 text-gray-800 dark:text-gray-100 hover:scale-105 hover:shadow-pink-100 dark:hover:shadow-none'
+                    }`}
+                >
+                    <div className="flex flex-col items-center leading-tight select-none">
+                        <span className="font-extrabold text-[12px] flex items-center gap-1">
+                            {isCenter && '👑'} {member.nickname || member.name.split(' ')[0]} {isCenter && '👑'}
+                        </span>
+                        <div className="flex gap-1.5 text-[9px] font-bold mt-1 opacity-90">
+                            <span className="text-rose-500">Vo:{Math.round(member.singing)}</span>
+                            <span className="text-pink-500">Da:{Math.round(member.dancing)}</span>
+                            <span className="text-violet-500">Vi:{Math.round(member.visual)}</span>
+                        </div>
+                        <span className={`text-[9px] font-extrabold mt-0.5 ${isCenter ? 'text-amber-900' : 'text-pink-600 dark:text-pink-300'}`}>
+                            🌸 {getTotalFansForMember(member).toLocaleString()}
+                        </span>                    
                     </div>
                 </div>
             );
@@ -2144,8 +2727,27 @@ const handleSchedule = () => {
 
         const DroppableRow = ({ rowName, children }) => {
             const { setNodeRef, isOver } = useDroppable({ id: `formation-row-${rowName}` });
-            const style = { transition: 'background-color 0.2s ease-in-out', backgroundColor: isOver ? 'rgba(34, 197, 94, 0.2)' : undefined, border: isOver ? '2px dashed #22C55E' : '2px dashed transparent', padding: '8px', borderRadius: '8px', minHeight: '40px' };
-            return <div ref={setNodeRef} style={style}>{children}</div>;
+            
+            // Tailored designs per row type
+            const rowStyles = {
+                '1st Row': 'border-yellow-400/80 bg-gradient-to-b from-yellow-50/60 to-amber-50/40 dark:from-yellow-950/20 dark:to-amber-950/10 shadow-yellow-100/40 dark:shadow-none',
+                '2nd Row': 'border-pink-400/70 bg-gradient-to-b from-pink-50/40 to-white/30 dark:from-pink-950/10 dark:to-slate-900/10 shadow-pink-100/30 dark:shadow-none',
+                '3rd Row': 'border-pink-200 dark:border-pink-900/40 bg-white/40 dark:bg-slate-900/20',
+                '4th Row': 'border-pink-100 dark:border-pink-950/30 bg-white/20 dark:bg-slate-900/10',
+                '5th Row': 'border-pink-50/50 dark:border-pink-950/10 bg-white/10 dark:bg-slate-900/5'
+            };
+            
+            const selectedStyleClass = rowStyles[rowName] || 'border-pink-200 bg-white/40';
+            return (
+                <div
+                    ref={setNodeRef}
+                    className={`w-full border-2 border-dashed rounded-2xl p-4 min-h-[70px] flex items-center justify-center transition-all duration-300 backdrop-blur-sm ${selectedStyleClass} ${
+                        isOver ? 'bg-pink-200/50 border-pink-500 scale-[1.02] shadow-inner' : ''
+                    }`}
+                >
+                    {children}
+                </div>
+            );       
         };
 
         const rows = { '1st Row': [], '2nd Row': [], '3rd Row': [], '4th Row': [], '5th Row': [] };
@@ -2153,49 +2755,63 @@ const handleSchedule = () => {
         Object.keys(rows).forEach(row => rows[row].sort((a, b) => (b.fans || 0) - (a.fans || 0)));
 
         return (
-            <div className="p-4 border border-gray-200 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg flex flex-col items-center gap-4">
-                <h4 className="font-bold text-lg tracking-wider">FORMATION</h4>
-                {['1st Row', '2nd Row', '3rd Row', '4th Row', '5th Row'].map(rowName => (
-                    <div key={rowName} className="flex flex-col items-center w-full">
-                        <DroppableRow rowName={rowName}>
-                            <div className="flex justify-center flex-wrap gap-2">
-                                {rows[rowName].length > 0 ? (rows[rowName].map(member => (<DraggableChip key={member.rosterId} member={member} />))) : (<p className="text-xs text-gray-400">Drop members here</p>)}
-                            </div>
-                        </DroppableRow>
-                        <p className="text-xs text-gray-500 mt-1">{rowName} ({rows[rowName].length})</p>
-                    </div>
-                ))}
+            <div className="p-5 border-2 border-pink-200 bg-gradient-to-b from-pink-50/40 via-white/80 to-pink-100/30 dark:from-pink-950/20 dark:border-pink-900/50 text-gray-900 dark:text-gray-100 rounded-3xl flex flex-col items-center gap-4 shadow-xl shadow-pink-50/20 backdrop-blur-md">
+                <h4 className="font-extrabold text-pink-700 dark:text-pink-300 text-lg tracking-widest flex items-center gap-1.5">🌸 STAGE SPOTLIGHT FORMATION 🌸</h4>
+                {['1st Row', '2nd Row', '3rd Row', '4th Row', '5th Row'].map(rowName => {
+                    const icon = rowName === '1st Row' ? '✨👑 Center Spotlight 👑✨' : `🎀 ${rowName} 🎀`;
+                    return (
+                        <div key={rowName} className="flex flex-col items-center w-full">
+                            <p className={`text-xs font-extrabold mb-1.5 tracking-wider uppercase ${rowName === '1st Row' ? 'text-amber-600 dark:text-amber-400' : 'text-pink-600 dark:text-pink-400'}`}>
+                                {icon} ({rows[rowName].length})
+                            </p>
+                            <DroppableRow rowName={rowName}>
+                                <div className="flex justify-center flex-wrap gap-2.5 w-full">
+                                    {rows[rowName].length > 0 ? (
+                                        rows[rowName].map(member => <DraggableChip key={member.rosterId} member={member} />)
+                                    ) : (
+                                        <p className="text-xs text-pink-400 dark:text-pink-600/70 font-semibold italic">Drag & drop members into spotlight slots</p>
+                                    )}
+                                </div>
+                            </DroppableRow>
+                        </div>
+                    );
+                })}                
             </div>
         );
     };
 
     const renderTypeSelectionStep = () => (
-    <div className="text-center p-8" style={{minHeight: '60vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
-        <h3 className="text-3xl font-bold mb-6 dark:text-gray-100">What do you want to produce?</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl w-full">
+    <div className="text-center p-8 bg-gradient-to-br from-pink-50 via-white to-pink-100 dark:from-pink-950 dark:to-slate-900 rounded-3xl border-2 border-pink-200 dark:border-pink-900/50 shadow-2xl shadow-pink-200/50 dark:shadow-pink-900/30 backdrop-blur-sm" style={{minHeight: '60vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+        <h3 className="text-3xl font-extrabold mb-6 text-pink-600 dark:text-pink-300 drop-shadow-sm flex items-center justify-center gap-3">
+            <Sparkles className="text-yellow-400 animate-pulse"/>
+            What do you want to produce? 🎀
+            <Sparkles className="text-yellow-400 animate-pulse"/>
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl w-full">            
             <button
                 onClick={() => handleReleaseTypeSelect('single')}
-                className="p-8 bg-blue-500 text-white rounded-xl shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 transition-all duration-300 transform hover:-translate-y-1"
-            >
-                <Music size={32} className="mx-auto mb-3" />
-                <span className="font-bold text-xl">New Single</span>
-                <p className="text-sm text-blue-100 mt-1">A standard release with a title track and B-sides.</p>
-            </button>
+                className="p-8 bg-white/60 dark:bg-pink-950/40 text-pink-700 dark:text-pink-200 rounded-2xl border-2 border-pink-300 dark:border-pink-800 shadow-xl hover:bg-pink-400 hover:text-white hover:border-pink-400 focus:outline-none focus:ring-4 focus:ring-pink-300 transition-all duration-300 transform hover:-translate-y-2 group"
+               >
+
+                <Music size={40} className="mx-auto mb-4 text-pink-500 group-hover:text-white transition-colors" />
+                <span className="font-extrabold text-2xl tracking-wide">New Single 🎵</span>
+                <p className="text-sm font-medium mt-2 opacity-80">A standard release with a title track and B-sides.</p>           
+           </button>
             <button
                 onClick={() => handleReleaseTypeSelect('graduationSingle')}
-                className="p-8 bg-yellow-500 text-white rounded-xl shadow-lg hover:bg-yellow-600 focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:focus:ring-yellow-800 transition-all duration-300 transform hover:-translate-y-1"
+                className="p-8 bg-white/60 dark:bg-pink-950/40 text-yellow-600 dark:text-yellow-300 rounded-2xl border-2 border-yellow-300 dark:border-yellow-800 shadow-xl hover:bg-yellow-400 hover:text-white hover:border-yellow-400 focus:outline-none focus:ring-4 focus:ring-yellow-300 transition-all duration-300 transform hover:-translate-y-2 group"            
             >
-                <Star size={32} className="mx-auto mb-3" />
-                <span className="font-bold text-xl">Graduation Single</span>
-                <p className="text-sm text-yellow-100 mt-1">A special single centered on a graduating member.</p>
+                <Star size={40} className="mx-auto mb-4 text-yellow-500 group-hover:text-white transition-colors" />
+                <span className="font-extrabold text-2xl tracking-wide">Graduation Single 🎓</span>
+                <p className="text-sm font-medium mt-2 opacity-80">A special single centered on a graduating member.</p>            
             </button>
             <button
                 onClick={() => handleReleaseTypeSelect('album')}
-                className="p-8 bg-purple-500 text-white rounded-xl shadow-lg hover:bg-purple-600 focus:outline-none focus:ring-4 focus:ring-purple-300 dark:focus:ring-purple-800 transition-all duration-300 transform hover:-translate-y-1"
+                className="p-8 bg-white/60 dark:bg-pink-950/40 text-purple-600 dark:text-purple-300 rounded-2xl border-2 border-purple-300 dark:border-purple-800 shadow-xl hover:bg-purple-400 hover:text-white hover:border-purple-400 focus:outline-none focus:ring-4 focus:ring-purple-300 transition-all duration-300 transform hover:-translate-y-2 group"            
             >
-                <Layers size={32} className="mx-auto mb-3" />
-                <span className="font-bold text-xl">Original Album</span>
-                <p className="text-sm text-purple-100 mt-1">A full-length album with all-new songs.</p>
+                <Layers size={40} className="mx-auto mb-4 text-purple-500 group-hover:text-white transition-colors" />
+                <span className="font-extrabold text-2xl tracking-wide">Original Album 💿</span>
+                <p className="text-sm font-medium mt-2 opacity-80">A full-length album with all-new songs.</p>            
             </button>
         </div>
     </div>
@@ -2243,6 +2859,612 @@ const renderSelectGraduatingMemberStep = () => {
     )
 };
 
+    const getSelectableMembersPool = () => {
+        const allAvailableForSong = getAllAvailableMembers(true);
+        if (targetGroup === 'main') {
+            return allAvailableForSong;
+        } else {
+            const sg = sisterGroups.find(s => s.name === targetGroup);
+            if (sg) {
+                if (sg.type === 'unit') {
+                    const unitMemberIds = (sg.members || []).map(member => {
+                        if (typeof member === 'object' && member !== null) {
+                            return String(member.rosterId || member.id);
+                        }
+                        return String(member);
+                    });
+                    return unitMemberIds.map(id => getMemberById(id)).filter(Boolean);
+                } else {
+                    return allAvailableForSong.filter(m => 
+                        String(m.groupId) === String(sg.id) || 
+                        (m.kennin && String(m.kennin.groupId) === String(sg.id)) ||
+                        (m.kenninGroups || []).includes(sg.name)
+                    );
+                }
+            }
+        }
+        return [];
+    };
+    const handleSoloistConfirm = (member) => {
+        setSelectedSoloist(member);
+        const titleSongName = generateSongTitle(`${member.name} Solo`);
+        setSongName(titleSongName);
+        
+        // Setup targetGroup to soloist's homeGroup or main
+        const homeGroup = member.isSisterMember ? member.displayGroupName : 'main';
+        setTargetGroup(homeGroup);
+        // Setup title and B-side tracks with exactly the soloist
+        setTracks([
+            { 
+                name: titleSongName, 
+                unitName: 'Soloist', 
+                type: 'title', 
+                members: [String(member.rosterId)], 
+                center: [String(member.rosterId)], 
+                lineup: { [String(member.rosterId)]: '1st Row' } 
+            },
+            { 
+                name: `${member.name} B-Side`, 
+                unitName: 'Soloist', 
+                type: 'b-side', 
+                members: [String(member.rosterId)], 
+                center: [String(member.rosterId)], 
+                lineup: { [String(member.rosterId)]: '1st Row' },
+                cdType: 'common' 
+            }
+        ]);
+        setStep('selection');
+    };
+    const handleUnitConfirm = (unit) => {
+        setSelectedUnitGroup(unit);
+        const titleSongName = generateSongTitle(unit.id === 'custom' ? 'Unit' : unit.name);
+        setSongName(titleSongName);
+        
+        if (unit.id !== 'custom') {
+            // Setup targetGroup to existing unit name
+            setTargetGroup(unit.name);
+            // For existing units, automatically populate track with all unit members!
+            const unitMemberIds = (unit.members || []).map(m => {
+                if (typeof m === 'object' && m !== null) {
+                    return String(m.rosterId || m.id);
+                }
+                return String(m);
+            });
+            const firstMemberId = unitMemberIds[0] || null;
+            const defaultLineup = {};
+            unitMemberIds.forEach(id => {
+                defaultLineup[id] = '3rd Row';
+            });
+            if (firstMemberId) defaultLineup[firstMemberId] = '1st Row';
+            setTracks([
+                { 
+                    name: titleSongName, 
+                    unitName: unit.name, 
+                    type: 'title', 
+                    members: unitMemberIds, 
+                    center: firstMemberId ? [firstMemberId] : [], 
+                    lineup: defaultLineup 
+                },
+                { 
+                    name: `${unit.name} B-Side`, 
+                    unitName: unit.name, 
+                    type: 'b-side', 
+                    members: unitMemberIds, 
+                    center: firstMemberId ? [firstMemberId] : [], 
+                    lineup: defaultLineup,
+                    cdType: 'common' 
+                }
+            ]);
+        } else {
+            // Custom unit: open the dedicated Legit Sub-Unit Creator step
+            setCustomUnitName(`Unit ${['Nova', 'Apex', 'Luna', 'Ruby', 'Emerald', 'Prism', 'Chroma', 'Aura'][Math.floor(Math.random() * 8)]} ${Math.floor(Math.random() * 90 + 10)}`);
+            setCustomUnitMembers([]);
+            setSearchFilter('');
+            setTeamFilter('All');
+            setGroupFilter('All');
+            setGenFilter('All');
+            setStep('createUnit');
+            return;
+        }
+        setStep('selection');
+    };
+    const renderSingleSubTypeStep = () => (
+        <div className="text-center p-8 bg-gradient-to-br from-pink-50 via-white to-indigo-50 dark:from-slate-900 dark:to-slate-955 rounded-3xl border-2 border-pink-200 dark:border-pink-900/50 shadow-2xl backdrop-blur-sm" style={{minHeight: '60vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+            <h3 className="text-3xl font-extrabold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-indigo-600 dark:from-pink-300 dark:to-indigo-300 drop-shadow-sm flex items-center justify-center gap-3">
+                <Sparkles className="text-yellow-400 animate-pulse"/>
+                Choose Single Format 💿
+                <Sparkles className="text-yellow-400 animate-pulse"/>
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-xl mx-auto">Select the format of your upcoming single release. Different formats provide unique balance modifications and strategic bonuses.</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl w-full mb-8">
+                {/* 1. Group Single */}
+                <button
+                    onClick={() => { setSingleSubType('group'); setStep('selection'); }}
+                    className="p-6 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-2xl border-2 border-slate-200 dark:border-slate-700 shadow-lg hover:border-pink-400 hover:ring-2 hover:ring-pink-300 hover:shadow-pink-100 dark:hover:shadow-pink-950/20 focus:outline-none transition-all duration-300 transform hover:-translate-y-1 flex flex-col items-center text-center group"
+                >
+                    <div className="p-4 bg-pink-100 dark:bg-pink-950/40 rounded-full mb-4 text-pink-500 group-hover:scale-110 transition-transform">
+                        <Users size={32} />
+                    </div>
+                    <span className="font-extrabold text-xl tracking-wide">Group Single 🌐</span>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-semibold uppercase">Standard Release</p>
+                    <p className="text-sm font-medium mt-3 text-gray-600 dark:text-gray-300 flex-grow">A traditional release featuring a multi-member Senbatsu. Perfect for building overall group fame and brand equity.</p>
+                    <div className="mt-4 pt-3 border-t w-full text-xs text-left space-y-1 text-gray-500 dark:text-gray-400">
+                        <p>• Cost: <strong>100% (Standard)</strong></p>
+                        <p>• Members: <strong>No Limit</strong></p>
+                        <p>• Gains: <strong>Standard Reputation & Sales</strong></p>
+                    </div>
+                </button>
+                {/* 2. Sub-Unit Single */}
+                <button
+                    onClick={() => { setSingleSubType('unit'); setStep('selectUnitType'); }}
+                    className="p-6 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-2xl border-2 border-slate-200 dark:border-slate-700 shadow-lg hover:border-indigo-400 hover:ring-2 hover:ring-indigo-300 hover:shadow-indigo-100 dark:hover:shadow-indigo-950/20 focus:outline-none transition-all duration-300 transform hover:-translate-y-1 flex flex-col items-center text-center group"
+                >
+                    <div className="p-4 bg-indigo-100 dark:bg-indigo-950/40 rounded-full mb-4 text-indigo-500 group-hover:scale-110 transition-transform">
+                        <Sparkles size={32} />
+                    </div>
+                    <span className="font-extrabold text-xl tracking-wide">Sub-Unit Single ⚡</span>
+                    <p className="text-xs text-indigo-500 dark:text-indigo-400 mt-1 font-semibold uppercase">30% Cost Saving</p>
+                    <p className="text-sm font-medium mt-3 text-gray-600 dark:text-gray-300 flex-grow">Highlight a smaller subset of members (2-5). Substantially increases group chemistry and boosts individual morale.</p>
+                    <div className="mt-4 pt-3 border-t w-full text-xs text-left space-y-1 text-gray-500 dark:text-gray-400">
+                        <p>• Cost: <strong className="text-indigo-600 dark:text-indigo-400">70% (30% Discount)</strong></p>
+                        <p>• Members: <strong>2 to 5 Members</strong></p>
+                        <p>• Effects: <strong className="text-green-600 dark:text-green-400">+25 Morale, +10 Chemistry</strong></p>
+                    </div>
+                </button>
+                {/* 3. Solo Single */}
+                <button
+                    onClick={() => { setSingleSubType('solo'); setStep('selectSoloist'); }}
+                    className="p-6 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-2xl border-2 border-slate-200 dark:border-slate-700 shadow-lg hover:border-amber-400 hover:ring-2 hover:ring-amber-300 hover:shadow-amber-100 dark:hover:shadow-amber-955/20 focus:outline-none transition-all duration-300 transform hover:-translate-y-1 flex flex-col items-center text-center group"
+                >
+                    <div className="p-4 bg-amber-100 dark:bg-amber-950/40 rounded-full mb-4 text-amber-500 group-hover:scale-110 transition-transform">
+                        <User size={32} />
+                    </div>
+                    <span className="font-extrabold text-xl tracking-wide">Solo Single 👑</span>
+                    <p className="text-xs text-amber-500 dark:text-amber-400 mt-1 font-semibold uppercase">60% Cost Saving</p>
+                    <p className="text-sm font-medium mt-3 text-gray-600 dark:text-gray-300 flex-grow">Spotlight exactly 1 standout soloist. Incurs very low production costs while boosting that member's fan growth to the sky.</p>
+                    <div className="mt-4 pt-3 border-t w-full text-xs text-left space-y-1 text-gray-500 dark:text-gray-400">
+                        <p>• Cost: <strong className="text-amber-600 dark:text-amber-400">40% (60% Discount)</strong></p>
+                        <p>• Members: <strong>Exactly 1 Member</strong></p>
+                        <p>• Effects: <strong className="text-amber-600 dark:text-amber-400">+50 Morale, Massive Fan Gains</strong></p>
+                    </div>
+                </button>
+            </div>
+            <div className="flex justify-start w-full max-w-5xl">
+                <button onClick={() => setStep('type')} className="p-2 bg-gray-400 text-white rounded px-5 font-bold hover:bg-gray-500 transition-colors">
+                    Back
+                </button>
+            </div>
+        </div>
+    );
+    const renderSelectSoloistStep = () => {
+        const allCandidates = getSelectableMembersPool();
+        // Get unique teams, groups, and generations for filters
+        const uniqueTeams = Array.from(new Set(allCandidates.map(m => m.teamName).filter(Boolean))).sort();
+        const uniqueGroups = Array.from(new Set(allCandidates.map(m => m.isSisterMember ? m.displayGroupName : groupName).filter(Boolean))).sort();
+        const uniqueGens = Array.from(new Set(allCandidates.map(m => m.generation).filter(Boolean))).sort((a, b) => 
+            String(a).localeCompare(String(b), undefined, { numeric: true })
+        );
+        // Filter and sort candidates list
+        const filteredSoloCandidates = allCandidates
+            .filter(member => {
+                // Name search
+                if (searchFilter && !member.name.toLowerCase().includes(searchFilter.toLowerCase())) return false;
+                
+                // Group filter
+                const memberGroup = member.isSisterMember ? member.displayGroupName : groupName;
+                if (groupFilter !== 'All' && memberGroup !== groupFilter) return false;
+                // Team filter
+                if (teamFilter !== 'All') {
+                    if (teamFilter === 'Trainees') {
+                        if (member.teamName) return false;
+                    } else if (member.teamName !== teamFilter) {
+                        return false;
+                    }
+                }
+                // Generation filter
+                if (genFilter !== 'All' && String(member.generation) !== String(genFilter)) return false;
+                return true;
+            })
+            .sort((a, b) => (b.singing || 0) - (a.singing || 0));
+        return (
+            <div className="p-8 bg-white dark:bg-slate-900 rounded-3xl border dark:border-gray-800 shadow-2xl">
+                <h3 className="text-2xl font-bold mb-2 text-center dark:text-gray-100 flex items-center justify-center gap-2">
+                    <User className="text-amber-500" /> Select the Soloist
+                </h3>
+                <p className="text-center text-gray-600 dark:text-gray-400 mb-6">Choose the member who will carry this release. List is sorted by their Singing stat.</p>
+                
+                {/* Search and Filters Bar */}
+                <div className="flex flex-col md:flex-row gap-3 mb-6 bg-gray-50 dark:bg-slate-800 p-4 rounded-2xl border dark:border-gray-850 text-left">
+                    <div className="flex-1">
+                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1 uppercase">Search Member</label>
+                        <input
+                            type="text"
+                            value={searchFilter}
+                            onChange={(e) => setSearchFilter(e.target.value)}
+                            placeholder="Type member name..."
+                            className="w-full p-2 border rounded-xl dark:bg-slate-900 dark:text-gray-100 dark:border-gray-700 text-sm focus:ring-2 focus:ring-amber-500 outline-none"
+                        />
+                    </div>
+                    <div className="w-full md:w-48">
+                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1 uppercase">Group</label>
+                        <select
+                            value={groupFilter}
+                            onChange={(e) => setGroupFilter(e.target.value)}
+                            className="w-full p-2 border rounded-xl dark:bg-slate-900 dark:text-gray-100 dark:border-gray-700 text-sm focus:ring-2 focus:ring-amber-500"
+                        >
+                            <option value="All">All Groups</option>
+                            <option value={groupName}>{groupName} (Main)</option>
+                            {uniqueGroups.filter(g => g !== groupName).map(g => (
+                                <option key={g} value={g}>{g}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="w-full md:w-48">
+                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1 uppercase">Team</label>
+                        <select
+                            value={teamFilter}
+                            onChange={(e) => setTeamFilter(e.target.value)}
+                            className="w-full p-2 border rounded-xl dark:bg-slate-900 dark:text-gray-100 dark:border-gray-700 text-sm focus:ring-2 focus:ring-amber-500"
+                        >
+                            <option value="All">All Teams</option>
+                            <option value="Trainees">Trainees</option>
+                            {uniqueTeams.map(t => (
+                                <option key={t} value={t}>{t}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="w-full md:w-48">
+                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1 uppercase">Generation</label>
+                        <select
+                            value={genFilter}
+                            onChange={(e) => setGenFilter(e.target.value)}
+                            className="w-full p-2 border rounded-xl dark:bg-slate-900 dark:text-gray-100 dark:border-gray-700 text-sm focus:ring-2 focus:ring-amber-500"
+                        >
+                            <option value="All">All Gens</option>
+                            {uniqueGens.map(g => (
+                                <option key={g} value={g}>{g}</option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
+                {filteredSoloCandidates.length === 0 ? (
+                    <p className="text-center text-gray-500 py-8 italic bg-gray-50 dark:bg-slate-800 rounded-2xl">No members matching your filters are available.</p>
+                ) : (
+                    <div className="max-h-[45vh] overflow-y-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-2">
+                        {filteredSoloCandidates.map(member => {
+                            const isPushed = (pushedMembers || []).map(String).includes(String(member.rosterId || member.id));
+                            const memberGroup = member.isSisterMember ? member.displayGroupName : groupName;
+                            return (
+                                <div 
+                                    key={member.rosterId || member.id} 
+                                    onClick={() => handleSoloistConfirm(member)} 
+                                    className="p-4 border rounded-2xl text-center cursor-pointer hover:border-amber-400 hover:bg-amber-50/30 dark:hover:bg-slate-800 dark:border-gray-700 transition-all duration-300 transform hover:-translate-y-0.5 shadow-sm hover:shadow flex flex-col justify-between"
+                                >
+                                    <div>
+                                        <div className="w-16 h-16 bg-gradient-to-br from-amber-100 to-amber-200 dark:from-amber-950 dark:to-slate-800 rounded-full mx-auto mb-3 flex items-center justify-center border-2 border-amber-300 shadow-inner">
+                                            <span className="text-2xl">🌟</span>
+                                        </div>
+                                        <p className="font-extrabold text-gray-800 dark:text-gray-100 flex items-center justify-center gap-1">
+                                            {member.name}
+                                            {isPushed && <span className="text-[10px] bg-red-100 text-red-800 font-bold px-1 rounded">PUSH</span>}
+                                        </p>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{memberGroup} • {member.teamName || 'Trainee'}</p>
+                                        <p className="text-[10px] text-gray-400 mt-0.5">Generation: {member.generation || 'Trainee'}</p>
+                                    </div>
+                                    <div className="mt-4 pt-3 border-t dark:border-gray-800 space-y-1.5 text-xs text-left">
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-500">Singing Skill:</span>
+                                            <span className="font-bold text-amber-600 dark:text-amber-400 font-mono text-sm">{Math.round(member.singing || 0)} / 100</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-500">Morale:</span>
+                                            <span className={`font-semibold ${member.morale > 70 ? 'text-green-600' : member.morale < 40 ? 'text-red-500' : 'text-gray-600 dark:text-gray-300'}`}>{Math.round(member.morale || 80)}%</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-500">Fans:</span>
+                                            <span className="font-semibold text-gray-700 dark:text-gray-300">{getTotalFansForMember(member).toLocaleString()}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
+                
+                <div className="flex justify-start mt-6 pt-4 border-t dark:border-gray-800">
+                    <button onClick={() => { setStep('selectSingleSubType'); setSearchFilter(''); setTeamFilter('All'); setGroupFilter('All'); setGenFilter('All'); }} className="p-2 bg-gray-400 text-white rounded px-5 font-bold hover:bg-gray-500 transition-colors">
+                        Back
+                    </button>
+                </div>
+            </div>
+        );
+    };
+    const renderSelectUnitTypeStep = () => {
+        const formedUnits = (sisterGroups || []).filter(sg => sg.type === 'unit' && !sg.isDisbanded);
+        return (
+            <div className="p-8 bg-white dark:bg-slate-900 rounded-3xl border dark:border-gray-800 shadow-2xl">
+                <h3 className="text-2xl font-bold mb-2 text-center dark:text-gray-100 flex items-center justify-center gap-2">
+                    <Sparkles className="text-indigo-500 animate-pulse" /> Select Sub-Unit
+                </h3>
+                <p className="text-center text-gray-600 dark:text-gray-400 mb-6">Choose an existing sub-unit or select a custom lineup of 2 to 5 members.</p>
+                
+                <div className="max-h-[55vh] overflow-y-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-2">
+                    {/* Create New Legit Sub-Unit Card */}
+                    <div 
+                        onClick={() => handleUnitConfirm({ id: 'custom', name: 'Custom Sub-Unit' })}
+                        className="p-5 border-2 border-dashed border-indigo-300 dark:border-indigo-800 rounded-2xl text-center cursor-pointer hover:border-indigo-500 hover:bg-indigo-50/20 dark:hover:bg-slate-800 transition-all duration-300 transform hover:-translate-y-0.5 flex flex-col justify-between"
+                    >
+                        <div className="py-6">
+                            <div className="w-16 h-16 bg-indigo-100 dark:bg-indigo-950 rounded-full mx-auto mb-3 flex items-center justify-center border-2 border-indigo-200">
+                                <span className="text-2xl">👥</span>
+                            </div>
+                            <p className="font-extrabold text-lg text-indigo-600 dark:text-indigo-400">Create New Legit Unit</p>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Form an official, permanent sub-unit first (Cost: ¥50,000). Roster is automatically pre-populated and tracked.</p>
+                        </div>
+                        <div className="mt-4 pt-3 border-t dark:border-gray-800 text-xs font-bold text-indigo-500">
+                            Establish Permanent Sub-Unit →
+                        </div>
+                    </div>
+                    {/* Formed Units */}
+                    {formedUnits.map(unit => (
+                        <div 
+                            key={unit.id} 
+                            onClick={() => handleUnitConfirm(unit)} 
+                            className="p-5 border rounded-2xl text-center cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/10 dark:hover:bg-slate-800 dark:border-gray-700 transition-all duration-300 transform hover:-translate-y-0.5 flex flex-col justify-between shadow-sm"
+                        >
+                            <div>
+                                <div className="w-16 h-16 bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-950 dark:to-slate-800 rounded-full mx-auto mb-3 flex items-center justify-center border-2 border-indigo-300 shadow-inner">
+                                    <span className="text-2xl">✨</span>
+                                </div>
+                                <p className="font-extrabold text-gray-800 dark:text-gray-100 text-lg">{unit.name}</p>
+                                <p className="text-xs text-indigo-500 mt-1 font-semibold uppercase">Formed Sub-Unit</p>
+                                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">Members: {unit.members ? unit.members.length : 0}</p>
+                            </div>
+                            <div className="mt-4 pt-3 border-t dark:border-gray-800 text-xs text-left space-y-1 text-gray-500">
+                                <p className="font-semibold text-gray-600 dark:text-gray-300">Roster:</p>
+                                <p className="truncate text-gray-500 dark:text-gray-400">
+                                    {unit.members.map(m => {
+                                        const resolved = getMemberById(typeof m === 'object' && m !== null ? (m.rosterId || m.id) : m);
+                                        return resolved ? resolved.name : 'Unknown';
+                                    }).join(', ')}
+                                </p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+                
+                <div className="flex justify-start mt-6 pt-4 border-t dark:border-gray-800">
+                    <button onClick={() => setStep('selectSingleSubType')} className="p-2 bg-gray-400 text-white rounded px-5 font-bold hover:bg-gray-500 transition-colors">
+                        Back
+                    </button>
+                </div>
+            </div>
+        );
+    };
+    const renderCreateUnitStep = () => {
+        const allCandidates = getSelectableMembersPool();
+        // Unique values for dropdowns
+        const uniqueTeams = Array.from(new Set(allCandidates.map(m => m.teamName).filter(Boolean))).sort();
+        const uniqueGroups = Array.from(new Set(allCandidates.map(m => m.isSisterMember ? m.displayGroupName : groupName).filter(Boolean))).sort();
+        const uniqueGens = Array.from(new Set(allCandidates.map(m => m.generation).filter(Boolean))).sort((a, b) => 
+            String(a).localeCompare(String(b), undefined, { numeric: true })
+        );
+        // Filter candidates
+        const filteredCandidates = allCandidates.filter(member => {
+            if (searchFilter && !member.name.toLowerCase().includes(searchFilter.toLowerCase())) return false;
+            
+            const memberGroup = member.isSisterMember ? member.displayGroupName : groupName;
+            if (groupFilter !== 'All' && memberGroup !== groupFilter) return false;
+            if (teamFilter !== 'All') {
+                if (teamFilter === 'Trainees') {
+                    if (member.teamName) return false;
+                } else if (member.teamName !== teamFilter) {
+                    return false;
+                }
+            }
+            if (genFilter !== 'All' && String(member.generation) !== String(genFilter)) return false;
+            return true;
+        });
+        const toggleMemberSelection = (memberId) => {
+            const idStr = String(memberId);
+            if (customUnitMembers.includes(idStr)) {
+                setCustomUnitMembers(prev => prev.filter(id => id !== idStr));
+            } else {
+                if (customUnitMembers.length >= 5) {
+                    return; // Maximum of 5 members
+                }
+                setCustomUnitMembers(prev => [...prev, idStr]);
+            }
+        };
+        const handleConfirmCreateUnit = () => {
+            if (!customUnitName || !customUnitName.trim()) {
+                return setMessage("Please enter a name for your new Sub-Unit!");
+            }
+            if (customUnitMembers.length < 2 || customUnitMembers.length > 5) {
+                return setMessage("Please select between 2 and 5 members for your Sub-Unit!");
+            }
+            const cost = 50000;
+            if (money < cost) {
+                return setMessage(`Need ¥${cost.toLocaleString()} to establish this Sub-Unit.`);
+            }
+            
+            const nameExists = (sisterGroups || []).some(sg => sg.name.toLowerCase() === customUnitName.trim().toLowerCase());
+            if (nameExists) {
+                return setMessage(`A group or sub-unit named "${customUnitName.trim()}" already exists!`);
+            }
+            // Create the new unit programmatically
+            const newGroupId = confirmCreateSisterGroup({
+                groupName: customUnitName.trim(),
+                type: 'unit',
+                location: 'Special Project'
+            }, customUnitMembers.map(String));
+            if (newGroupId) {
+                const newUnitObject = {
+                    id: newGroupId,
+                    name: customUnitName.trim(),
+                    type: 'unit',
+                    members: customUnitMembers.map(String)
+                };
+                // Proceed with single selection using this unit
+                setSelectedUnitGroup(newUnitObject);
+                const titleSongName = generateSongTitle(newUnitObject.name);
+                setSongName(titleSongName);
+                setTargetGroup(newUnitObject.name);
+                // Lock members of Title Track & populate
+                setTracks([
+                    { name: titleSongName, unitName: 'Senbatsu', type: 'title', members: customUnitMembers.map(String), center: customUnitMembers[0], lineup: customUnitMembers.reduce((acc, id) => ({ ...acc, [String(id)]: '1st Row' }), {}) },
+                    { name: 'Common B-Side', unitName: 'Universe Girls', type: 'b-side', members: [], center: null, lineup: {}, cdType: 'common' }
+                ]);
+                // Reset step & proceed to selection
+                setStep('selection');
+                setMessage(`Legit Sub-Unit "${newUnitObject.name}" successfully established for this release!`);
+            }
+        };
+        return (
+            <div className="p-6 bg-white dark:bg-slate-900 rounded-3xl border dark:border-gray-800 shadow-2xl text-left">
+                <h3 className="text-2xl font-bold mb-2 text-center dark:text-gray-100 flex items-center justify-center gap-2">
+                    <Users className="text-indigo-500" /> Create New Legit Sub-Unit
+                </h3>
+                <p className="text-center text-gray-600 dark:text-gray-400 mb-6 text-sm">
+                    Enter the name and select 2 to 5 members to form a permanent sub-unit (Establishment Cost: ¥50,000).
+                </p>
+                {/* Name Input */}
+                <div className="mb-5 max-w-md mx-auto">
+                    <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5 uppercase text-center">Sub-Unit Name</label>
+                    <input
+                        type="text"
+                        value={customUnitName}
+                        onChange={(e) => setCustomUnitName(e.target.value)}
+                        placeholder="Enter sub-unit name..."
+                        maxLength={30}
+                        className="w-full p-2.5 border-2 rounded-xl dark:bg-slate-800 dark:text-gray-100 dark:border-gray-700 text-sm font-extrabold focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-center"
+                    />
+                </div>
+                {/* Filters */}
+                <div className="flex flex-col md:flex-row gap-3 mb-5 bg-gray-50 dark:bg-slate-800/50 p-4 rounded-2xl border dark:border-gray-800">
+                    <div className="flex-1">
+                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1 uppercase">Search Member</label>
+                        <input
+                            type="text"
+                            value={searchFilter}
+                            onChange={(e) => setSearchFilter(e.target.value)}
+                            placeholder="Type member name..."
+                            className="w-full p-2 border rounded-xl dark:bg-slate-900 dark:text-gray-100 dark:border-gray-700 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+                        />
+                    </div>
+                    <div className="w-full md:w-44">
+                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1 uppercase">Group</label>
+                        <select
+                            value={groupFilter}
+                            onChange={(e) => setGroupFilter(e.target.value)}
+                            className="w-full p-2 border rounded-xl dark:bg-slate-900 dark:text-gray-100 dark:border-gray-700 text-sm focus:ring-2 focus:ring-indigo-500"
+                        >
+                            <option value="All">All Groups</option>
+                            <option value={groupName}>{groupName} (Main)</option>
+                            {uniqueGroups.filter(g => g !== groupName).map(g => (
+                                <option key={g} value={g}>{g}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="w-full md:w-44">
+                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1 uppercase">Team</label>
+                        <select
+                            value={teamFilter}
+                            onChange={(e) => setTeamFilter(e.target.value)}
+                            className="w-full p-2 border rounded-xl dark:bg-slate-900 dark:text-gray-100 dark:border-gray-700 text-sm focus:ring-2 focus:ring-indigo-500"
+                        >
+                            <option value="All">All Teams</option>
+                            <option value="Trainees">Trainees</option>
+                            {uniqueTeams.map(t => (
+                                <option key={t} value={t}>{t}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="w-full md:w-44">
+                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1 uppercase">Generation</label>
+                        <select
+                            value={genFilter}
+                            onChange={(e) => setGenFilter(e.target.value)}
+                            className="w-full p-2 border rounded-xl dark:bg-slate-900 dark:text-gray-100 dark:border-gray-700 text-sm focus:ring-2 focus:ring-indigo-500"
+                        >
+                            <option value="All">All Gens</option>
+                            {uniqueGens.map(g => (
+                                <option key={g} value={g}>{g}</option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
+                {/* Member selection count summary */}
+                <div className="flex justify-between items-center mb-3 px-2">
+                    <span className="text-sm font-semibold text-gray-600 dark:text-gray-400">
+                        Selected: <span className="font-extrabold text-indigo-600 dark:text-indigo-400">{customUnitMembers.length} / 5</span> (Min: 2)
+                    </span>
+                    {customUnitMembers.length >= 5 && (
+                        <span className="text-xs text-amber-600 dark:text-amber-400 font-medium">Maximum 5 members reached.</span>
+                    )}
+                </div>
+                {/* Members list */}
+                {filteredCandidates.length === 0 ? (
+                    <p className="text-center text-gray-500 py-8 italic bg-gray-50 dark:bg-slate-800 rounded-2xl w-full">No matching members found.</p>
+                ) : (
+                    <div className="max-h-[30vh] overflow-y-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 p-1">
+                        {filteredCandidates.map(member => {
+                            const memberIdStr = String(member.rosterId || member.id);
+                            const isSelected = customUnitMembers.includes(memberIdStr);
+                            const memberGroup = member.isSisterMember ? member.displayGroupName : groupName;
+                            
+                            return (
+                                <div
+                                    key={memberIdStr}
+                                    onClick={() => toggleMemberSelection(memberIdStr)}
+                                    className={`p-3 border rounded-2xl cursor-pointer transition-all duration-200 transform hover:-translate-y-0.5 flex items-center gap-3 relative ${
+                                        isSelected 
+                                            ? 'border-indigo-500 bg-indigo-50/40 dark:bg-indigo-950/20 ring-2 ring-indigo-200 dark:ring-indigo-950' 
+                                            : 'border-gray-200 dark:border-gray-800 hover:border-indigo-300 dark:hover:border-indigo-900 bg-white dark:bg-slate-800'
+                                    }`}
+                                >
+                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-100 to-indigo-200 dark:from-indigo-950 dark:to-slate-900 flex items-center justify-center border text-base flex-shrink-0">
+                                        👩‍🎤
+                                    </div>
+                                    <div className="text-left min-w-0 flex-1">
+                                        <p className="font-bold text-sm text-gray-800 dark:text-gray-200 truncate leading-snug">{member.name}</p>
+                                        <p className="text-[10px] text-gray-500 dark:text-gray-400 truncate leading-snug">
+                                            {memberGroup} • {member.teamName || 'Trainee'}
+                                        </p>
+                                        <p className="text-[10px] text-indigo-600 dark:text-indigo-400 font-semibold mt-0.5">
+                                            Singing: {Math.round(member.singing || 0)}
+                                        </p>
+                                    </div>
+                                    {isSelected && (
+                                        <div className="absolute top-2 right-2 bg-indigo-500 text-white rounded-full p-0.5">
+                                            <Check size={10} className="stroke-[4]" />
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
+                {/* Footer Buttons */}
+                <div className="flex justify-between mt-6 pt-4 border-t dark:border-gray-800">
+                    <button 
+                        onClick={() => { setStep('selectUnitType'); setSearchFilter(''); setTeamFilter('All'); setGroupFilter('All'); setGenFilter('All'); setMessage(''); }} 
+                        className="p-2 bg-gray-400 text-white rounded px-5 font-bold hover:bg-gray-500 transition-colors"
+                    >
+                        Back
+                    </button>
+                    <button
+                        onClick={handleConfirmCreateUnit}
+                        disabled={customUnitMembers.length < 2 || !customUnitName.trim() || money < 50000}
+                        className="p-2 bg-indigo-600 text-white rounded px-6 font-bold disabled:bg-gray-400 hover:bg-indigo-700 transition-colors shadow-md hover:shadow-indigo-500/20"
+                    >
+                        Create Unit & Proceed (¥50,000)
+                    </button>
+                </div>
+            </div>
+        );
+    };
+
         const renderSelectionStep = () => (
             <>
                 <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd} collisionDetection={closestCenter}>
@@ -2268,38 +3490,74 @@ const renderSelectGraduatingMemberStep = () => {
                         <div>
                             <h4 className="font-semibold mb-1 dark:text-gray-200">Single Name</h4>
 
-                        <div className="flex items-center gap-2 w-full max-w-xs">
-                            <input
-                                type="text"
-                                value={songName}
-                                onChange={(e) => setSongName(e.target.value)}
-                                className="w-full p-1.5 text-base rounded-md dark:bg-gray-800 dark:text-gray-200 border dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder="Single Name"
-                            />
+                            <div className="flex items-center gap-2 w-full max-w-xs">
+                                <input
+                                    type="text"
+                                    value={songName}
+                                    onChange={(e) => setSongName(e.target.value)}
+                                    className="w-full p-1.5 text-base rounded-md dark:bg-gray-800 dark:text-gray-200 border dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder="Single Name"
+                                />                                                         
                                 <button onClick={() => { const newName = generateUniqueRandomName(); setSongName(newName); updateTrackName(0, newName); }} className="p-1.5 bg-pink-300 text-white rounded-lg hover:bg-pink-400 transition-colors" title="Generate Random Name">
-                                <Shuffle size={16} />
-                            </button>
-                        </div>
+                                    <Shuffle size={16} />
+                                </button>
+                            </div>                                
+                     </div>
+                            
+
+                        {/* --- NEW GENRE & THEME SELECTOR --- */}
+                        <div className="bg-pink-50/80 dark:bg-pink-950/40 p-3 rounded-xl border-2 border-pink-200 dark:border-pink-900 shadow-sm mt-4 mb-4 backdrop-blur-sm">
+                            <h4 className="font-bold text-pink-700 dark:text-pink-300 mb-2 flex items-center gap-1"><Music size={16}/> Concept & Style</h4>
+                            
+                            <div className="space-y-3">
+                                <div>
+                                    <label className="text-xs font-semibold text-pink-600 dark:text-pink-400 block mb-1">Music Genre</label>
+                                    <select value={songGenre} onChange={(e) => setSongGenre(e.target.value)} className="w-full p-2 text-sm rounded-lg border-pink-300 bg-white dark:bg-slate-800 dark:border-pink-800 focus:ring-pink-400 focus:border-pink-400 shadow-sm text-gray-800 dark:text-gray-200 font-medium">
+                                        <option value="Bubblegum Pop">Bubblegum Pop (Charisma/Variety)</option>
+                                        <option value="Soft Ballad">Soft Ballad (Singing/Intelligence)</option>
+                                        <option value="Electro-Dance">Electro-Dance (Dancing/Visual)</option>
+                                        <option value="Idol Rock">Idol Rock (Singing/Dancing)</option>
+                                        <option value="Cute Disco">Cute Disco (Dancing/Charisma)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="text-xs font-semibold text-pink-600 dark:text-pink-400 block mb-1">Lyric Theme</label>
+                                    <select value={songTheme} onChange={(e) => setSongTheme(e.target.value)} className="w-full p-2 text-sm rounded-lg border-pink-300 bg-white dark:bg-slate-800 dark:border-pink-800 focus:ring-pink-400 focus:border-pink-400 shadow-sm text-gray-800 dark:text-gray-200 font-medium">
+                                        <option value="Sweet Hearts">Sweet Hearts (+ Vocal emotion)</option>
+                                        <option value="School Days">School Days (+ Intellect/Charm)</option>
+                                        <option value="Summer Splash">Summer Splash (+ Variety/Energy)</option>
+                                        <option value="Girl Hype">Girl Hype (+ Dance energy)</option>
+                                        <option value="Cyber Dream">Cyber Dream (+ Visual/Tech glow)</option>
+                                    </select>
+                                </div>
+                            </div>
 
                         </div>
+
                         <div>
-                            <h4 className="font-semibold mb-2 dark:text-gray-200">Tracks ({tracks.length})</h4>
+
+                            <h4 className="font-semibold mb-2 dark:text-gray-200 text-pink-800 dark:text-pink-200 flex items-center gap-2"><Library size={18}/> Tracks ({tracks.length})</h4>                            
                             <div className="flex flex-col gap-2 max-h-80 overflow-y-auto pr-2">
                                 {tracks.map((track, index) => (
-                                    <div key={index} className={`p-3 border rounded-lg cursor-pointer ${selectedTrackIndex === index ? 'bg-blue-500 text-white shadow-lg' : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:border-gray-700'}`} onClick={() => setSelectedTrackIndex(index)}>
-                                        <div className='flex justify-between items-center mb-1'>
-                                            <span className={`font-bold text-sm ${selectedTrackIndex === index ? 'text-white' : 'dark:text-gray-200'}`}>{track.type === 'title' ? 'Title' : `B-Side ${index}`}</span>
-                                            <div className="flex items-center gap-2">
-                                    <button onClick={(e) => { e.stopPropagation(); updateTrackName(index, generateUniqueRandomName()); }} className="p-1 rounded-md bg-pink-300 text-white hover:bg-pink-400 transition-colors" title="Generate Random Name">
-                                        <Shuffle size={14} />
-                                    </button>
-                                                <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${track.type === 'title' ? 'bg-red-200 text-red-800' : 'bg-green-200 text-green-800'}`}>{track.type.toUpperCase()}</span>
+                                    <div key={index} className={`p-3 border rounded-xl cursor-pointer transition-all duration-200 ${selectedTrackIndex === index ? 'bg-pink-400 text-white border-pink-400 shadow-lg shadow-pink-200 dark:shadow-pink-900/30' : 'bg-white/80 hover:bg-pink-50 border-pink-200 dark:bg-pink-950/40 dark:hover:bg-pink-900/60 dark:border-pink-900/50 backdrop-blur-sm'}`} onClick={() => setSelectedTrackIndex(index)}>
+                                        <div className='flex justify-between items-center mb-1.5'>
+                                            <span className={`font-bold text-sm ${selectedTrackIndex === index ? 'text-white' : 'text-pink-900 dark:text-pink-100'}`}>{track.type === 'title' ? 'Title Track 🌸' : `B-Side ${index} 🎀`}</span>
+                                            <div className="flex items-center gap-1.5">
+                                                <button onClick={(e) => { e.stopPropagation(); updateTrackName(index, generateUniqueRandomName()); }} className="p-1 rounded-md bg-white/30 text-current hover:bg-white/50 transition-colors" title="Generate Random Name">
+                                                    <Shuffle size={14} />
+                                                </button>
+                                                {track.type === 'b-side' && (
+                                                    <button onClick={(e) => { e.stopPropagation(); removeTrack(index); }} className="p-1 rounded-md bg-red-400/20 text-red-500 hover:bg-red-400/40 transition-colors" title="Remove Track">
+                                                        <Trash2 size={14} />
+                                                    </button>
+                                                )}
+                                                <span className={`text-[10px] uppercase px-2 py-0.5 rounded-full font-bold tracking-wider ${track.type === 'title' ? 'bg-rose-100 text-rose-700' : 'bg-pink-100 text-pink-700'}`}>{track.type}</span>                                            
                                             </div>
                                         </div>
 
                                     <div className="flex gap-2 mt-1">
-                                        <input type="text" value={track.name} onChange={(e) => updateTrackName(index, e.target.value)} onClick={(e) => e.stopPropagation()} className={`w-1/2 p-1 border rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 ${selectedTrackIndex === index ? 'bg-blue-400 dark:bg-blue-600 text-white placeholder-gray-200 border-blue-500' : 'bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200'}`} placeholder="Track Name"/>
-                                        <input type="text" value={track.unitName} onChange={(e) => updateUnitName(index, e.target.value)} onClick={(e) => e.stopPropagation()} className={`w-1/2 p-1 border rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 ${selectedTrackIndex === index ? 'bg-blue-400 dark:bg-blue-600 text-white placeholder-gray-200 border-blue-500' : 'bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200'}`} placeholder="Unit Name"/>
+                                        <input type="text" value={track.name} onChange={(e) => updateTrackName(index, e.target.value)} onClick={(e) => e.stopPropagation()} className={`w-1/2 p-1.5 border rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pink-300 ${selectedTrackIndex === index ? 'bg-pink-500 border-pink-400 text-white placeholder-pink-200' : 'bg-white/50 border-pink-200 dark:bg-pink-900/50 dark:border-pink-800 dark:text-pink-100'}`} placeholder="Track Name"/>
+                                        <input type="text" value={track.unitName} onChange={(e) => updateUnitName(index, e.target.value)} onClick={(e) => e.stopPropagation()} className={`w-1/2 p-1.5 border rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pink-300 ${selectedTrackIndex === index ? 'bg-pink-500 border-pink-400 text-white placeholder-pink-200' : 'bg-white/50 border-pink-200 dark:bg-pink-900/50 dark:border-pink-800 dark:text-pink-100'}`} placeholder="Unit Name"/>                                    
                                     </div>
 
                         {/* --- NEW: Physical CD Type Selector --- */}
@@ -2335,146 +3593,175 @@ const renderSelectGraduatingMemberStep = () => {
                     <div className="lg:col-span-5 space-y-4">
                         <div>
                             <h4 className="font-semibold mb-2 dark:text-gray-200">1. Senbatsu Selection for: <span className="text-blue-600 dark:text-blue-400 font-bold">{currentTrack?.name || 'Track'}</span></h4>
-                            <div className="mb-3">
-                                <label htmlFor="import-lineup" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Import Lineup From...</label>
-                                <select
-                                    id="import-lineup"
-                                    onChange={(e) => applyPreviousLineup(e.target.value)}
-                                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600"
-                                >
-                                    <option value="">-- Select a past track --</option>
-                                        {historicalTracks.map(track => (
-                                            <option key={track.id} value={track.id}>
-                                                {track.name}
-                                            </option>
-                                        ))}
-                                        {lastElectionResult && (
-                                            <optgroup label="Last General Election">
-                                                <option value="election-senbatsu">Senbatsu (Ranks 1-16)</option>
-                                                <option value="election-undergirls">Undergirls (Ranks 17-32)</option>
-                                                <option value="election-nextgirls">Next Girls (Ranks 33-48)</option>
-                                                <option value="election-futuregirls">Future Girls (Ranks 49-64)</option>
-                                                <option value="election-upcominggirls">Upcoming Girls (Ranks 65-80)</option>
-                                            </optgroup>
-                                            
-                                        )}
+                            
+                            {releaseType === 'single' && (singleSubType === 'solo' || singleSubType === 'unit') ? (
+                                <div className="p-6 border rounded-2xl bg-gray-50 dark:bg-slate-800 text-gray-800 dark:text-gray-200 text-center min-h-[300px] flex flex-col items-center justify-center shadow-inner">
+                                    {singleSubType === 'solo' ? (
+                                        <div className="flex flex-col items-center justify-center">
+                                            <span className="text-4xl mb-3">👑</span>
+                                            <h4 className="font-extrabold text-lg text-amber-700 dark:text-amber-400">Soloist Roster Locked</h4>
+                                            <p className="text-sm mt-2 text-gray-600 dark:text-gray-400 max-w-sm">
+                                                This single is locked to soloist <strong>{selectedSoloist?.name}</strong>.
+                                            </p>
+                                            <button
+                                                onClick={() => { setStep('selectSoloist'); setSearchFilter(''); setTeamFilter('All'); setGroupFilter('All'); setGenFilter('All'); }}
+                                                className="mt-5 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-black font-bold text-xs rounded-xl shadow transition-all duration-200 transform hover:-translate-y-0.5"
+                                            >
+                                                Change Soloist Format
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <div className="flex flex-col items-center justify-center">
+                                            <span className="text-4xl mb-3">✨</span>
+                                            <h4 className="font-extrabold text-lg text-indigo-700 dark:text-indigo-400">Sub-Unit Roster Locked</h4>
+                                            <p className="text-sm mt-2 text-gray-600 dark:text-gray-400 max-w-sm">
+                                                This single is locked to your sub-unit: <strong>{selectedUnitGroup?.name}</strong>.
+                                            </p>
+                                            <button
+                                                onClick={() => { setStep('selectUnitType'); setSearchFilter(''); setTeamFilter('All'); setGroupFilter('All'); setGenFilter('All'); }}
+                                                className="mt-5 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow transition-all duration-200 transform hover:-translate-y-0.5"
+                                            >
+                                                Change Sub-Unit Format
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            ) : (
+                                <>
+                                    <div className="mb-3">
+                                        <label htmlFor="import-lineup" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Import Lineup From...</label>
+                                        <select
+                                            id="import-lineup"
+                                            onChange={(e) => applyPreviousLineup(e.target.value)}
+                                            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600"
+                                        >
+                                            <option value="">-- Select a past track --</option>
+                                                {historicalTracks.map(track => (
+                                                    <option key={track.id} value={track.id}>
+                                                        {track.name}
+                                                    </option>
+                                                ))}
+                                                {lastElectionResult && (
+                                                    <optgroup label="Last General Election">
+                                                        <option value="election-senbatsu">Senbatsu (Ranks 1-16)</option>
+                                                        <option value="election-undergirls">Undergirls (Ranks 17-32)</option>
+                                                        <option value="election-nextgirls">Next Girls (Ranks 33-48)</option>
+                                                        <option value="election-futuregirls">Future Girls (Ranks 49-64)</option>
+                                                        <option value="election-upcominggirls">Upcoming Girls (Ranks 65-80)</option>
+                                                    </optgroup>
+                                                )}
+                                                {lastJankenResult && (
+                                                    <optgroup label="Last Janken Tournament">
+                                                        <option value="janken-senbatsu">Janken Senbatsu (Top 16)</option>
+                                                    </optgroup>
+                                                )}
+                                        </select>
+                                    </div>                                        
 
-                                        {lastJankenResult && (
-                                            <optgroup label="Last Janken Tournament">
-                                                <option value="janken-senbatsu">Janken Senbatsu (Top 16)</option>
-                                            </optgroup>
-                                        )}
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <input type="number" id={`random-members-input-${selectedTrackIndex}`} defaultValue="7" className="w-20 p-1 border rounded text-sm bg-white dark:bg-gray-700" />                                            
 
-                                </select>
-                            </div>
-
-                                <div className="flex items-center gap-2 mb-2">
-                                    <input type="number" id={`random-members-input-${selectedTrackIndex}`} defaultValue="7" className="w-20 p-1 border rounded text-sm bg-white dark:bg-gray-700" />
-                                    <button onClick={() => {
-                                        const input = document.getElementById(`random-members-input-${selectedTrackIndex}`);
-                                        if (input) handleRandomizeMembers(selectedTrackIndex, parseInt(input.value, 10));
-                                    }} className="px-2 py-1 text-xs bg-purple-500 text-white rounded">Random Members</button>
-                                        <button onClick={() => {
-                                            const input = document.getElementById(`random-members-input-${selectedTrackIndex}`);
-                                            if (input) handleRandomizeByFans(selectedTrackIndex, parseInt(input.value, 10));
-                                        }} className="px-2 py-1 text-xs bg-teal-500 text-white rounded">Select by Fans</button>
                                 <button onClick={() => {
                                         const input = document.getElementById(`random-members-input-${selectedTrackIndex}`);
                                         if (input) handleSelectByAvgSkill(selectedTrackIndex, parseInt(input.value, 10));
                                     }} className="px-2 py-1 text-xs bg-sky-500 text-white rounded">Select by Skill</button>
                                 
                                 </div>
-                            <div className="mb-2">
-                                <label htmlFor="member-filter" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Filter Members</label>
-                                <select 
-                                    id="member-filter" 
-                                    value={filterKey} 
-                                    onChange={e => setFilterKey(e.target.value)} 
-                                    className="w-full p-2 text-sm rounded border-gray-300 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200"
-                                >
-                                    <option value="All">All</option>
-                                    
-                                    {(teams || []).length > 0 && (
-                                        <optgroup label="Teams">
-                                            {teams.map(team => (
-                                                <option key={`team-${team.id}`} value={`team-${team.id}`}>{team.name}</option>
-                                            ))}
-                                        </optgroup>
-                                    )}
-                                    
-                                    <optgroup label="Groups">
-                                        <option key="main" value="main">{groupName}</option>
-                                        {sisterGroups.map(sg => (
-                                            <option key={`sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>
-                                        ))}
-                                    </optgroup>
+                            
+                                    <div className="mb-2">
+                                        <label htmlFor="member-filter" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Filter Members</label>
+                                        <select 
+                                            id="member-filter" 
+                                            value={filterKey} 
+                                            onChange={e => setFilterKey(e.target.value)} 
+                                            className="w-full p-2 text-sm rounded border-gray-300 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200"
+                                        >
+                                            <option value="All">All</option>
+                                            
+                                            {(teams || []).length > 0 && (
+                                                <optgroup label="Teams">
+                                                    {teams.map(team => (
+                                                        <option key={`team-${team.id}`} value={`team-${team.id}`}>{team.name}</option>
+                                                    ))}
+                                                </optgroup>
+                                            )}
+                                            
+                                            <optgroup label="Groups">
+                                                <option key="main" value="main">{groupName}</option>
+                                                {sisterGroups.map(sg => (
+                                                    <option key={`sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>
 
-                                    {mainGroupGenerations.length > 0 && (
-                                        <optgroup label={`${groupName} Generations`}>
-                                            {mainGroupGenerations.map(gen => (
-                                                <option key={`main-gen-${gen}`} value={`main-gen-${gen}`}>{gen}</option>
-                                            ))}\
-                                        </optgroup>
-                                    )}
-
-                                    {sisterGroupDetails.map(sg => (
-                                        sg.generations.length > 0 && (
-                                            <optgroup key={`sg-gen-group-${sg.id}`} label={`${sg.name} Generations`}>
-                                                {sg.generations.map(gen => (
-                                                    <option key={`sg-${sg.id}-gen-${gen}`} value={`sg-${sg.id}-gen-${gen}`}>{gen}</option>
                                                 ))}
                                             </optgroup>
-                                        )
-                                    ))}
-                                </select>
-                                <div className="mt-2">
-                                    <label className="flex items-center text-sm cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            checked={showOnlyUnchosen}
-                                            onChange={(e) => setShowOnlyUnchosen(e.target.checked)}
-                                            className="form-checkbox h-4 w-4 rounded text-blue-600 dark:bg-gray-700 dark:border-gray-600"
-                                        />
-                                        <span className="ml-2 text-gray-700 dark:text-gray-300">Show only unchosen members</span>
-                                    </label>
-                                </div>
-                            </div>
 
-                            <button onClick={handleToggleSelectAllFiltered} className="w-full mb-2 px-3 py-1 text-sm bg-gray-500 text-white rounded hover:bg-gray-600">Toggle Select All (Filtered)</button>
-                                                        
-                            <div className="border rounded p-2 h-96 overflow-y-auto bg-gray-50 dark:bg-gray-900 text-sm">
-                                {visibleRoster.map(member => {
-                                    const isSelected = currentTrack?.members.map(String).includes(String(member.rosterId));
-                                    return (
-                                        <div key={member.rosterId} className="flex items-center justify-between p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
-                                            <div className="flex flex-col">
-                                                <span className={`font-medium dark:text-gray-200 ${member.isAvailable === false ? 'text-gray-400 italic' : ''}`}>
-                                                {member.name} {member.isSisterMember && `(${member.displayGroupName})`}
-                                                    <span className="ml-2 text-xs text-pink-300 font-normal">
-                                                        {(() => {
-                                                            const otherTracks = tracks.filter(t => 
-                                                                t.name !== (currentTrack?.name || '') && 
-                                                                (t.members || []).map(String).includes(String(member.rosterId))
-                                                            );
-                                                            if (otherTracks.length > 0) {
-                                                                return `(in ${otherTracks.map(t => t.name).join(', ')})`;
-                                                            }
-                                                            return null;
-                                                        })()}
-                                                    </span>
-                                                </span>
-                                                    <span className="text-[8px] text-gray-500 dark:text-gray-400">
-                                                        Vocal:{Math.round(member.singing)} Dance:{Math.round(member.dancing)} Visual:{Math.round(member.visual)} Urgency:{Math.round(member.graduationUrgency || 0)} Fans:{getTotalFansForMember(member).toLocaleString()}
-                                                        {getMemberWarning(member) && <span className="text-yellow-500 ml-2 font-semibold">{getMemberWarning(member)}</span>}
-                                                    </span>
-                                            </div>
-                                            <button onClick={() => toggleMember(member.rosterId)} className={`px-2 py-1 text-xs rounded ${isSelected ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`}>
-                                                {isSelected ? 'Remove' : 'Add'}
-                                            </button>
+                                            {mainGroupGenerations.length > 0 && (
+                                                <optgroup label={`${groupName} Generations`}>
+                                                    {mainGroupGenerations.map(gen => (
+                                                        <option key={`main-gen-${gen}`} value={`main-gen-${gen}`}>{gen}</option>
+                                                    ))}
+                                                </optgroup>
+                                            )}
+                                            {sisterGroupDetails.map(sg => (
+                                                sg.generations.length > 0 && (
+                                                    <optgroup key={`sg-gen-group-${sg.id}`} label={`${sg.name} Generations`}>
+                                                        {sg.generations.map(gen => (
+                                                            <option key={`sg-${sg.id}-gen-${gen}`} value={`sg-${sg.id}-gen-${gen}`}>{gen}</option>
+                                                        ))}
+                                                    </optgroup>
+                                                )
+                                            ))}
+                                        </select>
+                                        <div className="mt-2">
+                                            <label className="flex items-center text-sm cursor-pointer">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={showOnlyUnchosen}
+                                                    onChange={(e) => setShowOnlyUnchosen(e.target.checked)}
+                                                    className="form-checkbox h-4 w-4 rounded text-blue-600 dark:bg-gray-700 dark:border-gray-600"
+                                                />
+                                                <span className="ml-2 text-gray-700 dark:text-gray-300">Show only unchosen members</span>
+                                            </label>                                            
                                         </div>
-                                    );
-                                })}
-                            </div>
+
+                                    </div>
+                                    <button onClick={handleToggleSelectAllFiltered} className="w-full mb-2 px-3 py-1 text-sm bg-gray-500 text-white rounded hover:bg-gray-600">Toggle Select All (Filtered)</button>
+                                                                
+                                    <div className="border rounded p-2 h-96 overflow-y-auto bg-gray-50 dark:bg-gray-900 text-sm text-left">
+                                        {visibleRoster.map(member => {
+                                            const isSelected = currentTrack?.members.map(String).includes(String(member.rosterId));
+                                            return (
+                                                <div key={member.rosterId} className="flex items-center justify-between p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
+                                                    <div className="flex flex-col">
+                                                        <span className={`font-medium dark:text-gray-200 ${member.isAvailable === false ? 'text-gray-400 italic' : ''}`}>
+                                                        {member.name} {member.isSisterMember && `(${member.displayGroupName})`}
+                                                            <span className="ml-2 text-xs text-pink-300 font-normal">
+                                                                {(() => {
+                                                                    const otherTracks = tracks.filter(t => 
+                                                                        t.name !== (currentTrack?.name || '') && 
+                                                                        (t.members || []).map(String).includes(String(member.rosterId))
+                                                                    );
+                                                                    if (otherTracks.length > 0) {
+                                                                        return `(in ${otherTracks.map(t => t.name).join(', ')})`;
+                                                                    }
+                                                                    return null;
+                                                                })()}
+                                                            </span>
+                                                        </span>
+                                                            <span className="text-[8px] text-gray-500 dark:text-gray-400">
+                                                                Vocal:{Math.round(member.singing)} Dance:{Math.round(member.dancing)} Visual:{Math.round(member.visual)} Urgency:{Math.round(member.graduationUrgency || 0)} Fans:{getTotalFansForMember(member).toLocaleString()}
+                                                                {getMemberWarning(member) && <span className="text-yellow-500 ml-2 font-semibold">{getMemberWarning(member)}</span>}
+                                                            </span>
+                                                    </div>
+                                                    <button onClick={() => toggleMember(member.rosterId)} className={`px-2 py-1 text-xs rounded ${isSelected ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`}>
+                                                        {isSelected ? 'Remove' : 'Add'}
+                                                    </button>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </>
+                            )}
+
                         </div>
                         <div>
                         <div className="flex justify-between items-center mb-2">
@@ -2621,67 +3908,49 @@ const renderSelectGraduatingMemberStep = () => {
                                 </select>
                             </div>
 
-                                <div className="flex items-center gap-2 mb-2">
-                                    <input type="number" id={`random-members-input-${selectedTrackIndex}`} defaultValue="7" className="w-20 p-1 border rounded text-sm bg-white dark:bg-gray-700" />
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <input type="number" id={`random-members-input-${selectedTrackIndex}`} defaultValue="7" className="w-20 p-1 border rounded text-sm bg-white dark:bg-gray-700" />
+
+                                            <button onClick={() => {
+                                                const input = document.getElementById(`random-members-input-${selectedTrackIndex}`);
+
+                                            if (input) handleRandomizeMembers(selectedTrackIndex, parseInt(input.value, 10));
+                                        }} className="px-2 py-1 text-xs bg-purple-500 text-white rounded">Random Members</button>
+                                            <button onClick={() => {
+                                                const input = document.getElementById(`random-members-input-${selectedTrackIndex}`);
+                                                if (input) handleRandomizeByFans(selectedTrackIndex, parseInt(input.value, 10));
+                                            }} className="px-2 py-1 text-xs bg-teal-500 text-white rounded">Select by Fans</button>
                                     <button onClick={() => {
-                                        const input = document.getElementById(`random-members-input-${selectedTrackIndex}`);
-                                        if (input) handleRandomizeMembers(selectedTrackIndex, parseInt(input.value, 10));
-                                    }} className="px-2 py-1 text-xs bg-purple-500 text-white rounded">Random Members</button>
-                                        <button onClick={() => {
                                             const input = document.getElementById(`random-members-input-${selectedTrackIndex}`);
-                                            if (input) handleRandomizeByFans(selectedTrackIndex, parseInt(input.value, 10));
-                                        }} className="px-2 py-1 text-xs bg-teal-500 text-white rounded">Select by Fans</button>
-                                <button onClick={() => {
-                                        const input = document.getElementById(`random-members-input-${selectedTrackIndex}`);
-                                        if (input) handleSelectByAvgSkill(selectedTrackIndex, parseInt(input.value, 10));
-                                    }} className="px-2 py-1 text-xs bg-sky-500 text-white rounded">Select by Skill</button>
-                                
-                                </div>
-                                
-                            <div className="mb-2">
-                                <label htmlFor="member-filter" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Filter Members</label>
-                                <select 
-                                    id="member-filter" 
-                                    value={filterKey} 
-                                    onChange={e => setFilterKey(e.target.value)} 
-                                    className="w-full p-2 text-sm rounded border-gray-300 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200"
-                                >
-                                    <option value="All">All</option>
-                                    <option value="Unchosen">Unchosen</option>
+                                            if (input) handleSelectByAvgSkill(selectedTrackIndex, parseInt(input.value, 10));
+                                        }} className="px-2 py-1 text-xs bg-sky-500 text-white rounded">Select by Skill</button>
+                                    </div> 
                                     
-                                    {(teams || []).length > 0 && (
-                                        <optgroup label="Teams">
-                                            {teams.map(team => (
-                                                <option key={`team-${team.id}`} value={`team-${team.id}`}>{team.name}</option>
-                                            ))}
-                                        </optgroup>
-                                    )}
-                                    
-                                    <optgroup label="Groups">
-                                        <option value="main">{groupName}</option>
-                                        {sisterGroups.map(sg => (
-                                            <option key={`sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>
-                                        ))}
-                                    </optgroup>
-
-                                    {mainGroupGenerations.length > 0 && (
-                                        <optgroup label={`${groupName} Generations`}>
-                                            {mainGroupGenerations.map(gen => (
-                                                <option key={`main-gen-${gen}`} value={`main-gen-${gen}`}>{gen}</option>
-                                            ))}
-                                        </optgroup>
-                                    )}
-
-                                    {sisterGroupDetails.map(sg => (
-                                        sg.generations.length > 0 && (
-                                            <optgroup key={`sg-gen-group-${sg.id}`} label={`${sg.name} Generations`}>
-                                                {sg.generations.map(gen => (
-                                                    <option key={`sg-${sg.id}-gen-${gen}`} value={`sg-${sg.id}-gen-${gen}`}>{gen}</option>
+                                    <div className="mb-2">
+                                        <label htmlFor="member-filter" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Filter Members</label>
+                                        <select 
+                                            id="member-filter" 
+                                            value={filterKey} 
+                                            onChange={e => setFilterKey(e.target.value)} 
+                                            className="w-full p-2 text-sm rounded border-gray-300 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200"
+                                        >
+                                            <option value="All">All</option>
+                                            
+                                            {(teams || []).length > 0 && (
+                                                <optgroup label="Teams">
+                                                    {teams.map(team => (
+                                                        <option key={`team-${team.id}`} value={`team-${team.id}`}>{team.name}</option>
+                                                    ))}
+                                                </optgroup>
+                                            )}
+                                            
+                                            <optgroup label="Groups">
+                                                <option key="main" value="main">{groupName}</option>
+                                                {sisterGroups.map(sg => (
+                                                    <option key={`sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>
                                                 ))}
-                                            </optgroup>
-                                        )
-                                    ))}
-                                </select>
+                                            </optgroup>                                
+                                            </select>
                             </div>
 
                             <button onClick={handleToggleSelectAllFiltered} className="w-full mb-2 px-3 py-1 text-sm bg-gray-500 text-white rounded hover:bg-gray-600">Toggle Select All (Filtered)</button>
@@ -2766,7 +4035,15 @@ const renderSelectGraduatingMemberStep = () => {
                                                             {getMemberWarning(member) && <span className="text-yellow-500 ml-2 font-semibold">{getMemberWarning(member)}</span>}
                                                         </span>
                                             </div>
-                                            <button onClick={() => toggleMember(member.rosterId)} className={`px-2 py-1 text-xs rounded ${isSelected ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`}>
+                                            <button 
+                                                onClick={() => {
+                                                    if (releaseType === 'single' && (singleSubType === 'solo' || (singleSubType === 'unit' && selectedUnitGroup?.id !== 'custom'))) {
+                                                        return;
+                                                    }
+                                                    toggleMember(member.rosterId);
+                                                }} 
+                                                className={`px-2 py-1 text-xs rounded ${isSelected ? 'bg-red-500 text-white' : 'bg-green-500 text-white'} ${releaseType === 'single' && (singleSubType === 'solo' || (singleSubType === 'unit' && selectedUnitGroup?.id !== 'custom')) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                            >                                         
                                                 {isSelected ? 'Remove' : 'Add'}
                                             </button>
                                         </div>
@@ -2805,10 +4082,72 @@ const renderSelectGraduatingMemberStep = () => {
                             </div>
                         </div>
                     </div>
-                    {/* --- Right Column: Visualizer --- */}
-                    <div className="lg:col-span-4">
-                         <h4 className="font-semibold mb-2 text-center lg:text-left dark:text-gray-200">3. Formation Visualizer</h4>
+                    {/* --- Right Column: Visualizer & Sales Projector --- */}
+                    <div className="lg:col-span-4 space-y-4">
+                         <h4 className="font-bold mb-2 text-center lg:text-left text-pink-700 dark:text-pink-300 flex items-center gap-1"><Sparkles className="animate-pulse text-yellow-400" size={18}/> 3. Stage Spotlight Grid</h4>                         
                          <PyramidVisualization lineup={currentTrack?.lineup || {}} members={selectableSenbatsu} center={currentTrack?.center} activeDragId={activeDragId} />
+                         
+                         {/* --- Live Budget & Sales Projector Sidebar --- */}
+                         {(() => {
+                             const projection = getProjectedSalesAndRank();
+                             return (
+                                 <div className="p-4 border-2 border-pink-200 bg-white/75 dark:bg-slate-900/60 dark:border-pink-950/60 rounded-3xl shadow-lg backdrop-blur-md">
+                                     <h4 className="font-extrabold text-pink-700 dark:text-pink-300 text-xs mb-3 tracking-wider flex items-center gap-1.5 border-b-2 border-pink-100 dark:border-pink-950/50 pb-2">
+                                         <span>📈</span> PRODUCTION BUDGET & SALES PROJECTOR
+                                     </h4>
+                                     
+                                     <div className="space-y-3 text-xs">
+                                         {/* Budget Gauge */}
+                                         <div className="flex justify-between items-center bg-pink-50/50 dark:bg-pink-950/20 p-2.5 rounded-xl border border-pink-100 dark:border-pink-950/30">
+                                             <div>
+                                                 <p className="text-[9px] uppercase font-extrabold text-pink-500">Current Balance</p>
+                                                 <p className="font-extrabold text-gray-800 dark:text-gray-200">¥{money.toLocaleString()}</p>
+                                             </div>
+                                             <div className="text-right">
+                                                 <p className="text-[9px] uppercase font-extrabold text-pink-500">Est. Release Cost</p>
+                                                 <p className={`font-extrabold ${projection.cost > money ? 'text-red-500' : 'text-emerald-500'}`}>
+                                                     ¥{projection.cost.toLocaleString()}
+                                                 </p>
+                                             </div>
+                                         </div>
+                                         {/* Progress bar representing budget utilization */}
+                                         <div className="w-full bg-pink-100 dark:bg-pink-950/50 rounded-full h-2 shadow-inner">
+                                             <div 
+                                                 className={`h-2 rounded-full transition-all duration-300 ${projection.cost > money ? 'bg-red-500' : 'bg-pink-400'}`} 
+                                                 style={{ width: `${Math.min(100, (projection.cost / (money || 1)) * 100)}%` }}
+                                             />
+                                         </div>
+                                         {/* Live Sales & Oricon Rank Projection */}
+                                         <div className="p-3 bg-gradient-to-br from-pink-50 to-rose-50 dark:from-slate-900 dark:to-pink-950/20 rounded-xl border border-pink-100 dark:border-pink-900/40">
+                                             <p className="text-[9px] uppercase font-extrabold text-pink-600 dark:text-pink-400 tracking-wider mb-1">Projected First-Week Sales</p>
+                                             <div className="flex items-baseline justify-between mb-2">
+                                                 <span className="font-extrabold text-2xl text-pink-700 dark:text-pink-200 drop-shadow-sm">
+                                                     🌸 {projection.sales.toLocaleString()} <span className="text-xs font-semibold text-pink-500">copies</span>
+                                                 </span>
+                                             </div>
+                                             <p className="text-[9px] uppercase font-extrabold text-pink-600 dark:text-pink-400 tracking-wider mb-1">Oricon Weekly Chart Prediction</p>
+                                             <p className={`text-[12px] font-extrabold ${projection.rankColor}`}>
+                                                 {projection.rank}
+                                             </p>
+                                         </div>
+                                         {/* Active Synergy Bonus Display */}
+                                         <div className={`p-2.5 rounded-xl border flex items-center justify-between transition-all duration-200 ${
+                                             projection.synergyFound 
+                                                 ? 'bg-yellow-50/50 border-yellow-300 dark:bg-yellow-950/10 dark:border-yellow-900' 
+                                                 : 'bg-slate-50/50 border-slate-100 dark:bg-slate-900/20 dark:border-slate-800'
+                                         }`}>
+                                             <div>
+                                                 <span className="text-[8px] uppercase font-extrabold text-gray-400 block">Style Synergy Bonus</span>
+                                                 <span className="font-extrabold text-[10px] text-gray-700 dark:text-gray-300">
+                                                     {projection.synergyFound ? projection.synergyMessage : 'No Active Synergy 🍭'}
+                                                 </span>
+                                             </div>
+                                             {projection.synergyFound && <span className="text-lg animate-bounce">💖</span>}
+                                         </div>
+                                     </div>
+                                 </div>
+                             );
+                         })()}                
                 </div>
             </div>
                 <DragOverlay>{draggingMember ? <DragOverlayChip member={draggingMember} /> : null}</DragOverlay>
@@ -2829,47 +4168,126 @@ const renderSelectGraduatingMemberStep = () => {
 
         const renderProductionStep = () => (
             <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {Object.keys(productionTiers).map(category => (
-                        <div key={category} className="p-3 border rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
-                            <h4 className="font-bold text-md capitalize mb-3 border-b pb-2 dark:text-gray-200 dark:border-gray-700">{category}</h4>
-                            <div className="space-y-2">
-                                {Object.keys(productionTiers[category]).map(tier => (
-                                    <label key={tier} className="flex items-start p-2 rounded-lg border bg-white dark:bg-gray-700 dark:border-gray-600 has-[:checked]:bg-blue-100 has-[:checked]:border-blue-400 dark:has-[:checked]:bg-gray-900 dark:has-[:checked]:border-blue-500 cursor-pointer text-xs">
-                                        <input type="radio" name={category} value={tier} checked={productionChoices[category] === tier} onChange={() => handleProductionChange(category, tier)} className="form-radio h-4 w-4 text-blue-600 mt-0.5 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                                        <div className="ml-2">
-                                            <p className="font-semibold dark:text-gray-200">{productionTiers[category][tier].name}</p>
-                                            <p className="text-gray-600 dark:text-gray-400 text-xs">{productionTiers[category][tier].effect}</p>
-                                            <p className="font-bold text-blue-700 dark:text-blue-400 text-xs">¥{productionTiers[category][tier].cost.toLocaleString()}</p>
-                                        </div>
-                                    </label>
-                                ))}
-                            </div>
+                {/* --- PRODUCTION PRESETS PANEL --- */}
+                <div className="mb-6 p-4 bg-gradient-to-r from-pink-50 to-rose-50 dark:from-slate-900 dark:to-pink-950/20 border-2 border-pink-200 dark:border-pink-950/40 rounded-3xl shadow-lg backdrop-blur-sm">
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                        <div>
+                            <h4 className="font-extrabold text-pink-700 dark:text-pink-300 text-sm tracking-wider flex items-center gap-1.5">
+                                🌟 AGENCY PRODUCTION PRESETS
+                            </h4>
+                            <p className="text-[11px] text-gray-500 dark:text-gray-400 font-semibold mt-0.5">Quickly select production budgets depending on your current agency scale.</p>                            
                         </div>
-                    ))}
+
+                        <div className="flex flex-wrap gap-2.5">
+                            <button 
+                                onClick={() => setProductionChoices({ training: 'standard', song: 'inHouse', mv: 'none', outfits: 'existing', promo: 'none' })}
+                                className="px-4 py-2 text-xs font-extrabold bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 rounded-xl border border-slate-300 transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm"
+                            >
+                                🌱 Low Tier Preset
+                            </button>
+                            <button 
+                                onClick={() => setProductionChoices({ training: 'overseas', song: 'external', mv: 'location', outfits: 'custom', promo: 'teaser' })}
+                                className="px-4 py-2 text-xs font-extrabold bg-pink-100 hover:bg-pink-200 text-pink-700 dark:bg-pink-950/60 dark:hover:bg-pink-900 dark:text-pink-300 rounded-xl border border-pink-300 transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm"
+                            >
+                                ✨ Mid Tier Preset
+                            </button>
+                            <button 
+                                onClick={() => setProductionChoices({ training: 'oneOnOne', song: 'hitmaker', mv: 'blockbuster', outfits: 'luxury', promo: 'global' })}
+                                className="px-4 py-2 text-xs font-extrabold bg-gradient-to-r from-yellow-400 to-amber-500 text-white rounded-xl shadow-md transition-all duration-200 hover:brightness-110 hover:scale-105 active:scale-95 border border-yellow-500"
+                            >
+                                👑 Best Tier Preset
+                            </button>
+                        </div>
+                    </div>
+
                 </div>
 
-                <div className="mt-6 pt-4 border-t dark:border-gray-700">
-                    <h4 className="font-bold text-lg text-center mb-3 dark:text-gray-200">Release Format</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto">
-                        <label className={`p-4 border rounded-lg cursor-pointer ${releaseFormat === 'digital' ? 'bg-blue-100 border-blue-400 ring-2 ring-blue-300' : 'bg-gray-50 dark:bg-gray-800'}`}>
-                            <div className="flex items-center">
-                                <input type="radio" name="release-format" value="digital" checked={releaseFormat === 'digital'} onChange={(e) => setReleaseFormat(e.target.value)} className="form-radio h-5 w-5 text-blue-600"/>
-                                <div className="ml-3">
-                                    <p className="font-bold text-md">{releaseType === 'album' ? 'Digital Album' : 'Digital Single'}</p>
-                                    <p className="text-xs text-gray-600 dark:text-gray-400">Standard release on streaming platforms.</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                    {Object.keys(productionTiers).map(category => {
+                        const icons = { training: '🏋️‍♀️', song: '🎹', mv: '🎬', outfits: '👗', promo: '📣' };
+                        const catIcon = icons[category] || '✨';
+                        return (
+                            <div key={category} className="p-4 border-2 rounded-2xl bg-white/70 border-pink-100 dark:bg-slate-900/50 dark:border-pink-950/50 shadow-md shadow-pink-50/20 backdrop-blur-sm">
+                                <h4 className="font-extrabold text-md capitalize mb-3 border-b-2 border-pink-100 dark:border-pink-950/50 pb-2 text-pink-700 dark:text-pink-300 flex items-center gap-1.5">
+                                    <span>{catIcon}</span>
+                                    <span>{category}</span>
+                                </h4>
+                                <div className="space-y-2.5">
+                                    {Object.keys(productionTiers[category]).map(tier => {
+                                        const isSelected = productionChoices[category] === tier;
+                                        return (
+                                            <div
+                                                key={tier}
+                                                onClick={() => handleProductionChange(category, tier)}
+                                                className={`flex flex-col p-3 rounded-xl border-2 cursor-pointer transition-all duration-200 text-xs ${
+                                                    isSelected
+                                                        ? 'bg-pink-100 border-pink-400 text-pink-900 dark:bg-pink-950/60 dark:border-pink-500 dark:text-pink-100 shadow-md shadow-pink-100/30'
+                                                        : 'bg-white/60 border-pink-50 dark:bg-slate-800/40 dark:border-pink-900/20 text-gray-700 dark:text-gray-300 hover:bg-pink-50/40 hover:border-pink-200'
+                                                }`}
+                                            >
+                                                <div className="flex items-center justify-between mb-1">
+                                                    <span className="font-extrabold">{productionTiers[category][tier].name}</span>
+                                                    {isSelected && <span className="text-[10px] bg-pink-500 text-white font-bold px-1.5 py-0.5 rounded-full">ACTIVE</span>}
+                                                </div>
+                                                <p className="opacity-85 mb-1.5 font-medium leading-normal">{productionTiers[category][tier].effect}</p>
+                                                <span className="font-bold text-pink-600 dark:text-pink-300 self-end text-[11px]">
+                                                    ¥{productionTiers[category][tier].cost.toLocaleString()}
+                                                </span>
+                                            </div>
+                                        );
+                                    })}                               
                                 </div>
                             </div>
-                        </label>
-                        <label className={`p-4 border rounded-lg cursor-pointer ${releaseFormat === 'physical' ? 'bg-green-100 border-green-400 ring-2 ring-green-300' : 'bg-gray-50 dark:bg-gray-800'}`}>
-                            <div className="flex items-center">
-                                <input type="radio" name="release-format" value="physical" checked={releaseFormat === 'physical'} onChange={(e) => setReleaseFormat(e.target.value)} className="form-radio h-5 w-5 text-green-600"/>
-                                <div className="ml-3">
-                                    <p className="font-bold text-md">{releaseType === 'album' ? 'Physical Album' : 'Physical Single'}</p>
-                                    <p className="text-xs text-gray-600 dark:text-gray-400">A physical CD release. High cost, high reward.</p>
-                                </div>
+                        );
+                    })}
+                </div>
+                <div className="mt-8 pt-6 border-t border-pink-100 dark:border-pink-950/50">
+                    <h4 className="font-extrabold text-lg text-center mb-4 text-pink-700 dark:text-pink-300 flex items-center justify-center gap-1.5">🎀 Release Format</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
+                        <div
+                            onClick={() => setReleaseFormat('digital')}
+                            className={`p-4 border-2 rounded-2xl cursor-pointer transition-all duration-300 flex items-center ${
+                                releaseFormat === 'digital'
+                                    ? 'bg-pink-100 border-pink-400 shadow-lg shadow-pink-100/40 dark:bg-pink-950/60 dark:border-pink-500'
+                                    : 'bg-white/80 border-pink-100 dark:bg-slate-800/40 dark:border-pink-900/10 hover:bg-pink-50/40'
+                            }`}
+                        >
+                            <input
+                                type="radio"
+                                name="release-format"
+                                value="digital"
+                                checked={releaseFormat === 'digital'}
+                                readOnly
+                                className="form-radio h-5 w-5 text-pink-500 focus:ring-pink-400 border-pink-300 bg-white"
+                            />
+                            <div className="ml-3">
+                                <p className="font-extrabold text-pink-900 dark:text-pink-100 text-base">{releaseType === 'album' ? 'Digital Album 📱' : 'Digital Single 📱'}</p>
+                                <p className="text-xs text-pink-700/80 dark:text-pink-300/80 font-medium">Standard release on streaming platforms. Perfect for instant casual fan reach.</p>                                
                             </div>
-                        </label>
+
+                        </div>
+                        <div
+                            onClick={() => setReleaseFormat('physical')}
+                            className={`p-4 border-2 rounded-2xl cursor-pointer transition-all duration-300 flex items-center ${
+                                releaseFormat === 'physical'
+                                    ? 'bg-rose-100 border-rose-400 shadow-lg shadow-rose-100/40 dark:bg-rose-950/60 dark:border-rose-500'
+                                    : 'bg-white/80 border-pink-100 dark:bg-slate-800/40 dark:border-pink-900/10 hover:bg-pink-50/40'
+                            }`}
+                        >
+                            <input
+                                type="radio"
+                                name="release-format"
+                                value="physical"
+                                checked={releaseFormat === 'physical'}
+                                readOnly
+                                className="form-radio h-5 w-5 text-rose-500 focus:ring-rose-400 border-rose-300 bg-white"
+                            />
+                            <div className="ml-3">
+                                <p className="font-extrabold text-rose-900 dark:text-rose-100 text-base">{releaseType === 'album' ? 'Physical CD Album 💿' : 'Physical CD Single 💿'}</p>
+                                <p className="text-xs text-rose-700/80 dark:text-rose-300/80 font-medium">A classic physical CD release. High cost, huge profit margins and hardcore fan hype.</p>
+                            </div>
+                        </div>
+
                     </div>
 
                     {releaseType === 'album' && (
@@ -2965,6 +4383,10 @@ const renderSelectGraduatingMemberStep = () => {
 return (
     <ModalWrapper title={<span className="flex items-center"><Music size={24} className="mr-2"/> New Release Production</span>} maxWidth="max-w-7xl">
         {step === 'type' && renderTypeSelectionStep()}
+        {step === 'selectSingleSubType' && renderSingleSubTypeStep()}
+        {step === 'selectSoloist' && renderSelectSoloistStep()}
+        {step === 'selectUnitType' && renderSelectUnitTypeStep()}
+        {step === 'createUnit' && renderCreateUnitStep()}        
         {step === 'selectGraduatingMember' && renderSelectGraduatingMemberStep()}
         {step === 'selection' && (releaseType === 'single' || releaseType === 'graduationSingle') && renderSelectionStep()}
         {step === 'selection' && releaseType === 'album' && renderAlbumSelectionStep()}
@@ -3192,8 +4614,13 @@ return (
                 }
             });
 
-        const releasingGroupName = release.targetGroup === 'main' ? groupName : (sisterGroups.find(sg => String(sg.id) === String(release.targetGroup))?.name || release.targetGroup);
-        
+        let releasingGroupName = release.targetGroup === 'main' ? groupName : (sisterGroups.find(sg => String(sg.id) === String(release.targetGroup))?.name || release.targetGroup);
+        if (release.singleSubType === 'solo') {
+            const titleTrack = (release.tracks || []).find(t => t.type === 'title');
+            const soloistName = titleTrack?.members?.[0]?.name || "Soloist";
+            releasingGroupName = `${soloistName} (Solo)`;
+        }        
+
             // Correctly calculates total sales from the sales history
             const totalSales = (release.salesHistory || []).reduce((sum, entry) => sum + entry.sales, 0);
             const totalRevenue = totalSales * 15;
@@ -3512,9 +4939,23 @@ return (
         return (
             <ModalWrapper title={`${release.name} - ${release.type === 'album' ? 'Album' : 'Single'} Details`} maxWidth="max-w-4xl">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 text-sm">
-                  <div className="p-3 border rounded-lg bg-gray-50 space-y-2 dark:text-gray-900">
+<div className="p-3 border rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700 text-gray-800 dark:text-gray-200 space-y-2">                      
                       <p><strong>Released by:</strong> {releasingGroupName}</p>
                       <p><strong>Release Date:</strong> {getFormattedDateForWeek(release.releaseWeek)}</p>
+                      {release.singleSubType && (
+                          <p>
+                              <strong>Format:</strong>{' '}
+                              <span className={`px-2 py-0.5 rounded text-xs font-bold uppercase ${
+                                  release.singleSubType === 'solo' 
+                                      ? 'bg-amber-100 text-amber-800 border border-amber-300 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-900/50' 
+                                      : release.singleSubType === 'unit'
+                                      ? 'bg-indigo-100 text-indigo-800 border border-indigo-300 dark:bg-indigo-950/40 dark:text-indigo-300 dark:border-indigo-900/50'
+                                      : 'bg-slate-100 text-slate-800 border border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
+                              }`}>
+                                  {release.singleSubType} Single
+                              </span>
+                          </p>
+                      )}                      
                       <p><strong>Total Sales:</strong> {totalSales.toLocaleString()}</p>
                       <p><strong>Total Revenue:</strong> <span className="font-bold text-green-600">¥{totalRevenue.toLocaleString()}</span></p>
                       <p><strong>Charting Status:</strong> 
@@ -3766,10 +5207,15 @@ return (
         .sort((a, b) => b.releaseWeek - a.releaseWeek) // Sort all releases by week
         .slice(0, 10) // Take the 10 most recent releases
         .flatMap(release => { // Flatten into tracks
-            const artistName = (release.targetGroup === 'main' || release.artist === groupName)
-                ? groupName
+ let artistName = (release.targetGroup === 'main' || release.artist === groupName)                
+            ? groupName
                 : (sisterGroups.find(sg => String(sg.id) === String(release.targetGroup) || sg.name === release.artist)?.name || release.targetGroup || release.artist);
             
+            if (release.singleSubType === 'solo') {
+                const titleTrack = (release.tracks || []).find(t => t.type === 'title');
+                artistName = `${titleTrack?.members?.[0]?.name || "Soloist"} (Solo)`;
+            }
+
             return (release.tracks || []).map(track => ({
                 id: `${release.id}-${track.name}`, // Simplified ID
                 name: `${track.name} (${release.name} - ${artistName})`,
@@ -4122,10 +5568,15 @@ const MajorConcertModal = ({ week }) => {
         .sort((a, b) => b.releaseWeek - a.releaseWeek) // Sort all releases by week
         .slice(0, 10) // Take the 10 most recent releases
         .flatMap(release => { // Flatten into tracks
-            const artistName = (release.targetGroup === 'main' || release.artist === groupName)
+            let artistName = (release.targetGroup === 'main' || release.artist === groupName)
                 ? groupName
                 : (sisterGroups.find(sg => String(sg.id) === String(release.targetGroup) || sg.name === release.artist)?.name || release.targetGroup || release.artist);
             
+            if (release.singleSubType === 'solo') {
+                const titleTrack = (release.tracks || []).find(t => t.type === 'title');
+                artistName = `${titleTrack?.members?.[0]?.name || "Soloist"} (Solo)`;
+            }
+
             return (release.tracks || []).map(track => ({
                 id: `${release.id}-${track.name}`, // Simplified ID
                 name: `${track.name} (${release.name} - ${artistName})`,
@@ -4662,7 +6113,7 @@ const randomizeSetlist = (count = 20) => {
         return (
             <ModalWrapper title="Theater Show Preparation">
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Prepare for the upcoming theater show.</p>
-                
+
                 {team && setlist ? (
                     <div className="mb-4 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg border dark:border-gray-600">
                         <p><strong>Team:</strong> <span className="font-semibold">{team.name}</span></p>
@@ -7895,11 +9346,22 @@ const AllPromotionsResultModal = () => {
 
     const { stage, blocks, finalBracket, round, blockWinners, isFinished, roundResults } = jankenTournament;
 
+    // Helper to resolve the correct group name for any member
+    const getMemberGroupName = (m) => {
+        if (m.isSisterMember || m.groupId) {
+            const sg = sisterGroups.find(g => String(g.id) === String(m.groupId));
+            if (sg) return sg.name;
+        }
+        return groupName || "Main Group";
+    };
+
+
+
     // --- NEW: Hand Icons ---
     const HandIcon = ({ hand, size = 16 }) => {
-        if (hand === 'rock') return <Hand size={size} className="text-gray-500" />;
-        if (hand === 'paper') return <FileText size={size} className="text-gray-500" />;
-        if (hand === 'scissors') return <Scissors size={size} className="text-gray-500" />;
+        if (hand === 'rock') return <Hand size={size} className="text-pink-500 dark:text-pink-400" />;
+        if (hand === 'paper') return <FileText size={size} className="text-pink-500 dark:text-pink-400" />;
+        if (hand === 'scissors') return <Scissors size={size} className="text-pink-500 dark:text-pink-400" />;       
         return null;
     };
 
@@ -7918,21 +9380,34 @@ const AllPromotionsResultModal = () => {
 
         const MemberCard = ({ member }) => {
             if (!member) {
-                return <div className="p-3 text-center text-gray-500 italic">TBD</div>;
+                return <div className="p-3 text-center text-pink-300 dark:text-pink-700 italic">TBD</div>;           
             }
             const team = teams.find(t => t.id === member.teamId);
             const result = getMemberResult(member);
+            
+            // Rich pastel-pink themes
             const cardClasses = result 
-                ? (result.isWinner ? 'bg-green-100 dark:bg-green-900 border-green-400' : 'bg-red-50 dark:bg-red-900/50 opacity-60')
-                : 'bg-gray-50/80 dark:bg-gray-700/80';
+                ? (result.isWinner ? 'bg-pink-100/90 dark:bg-pink-950/40 border-pink-300 dark:border-pink-800' : 'bg-gray-100/50 dark:bg-gray-800/40 opacity-55')
+                : 'bg-white/80 dark:bg-gray-800/80';
+
+                           const gName = getMemberGroupName(member);
+            const teamName = team?.name || 'No Team';
+
 
             return (
-                <div className={`p-2.5 text-center border-b dark:border-gray-600/80 ${cardClasses} transition-all duration-500`}>
+                <div className={`p-2.5 text-center border-b dark:border-gray-700/80 ${cardClasses} transition-all duration-500 border-pink-100/50 dark:border-pink-950/20`}>                    
                     <div className="flex justify-between items-center">
                         <div className="flex-1 text-left">
-                            <p className="font-bold text-sm truncate" title={member.name}>{member.name}</p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                                {team?.name || 'No Team'} - Gen {member.generation}
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                                <span className="font-bold text-sm text-gray-800 dark:text-gray-100 truncate" title={member.name}>{member.name}</span>
+                                {stage === 'finals' && member.jankenBlock && (
+                                    <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-full bg-pink-200 dark:bg-pink-900/60 text-pink-700 dark:text-pink-300 tracking-wide uppercase">
+                                        Block {member.jankenBlock}
+                                    </span>
+                                )}
+                            </div>
+                            <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5 font-medium">
+                                <span className="text-pink-600 dark:text-pink-400 font-semibold">{gName}</span> • {teamName} • Gen {member.generation}                           
                             </p>
                         </div>
                         {result && <HandIcon hand={result.hand} />}
@@ -7942,7 +9417,7 @@ const AllPromotionsResultModal = () => {
         };
         
         return (
-            <div className="relative my-1.5 text-center border border-gray-300/80 dark:border-gray-600/80 rounded-md overflow-hidden">
+            <div className="relative my-1.5 text-center border border-pink-100 dark:border-pink-900/40 rounded-xl overflow-hidden shadow-sm">                
                 {pair.map((member, index) => (
                     <MemberCard key={member?.rosterId || member?.id || `tbd-${index}`} member={member} />
                 ))}
@@ -7955,12 +9430,14 @@ const AllPromotionsResultModal = () => {
     
     const WinnerDisplay = ({ member }) => {
          const team = teams.find(t => t.id === member.teamId);
+         const gName = getMemberGroupName(member);
+
          return (
-             <div className="p-4 bg-yellow-100/80 dark:bg-yellow-900/80 backdrop-blur-sm border-2 border-yellow-400 dark:border-yellow-600 rounded-lg text-center">
-                <Trophy size={20} className="mx-auto text-yellow-600 dark:text-yellow-400" />
-                <p className="font-bold text-lg text-yellow-800 dark:text-yellow-200">{member.name}</p>
-                <p className="text-sm text-yellow-700 dark:text-yellow-300">
-                    {team?.name || 'No Team'} - Gen {member.generation}
+             <div className="p-4 bg-gradient-to-br from-pink-100 to-yellow-50 dark:from-pink-950 dark:to-yellow-950/20 backdrop-blur-sm border border-pink-300 dark:border-pink-850 rounded-xl text-center shadow-md">
+                <Trophy size={22} className="mx-auto text-pink-500 dark:text-pink-400 mb-1" />
+                <p className="font-bold text-base text-pink-800 dark:text-pink-200">{member.name}</p>
+                <p className="text-[10px] text-pink-700 dark:text-pink-300 mt-0.5 font-medium">
+                    {gName} • {team?.name || 'No Team'} • Gen {member.generation}                    
                 </p>
             </div>
         );
@@ -7970,44 +9447,58 @@ const AllPromotionsResultModal = () => {
         const bracket = blocks[blockName];
         if (!bracket || bracket.length === 0) return 'Finished';
         const numPairs = bracket.reduce((acc, curr) => acc + (curr.length > 0 ? 1 : 0), 0);
-        if (numPairs === 1) return 'Final';
+        if (numPairs === 1) return 'Final';        
         return `Round ${round}`;
-    }
+    };
 
     return (
         <ModalWrapper title="Janken Tournament" maxWidth="max-w-7xl">
             <style>{`
                 .janken-crowd-glow::before {
                     content:""; position:absolute; inset:-80px;
-                    background: radial-gradient(320px 200px at 15% 30%, rgba(120,84,255,.12), transparent 70%),
-                                radial-gradient(340px 200px at 80% 25%, rgba(0,255,198,.1), transparent 70%),
-                                radial-gradient(400px 260px at 55% 70%, rgba(255,62,128,.09), transparent 75%);
-                    filter: blur(25px); opacity: .7;
+                    background: radial-gradient(320px 200px at 15% 30%, rgba(244,143,177,.18), transparent 70%),
+                                radial-gradient(340px 200px at 80% 25%, rgba(252,228,236,.15), transparent 70%),
+                                radial-gradient(400px 260px at 55% 70%, rgba(255,182,193,.14), transparent 75%);
+                    filter: blur(25px); opacity: .8;                    
                 }
                 .dark .janken-crowd-glow::before {
                     opacity: 1;
-                    background: radial-gradient(220px 160px at 15% 30%, rgba(120,84,255,.28), transparent 60%),
-                                radial-gradient(240px 160px at 80% 25%, rgba(0,255,198,.22), transparent 62%),
-                                radial-gradient(300px 200px at 60% 65%, rgba(255,62,128,.18), transparent 65%);
-                }
+                    background: radial-gradient(220px 160px at 15% 30%, rgba(244,143,177,.32), transparent 60%),
+                                radial-gradient(240px 160px at 80% 25%, rgba(136,14,79,.25), transparent 62%),
+                                radial-gradient(300px 200px at 60% 65%, rgba(255,128,171,.22), transparent 65%);                
             `}</style>
-            <div className="relative overflow-hidden p-4 bg-gradient-to-b from-gray-50 to-gray-200 dark:from-gray-800 dark:to-gray-900">
+            <div className="relative overflow-hidden p-6 bg-gradient-to-b from-pink-50 to-white dark:from-gray-900 dark:to-gray-800 rounded-2xl">
                 <div className="absolute top-0 left-0 right-0 bottom-0 janken-crowd-glow"></div>
                 <div className="relative">
-                    <div className="text-center mb-4">
-                        <h2 className="text-2xl font-bold uppercase tracking-wider">{stage === 'blocks' ? 'Block Rounds' : 'Final Tournament'}</h2>
-                        {stage === 'finals' && <p className="text-lg font-semibold">Round {round}</p>}
+<div className="text-center mb-6">
+                        <h2 className="text-3xl font-extrabold uppercase tracking-widest text-pink-700 dark:text-pink-300 drop-shadow-sm">{stage === 'blocks' ? '🌸 Janken Block Qualifiers' : '👑 Janken Grand Finals'}</h2>
+                        {stage === 'finals' && <p className="text-base font-bold text-rose-500 dark:text-rose-400 tracking-wide mt-1">🎀 {getFinalRoundName(round)} 🎀</p>}                   
                     </div>
-
+                   
                     {stage === 'blocks' && (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                             {['A', 'B', 'C', 'D'].map(blockName => (
-                                <div key={blockName} className="p-3 bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200/80 dark:border-gray-700/80">
-                                    <h3 className="text-xl font-bold text-center border-b-2 pb-2 mb-2">Block {blockName} <span className="text-base font-medium">({getBlockRoundName(blockName)})</span></h3>
+                                <div key={blockName} className="p-4 bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-xl shadow-lg border border-pink-100 dark:border-pink-950/30 transition-all duration-300 hover:shadow-pink-100/50 dark:hover:shadow-pink-950/10">
+                                    <h3 className="text-xl font-bold text-center border-b-2 border-pink-100 dark:border-pink-900 pb-2 mb-3 text-pink-700 dark:text-pink-300">
+                                        Block {blockName} <span className="text-xs font-semibold px-2 py-0.5 bg-pink-100 dark:bg-pink-900 text-pink-800 dark:text-pink-200 rounded-full ml-1">{getBlockRoundName(blockName)}</span>
+                                    </h3>                                    
                                     {blockWinners[blockName] ? (
                                         <WinnerDisplay member={blockWinners[blockName]} />
+                                                                        ) : blocks[blockName] && blocks[blockName].length > 0 ? (
+                                        blocks[blockName].map((pair, index) => <Matchup key={index} pair={pair} />)
                                     ) : (
-                                        blocks[blockName]?.map((pair, index) => <Matchup key={index} pair={pair} />)
+                                        <div className="p-4 bg-pink-50/50 dark:bg-pink-950/20 border border-pink-200 dark:border-pink-850 rounded-xl text-center shadow-inner">
+                                            <p className="font-bold text-pink-600 dark:text-pink-400 mb-2 flex justify-center items-center gap-1">
+                                                ✨ Block Top 4 Qualified!
+                                            </p>
+                                            <div className="space-y-1.5">
+                                                {blockParticipants && blockParticipants[blockName]?.map(m => (
+                                                    <div key={m.rosterId || m.id} className="text-sm font-semibold bg-pink-100/80 dark:bg-pink-900/40 dark:text-pink-200 px-2 py-1 rounded border border-pink-200/80 dark:border-pink-800 shadow-sm truncate" title={m.name}>
+                                                        {m.name}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>                                    
                                     )}
                                 </div>
                             ))}
@@ -8016,19 +9507,19 @@ const AllPromotionsResultModal = () => {
 
                     {stage === 'finals' && (
                         <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-x-6">
-                            <h3 className="text-xl font-bold text-center mb-2 md:col-span-2">Final Bracket</h3>
+                            <h3 className="text-xl font-bold text-center mb-4 md:col-span-2 text-pink-600 dark:text-pink-400 tracking-wider">Final Bracket Matchups</h3>
                             {finalBracket.map((pair, index) => <Matchup key={index} pair={pair} />)}
                         </div>
                     )}
 
                     <div className="mt-6 flex justify-end gap-3">
-                        <button onClick={() => setShowModal(null)} className="py-2 px-4 bg-gray-700/80 text-white font-semibold rounded-lg hover:bg-gray-700 backdrop-blur-sm">
+<button onClick={() => setShowModal(null)} className="py-2 px-5 bg-gray-600/80 text-white font-semibold rounded-xl hover:bg-gray-600 backdrop-blur-sm transition-all duration-300 shadow-sm">                            
                             Close
                         </button>
                         {!isFinished && (
                             <>
                                 {roundResults ? (
-                                    <button onClick={advanceJankenRound} className="py-2 px-6 bg-green-600/80 text-white font-bold rounded-lg hover:bg-green-700 shadow-lg backdrop-blur-sm">
+                                    <button onClick={advanceJankenRound} className="py-2.5 px-7 bg-pink-500 text-white font-bold rounded-xl hover:bg-pink-600 shadow-lg shadow-pink-200 dark:shadow-none hover:shadow-pink-300 transition-all duration-300 transform hover:-translate-y-0.5">
                                         Continue to Next Round
                                     </button>
                                 ) : (
@@ -8918,14 +10409,14 @@ const CreateVarietyShowModal = () => {
     const totalCost = baseCost + producerCost + writerCost;
 
     const mainGroupGenerations = [...new Set(availableMembers.filter(m => !m.isSisterMember).map(m => m.generation).filter(Boolean))];
-    const sisterGroupDetails = sisterGroups.map(sg => ({
+    const sisterGroupDetails = sisterGroups.filter(sg => !sg.isDisbanded).map(sg => ({
         ...sg,
-        generations: [...new Set(availableMembers.filter(m => String(m.groupId) === String(sg.id)).map(m => m.generation).filter(Boolean))]
+        generations: [...new Set(availableMembers.filter(m => String(m.groupId) === String(sg.id)).map(m => m.generation).filter(Boolean))]    
     }));
 
     let filteredMembers = availableMembers;
     if (memberFilter !== 'all') {
-        filteredMembers = availableMembers.filter(m => applyMemberFilter(m, memberFilter, teams, sisterGroups));
+        filteredMembers = availableMembers.filter(m => applyMemberFilter(m, memberFilter, teams, sisterGroups));    
     }
 
     const toggleMember = (id) => {
@@ -9003,7 +10494,7 @@ const CreateVarietyShowModal = () => {
                             </optgroup>
                             <optgroup label="Groups">
                                 <option value="main">{groupName}</option>
-                                {sisterGroups.map(sg => (<option key={`sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>))}
+{sisterGroups.filter(sg => !sg.isDisbanded).map(sg => (<option key={`sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>))}                            
                             </optgroup>
                             {mainGroupGenerations.length > 0 && <optgroup label={`${groupName} Gen`}>{mainGroupGenerations.map(gen => (<option key={`main-gen-${gen}`} value={`main-gen-${gen}`}>{gen}</option>))}</optgroup>}
                             {sisterGroupDetails.map(sg => (sg.generations.length > 0 && (<optgroup key={`sg-gen-group-${sg.id}`} label={`${sg.name} Gen`}>{sg.generations.map(gen => (<option key={`sg-${sg.id}-gen-${gen}`} value={`sg-${sg.id}-gen-${gen}`}>{gen}</option>))}</optgroup>)))}
@@ -9087,9 +10578,9 @@ const FilmProductionModal = () => {
 
     // --- Filter Data & Logic ---
     const mainGroupGenerations = [...new Set(availableMembers.filter(m => !m.isSisterMember).map(m => m.generation).filter(Boolean))];
-    const sisterGroupDetails = sisterGroups.map(sg => ({
+    const sisterGroupDetails = sisterGroups.filter(sg => !sg.isDisbanded).map(sg => ({
         ...sg,
-        generations: [...new Set(availableMembers.filter(m => String(m.groupId) === String(sg.id)).map(m => m.generation).filter(Boolean))]
+        generations: [...new Set(availableMembers.filter(m => String(m.groupId) === String(sg.id)).map(m => m.generation).filter(Boolean))]   
     }));
     let filteredMembers = availableMembers.filter(m => !allCastIds.has(m.rosterId));
     if (memberFilter !== 'all') {
@@ -9197,7 +10688,7 @@ const FilmProductionModal = () => {
                                 </optgroup>
                                 <optgroup label="Groups">
                                     <option value="main">{groupName}</option>
-                                    {sisterGroups.map(sg => (<option key={`sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>))}
+                                    {sisterGroups.filter(sg => !sg.isDisbanded).map(sg => (<option key={`sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>))}
                                 </optgroup>
                                 {mainGroupGenerations.length > 0 && <optgroup label={`${groupName} Gen`}>{mainGroupGenerations.map(gen => (<option key={`main-gen-${gen}`} value={`main-gen-${gen}`}>{gen}</option>))}</optgroup>}
                                 {sisterGroupDetails.map(sg => (sg.generations.length > 0 && (<optgroup key={`sg-gen-group-${sg.id}`} label={`${sg.name} Gen`}>{sg.generations.map(gen => (<option key={`sg-${sg.id}-gen-${gen}`} value={`sg-${sg.id}-gen-${gen}`}>{gen}</option>))}</optgroup>)))}
@@ -9511,7 +11002,7 @@ const FilmDetailsModal = ({ viewedFilm, setViewedFilm, setShowModal, getMemberBy
                                 </optgroup>
                                 <optgroup label="Groups">
                                     <option value="main">{groupName}</option>
-                                    {(sisterGroups || []).map(sg => <option key={`filter-sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>)}
+                                    {(sisterGroups || []).filter(sg => !sg.isDisbanded).map(sg => <option key={`filter-sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>)}
                                 </optgroup>
                                 <optgroup label="Teams">
                                     {(teams || []).map(t => <option key={`filter-team-${t.id}`} value={`team-${t.id}`}>{t.name}</option>)}
@@ -10012,10 +11503,10 @@ const KouhakuInvitationModal = () => {
         // --- END OF KEY CHANGE ---
 
         // --- FILTERING LOGIC (Now operates on the full group list) ---
-        const mainGroupGenerations = [...new Set(availableMembers.filter(m => !m.isSisterMember).map(m => m.generation).filter(Boolean))];
+       const mainGroupGenerations = [...new Set(availableMembers.filter(m => !m.isSisterMember).map(m => m.generation).filter(Boolean))];
         const sisterGroupDetails = sisterGroups.map(sg => ({
             ...sg,
-            generations: [...new Set(availableMembers.filter(m => String(m.groupId) === String(sg.id)).map(m => m.generation).filter(Boolean))]
+            generations: [...new Set(availableMembers.filter(m => String(m.groupId) === String(sg.id)).map(m => m.generation).filter(Boolean))]        
         }));
 
         let filteredMembers = availableMembers;
@@ -10078,7 +11569,7 @@ const KouhakuInvitationModal = () => {
                                     </optgroup>
                                     <optgroup label="Groups">
                                         <option key="main" value="main">{groupName}</option>
-                                        {sisterGroups.map(sg => (<option key={`sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>))}
+                                        {sisterGroups.filter(sg => !sg.isDisbanded).map(sg => (<option key={`sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>))}
                                     </optgroup>
                                     {mainGroupGenerations.length > 0 && <optgroup label={`${groupName} Gen`}>{mainGroupGenerations.map(gen => (<option key={`main-gen-${gen}`} value={`main-gen-${gen}`}>{gen}</option>))}</optgroup>}
                                     {sisterGroupDetails.map(sg => (sg.generations.length > 0 && (<optgroup key={`sg-gen-group-${sg.id}`} label={`${sg.name} Gen`}>{sg.generations.map(gen => (<option key={`sg-${sg.id}-gen-${gen}`} value={`sg-${sg.id}-gen-${gen}`}>{gen}</option>))}</optgroup>)))}
@@ -10186,7 +11677,8 @@ const FestivalPerformerSelectionModal = () => {
         .slice(0, 10)
         .flatMap(release => {
             const artistName = (release.targetGroup === 'main' || release.artist === groupName)
-                ? groupName
+                
+            ? groupName
                 : (sisterGroups.find(sg => String(sg.id) === String(release.targetGroup) || sg.name === release.artist)?.name || release.targetGroup || release.artist);
             
             return (release.tracks || []).map(track => ({
@@ -10247,9 +11739,9 @@ const FestivalPerformerSelectionModal = () => {
 
 
     const mainGroupGenerations = [...new Set(availableMembers.filter(m => !m.isSisterMember).map(m => m.generation).filter(Boolean))];
-    const sisterGroupDetails = sisterGroups.map(sg => ({
+    const sisterGroupDetails = sisterGroups.filter(sg => !sg.isDisbanded).map(sg => ({
         ...sg,
-        generations: [...new Set(availableMembers.filter(m => String(m.groupId) === String(sg.id)).map(m => m.generation).filter(Boolean))]
+        generations: [...new Set(availableMembers.filter(m => String(m.groupId) === String(sg.id)).map(m => m.generation).filter(Boolean))]    
     }));
 
     let filteredMembers = availableMembers;
@@ -10281,7 +11773,7 @@ filteredMembers.sort((a, b) => getTotalFansForMember(b) - getTotalFansForMember(
                             <option value="all">All Groups</option>
                             <optgroup label="Groups">
                                 <option value="main">{groupName}</option>
-                                {sisterGroups.map(sg => (<option key={`filter-sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>))}
+                                {sisterGroups.filter(sg => !sg.isDisbanded).map(sg => (<option key={`filter-sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>))}
                             </optgroup>
                             <optgroup label="Teams">
                                 {(teams || []).map(t => <option key={`filter-team-${t.id}`} value={`team-${t.id}`}>{t.name}</option>)}
@@ -10476,9 +11968,23 @@ const RequestHourScopeModal = () => {
 
 const RequestHourVotingModal = () => {
     const allSongs = [
-        ...songs.flatMap(s => (s.tracks || []).map(t => ({...t, id: `${s.id}-${t.name}`, artist: (s.artist || s.targetGroup) === 'main' ? groupName : (s.artist || s.targetGroup), singleName: s.name}))),
-        ...sisterGroups.flatMap(sg => (sg.songs || []).flatMap(s => (s.tracks || []).map(t => ({...t, id: `sg-${sg.id}-${s.id}-${t.name}`, artist: sg.name, singleName: s.name})))),
-        ...theaterSongs.map(ts => ({...ts, id: `theater-${ts.id}`, artist: groupName, singleName: "Theater Stage"}))
+        ...songs.flatMap(s => (s.tracks || []).map(t => {
+            let artistName = (s.artist || s.targetGroup) === 'main' ? groupName : (s.artist || s.targetGroup);
+            if (s.singleSubType === 'solo') {
+                const titleTrack = (s.tracks || []).find(track => track.type === 'title');
+                artistName = `${titleTrack?.members?.[0]?.name || "Soloist"} (Solo)`;
+            }
+            return {...t, id: `${s.id}-${t.name}`, artist: artistName, singleName: s.name};
+        })),
+        ...sisterGroups.flatMap(sg => (sg.songs || []).flatMap(s => (s.tracks || []).map(t => {
+            let artistName = sg.name;
+            if (s.singleSubType === 'solo') {
+                const titleTrack = (s.tracks || []).find(track => track.type === 'title');
+                artistName = `${titleTrack?.members?.[0]?.name || "Soloist"} (Solo)`;
+            }
+            return {...t, id: `sg-${sg.id}-${s.id}-${t.name}`, artist: artistName, singleName: s.name};
+        }))),
+        ...theaterSongs.map(ts => ({...ts, id: `theater-${ts.id}`, artist: groupName, singleName: "Theater Stage"}))    
     ];
 
     const [searchTerm, setSearchTerm] = useState('');
@@ -11175,27 +12681,75 @@ const DraftKaigiModal = () => {
     const renderNominationStage = () => {
         const topProspects = prospects.filter(p => p.potentialGrade === 'S');
         return (
-            <div>
-                <h2 className="text-2xl font-bold text-center mb-4">Stage 1: Nomination Round</h2>
-                <p className="text-center text-gray-600 dark:text-gray-400 mb-4">Nominate one of the top prospects for your main group. If multiple teams nominate the same girl, a lottery will decide who gets negotiation rights.</p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    {topProspects.map(prospect => (
-                        <div key={prospect.id} 
-                             className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${selectedNomineeId === prospect.id ? 'border-yellow-500 bg-yellow-100 dark:bg-yellow-900/50' : 'bg-white dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'}`}
-                             onClick={() => setSelectedNomineeId(prospect.id)}>
-                            <h3 className="font-bold text-lg">{prospect.name} <span className="text-sm font-normal text-gray-500">({prospect.hometown})</span></h3>
-                            <p className="text-yellow-400 font-bold">Grade: {prospect.potentialGrade}</p>
-                            <p className="text-xs italic text-gray-500 mt-1">"{prospect.scoutingComment}"</p>
-                            <p className="text-xs mt-2">Rival Interest: {prospect.competingInterest.join(', ') || 'None'}</p>
-                        </div>
-                    ))}
+            <div className="bg-rose-50/30 dark:bg-transparent p-6 rounded-2xl border border-pink-100/50 dark:border-pink-900/30">
+                <div className="text-center max-w-2xl mx-auto mb-8">
+                    <h2 className="text-3xl font-extrabold text-pink-600 dark:text-pink-400 flex items-center justify-center gap-2 mb-2">
+                        <span>💖 Stage 1: Elite Nomination Round 💖</span>
+                    </h2>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                        Nominate one of these elite <span className="font-bold text-pink-500">S-Rank Trainees</span> to secure exclusive negotiation rights. If multiple rival groups target the same girl, a live lottery draw will decide who secures her contract! Choose wisely based on your roster needs.
+                    </p>                    
                 </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    {topProspects.map(prospect => {
+                        const isSelected = selectedNomineeId === prospect.id;
+                        return (
+                            <div key={prospect.id} 
+                                 className={`p-5 rounded-2xl border-2 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${
+                                     isSelected 
+                                         ? 'border-pink-500 bg-pink-50/80 dark:bg-pink-950/40 ring-4 ring-pink-100 dark:ring-pink-900/30 scale-[1.02]' 
+                                         : 'bg-white dark:bg-gray-800 border-pink-100 dark:border-gray-700 hover:border-pink-300 dark:hover:border-pink-800'
+                                 }`}
+                                 onClick={() => setSelectedNomineeId(prospect.id)}>
+                                
+                                <div className="flex justify-between items-start mb-3">
+                                    <div>
+                                        <h3 className="font-extrabold text-lg flex items-center gap-1.5 text-gray-800 dark:text-white">
+                                            {prospect.name}
+                                            {isSelected && <span className="text-pink-500">💖</span>}
+                                        </h3>
+                                        <p className="text-xs text-gray-500 font-semibold">{prospect.hometown}</p>
+                                    </div>
+                                    <span className={`px-2.5 py-0.5 text-[10px] rounded-full font-bold uppercase tracking-wider border shadow-sm ${
+                                        prospect.archetype === 'Vocalist' ? 'bg-red-50 text-red-600 border-red-200 dark:bg-red-950/30 dark:text-red-400 dark:border-red-800' :
+                                        prospect.archetype === 'Dancer' ? 'bg-blue-50 text-blue-600 border-blue-200 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800' :
+                                        prospect.archetype === 'Visual/Ace' ? 'bg-pink-50 text-pink-600 border-pink-200 dark:bg-pink-950/30 dark:text-pink-400 dark:border-pink-800' :
+                                        prospect.archetype === 'Variety Star' ? 'bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-950/30 dark:text-yellow-450 dark:border-yellow-800' :
+                                        'bg-green-50 text-green-600 border-green-200 dark:bg-green-950/30 dark:text-green-400 dark:border-green-800'
+                                    }`}>
+                                        {prospect.archetype || 'All-Rounder'}
+                                    </span>
+                                </div>
+                                <div className="space-y-2 mb-4 bg-gray-50 dark:bg-gray-900/50 p-3 rounded-xl border border-gray-100 dark:border-gray-800">
+                                    <div className="flex justify-between items-center text-xs">
+                                        <span className="font-semibold text-gray-600 dark:text-gray-400">Potential Grade:</span>
+                                        <span className="font-bold text-yellow-500 flex items-center gap-0.5">⭐ {prospect.potentialGrade} ({prospect.potential})</span>
+                                    </div>
+                                    <div className="flex justify-between items-center text-xs">
+                                        <span className="font-semibold text-gray-600 dark:text-gray-400">Personality:</span>
+                                        <span className="font-medium text-gray-700 dark:text-gray-300">{prospect.personality}</span>
+                                    </div>
+                                </div>
+                                <p className="text-xs italic text-gray-500 dark:text-gray-400 border-l-2 border-pink-300 pl-2 mb-4">
+                                    "{prospect.scoutingComment}"
+                                </p>
+                                <div className="pt-3 border-t border-dashed border-gray-200 dark:border-gray-700 text-xs flex items-center justify-between">
+                                    <span className="text-gray-500">Rival Interest:</span>
+                                    <span className="font-bold text-pink-600 dark:text-pink-400 truncate max-w-[150px]">
+                                        {prospect.competingInterest.join(', ') || 'None'}
+                                    </span>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>                
                 <div className="text-center">
                     <button 
                         onClick={() => advanceDraftStage('process_nominations', { playerNominationId: selectedNomineeId })}
                         disabled={!selectedNomineeId}
-                        className="px-8 py-3 bg-blue-600 text-white font-bold rounded-lg disabled:bg-gray-400">
-                        Lock In Nomination
+                        className="px-10 py-3.5 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-extrabold rounded-full shadow-lg shadow-pink-200 dark:shadow-none hover:shadow-xl active:scale-95 transition-all duration-300 disabled:opacity-50 disabled:pointer-events-none">
+                        Lock In Nomination 💖                        
                     </button>
                 </div>
             </div>
@@ -11205,45 +12759,83 @@ const DraftKaigiModal = () => {
     const renderNominationRevealStage = () => {
          const prospectsInLottery = prospects.filter(p => p.nominatedBy && p.nominatedBy.length > 1);
          return (
-            <div>
-                <h2 className="text-2xl font-bold text-center mb-4">Nomination Results</h2>
-                <div className="space-y-4 max-h-96 overflow-y-auto p-2">
-                    {prospects.filter(p => p.nominatedBy && p.nominatedBy.length > 0).map(prospect => (
-                        <div key={prospect.id} className="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                            <h3 className="text-xl font-bold">{prospect.name}</h3>
-                            <p className="text-sm">Nominated By: {prospect.nominatedBy.map(t => t.name).join(', ')}</p>
-                            {(() => {
-                                const lottery = lotteryResults.find(r => r.prospectId === prospect.id);
-                                if (lottery) return <p className="font-bold text-green-500 mt-2">Lottery Winner: {lottery.winnerName}!</p>;
-                                if (prospect.nominatedBy.length > 1) {
-                                    return (
-                                        <div className="mt-2">
-                                            <button 
-                                                onClick={() => {
-                                                    setIsLotteryRunning(prev => ({...prev, [prospect.id]: true}));
-                                                    setTimeout(() => {
-                                                        advanceDraftStage('run_lottery', { prospectId: prospect.id });
-                                                        setIsLotteryRunning(prev => ({...prev, [prospect.id]: false}));
-                                                    }, 1500);
-                                                }}
-                                                disabled={isLotteryRunning[prospect.id]}
-                                                className="px-4 py-2 bg-yellow-500 text-black font-bold rounded mt-1 disabled:bg-gray-400">
-                                                {isLotteryRunning[prospect.id] ? "Drawing..." : "Start Lottery"}
-                                            </button>
-                                        </div>
-                                    );
-                                }
-                                return <p className="font-bold text-blue-500 mt-2">Negotiation rights secured by {prospect.nominatedBy[0].name}.</p>;
-                            })()}
+            <div className="bg-rose-50/30 dark:bg-transparent p-6 rounded-2xl border border-pink-100/50 dark:border-pink-900/30">
+                <div className="text-center max-w-2xl mx-auto mb-8">
+                    <h2 className="text-3xl font-extrabold text-pink-600 dark:text-pink-400 flex items-center justify-center gap-2 mb-2">
+                        <span>🎉 Nomination Reveal & Live Draw 🎉</span>
+                    </h2>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                        See who other agencies targeted! In case of conflicts, initiate the live drawing system to reveal who gets negotiation rights.
+                    </p>                            
                         </div>
-                    ))}
+
+
+                <div className="space-y-4 max-h-[50vh] overflow-y-auto p-2">
+                    {prospects.filter(p => p.nominatedBy && p.nominatedBy.length > 0).map(prospect => {
+                        const hasConflict = prospect.nominatedBy.length > 1;
+                        const lottery = lotteryResults.find(r => r.prospectId === prospect.id);
+                        
+                        return (
+                            <div key={prospect.id} className="p-5 bg-white dark:bg-gray-800 border border-pink-50 dark:border-gray-700/50 rounded-2xl shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                <div className="space-y-1">
+                                    <div className="flex items-center gap-3">
+                                        <h3 className="text-xl font-extrabold text-gray-800 dark:text-white">{prospect.name}</h3>
+                                        <span className="px-2 py-0.5 text-xs font-bold rounded bg-pink-100 text-pink-700 dark:bg-pink-950 dark:text-pink-300">
+                                            {prospect.archetype}
+                                        </span>
+                                    </div>
+                                    <p className="text-xs text-gray-500 font-medium">
+                                        Nominated By: <span className="font-bold text-gray-700 dark:text-gray-300">{prospect.nominatedBy.map(t => t.name).join(', ')}</span>
+                                    </p>
+                                </div>
+                                <div className="flex items-center">
+                                    {(() => {
+                                        if (lottery) return (
+                                            <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800/50 px-4 py-2 rounded-xl text-center">
+                                                <p className="text-xs font-semibold text-green-600 dark:text-green-400">Negotiation Rights Won by:</p>
+                                                <p className="font-extrabold text-sm text-green-700 dark:text-green-300">🎉 {lottery.winnerName}!</p>
+                                            </div>
+                                        );
+                                        if (hasConflict) {
+                                            const isThisLotteryRunning = isLotteryRunning[prospect.id];
+                                            return (
+                                                <button 
+                                                    onClick={() => {
+                                                        setIsLotteryRunning(prev => ({...prev, [prospect.id]: true}));
+                                                        setTimeout(() => {
+                                                            advanceDraftStage('run_lottery', { prospectId: prospect.id });
+                                                            setIsLotteryRunning(prev => ({...prev, [prospect.id]: false}));
+                                                        }, 1500);
+                                                    }}
+                                                    disabled={isThisLotteryRunning}
+                                                    className="px-6 py-2.5 bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-500 hover:to-amber-600 text-black font-extrabold rounded-full shadow-md transition-all active:scale-95 disabled:opacity-50">
+                                                    {isThisLotteryRunning ? (
+                                                        <span className="flex items-center gap-2">
+                                                            <span className="w-4 h-4 rounded-full border-2 border-black border-t-transparent animate-spin inline-block" />
+                                                            Drawing...
+                                                        </span>
+                                                    ) : "Start Lottery Box Draw 🗳️"}
+                                                </button>
+                                            );
+                                        }
+                                        return (
+                                            <div className="bg-pink-50 dark:bg-pink-950/20 border border-pink-200 dark:border-pink-900/30 px-4 py-2 rounded-xl text-center">
+                                                <p className="text-xs font-semibold text-pink-600 dark:text-pink-400">Exclusive Rights Secured:</p>
+                                                <p className="font-extrabold text-sm text-pink-700 dark:text-pink-300">🌟 {prospect.nominatedBy[0].name}</p>
+                                            </div>
+                                        );
+                                    })()}
+                                </div>
+                            </div>
+                        );
+                    })}
                 </div>
-                 <div className="text-center mt-6">
+                <div className="text-center mt-8">                    
                     <button 
                         onClick={() => advanceDraftStage('start_snake_draft')}
                         disabled={prospectsInLottery.some(p => !lotteryResults.find(r => r.prospectId === p.id))}
-                        className="px-8 py-3 bg-green-600 text-white font-bold rounded-lg disabled:bg-gray-400">
-                        Proceed to Snake Draft
+                        className="px-10 py-3.5 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-extrabold rounded-full shadow-lg shadow-pink-200 dark:shadow-none hover:shadow-xl active:scale-95 transition-all duration-300 disabled:opacity-50 disabled:pointer-events-none">
+                        Proceed to Snake Draft 🌸                        
                     </button>
                 </div>
             </div>
@@ -11260,57 +12852,162 @@ const DraftKaigiModal = () => {
 
         if (draftFinished) {
             return (
-                <div className="text-center">
-                    <h2 className="text-2xl font-bold mb-4">Draft Complete!</h2>
-                    <button onClick={finishDraft} className="px-8 py-3 bg-green-600 text-white font-bold rounded-lg">
-                        Finalize Selections & Proceed
+                <div className="text-center py-12 bg-rose-50/20 dark:bg-transparent rounded-2xl border border-dashed border-pink-200 dark:border-gray-700 p-8">
+                    <h2 className="text-3xl font-extrabold text-pink-600 dark:text-pink-400 mb-2 flex items-center justify-center gap-2">
+                        <span>✨ Draft Complete! ✨</span>
+                    </h2>
+                    <p className="text-sm text-gray-500 mb-8">All rounds have been finalized. Review your newly drafted idols in the roster sheet.</p>
+                    <button onClick={finishDraft} className="px-10 py-3.5 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-extrabold rounded-full shadow-lg hover:shadow-xl active:scale-95 transition-all duration-300">
+                        Finalize Selections & Proceed 🌟                        
                     </button>
                 </div>
             );
         }
 
         return (
-            <div className="grid grid-cols-12 gap-4">
-                <div className="col-span-5">
-                    <h3 className="font-bold text-lg mb-2">Available Prospects ({prospects.length})</h3>
-                    <div className="max-h-[60vh] overflow-y-auto space-y-2 p-2 border rounded">
+            <div className="grid grid-cols-12 gap-6">
+                {/* Header status */}
+                <div className="col-span-12">
+                    <div className={`p-4 rounded-2xl border text-center transition-all ${
+                        isPlayerTurn 
+                            ? 'bg-pink-100/70 border-pink-300 dark:bg-pink-950/40 dark:border-pink-900 shadow-md shadow-pink-100 dark:shadow-none' 
+                            : 'bg-gray-100 border-gray-200 dark:bg-gray-800 dark:border-gray-700'
+                    }`}>
+                        {isPlayerTurn ? (
+                            <div className="space-y-1">
+                                <p className="text-lg font-black text-pink-600 dark:text-pink-400 animate-pulse flex items-center justify-center gap-2">
+                                    <span>🌸 YOU ARE ON THE CLOCK! 🌸</span>
+                                </p>
+                                <p className="text-xs text-pink-700 dark:text-pink-300">Tap a trainee card in the list below to recruit her to your main team!</p>
+                            </div>
+                        ) : (
+                            <div className="space-y-1">
+                                <p className="text-sm font-semibold text-gray-500 dark:text-gray-400">Current Picking Group:</p>
+                                <p className="text-lg font-bold text-gray-800 dark:text-white flex items-center justify-center gap-2">
+                                    <span>🌟 {currentTeam?.name}</span>
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+                {/* Prospects column */}
+                <div className="col-span-12 lg:col-span-6">
+                    <h3 className="font-extrabold text-pink-600 dark:text-pink-400 text-lg mb-3 flex items-center justify-between">
+                        <span>🌸 Japanese Prospects ({prospects.length})</span>
+                        <span className="text-xs text-gray-400 font-normal">Click a card to pick</span>
+                    </h3>
+                    <div className="max-h-[60vh] overflow-y-auto space-y-3 pr-2 scrollbar-thin">                        
                         {prospects.map(prospect => (
                             <div key={prospect.id} 
-                                 className={`p-2 rounded border-2 ${isPlayerTurn ? 'cursor-pointer hover:border-blue-500 bg-white dark:bg-gray-800' : 'bg-gray-200 dark:bg-gray-800'}`}
+                        className={`p-3.5 rounded-xl border-2 transition-all cursor-pointer ${
+                                     isPlayerTurn 
+                                         ? 'bg-white dark:bg-gray-800 border-pink-100 hover:border-pink-400 dark:border-gray-700 hover:shadow-md hover:-translate-y-0.5' 
+                                         : 'bg-gray-50 dark:bg-gray-850/50 border-gray-200 dark:border-gray-800 opacity-60 cursor-not-allowed'
+                                 }`}
+
                                  onClick={isPlayerTurn ? () => handlePlayerDraftPick(prospect.id) : undefined}>
-                                <div className="flex justify-between items-center">
-                                    <h4 className="font-bold">{prospect.name}</h4>
-                                    <span className="font-mono text-sm text-yellow-500">Pot: {prospect.potential} ({prospect.potentialGrade})</span>
+                                <div className="flex justify-between items-center mb-2">
+                                    <div className="flex items-center gap-2">
+                                        <h4 className="font-bold text-base text-gray-800 dark:text-white">{prospect.name}</h4>
+                                        <span className={`px-2 py-0.5 text-[9px] rounded-full font-bold uppercase border shadow-sm ${
+                                            prospect.archetype === 'Vocalist' ? 'bg-red-50 text-red-600 border-red-200 dark:bg-red-950/30 dark:text-red-400 dark:border-red-800' :
+                                            prospect.archetype === 'Dancer' ? 'bg-blue-50 text-blue-600 border-blue-200 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800' :
+                                            prospect.archetype === 'Visual/Ace' ? 'bg-pink-50 text-pink-600 border-pink-200 dark:bg-pink-950/30 dark:text-pink-400 dark:border-pink-800' :
+                                            prospect.archetype === 'Variety Star' ? 'bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-950/30 dark:text-yellow-450 dark:border-yellow-800' :
+                                            'bg-green-50 text-green-600 border-green-200 dark:bg-green-950/30 dark:text-green-400 dark:border-green-800'
+                                        }`}>
+                                            {prospect.archetype || 'All-Rounder'}
+                                        </span>
+                                    </div>
+                                    <span className="font-bold text-xs text-yellow-500">⭐ Pot: {prospect.potential} ({prospect.potentialGrade})</span>                                
                                 </div>
-                                <p className="text-xs text-gray-500">Vo:{Math.round(prospect.vocal)} Da:{Math.round(prospect.dance)} Vi:{Math.round(prospect.visual)} Ch:{Math.round(prospect.charisma)} In:{Math.round(prospect.intelligence)}</p>
+
+
+                                {/* Easy to understand stat bars */}
+                                <div className="grid grid-cols-3 gap-3 mb-2 text-[11px]">
+                                    <div>
+                                        <div className="flex justify-between text-gray-500 mb-0.5 font-medium">
+                                            <span>Vocal</span>
+                                            <span className="font-bold">{Math.round(prospect.vocal)}</span>
+                                        </div>
+                                        <div className="w-full bg-gray-200 dark:bg-gray-700 h-1.5 rounded-full overflow-hidden">
+                                            <div className="bg-red-400 h-full rounded-full" style={{ width: `${prospect.vocal}%` }} />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div className="flex justify-between text-gray-500 mb-0.5 font-medium">
+                                            <span>Dance</span>
+                                            <span className="font-bold">{Math.round(prospect.dance)}</span>
+                                        </div>
+                                        <div className="w-full bg-gray-200 dark:bg-gray-700 h-1.5 rounded-full overflow-hidden">
+                                            <div className="bg-blue-400 h-full rounded-full" style={{ width: `${prospect.dance}%` }} />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div className="flex justify-between text-gray-500 mb-0.5 font-medium">
+                                            <span>Visual</span>
+                                            <span className="font-bold">{Math.round(prospect.visual)}</span>
+                                        </div>
+                                        <div className="w-full bg-gray-200 dark:bg-gray-700 h-1.5 rounded-full overflow-hidden">
+                                            <div className="bg-pink-400 h-full rounded-full" style={{ width: `${prospect.visual}%` }} />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="flex items-center justify-between text-[10px] text-gray-400 pt-1 border-t border-gray-100 dark:border-gray-750">
+                                    <span>Hometown: {prospect.hometown}</span>
+                                    <span className="italic truncate max-w-[180px]">"{prospect.scoutingComment}"</span>
+                                </div>
+
                             </div>
                         ))}
                     </div>
                 </div>
-                <div className="col-span-4">
-                    <h3 className="font-bold text-lg mb-2">Draft Log</h3>
-                    <div className="max-h-[60vh] overflow-y-auto space-y-2 p-2 bg-gray-100 dark:bg-gray-900 rounded border">
-                        {log.slice().reverse().map((entry, index) => (
-                            <p key={index} className={`text-sm p-1 rounded ${entry.includes('selects') ? 'font-semibold' : ''}`}>{entry}</p>
-                        ))}
+
+                {/* Draft log */}
+                <div className="col-span-12 md:col-span-6 lg:col-span-3">
+                    <h3 className="font-extrabold text-pink-600 dark:text-pink-400 text-lg mb-3">📋 Draft History Feed</h3>
+                    <div className="max-h-[60vh] overflow-y-auto space-y-2 p-3 bg-pink-50/30 dark:bg-gray-900 rounded-2xl border border-pink-100/50 dark:border-gray-800 scrollbar-thin">
+                        {log.slice().reverse().map((entry, index) => {
+                            const isPlayerPick = entry.includes(groupName);
+                            return (
+                                <div key={index} className={`p-2 rounded-xl text-xs leading-relaxed ${
+                                    isPlayerPick 
+                                        ? 'bg-pink-100 text-pink-800 dark:bg-pink-950/50 dark:text-pink-300 font-semibold' 
+                                        : 'bg-white dark:bg-gray-850 text-gray-700 dark:text-gray-300 border border-gray-100 dark:border-gray-800'
+                                }`}>
+                                    <p className="flex items-start gap-1">
+                                        <span>🌸</span>
+                                        <span>{entry}</span>
+                                    </p>
+                                </div>
+                            );
+                        })}                        
                     </div>
                 </div>
-                <div className="col-span-3">
-                    <h3 className="font-bold text-lg mb-2">Picks</h3>
-                     <div className="max-h-[60vh] overflow-y-auto space-y-2">
-                    {picks.map((pick) => (
-                        <div key={pick.prospectId} className="p-2 bg-white dark:bg-gray-800 rounded shadow text-sm">
-                            <p className="font-bold truncate">
-                                {pick.round === 'Nomination' ? (pick.pick > 0 ? `LOTT:` : 'NOM:') : `R${pick.round} P${pick.pick}:`} {pick.teamName}
-                            </p>
-                            <p className="text-blue-600 dark:text-blue-400 truncate">{pick.prospectName}</p>
-                        </div>
-                    ))}
+
+                {/* Roster / Picks Timeline */}
+                <div className="col-span-12 md:col-span-6 lg:col-span-3">
+                    <h3 className="font-extrabold text-pink-600 dark:text-pink-400 text-lg mb-3">📍 Draft Board</h3>
+                    <div className="max-h-[60vh] overflow-y-auto space-y-2 pr-1 scrollbar-thin">
+                        {picks.map((pick) => {
+                            const isPlayer = pick.teamName === groupName;
+                            return (
+                                <div key={pick.prospectId} className={`p-2.5 rounded-xl border transition-all ${
+                                    isPlayer 
+                                        ? 'bg-pink-50/70 border-pink-300 text-pink-800 dark:bg-pink-950/30 dark:border-pink-900 dark:text-pink-300 ring-1 ring-pink-100' 
+                                        : 'bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700 text-gray-700 dark:text-gray-300'
+                                } shadow-sm text-xs`}>
+                                    <div className="flex justify-between items-center mb-1">
+                                        <span className="font-extrabold truncate">
+                                            {pick.round === 'Nomination' ? 'LOTTERY:' : `R${pick.round} P${pick.pick}:`} {pick.teamName}
+                                        </span>
+                                        {isPlayer && <span className="text-[10px]">💖</span>}
+                                    </div>
+                                    <p className="font-medium text-pink-600 dark:text-pink-400 truncate">{pick.prospectName}</p>
+                                </div>
+                            );
+                        })}                    
                     </div>
-                </div>
-                 <div className="col-span-12 text-center mt-4">
-                    {isPlayerTurn && <p className="text-xl font-bold animate-pulse">You are on the clock! Select a prospect.</p>}
-                    {!isPlayerTurn && <p className="text-xl font-bold">Current Pick: {currentTeam?.name}</p>}
                 </div>
             </div>
         );
@@ -11330,7 +13027,7 @@ const DraftKaigiModal = () => {
     };
 
     return (
-        <ModalWrapper title="Draft Kaigi" maxWidth="max-w-6xl">
+        <ModalWrapper title="🌸 Draft Kaigi - Annual Recruit Board 🌸" maxWidth="max-w-6xl">            
             {renderCurrentStage()}
         </ModalWrapper>
     );
@@ -11338,7 +13035,24 @@ const DraftKaigiModal = () => {
 
 
        const MemberParticipationHistory = ({ member, getFormattedDateForWeek }) => { 
-         
+         const isSameMember = (m, member) => {
+             if (m.rosterId && member.rosterId && String(m.rosterId) === String(member.rosterId)) {
+                 return true;
+             }
+             
+             const mIsSister = m.isSisterMember || (m.rosterId && String(m.rosterId).startsWith('sg-')) || (m.homeGroup && m.homeGroup !== 'main');
+             const memberIsSister = member.isSisterMember || (member.rosterId && String(member.rosterId).startsWith('sg-')) || (member.homeGroup && member.homeGroup !== 'main');
+             
+             if (mIsSister !== memberIsSister) return false;
+             if (String(m.id) !== String(member.id)) return false;
+             if (!memberIsSister) return true; // Main group, matching ID
+             
+             // Sister group, match by group name
+             const mGroupName = m.displayGroupName || m.homeGroup;
+             const memberGroupName = member.displayGroupName || member.homeGroup;
+             return mGroupName && memberGroupName && mGroupName === memberGroupName;
+         };       
+        
          const songHistory = (member.songsParticipation || []);
          const centerHistory = (member.centerHistory || []);
          const teamHistory = (member.teamHistory || []);
@@ -11347,7 +13061,7 @@ const DraftKaigiModal = () => {
          const filmHistory = (member.filmHistory || []);
          const albumTrackHistory = songHistory.filter(s => s.type === 'album');
          const bSideTrackHistory = songHistory.filter(s => s.type === 'b-side'); // This is the new line
-         const memberPerformances = performanceHistory.filter(p => (p.members || []).some(m => String(m.rosterId || m.id) === String(member.rosterId || member.id)));
+         const memberPerformances = performanceHistory.filter(p => (p.members || []).some(m => isSameMember(m, member)))
 
          const titleTrackHistory = songHistory.filter(s => s.type === 'title');
          const majorConcertHistory = memberPerformances.filter(p => p.category === "Major Concert");
@@ -11894,7 +13608,7 @@ if (!gameStarted) {
                                         <option value="all">All Groups</option>
                                         <optgroup label="Groups">
                                             <option value="main">{groupName}</option>
-                                            {(sisterGroups || []).map(sg => <option key={`filter-sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>)}
+                                            {(sisterGroups || []).filter(sg => !sg.isDisbanded).map(sg => <option key={`filter-sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>)}
                                         </optgroup>
                                         <optgroup label="Teams">
                                             {(teams || []).map(t => <option key={`filter-team-${t.id}`} value={`team-${t.id}`}>{t.name}</option>)}
@@ -12183,7 +13897,7 @@ if (!gameStarted) {
                     <option value="all">All Available Members</option>
                     <optgroup label="Groups">
                         <option value="main">{groupName}</option>
-                        {(sisterGroups || []).map(sg => <option key={`filter-sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>)}
+                        {(sisterGroups || []).filter(sg => !sg.isDisbanded).map(sg => <option key={`filter-sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>)}
                     </optgroup>
                     <optgroup label="Teams">
                         {(teams || []).map(t => <option key={`filter-team-${t.id}`} value={`team-${t.id}`}>{t.name}</option>)}
@@ -12632,7 +14346,7 @@ if (!gameStarted) {
 
                   const roster = getMainGroupRoster();
                   const mainGroupGenerations = [...new Set(roster.filter(m => !m.isSisterMember).map(m => m.generation).filter(Boolean))];
-                  const sisterGroupDetails = sisterGroups.map(sg => ({
+                  const sisterGroupDetails = sisterGroups.filter(sg => !sg.isDisbanded).map(sg => ({
                       ...sg,
                       generations: [...new Set(roster.filter(m => String(m.groupId) === String(sg.id)).map(m => m.generation).filter(Boolean))]
                   }));
@@ -12651,7 +14365,7 @@ if (!gameStarted) {
                                   <option value="all">All Groups</option>
                                   <optgroup label="Groups">
                                       <option value="main">{groupName}</option>
-                                      {(sisterGroups || []).map(sg => <option key={`filter-sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>)}
+                                      {(sisterGroups || []).filter(sg => !sg.isDisbanded).map(sg => <option key={`filter-sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>)}
                                   </optgroup>
                                   <optgroup label="Teams">
                                       {(teams || []).map(t => <option key={`filter-team-${t.id}`} value={`team-${t.id}`}>{t.name}</option>)}
@@ -12737,6 +14451,11 @@ if (!gameStarted) {
         const totalSales = (release.salesHistory || []).reduce((sum, entry) => sum + entry.sales, 0);
         const isAlbum = release.type === 'album';
 
+        let releasingArtist = isAlbum ? release.artist : (release.targetGroup === 'main' ? groupName : release.targetGroup);
+        if (!isAlbum && release.singleSubType === 'solo') {
+            const titleTrack = (release.tracks || []).find(t => t.type === 'title');
+            releasingArtist = `${titleTrack?.members?.[0]?.name || "Soloist"} (Solo)`;
+        }        
         // Find all promotable B-sides
         const bSideTracks = !isAlbum ? (release.tracks || []).filter(t => t.type === 'b-side') : [];
 
@@ -12751,9 +14470,11 @@ if (!gameStarted) {
                             <h3 className="font-bold text-base flex items-center">
                                 {release.name} (Wk {release.releaseWeek})
                                 {release.chartWeeksLeft > 0 && <span className="ml-2 text-xs font-normal text-green-500 bg-green-100 dark:bg-green-900 dark:text-green-300 px-1.5 py-0.5 rounded-full">Charting</span>}
+                                {release.singleSubType === 'solo' && <span className="ml-2 text-[10px] font-bold text-amber-600 bg-amber-100 border border-amber-300 px-1.5 py-0.5 rounded">SOLO</span>}
+                                {release.singleSubType === 'unit' && <span className="ml-2 text-[10px] font-bold text-indigo-600 bg-indigo-100 border border-indigo-300 px-1.5 py-0.5 rounded">SUB-UNIT</span>}                            
                             </h3>
                             <p className="text-xs text-gray-700 dark:text-gray-300">
-                                {isAlbum ? 'Album' : 'Single'} | Total Sales: {totalSales.toLocaleString()} | Tracks: {release.tracks.length}
+                            {isAlbum ? 'Album' : 'Single'} | {releasingArtist} | Total Sales: {totalSales.toLocaleString()} | Tracks: {release.tracks.length}                            
                             </p>
                         </div>
                     </div>
@@ -12863,7 +14584,7 @@ if (showRecentOnly) {
                 </div>
             </div>
 
-        {(sisterGroups || []).filter(sg => !sg.isDisbanded).map(sg => {
+        {(sisterGroups || []).filter(sg => !sg.isDisbanded || (sg.songs && sg.songs.length > 0)).map(sg => {
 
             // For each sister group, their releases are now all in their own `songs` array.
             let sgReleases = (sg.songs || []).sort((a, b) => b.releaseWeek - a.releaseWeek);
@@ -12876,7 +14597,9 @@ if (showRecentOnly) {
                 
                 return (
                     <div key={sg.id} className="pt-2 border-t border-gray-300 dark:border-gray-700">
-                        <h3 className="font-semibold text-sm text-gray-800 dark:text-gray-200 mt-1 mb-2">{sg.name} Releases:</h3>
+                    <h3 className="font-semibold text-sm text-gray-800 dark:text-gray-200 mt-1 mb-2">
+                            {sg.name} Releases{sg.isDisbanded ? ' (Disbanded)' : ''}:
+                        </h3>                        
                         <div className="space-y-2">
                             {sgReleases.map(release => <ReleaseCard key={release.id} release={release} />)}
                         </div>
@@ -13200,7 +14923,11 @@ if (showRecentOnly) {
 
                     if (allChartingSingles.length === 1) {
                         const single = allChartingSingles[0];
-                        const ownerName = single.targetGroup === 'main' ? groupName : single.targetGroup;
+                        let ownerName = single.targetGroup === 'main' ? groupName : single.targetGroup;
+                        if (single.singleSubType === 'solo') {
+                            const titleTrack = (single.tracks || []).find(t => t.type === 'title');
+                            ownerName = `${titleTrack?.members?.[0]?.name || "Soloist"} (Solo)`;
+                        }
                         return (
                             <div className="flex flex-col gap-1.5">
                                 <p className="text-xs text-center mb-1">Promoting: <strong>{single.name}</strong> ({ownerName})</p>
@@ -13223,7 +14950,11 @@ if (showRecentOnly) {
                                 className="w-full p-2 border rounded bg-white dark:bg-gray-700 dark:border-gray-600"
                             >
                                 {allChartingSingles.map(s => {
-                                    const ownerName = s.targetGroup === 'main' ? groupName : s.targetGroup;
+                                    let ownerName = s.targetGroup === 'main' ? groupName : s.targetGroup;
+                                    if (s.singleSubType === 'solo') {
+                                        const titleTrack = (s.tracks || []).find(t => t.type === 'title');
+                                        ownerName = `${titleTrack?.members?.[0]?.name || "Soloist"} (Solo)`;
+                                    }
                                     return (
                                         <option key={s.id} value={s.id}>
                                             {s.name} ({ownerName}) - {s.chartWeeksLeft} wks left
@@ -13852,6 +15583,18 @@ if (showRecentOnly) {
             <h3 className="text-xl font-bold">{selectedMember.name}</h3>
             
 <div>
+    <span className="font-semibold">Specialty: </span>
+    <span className={`px-2 py-0.5 text-[10px] rounded-full font-semibold border ${
+        selectedMember.archetype === 'Vocalist' ? 'bg-red-50 text-red-600 border-red-200 dark:bg-red-950/30 dark:text-red-400 dark:border-red-800' :
+        selectedMember.archetype === 'Dancer' ? 'bg-blue-50 text-blue-600 border-blue-200 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800' :
+        selectedMember.archetype === 'Visual/Ace' ? 'bg-pink-50 text-pink-600 border-pink-200 dark:bg-pink-950/30 dark:text-pink-400 dark:border-pink-800' :
+        selectedMember.archetype === 'Variety Star' ? 'bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-950/30 dark:text-yellow-450 dark:border-yellow-800' :
+        'bg-green-50 text-green-600 border-green-200 dark:bg-green-950/30 dark:text-green-400 dark:border-green-800'
+    }`}>
+        {selectedMember.archetype || 'All-Rounder'}
+    </span>
+</div>
+<div>    
     <span className="font-semibold">Primary Team: </span>
     <span>{selectedMember.teamName}</span>
 </div>
@@ -13865,25 +15608,49 @@ if (showRecentOnly) {
     </span>
 </div>
 
-{selectedMember.kennin && (
-    <>
-        <div className="pt-2 mt-2 border-t dark:border-gray-600">
-            <span className="font-semibold">Concurrent Team: </span>
-            <span className="bg-yellow-200 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-200 px-2 py-1 rounded-full text-xs">
-                {selectedMember.kennin.teamName}
-            </span>
-        </div>
-        <div>
-            <span className="font-semibold">Concurrent Group: </span>
-            <span>
-                {selectedMember.kennin.groupId === 'main'
+{(() => {
+    const list = [];
+    if (selectedMember.kennin && selectedMember.kennin.teamName) {
+        const kenninGroupName = selectedMember.kennin.groupId === 'main'
+            ? groupName
+            : (sisterGroups.find(sg => String(sg.id) === String(selectedMember.kennin.groupId))?.name || 'Unknown');
+        list.push({
+            groupName: kenninGroupName,
+            teamName: selectedMember.kennin.teamName
+        });
+    }
+    if (selectedMember.concurrentTeams && selectedMember.concurrentTeams.length > 0) {
+        selectedMember.concurrentTeams.forEach(ct => {
+            const targetTeam = teams.find(t => String(t.id) === String(ct.id));
+            if (targetTeam) {
+                const kenninGroupName = targetTeam.groupId === 'main'                
                     ? groupName
-                    : (sisterGroups.find(sg => String(sg.id) === String(selectedMember.kennin.groupId))?.name || 'Unknown')
-                }
-            </span>
+
+                    : (sisterGroups.find(sg => String(sg.id) === String(targetTeam.groupId))?.name || 'Unknown');
+                list.push({
+                    groupName: kenninGroupName,
+                    teamName: targetTeam.name
+                });
+            }
+        });
+    }
+    if (list.length === 0) return null;
+    return (
+        <div className="pt-2 mt-2 border-t dark:border-gray-600 space-y-1.5">
+            <span className="font-semibold text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 block mb-1">Concurrent Positions ({list.length})</span>
+            {list.map((item, idx) => (
+                <div key={idx} className="flex items-center gap-2 bg-yellow-100 dark:bg-yellow-950/40 p-2 rounded-lg border border-yellow-200 dark:border-yellow-900/50">
+                    <span className="text-xs font-semibold text-yellow-800 dark:text-yellow-200 bg-yellow-200 dark:bg-yellow-900 px-2 py-0.5 rounded-md">
+                        {item.groupName}
+                    </span>
+                    <span className="text-xs text-yellow-900 dark:text-yellow-300 font-bold">
+                        Team {item.teamName}
+                    </span>
+                </div>
+            ))}
         </div>
-    </>
-)}
+    );
+})()}
 
             <div className="grid grid-cols-2 gap-4 pt-2">
                 <div>
@@ -14423,8 +16190,32 @@ if (showRecentOnly) {
         {showModal === 'electionResult' && <ElectionResultModal />}
         {showModal === 'annualAwardsResult' && <AnnualAwardsResultModal />}
         {showModal === 'dailyChart' && <DailyChartModal activeChart={activeChart} onHide={() => setShowModal(null)} groupName={groupName} songs={songs} sisterGroups={sisterGroups} />}
-        {showModal === 'scandalDecision' && <ScandalDecisionModal />}
-        {showModal === 'scandalResult' && <ScandalResultModal />}
+        {showModal === 'scandalDecision' && (
+            <ScandalDecisionModal 
+                activeScandal={activeScandal}
+                setShowModal={setShowModal}
+                handleScandalResponse={handleScandalResponse}
+            />
+        )}
+        {showModal === 'scandalResult' && (
+            <ScandalResultModal 
+                modalData={modalData}
+                setShowModal={setShowModal}
+                setActiveScandal={setActiveScandal}
+                updateMemberState={updateMemberState}
+                setGroupReputation={setGroupReputation}
+                setMoney={setMoney}
+                money={money}
+            />
+        )}
+        {showModal === 'weeklyDilemma' && (
+            <WeeklyDilemmaModal 
+                activeDilemma={activeDilemma}
+                dilemmaResult={dilemmaResult}
+                handleSelectChoice={handleSelectChoice}
+                handleClose={handleClose}
+            />
+        )}        
         {showModal === 'senbatsuPromotion' && <SenbatsuPromotionModal />}
         {showModal === 'bsidePromotion' && <BsidePromotionModal />}
         {showModal === 'bsidePromotionResult' && <BsidePromotionResultModal />}
@@ -14483,4 +16274,574 @@ if (showRecentOnly) {
     );
 };
 
+// Modals extracted to top-level to avoid unmounting and state-reset bugs
+const ScandalDecisionModal = ({
+    activeScandal,
+    setShowModal,
+    handleScandalResponse
+}) => {
+    if (!activeScandal) return null;
+    const { member, scandal } = activeScandal;
+    const scandalResponseOptions = {
+        deny: { text: 'Deny Publicly', cost: 10000, description: 'Issue a strong denial. Risky, but could work.' },
+        apologize: { text: 'Apologize', cost: 5000, description: 'Issue a formal apology. Admits guilt but shows sincerity.' },
+        suspend: { text: 'Suspend Member (4 Weeks)', cost: 0, description: 'Suspend the member from all activities. Shows you are taking action.' },
+        ignore: { text: 'Ignore', cost: 0, description: 'Do nothing and hope the story blows over. Unpredictable.' },
+    };
+    return (
+        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in fade-in">
+            <div className="w-full max-w-xl rounded-2xl bg-gray-800 bg-opacity-70 border border-gray-700 shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-5">
+                {/* Header */}
+                <div className="p-4 flex justify-between items-center bg-white bg-opacity-10">
+                    <div className="flex items-center gap-3">
+                        <span className="text-xs font-bold uppercase tracking-wider bg-red-500 bg-opacity-80 text-white py-1 px-3 rounded-full">SCANDAL</span>
+                        <h3 className="font-bold text-lg text-white">Scandal Erupted!</h3>
+                    </div>
+                    <button onClick={() => setShowModal(null)} className="w-9 h-9 rounded-full bg-white bg-opacity-10 text-white flex items-center justify-center hover:bg-opacity-20 transition-colors">
+                        <X size={20} />
+                    </button>
+                </div>
+                {/* Content */}
+                <div className="p-5 grid gap-4">
+                    {/* Main scandal info */}
+                    <div className="text-center text-white">
+                        <h3 className="text-2xl font-bold">{member.name}</h3>
+                        <p className="text-sm text-gray-300 mb-4">is embroiled in a scandal!</p>
+                        <div className="p-4 bg-red-900 bg-opacity-40 border border-red-500/50 rounded-lg text-left">
+                            <h4 className="font-bold text-red-300">{scandal.type}</h4>
+                            <p className="text-sm italic mt-1 text-white-200">"{scandal.description}"</p>
+                        </div>
+                    </div>
+                    {/* Response options */}
+                    <div className="mt-4">
+                        <h4 className="font-semibold text-center mb-3 text-gray-200">How will you respond?</h4>
+                        <div className="space-y-3">
+                            {Object.entries(scandalResponseOptions).map(([key, option]) => (
+                                <button
+                                    key={key}
+                                    onClick={() => handleScandalResponse(key)}
+                                    className="w-full text-left p-3 border border-white/10 rounded-lg hover:bg-white/10 bg-white/5 text-white transition-colors"
+                                >
+                                    <div className="flex justify-between items-center">
+                                        <span className="font-bold">{option.text}</span>
+                                        <span className="font-semibold text-yellow-400">¥{option.cost.toLocaleString()}</span>
+                                    </div>
+                                    <p className="text-xs text-gray-300">{option.description}</p>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+const ScandalResultModal = ({
+    modalData,
+    setShowModal,
+    setActiveScandal,
+    updateMemberState,
+    setGroupReputation,
+    setMoney,
+    money
+}) => {
+    if (!modalData) return null;
+    const { member, scandal, action, resultMessage, fanLoss, moraleHit, reputationLoss, urgencyIncrease } = modalData;
+    const [sagaStep, setSagaStep] = useState(1); // 1: Week 1 results, 2: Week 2 followup choices, 3: Week 2 results
+    const [followupChoice, setFollowupChoice] = useState(null);
+    const [followupOutcome, setFollowupOutcome] = useState("");
+    const [flashActive, setFlashActive] = useState(false);
+    const [visibleTweets, setVisibleTweets] = useState([]);
+    const getActionText = (actionKey) => {
+        const options = {
+            deny: 'Deny Publicly',
+            apologize: 'Apologize',
+            suspend: 'Suspend Member',
+            ignore: 'Ignore'
+        };
+        return options[actionKey] || 'Unknown Action';
+    };
+    // Trigger photographer flashbulbs effect
+    const triggerCameraFlash = () => {
+        setFlashActive(true);
+        setTimeout(() => setFlashActive(false), 200);
+    };
+    useEffect(() => {
+        triggerCameraFlash();
+    }, [sagaStep]);
+    // Twitter reaction feed pool based on chosen PR statement or followup
+    const fanTweets = {
+        deny: [
+            "My oshi would never do this! Hardcore support! 💖",
+            "Look at the blurry photo, it's obviously edited! Fake news!",
+            "Tabloids are parasites. Leave her alone!",
+            "Hmm, I want to believe her, but that scarf in the photo is identical...",
+            "If this is a lie, I am going to throw away all my CDs... 😭",
+            "She works so hard, she doesn't deserve this smear campaign!"
+        ],
+        apologize: [
+            "She is taking responsibility, respect. 🙇‍♀️",
+            "Seeing her cry in the press conference breaks my heart...",
+            "Idols are humans! Why does she have to apologize for having a life?",
+            "A written apology is the absolute minimum. She let us down.",
+            "We love you, stay strong! We will support you through this!",
+            "This sounds like it was written by her manager. No real emotion."
+        ],
+        suspend: [
+            "4 weeks suspension is way too harsh! 😭",
+            "Why is management throwing her under the bus like this?",
+            "It's a fair decision. She can reflect and come back stronger.",
+            "We will wait for you! The group isn't the same without her.",
+            "Suspension is the best way to cool down the media heat.",
+            "Only 4 weeks? Should have been graduated imo."
+        ],
+        ignore: [
+            "Why is the agency completely silent?! Say something!",
+            "No comment is the best comment. Let the haters scream.",
+            "They think they can just sweep this under the rug!",
+            "Honestly, who cares? Let them sing and dance.",
+            "The lack of transparency is really disappointing...",
+            "Just ignore the trolls, keep supporting the theater shows!"
+        ],
+        // Followup choices
+        double_down: [
+            "YES! Sue the tabloids! Take all their money! ⚖️🔥",
+            "This is the badass management we've been waiting for!",
+            "Wait, suing is risky... what if they have more proof?",
+            "If she wins this lawsuit, she will be an absolute legend!"
+        ],
+        confess: [
+            "She finally confessed. The lie was worse than the act.",
+            "Honestly, respect for coming clean. Let's move on.",
+            "My trust is completely shattered... 😭💔",
+            "She's taking a massive hit but it's the right choice."
+        ],
+        livestream: [
+            "She is crying on stream... my heart is breaking! 😭💖",
+            "Her raw explanation was so genuine. I forgive her!",
+            "This livestream feels a bit manipulative, but whatever...",
+            "Look at the chat, thousands of hearts are flying! We love you!"
+        ],
+        weather_storm: [
+            "The silence continues. Safe but kinda frustrating.",
+            "Let the storm pass. Time heals all wounds.",
+            "I hope she's doing okay, locked in the dorm...",
+            "No updates is good updates."
+        ],
+        letter: [
+            "Her handwritten letter is so beautiful! 😭📝",
+            "She has perfect handwriting! Such a sweet girl.",
+            "The reflection letter made me buy 10 more singles to support her!",
+            "I accept her apology letter. Welcome back!"
+        ],
+        isolation: [
+            "She's completely locked away. It's so quiet.",
+            "I miss her so much. Hope she's eating well.",
+            "Strict rules are strict. It's safe but sad.",
+            "We must wait in the shadows."
+        ],
+        conf_now: [
+            "The press conference was tense, but she handled the journalists well.",
+            "Respect for stepping up to the microphones. 🎙️",
+            "She bowed for 5 seconds. Extremely polite.",
+            "Crisis handled. Reputation starting to recover."
+        ],
+        wait_out: [
+            "Sponsors are dropping! The agency is losing millions!",
+            "Ouch, that sponsorship contract cancellation hurts...",
+            "Silent path was extremely expensive... was it worth it?",
+            "Money comes and goes, but the girls are still here."
+        ]
+    };
+    // Live tweet feed simulator
+    useEffect(() => {
+        let pool = fanTweets[action] || [];
+        if (sagaStep === 3 && followupChoice) {
+            pool = fanTweets[followupChoice] || [];
+        }
+        if (pool.length === 0) return;
+        const initial = [];
+        for(let i=0; i<Math.min(3, pool.length); i++) {
+            const handle = ["@idol_fan", "@wota_pro", "@popstar", "@kpop_th", "@senshufan", "@anti_troll"][Math.floor(Math.random() * 6)] + Math.floor(Math.random() * 99);
+            initial.push({ id: i, handle, text: pool[i % pool.length] });
+        }
+        setVisibleTweets(initial);
+        const interval = setInterval(() => {
+            setVisibleTweets(prev => {
+                const nextIdx = Math.floor(Math.random() * pool.length);
+                const handle = ["@idol_fan", "@wota_pro", "@popstar", "@kpop_th", "@senshufan", "@anti_troll", "@oshi_love", "@sensatsu_th"][Math.floor(Math.random() * 8)] + Math.floor(Math.random() * 99);
+                const nextTweet = {
+                    id: Date.now(),
+                    handle,
+                    text: pool[nextIdx]
+                };
+                return [nextTweet, ...prev.slice(0, 3)];
+            });
+        }, 1800);
+        return () => clearInterval(interval);
+    }, [action, sagaStep, followupChoice]);
+    // Handle the custom Week 2 followup decision
+    const handleFollowupChoice = (choiceKey) => {
+        setFollowupChoice(choiceKey);
+        triggerCameraFlash();
+        const memberId = member.rosterId || member.id;
+        let outcome = "";
+        if (action === 'deny') {
+            if (choiceKey === 'double_down') {
+                const success = Math.random() < 0.5;
+                if (success) {
+                    setGroupReputation(prev => prev + 15);
+                    updateMemberState(memberId, m => {
+                        const restoredHardcore = (m.fans.hardcore || 0) + Math.floor(fanLoss * 0.5);
+                        const restoredCasual = (m.fans.casual || 0) + Math.floor(fanLoss * 0.3);
+                        return {
+                            ...m,
+                            fans: { hardcore: restoredHardcore, casual: restoredCasual },
+                            stress: Math.max(0, m.stress - 20)
+                        };
+                    });
+                    outcome = "The lawsuit succeeded! The courts ruled that the tabloids fabricated the incriminating details. Her reputation is fully cleared, and fans have returned in waves!";
+                } else {
+                    setGroupReputation(prev => Math.max(0, prev - 15));
+                    updateMemberState(memberId, m => ({
+                        ...m,
+                        stress: Math.min(100, m.stress + 30),
+                        morale: Math.max(0, m.morale - 15)
+                    }));
+                    outcome = "The lawsuit backfired horribly! The court ruled in favor of the tabloids, confirming the dating scandal is 100% true. The public is furious at your lies, causing group reputation to plummet.";
+                }
+            } else {
+                // Confess & Apologize
+                setMoney(prev => Math.max(0, prev - 20000));
+                updateMemberState(memberId, m => {
+                    const newHardcore = Math.max(0, (m.fans.hardcore || 0) - 10000);
+                    const newCasual = Math.max(0, (m.fans.casual || 0) - 5000);
+                    return {
+                        ...m,
+                        fans: { hardcore: newHardcore, casual: newCasual },
+                        stress: Math.min(100, m.stress + 15),
+                        morale: Math.max(0, m.morale - 15)
+                    };
+                });
+                outcome = "You formally confessed to the rumors and issued a direct apology. Fans are heartbroken by the lie, but critics respect you for coming clean, and the media storm begins to subside.";
+            }
+        } else if (action === 'apologize') {
+            if (choiceKey === 'livestream') {
+                updateMemberState(memberId, m => {
+                    const newHardcore = (m.fans.hardcore || 0) + 8000;
+                    return {
+                        ...m,
+                        fans: { ...m.fans, hardcore: newHardcore },
+                        stress: Math.min(100, m.stress + 25),
+                        morale: Math.min(100, m.morale + 25)
+                    };
+                });
+                outcome = "She hosted an extremely raw and emotional YouTube livestream. She explained her feelings, causing a massive wave of fan sympathy (+8,000 hardcore fans), but the sheer pressure took a heavy toll on her stress.";
+            } else {
+                updateMemberState(memberId, m => ({
+                    ...m,
+                    morale: Math.max(0, m.morale - 15)
+                }));
+                outcome = "You ignored the memes and let the storm pass. The jokes fizzled out within a few days, but the member felt completely isolated and unsupported by management, leading to a hit to her morale.";
+            }
+        } else if (action === 'suspend') {
+            if (choiceKey === 'letter') {
+                updateMemberState(memberId, m => {
+                    const restoredHardcore = (m.fans.hardcore || 0) + Math.floor(fanLoss * 0.4);
+                    return {
+                        ...m,
+                        fans: { ...m.fans, hardcore: restoredHardcore },
+                        stress: Math.max(0, m.stress - 15)
+                    };
+                });
+                outcome = "Her beautiful, handwritten reflection letter was posted on the official blog. Fans were deeply moved by her sincerity, recovering 40% of the lost fans and reducing her stress.";
+            } else {
+                updateMemberState(memberId, m => ({
+                    ...m,
+                    stress: Math.min(100, m.stress + 20),
+                    morale: Math.max(0, m.morale - 20)
+                }));
+                outcome = "You strictly enforced her isolation, keeping her away from all fan communications. The fan boycotts eventually stopped, but she felt deeply depressed and lonely in her room.";
+            }
+        } else if (action === 'ignore') {
+            if (choiceKey === 'conf_now') {
+                setMoney(prev => Math.max(0, prev - 50000));
+                setGroupReputation(prev => prev + 5);
+                updateMemberState(memberId, m => {
+                    const newCasual = Math.max(0, (m.fans.casual || 0) - 5000);
+                    return { ...m, fans: { ...m.fans, casual: newCasual } };
+                });
+                outcome = "You held an emergency press conference. The commercial sponsors are fully satisfied with your professional explanation and decided to keep all contracts active, but fans are slightly alienated.";
+            } else {
+                setMoney(prev => Math.max(0, prev - 100000));
+                setGroupReputation(prev => Math.max(0, prev - 4));
+                outcome = "You refused to address the issue. The furious sponsors immediately canceled their commercial campaigns, costing the agency ¥100,000 in early termination fees and denting the group's reputation.";
+            }
+        }
+        setFollowupOutcome(outcome);
+        setSagaStep(3);
+    };
+    return (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in fade-in">
+            {/* Press Photographer Flash Bulb Overlay */}
+            {flashActive && (
+                <div className="absolute inset-0 bg-white opacity-95 transition-opacity duration-200 z-50 pointer-events-none" />
+            )}
+            <div className="w-full max-w-xl rounded-2xl bg-gradient-to-br from-neutral-900 to-black border-2 border-red-500/50 shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-5 text-white">
+                
+                {/* Breaking News Header */}
+                <div className="p-4 bg-red-900/80 border-b border-red-500/40 flex justify-between items-center relative overflow-hidden">
+                    <div className="flex items-center gap-3">
+                        <Camera className="text-red-400 animate-pulse" size={24}/>
+                        <h3 className="font-extrabold text-xl tracking-wider text-red-100 uppercase">PR Crisis: Campaign Phase</h3>
+                    </div>
+                    <span className="bg-red-600 text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-widest animate-bounce">
+                        Live / Week {sagaStep}
+                    </span>
+                </div>
+                <div className="p-6 space-y-4">
+                    {/* Member Accusation Details */}
+                    <div className="flex items-center gap-4 bg-black/40 p-3.5 rounded-xl border border-red-500/10">
+                        <div className="w-14 h-14 rounded-full bg-red-500/10 border-2 border-red-500/30 flex items-center justify-center">
+                            <User className="text-red-400" size={32} />
+                        </div>
+                        <div>
+                            <h4 className="font-bold text-lg text-white">{member.name}</h4>
+                            <p className="text-xs text-red-300 font-semibold">{scandal.type} (Severity: {scandal.severity})</p>
+                        </div>
+                    </div>
+                    {sagaStep === 1 && (
+                        <>
+                            {/* Week 1 Fallout */}
+                            <div className="space-y-3">
+                                <div className="bg-black/50 p-4 rounded-xl border border-neutral-800">
+                                    <p className="text-sm text-gray-400">Week 1 Statement: <strong className="text-yellow-400">{getActionText(action)}</strong></p>
+                                    <p className="text-md italic text-gray-200 mt-2 font-medium">"{resultMessage}"</p>
+                                </div>
+                                <div className="grid grid-cols-2 gap-3 text-center">
+                                    <div className="p-3 bg-red-950/40 border border-red-900/30 rounded-xl">
+                                        <p className="text-2xl font-black text-red-400">-{fanLoss.toLocaleString()}</p>
+                                        <p className="text-xs font-bold text-gray-400 uppercase mt-0.5">Fans Lost</p>
+                                    </div>
+                                    <div className="p-3 bg-red-950/40 border border-red-900/30 rounded-xl">
+                                        <p className="text-2xl font-black text-red-400">-{moraleHit}</p>
+                                        <p className="text-xs font-bold text-gray-400 uppercase mt-0.5">Idol Morale</p>
+                                    </div>
+                                    <div className="p-3 bg-yellow-950/30 border border-yellow-900/20 rounded-xl">
+                                        <p className="text-2xl font-black text-yellow-400">{reputationLoss}</p>
+                                        <p className="text-xs font-bold text-gray-400 uppercase mt-0.5">Group Rep</p>
+                                    </div>
+                                    <div className="p-3 bg-yellow-950/30 border border-yellow-900/20 rounded-xl">
+                                        <p className="text-2xl font-black text-yellow-400">+{urgencyIncrease.toFixed(0)}%</p>
+                                        <p className="text-xs font-bold text-gray-400 uppercase mt-0.5">Grad Urgency</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {/* Scrolling Tweets Ticker */}
+                            <div className="space-y-2 mt-4">
+                                <h5 className="text-xs font-bold text-neutral-400 uppercase tracking-widest">Public Chatter:</h5>
+                                <div className="bg-black/60 rounded-xl p-3 border border-neutral-800 space-y-2 h-36 overflow-hidden relative">
+                                    {visibleTweets.map((tweet) => (
+                                        <div key={tweet.id} className="text-xs p-2 bg-neutral-900/50 rounded border border-neutral-800 animate-in slide-in-from-top-2 duration-300">
+                                            <span className="font-bold text-red-300">{tweet.handle}</span>: <span className="text-gray-200 font-medium">{tweet.text}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => setSagaStep(2)}
+                                className="w-full mt-4 p-4 bg-red-700 hover:bg-red-600 text-white rounded-xl font-bold tracking-wider text-base transition-all hover:scale-[1.01] active:scale-95 shadow-lg shadow-red-950/40"
+                            >
+                                Enter Week 2: Media Fallout Phase
+                            </button>
+                        </>
+                    )}
+                    {sagaStep === 2 && (
+                        <div className="space-y-4 animate-in fade-in duration-300">
+                            {/* Week 2 media accusation */}
+                            <div className="p-4 bg-red-950/30 border border-red-500/20 rounded-xl space-y-2">
+                                <h4 className="font-bold text-red-300 flex items-center gap-1.5"><AlertTriangle size={18}/> The Media Strikes Back!</h4>
+                                <p className="text-sm text-gray-200 leading-relaxed font-medium">
+                                    {action === 'deny' && "Week 2: Shady tabloids publish definitive HD photo leaks proving the dating rumor! The internet is in an absolute frenzy."}
+                                    {action === 'apologize' && "Week 2: Anti-fans launch a viral, high-reach campaign editing toxic deepfake memes of her crying apology."}
+                                    {action === 'suspend' && "Week 2: Angered by the harsh suspension, the official fan club initiates a organized boycotting campaign of your theater shows."}
+                                    {action === 'ignore' && "Week 2: The continued silence triggers intense public outrage, and two major sponsor corporations threaten to pull all advertising deals."}
+                                </p>
+                            </div>
+                            {/* Weekly Followup choices */}
+                            <div className="space-y-3">
+                                <h4 className="text-center font-bold text-sm text-neutral-400 uppercase tracking-widest mb-1">Make your Crisis Decision:</h4>
+                                {action === 'deny' && (
+                                    <>
+                                        <button
+                                            onClick={() => handleFollowupChoice('double_down')}
+                                            className="w-full text-left p-3.5 border border-red-500/20 rounded-xl hover:bg-red-500/10 bg-black/40 transition-all hover:scale-[1.01] active:scale-95 duration-200"
+                                        >
+                                            <p className="font-bold text-red-300">Double Down & File Lawsuit (¥150,000)</p>
+                                            <p className="text-xs text-gray-400 mt-1">50% chance: Clear her name and gain fans. 50% chance: Massive disgrace.</p>
+                                        </button>
+                                        <button
+                                            onClick={() => handleFollowupChoice('confess')}
+                                            className="w-full text-left p-3.5 border border-neutral-800 rounded-xl hover:bg-neutral-800/40 bg-black/40 transition-all hover:scale-[1.01] active:scale-95 duration-200"
+                                        >
+                                            <p className="font-bold text-yellow-300">Confess & Formally Apologize (¥20,000)</p>
+                                            <p className="text-xs text-gray-400 mt-1">Accept the scandal. Further fan loss, but saves reputation.</p>
+                                        </button>
+                                    </>
+                                )}
+                                {action === 'apologize' && (
+                                    <>
+                                        <button
+                                            onClick={() => handleFollowupChoice('livestream')}
+                                            className="w-full text-left p-3.5 border border-red-500/20 rounded-xl hover:bg-red-500/10 bg-black/40 transition-all hover:scale-[1.01] active:scale-95 duration-200"
+                                        >
+                                            <p className="font-bold text-red-300">Hold a Vulnerable YouTube Livestream (Free)</p>
+                                            <p className="text-xs text-gray-400 mt-1">Win back hardcore fans (+8k fans, +25 Morale), but chosen member gains +25 Stress.</p>
+                                        </button>
+                                        <button
+                                            onClick={() => handleFollowupChoice('weather_storm')}
+                                            className="w-full text-left p-3.5 border border-neutral-800 rounded-xl hover:bg-neutral-800/40 bg-black/40 transition-all hover:scale-[1.01] active:scale-95 duration-200"
+                                        >
+                                            <p className="font-bold text-yellow-300">Ignore the Internet Memes (Free)</p>
+                                            <p className="text-xs text-gray-400 mt-1">Weather the storm. Member feels neglected by agency (-15 Morale, +0 Stress).</p>
+                                        </button>
+                                    </>
+                                )}
+                                {action === 'suspend' && (
+                                    <>
+                                        <button
+                                            onClick={() => handleFollowupChoice('letter')}
+                                            className="w-full text-left p-3.5 border border-red-500/20 rounded-xl hover:bg-red-500/10 bg-black/40 transition-all hover:scale-[1.01] active:scale-95 duration-200"
+                                        >
+                                            <p className="font-bold text-red-300">Publish handwritten Apology Letter (Free)</p>
+                                            <p className="text-xs text-gray-400 mt-1">Vulnerable blog post. Recovers 40% of lost fans, member loses -15 Stress.</p>
+                                        </button>
+                                        <button
+                                            onClick={() => handleFollowupChoice('isolation')}
+                                            className="w-full text-left p-3.5 border border-neutral-800 rounded-xl hover:bg-neutral-800/40 bg-black/40 transition-all hover:scale-[1.01] active:scale-95 duration-200"
+                                        >
+                                            <p className="font-bold text-yellow-300">Enforce strict isolated Reflection (Free)</p>
+                                            <p className="text-xs text-gray-400 mt-1">No communications allowed. Stop fan protests, but member gains +20 Stress.</p>
+                                        </button>
+                                    </>
+                                )}
+                                {action === 'ignore' && (
+                                    <>
+                                        <button
+                                            onClick={() => handleFollowupChoice('conf_now')}
+                                            className="w-full text-left p-3.5 border border-red-500/20 rounded-xl hover:bg-red-500/10 bg-black/40 transition-all hover:scale-[1.01] active:scale-95 duration-200"
+                                        >
+                                            <p className="font-bold text-red-300">Hold emergency Press Address (¥50,000)</p>
+                                            <p className="text-xs text-gray-400 mt-1">Satisfy and retain commercial sponsors (+5 Rep), but alienates casual fans (-5k fans).</p>
+                                        </button>
+                                        <button
+                                            onClick={() => handleFollowupChoice('wait_out')}
+                                            className="w-full text-left p-3.5 border border-neutral-800 rounded-xl hover:bg-neutral-800/40 bg-black/40 transition-all hover:scale-[1.01] active:scale-95 duration-200"
+                                        >
+                                            <p className="font-bold text-yellow-300">Wait Out and let Contracts Expire (¥0 cost)</p>
+                                            <p className="text-xs text-gray-400 mt-1">Sponsors pull advertising deals immediately, costing the agency -¥100k and -4 Reputation.</p>
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                    {sagaStep === 3 && (
+                        <div className="space-y-4 animate-in fade-in duration-300">
+                            {/* Week 2 outcome result */}
+                            <div className="p-4 bg-emerald-950/40 border border-emerald-500/30 rounded-xl space-y-2">
+                                <h4 className="font-extrabold text-emerald-400 text-lg flex items-center gap-1.5">⚖️ Crisis Campaign Resolution</h4>
+                                <p className="text-sm text-gray-100 leading-relaxed font-medium">
+                                    {followupOutcome}
+                                </p>
+                            </div>
+                            {/* Scrolling Tweets Ticker */}
+                            <div className="space-y-2">
+                                <h5 className="text-xs font-bold text-neutral-400 uppercase tracking-widest">Live Fan Reactions:</h5>
+                                <div className="bg-black/60 rounded-xl p-3 border border-neutral-800 space-y-2 h-36 overflow-hidden relative">
+                                    {visibleTweets.map((tweet) => (
+                                        <div key={tweet.id} className="text-xs p-2 bg-neutral-900/50 rounded border border-neutral-800 animate-in slide-in-from-top-2 duration-300">
+                                            <span className="font-bold text-emerald-300">{tweet.handle}</span>: <span className="text-gray-200 font-medium">{tweet.text}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => {
+                                    setShowModal(null);
+                                    setActiveScandal(null);
+                                }}
+                                className="w-full p-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold tracking-wider text-base transition-all hover:scale-[1.01] active:scale-95 shadow-lg shadow-emerald-950/30"
+                            >
+                                Conclude PR Campaign & Close
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+const WeeklyDilemmaModal = ({
+    activeDilemma,
+    dilemmaResult,
+    handleSelectChoice,
+    handleClose
+}) => {
+    if (!activeDilemma) return null;
+    return (
+        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in">
+            <div className="w-full max-w-xl rounded-2xl bg-gradient-to-br from-indigo-900 to-slate-900 border-2 border-indigo-500/50 shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-5 text-white">
+                
+                {/* Header */}
+                <div className="p-4 bg-indigo-950/60 border-b border-indigo-500/30 flex items-center gap-3">
+                    <Brain className="text-indigo-400 animate-pulse" size={24} />
+                    <h3 className="font-bold text-xl tracking-wide">Weekly Agency Dilemma</h3>
+                </div>
+                <div className="p-6 space-y-4">
+                    {!dilemmaResult ? (
+                        <>
+                            <h4 className="text-2xl font-black text-indigo-300 text-center mb-2 tracking-wide uppercase">{activeDilemma.title}</h4>
+                            <p className="text-base text-gray-100 leading-relaxed bg-black/40 p-4.5 rounded-xl border border-indigo-500/20 italic font-medium">
+                                "{activeDilemma.text}"
+                            </p>
+                            
+                            <h5 className="font-bold text-xs text-gray-400 uppercase tracking-widest text-center mt-5">Choose Your Actions:</h5>
+                            <div className="space-y-3">
+                                {activeDilemma.choices.map((choice, idx) => (
+                                    <button
+                                        key={idx}
+                                        onClick={() => handleSelectChoice(choice)}
+                                        className="w-full text-left p-4 border border-indigo-500/20 rounded-xl hover:bg-indigo-500/20 bg-indigo-950/40 text-white transition-all hover:scale-[1.01] active:scale-95 duration-200 group"
+                                    >
+                                        <p className="font-bold text-indigo-200 group-hover:text-white transition-colors">{choice.text}</p>
+                                        <p className="text-xs text-gray-400 mt-1">{choice.description}</p>
+                                    </button>
+                                ))}
+                            </div>
+                        </>
+                    ) : (
+                        <div className="space-y-4 text-center animate-in fade-in duration-300">
+                            <h4 className="text-2xl font-black text-emerald-400 mb-2 uppercase tracking-wide">Dilemma Resolved</h4>
+                            <div className="p-4 bg-black/45 border border-emerald-500/20 rounded-xl space-y-2">
+                                <p className="text-xs text-indigo-300 font-bold uppercase tracking-wider">Decision Made: "{dilemmaResult.choiceText.split('(')[0].trim()}"</p>
+                                <p className="text-base text-gray-100 font-medium leading-relaxed mt-2.5">
+                                    {dilemmaResult.outcome}
+                                </p>
+                            </div>
+                            <div className="pt-4">
+                                <button
+                                    onClick={handleClose}
+                                    className="px-8 py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-indigo-900/40 hover:scale-105 active:scale-95"
+                                >
+                                    Proceed to Next Week
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
 export default App;

@@ -1,0 +1,1047 @@
+diff --git a/package-lock.json b/package-lock.json
+index 620355c..daadd33 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -83,6 +83,7 @@
+       "integrity": "sha512-e7jT4DxYvIDLk1ZHmU/m/mB19rex9sv0c2ftBtjSBv+kVM/902eh0fINUzD7UwLLNR+jU585GxUJ8/EBfAM5fw==",
+       "dev": true,
+       "license": "MIT",
++      "peer": true,
+       "dependencies": {
+         "@babel/code-frame": "^7.27.1",
+         "@babel/generator": "^7.28.5",
+@@ -1625,6 +1626,7 @@
+       "resolved": "https://registry.npmjs.org/@dnd-kit/core/-/core-6.3.1.tgz",
+       "integrity": "sha512-xkGBRQQab4RLwgXxoqETICr6S5JlogafbhNsidmrkVv2YRs5MLwpjoF2qpiGjQt8S9AoxtIV603s0GIUpY5eYQ==",
+       "license": "MIT",
++      "peer": true,
+       "dependencies": {
+         "@dnd-kit/accessibility": "^3.1.1",
+         "@dnd-kit/utilities": "^3.2.2",
+@@ -2191,6 +2193,7 @@
+       "resolved": "https://registry.npmjs.org/@firebase/app/-/app-0.14.6.tgz",
+       "integrity": "sha512-4uyt8BOrBsSq6i4yiOV/gG6BnnrvTeyymlNcaN/dKvyU1GoolxAafvIvaNP1RCGPlNab3OuE4MKUQuv2lH+PLQ==",
+       "license": "Apache-2.0",
++      "peer": true,
+       "dependencies": {
+         "@firebase/component": "0.7.0",
+         "@firebase/logger": "0.5.0",
+@@ -2257,6 +2260,7 @@
+       "resolved": "https://registry.npmjs.org/@firebase/app-compat/-/app-compat-0.5.6.tgz",
+       "integrity": "sha512-YYGARbutghQY4zZUWMYia0ib0Y/rb52y72/N0z3vglRHL7ii/AaK9SA7S/dzScVOlCdnbHXz+sc5Dq+r8fwFAg==",
+       "license": "Apache-2.0",
++      "peer": true,
+       "dependencies": {
+         "@firebase/app": "0.14.6",
+         "@firebase/component": "0.7.0",
+@@ -2272,7 +2276,8 @@
+       "version": "0.9.3",
+       "resolved": "https://registry.npmjs.org/@firebase/app-types/-/app-types-0.9.3.tgz",
+       "integrity": "sha512-kRVpIl4vVGJ4baogMDINbyrIOtOxqhkZQg4jTq3l8Lw6WSk0xfpEYzezFu+Kl4ve4fbPl79dvwRtaFqAC/ucCw==",
+-      "license": "Apache-2.0"
++      "license": "Apache-2.0",
++      "peer": true
+     },
+     "node_modules/@firebase/auth": {
+       "version": "1.12.0",
+@@ -2723,6 +2728,7 @@
+       "integrity": "sha512-0AZUyYUfpMNcztR5l09izHwXkZpghLgCUaAGjtMwXnCg3bj4ml5VgiwqOMOxJ+Nw4qN/zJAaOQBcJ7KGkWStqQ==",
+       "hasInstallScript": true,
+       "license": "Apache-2.0",
++      "peer": true,
+       "dependencies": {
+         "tslib": "^2.1.0"
+       },
+@@ -3795,6 +3801,7 @@
+       "integrity": "sha512-cisd7gxkzjBKU2GgdYrTdtQx1SORymWyaAFhaxQPK9bYO9ot3Y5OikQRvY0VYQtvwjeQnizCINJAenh/V7MK2w==",
+       "dev": true,
+       "license": "MIT",
++      "peer": true,
+       "dependencies": {
+         "@types/prop-types": "*",
+         "csstype": "^3.2.2"
+@@ -4031,6 +4038,7 @@
+       "integrity": "sha512-4Z+L8I2OqhZV8qA132M4wNL30ypZGYOQVBfMgxDH/K5UX0PNqTu1c6za9ST5r9+tavvHiTWmBnKzpCJ/GlVFtg==",
+       "dev": true,
+       "license": "BSD-2-Clause",
++      "peer": true,
+       "dependencies": {
+         "@typescript-eslint/scope-manager": "7.18.0",
+         "@typescript-eslint/types": "7.18.0",
+@@ -4427,6 +4435,7 @@
+       "integrity": "sha512-NZyJarBfL7nWwIq+FDL6Zp/yHEhePMNnnJ0y3qfieCrmNvYct8uvtiV41UvlSe6apAfk0fY1FbWx+NwfmpvtTg==",
+       "dev": true,
+       "license": "MIT",
++      "peer": true,
+       "bin": {
+         "acorn": "bin/acorn"
+       },
+@@ -4765,6 +4774,7 @@
+         }
+       ],
+       "license": "MIT",
++      "peer": true,
+       "dependencies": {
+         "baseline-browser-mapping": "^2.9.0",
+         "caniuse-lite": "^1.0.30001759",
+@@ -5506,6 +5516,7 @@
+       "deprecated": "This version is no longer supported. Please see https://eslint.org/version-support for other options.",
+       "dev": true,
+       "license": "MIT",
++      "peer": true,
+       "dependencies": {
+         "@eslint-community/eslint-utils": "^4.2.0",
+         "@eslint-community/regexpp": "^4.6.1",
+@@ -7048,6 +7059,7 @@
+       "integrity": "sha512-/imKNG4EbWNrVjoNC/1H5/9GFy+tqjGBHCaSsN+P2RnPqjsLmv6UD3Ej+Kj8nBWaRAwyk7kK5ZUc+OEatnTR3A==",
+       "dev": true,
+       "license": "MIT",
++      "peer": true,
+       "bin": {
+         "jiti": "bin/jiti.js"
+       }
+@@ -7841,6 +7853,7 @@
+         }
+       ],
+       "license": "MIT",
++      "peer": true,
+       "dependencies": {
+         "nanoid": "^3.3.11",
+         "picocolors": "^1.1.1",
+@@ -8077,6 +8090,7 @@
+       "resolved": "https://registry.npmjs.org/react/-/react-19.2.3.tgz",
+       "integrity": "sha512-Ku/hhYbVjOQnXDZFv2+RibmLFGwFdeeKHFcOTlrt7xplBnya5OGn/hIRDsqDiSUcfORsDC7MPxwork8jBwsIWA==",
+       "license": "MIT",
++      "peer": true,
+       "engines": {
+         "node": ">=0.10.0"
+       }
+@@ -8086,6 +8100,7 @@
+       "resolved": "https://registry.npmjs.org/react-dom/-/react-dom-19.2.3.tgz",
+       "integrity": "sha512-yELu4WmLPw5Mr/lmeEpox5rw3RETacE++JgHqQzd2dg+YbJuat3jH4ingc+WPZhxaoFzdv9y33G+F7Nl5O0GBg==",
+       "license": "MIT",
++      "peer": true,
+       "dependencies": {
+         "scheduler": "^0.27.0"
+       },
+@@ -9073,6 +9088,7 @@
+       "integrity": "sha512-t/R3R/n0MSwnnazuPpPNVO60LX0SKL45pyl9YlvxIdkH0Of7D5qM2EVe+yASRIlY5pZ73nclYJfNANGWPwFDZw==",
+       "dev": true,
+       "license": "BSD-2-Clause",
++      "peer": true,
+       "dependencies": {
+         "@jridgewell/source-map": "^0.3.3",
+         "acorn": "^8.15.0",
+@@ -9164,6 +9180,7 @@
+       "integrity": "sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q==",
+       "dev": true,
+       "license": "MIT",
++      "peer": true,
+       "engines": {
+         "node": ">=12"
+       },
+@@ -9340,6 +9357,7 @@
+       "integrity": "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==",
+       "dev": true,
+       "license": "Apache-2.0",
++      "peer": true,
+       "bin": {
+         "tsc": "bin/tsc",
+         "tsserver": "bin/tsserver"
+@@ -9514,6 +9532,7 @@
+       "integrity": "sha512-o5a9xKjbtuhY6Bi5S3+HvbRERmouabWbyUcpXXUA1u+GNUKoROi9byOJ8M0nHbHYHkYICiMlqxkg1KkYmm25Sw==",
+       "dev": true,
+       "license": "MIT",
++      "peer": true,
+       "dependencies": {
+         "esbuild": "^0.21.3",
+         "postcss": "^8.4.43",
+@@ -9919,6 +9938,7 @@
+       "integrity": "sha512-B/gBuNg5SiMTrPkC+A2+cW0RszwxYmn6VYxB/inlBStS5nx6xHIt/ehKRhIMhqusl7a8LjQoZnjCs5vhwxOQ1g==",
+       "dev": true,
+       "license": "MIT",
++      "peer": true,
+       "dependencies": {
+         "fast-deep-equal": "^3.1.3",
+         "fast-uri": "^3.0.1",
+@@ -10019,6 +10039,7 @@
+       "integrity": "sha512-fS6iqSPZDs3dr/y7Od6y5nha8dW1YnbgtsyotCVvoFGKbERG++CVRFv1meyGDE1SNItQA8BrnCw7ScdAhRJ3XQ==",
+       "dev": true,
+       "license": "MIT",
++      "peer": true,
+       "bin": {
+         "rollup": "dist/bin/rollup"
+       },
+diff --git a/src/THE-IDOL-SIMULATOR.tsx b/src/THE-IDOL-SIMULATOR.tsx
+index 9668183..d1425d3 100644
+--- a/src/THE-IDOL-SIMULATOR.tsx
++++ b/src/THE-IDOL-SIMULATOR.tsx
+@@ -24,6 +24,66 @@ import {
+ 
+ import { MerchTab } from './MerchTab';
+ 
++const applyMemberFilter = (member, filterKey, teams = [], sisterGroups = [], pushedMembers = []) => {
++    if (!member) return false;
++    if (filterKey === 'all' || filterKey === 'All') return true;
++
++    if (filterKey === 'pushed') {
++        return pushedMembers.map(String).includes(String(member.rosterId || member.id));
++    }
++
++    if (filterKey.startsWith('team-')) {
++        const teamId = parseInt(filterKey.replace('team-', ''), 10);
++        const team = teams.find(t => t.id === teamId);
++        if (!team) return false;
++        return (team.members || []).map(String).includes(String(member.rosterId || member.id));
++    }
++
++    if (filterKey === 'main') {
++        const groupName = 'main'; // Standard fallback for main group comparison
++        return !member.isSisterMember || 
++               (member.isSister === false) ||
++               (member.kenninGroups || []).includes('main') || 
++               (member.kennin && String(member.kennin.groupId) === 'main') ||
++               (member.homeGroup === 'main');
++    }
++
++    if (filterKey.startsWith('main-gen-')) {
++        const gen = filterKey.replace('main-gen-', '');
++        const isInMain = !member.isSisterMember || 
++                         (member.isSister === false) ||
++                         (member.isSisterMember === false) ||
++                         (member.kenninGroups || []).includes('main') || 
++                         (member.kennin && String(member.kennin.groupId) === 'main') ||
++                         (member.homeGroup === 'main');
++        return isInMain && member.generation === gen;
++    }
++
++    if (filterKey.startsWith('sg-')) {
++        const sgIdStr = filterKey.replace('sg-', '').split('-gen-')[0];
++        const sgId = parseInt(sgIdStr, 10);
++        const sg = sisterGroups.find(g => String(g.id) === String(sgId));
++        const sgName = sg?.name;
++        
++        const isInSG = String(member.groupId) === String(sgId) || 
++                       (sgName && (member.kenninGroups || []).includes(sgName)) ||
++                       (member.kennin && String(member.kennin.groupId) === String(sgId)) ||
++                       (sgName && member.homeGroup === sgName);
++
++        if (filterKey.includes('-gen-')) {
++            const gen = filterKey.split('-gen-')[1];
++            return isInSG && member.generation === gen;
++        }
++        return isInSG;
++    }
++
++    // Fallback for names
++    if (member.displayGroupName === filterKey) return true;
++    if (member.homeGroup === filterKey) return true;
++
++    return false;
++};
++
+ 
+ const App = () => {
+ 
+@@ -240,18 +300,8 @@ const MemberSelectionList = ({ members, selectedIds, toggleMember, disabled = fa
+     const getFilteredMembers = () => {
+         const memberList = members || [];
+         if (activeTab === 'all') return memberList;
+-        if (activeTab === 'main') return memberList.filter(m => !m.isSister || (m.kenninGroups || []).includes('main'));
+-        if (activeTab.startsWith('team-')) {
+-            const teamId = activeTab.split('-')[1];
+-            const team = (teams || []).find(t => String(t.id) === teamId);
+-            const teamMemberIds = (team?.members || []).map(String);
+-            return memberList.filter(m => teamMemberIds.includes(String(m.id)));
+-        }
+-        if (activeTab.startsWith('sg-')) {
+-            const sgId = activeTab.split('-')[1];
+-            return memberList.filter(m => String(m.groupId) === sgId);
+-        }
+-        return [];
++        
++        return memberList.filter(m => applyMemberFilter(m, activeTab, teams, sisterGroups));
+     };
+     
+     const filteredMembers = getFilteredMembers();
+@@ -1845,8 +1895,12 @@ if (targetGroup === 'main') {
+             });
+             selectableMembers = unitMemberIds.map(id => getMemberById(id)).filter(Boolean);
+         } else {
+-            // It's a regular sister group. Find members by their groupId.
+-            selectableMembers = allAvailableForSong.filter(m => String(m.groupId) === String(sg.id));
++            // It's a regular sister group. Find members by their groupId OR Kennin status.
++            selectableMembers = allAvailableForSong.filter(m => 
++                String(m.groupId) === String(sg.id) || 
++                (m.kennin && String(m.kennin.groupId) === String(sg.id)) ||
++                (m.kenninGroups || []).includes(sg.name)
++            );
+         }
+     }
+ }
+@@ -1878,59 +1932,13 @@ const sisterGroupDetails = sisterGroups.map(sg => ({
+ // --- NEW: Logic to filter members based on the detailed dropdown selection ---
+ let filteredMembers = selectableMembers;
+ if (memberFilter !== 'all') {
+-    if (memberFilter === 'main') {
+-        filteredMembers = selectableMembers.filter(m => (!m.isSisterMember || m.homeGroup === 'main'));
+-    } else if (memberFilter.startsWith('main-gen-')) {
+-        const gen = memberFilter.replace('main-gen-', '');
+-        filteredMembers = selectableMembers.filter(m => (!m.isSisterMember || m.homeGroup === 'main') && m.generation === gen);
+-    } else if (memberFilter.startsWith('sg-')) {
+-        if (memberFilter.includes('-gen-')) {
+-            const [sgIdStr, gen] = memberFilter.replace('sg-', '').split('-gen-');
+-            const sgId = parseInt(sgIdStr, 10);
+-            filteredMembers = selectableMembers.filter(m => m.groupId === sgId && m.generation === gen);
+-        } else {
+-            const sgId = parseInt(memberFilter.replace('sg-', ''), 10);
+-            filteredMembers = selectableMembers.filter(m => m.groupId === sgId);
+-        }
+-    }
++    filteredMembers = selectableMembers.filter(m => applyMemberFilter(m, memberFilter, teams, sisterGroups));
+ }
+ 
+     // --- UPDATED Function ---
+     // Define the list of currently visible members based on the filter
+     let visibleRoster = selectableMembers.filter(member => {
+-        if (filterKey === 'All') return true;
+-
+-        if (filterKey.startsWith('team-')) {
+-            const teamId = parseInt(filterKey.replace('team-', ''), 10);
+-            const selectedTeam = teams.find(t => t.id === teamId);
+-            if (!selectedTeam) return false;
+-            // CORRECTED: Check if the member's unique rosterId is in the team's member list.
+-            return (selectedTeam.members || []).map(String).includes(String(member.rosterId));
+-        }
+-
+-            // CORRECTED: This now shows ONLY main group members.
+-            if (filterKey === 'main') {
+-                return !member.isSisterMember;
+-            }
+-
+-        if (filterKey.startsWith('main-gen-')) {
+-            const gen = filterKey.replace('main-gen-', '');
+-            return (!member.isSisterMember || (member.kenninGroups || []).includes(groupName)) && member.generation === gen;
+-        }
+-
+-        if (filterKey.startsWith('sg-')) {
+-            const sgIdStr = filterKey.replace('sg-', '').split('-gen-')[0];
+-            const sgId = parseInt(sgIdStr, 10);
+-            
+-            if (filterKey.includes('-gen-')) {
+-                const gen = filterKey.split('-gen-')[1];
+-                return member.groupId === sgId && member.generation === gen;
+-            } else {
+-                return member.groupId === sgId;
+-            }
+-        }
+-        
+-        return false;
++        return applyMemberFilter(member, filterKey, teams, sisterGroups);
+     });
+ 
+ if (showOnlyUnchosen) {
+@@ -3842,50 +3850,9 @@ const sisterGroupDetails = sisterGroups.map(sg => ({
+ 
+     // --- NEW: Logic to filter members based on the detailed dropdown selection ---
+ let filteredMembers = availableMembers;
+-if (memberFilter !== 'all') {
+-    if (memberFilter.startsWith('team-')) {
+-        const teamId = parseInt(memberFilter.replace('team-', ''), 10);
+-        const selectedTeam = teams.find(t => t.id === teamId);
+-
+-        if (!selectedTeam) {
+-            filteredMembers = [];
+-        } else {
+-            filteredMembers = availableMembers.filter(member => {
+-                // Primary requirement: Member must be in the selected team. (Using String() for type safety)
+-                if (String(member.teamId) !== String(teamId)) {
+-                    return false;
+-                }
+-
+-                // Secondary requirement: Member must belong to the correct group for that team.
+-                const isMainGroupTeam = selectedTeam.groupId === 'main';
+-
+-                if (isMainGroupTeam) {
+-                    // For a main group team, only show main group members.
+-                    return !member.isSisterMember;
+-                } else {
+-                    // For a sister group team, only show members from that specific sister group.
+-                    // Coercing both to String() prevents type-related comparison errors.
+-                    return String(member.groupId) === String(selectedTeam.groupId);
+-                }
+-            });
+-        }
+-} else if (memberFilter === 'main') {
+-    filteredMembers = availableMembers.filter(m => !m.isSisterMember || (m.kenninGroups || []).includes(groupName));
+-}
+-    else if (memberFilter.startsWith('main-gen-')) {
+-        const gen = memberFilter.replace('main-gen-', '');
+-        filteredMembers = availableMembers.filter(m => !m.isSisterMember && m.generation === gen);
+-    } else if (memberFilter.startsWith('sg-')) {
+-        if (memberFilter.includes('-gen-')) {
+-            const [sgIdStr, gen] = memberFilter.replace('sg-', '').split('-gen-');
+-            const sgId = parseInt(sgIdStr, 10);
+-            filteredMembers = availableMembers.filter(m => m.groupId === sgId && m.generation === gen);
+-        } else {
+-            const sgId = parseInt(memberFilter.replace('sg-', ''), 10);
+-            filteredMembers = availableMembers.filter(m => m.groupId === sgId);
+-        }
++    if (memberFilter !== 'all') {
++        filteredMembers = availableMembers.filter(m => applyMemberFilter(m, memberFilter, teams, sisterGroups));
+     }
+-}
+ 
+     // --- SETLIST MANIPULATION ---
+     const addTrackToSetlist = (trackId) => {
+@@ -4274,35 +4241,7 @@ const randomizeSetlist = (count = 20) => {
+     // Corrected filtering logic
+     let filteredMembers = availableMembers;
+     if (memberFilter !== 'all') {
+-        if (memberFilter.startsWith('team-')) {
+-            const teamId = parseInt(memberFilter.replace('team-', ''), 10);
+-            const selectedTeam = teams.find(t => t.id === teamId);
+-            if (selectedTeam) {
+-                filteredMembers = availableMembers.filter(member => {
+-                    if (String(member.teamId) !== String(teamId)) return false;
+-                    const isMainGroupTeam = selectedTeam.groupId === 'main';
+-                    if (isMainGroupTeam) return !member.isSisterMember;
+-                    return String(member.groupId) === String(selectedTeam.groupId);
+-                });
+-            } else {
+-                filteredMembers = [];
+-            }
+-} else if (memberFilter === 'main') {
+-    // Show main group members AND sister group members with a concurrent position
+-    filteredMembers = availableMembers.filter(m => !m.isSisterMember || (m.kenninGroups || []).includes(groupName));
+-}
+-        else if (memberFilter.startsWith('main-gen-')) {
+-            const gen = memberFilter.replace('main-gen-', '');
+-            filteredMembers = availableMembers.filter(m => !m.isSisterMember && m.generation === gen);
+-        } else if (memberFilter.startsWith('sg-')) {
+-            if (memberFilter.includes('-gen-')) {
+-                const [sgIdStr, gen] = memberFilter.replace('sg-', '').split('-gen-');
+-                filteredMembers = availableMembers.filter(m => String(m.groupId) === sgIdStr && m.generation === gen);
+-            } else {
+-                const sgId = memberFilter.replace('sg-', '');
+-                filteredMembers = availableMembers.filter(m => String(m.groupId) === sgId);
+-            }
+-        }
++        filteredMembers = availableMembers.filter(m => applyMemberFilter(m, memberFilter, teams, sisterGroups));
+     }
+ 
+     // --- MANIPULATION & CONFIRMATION ---
+@@ -7182,21 +7121,7 @@ const handleConfirmMove = () => {
+         // --- NEW: Logic to filter members based on the dropdown selection ---
+         let filteredMembers = availableMembers;
+         if (memberFilter !== 'all') {
+-            if (memberFilter === 'main') {
+-                filteredMembers = availableMembers.filter(m => !m.isSisterMember);
+-            } else if (memberFilter.startsWith('main-gen-')) {
+-                const gen = memberFilter.replace('main-gen-', '');
+-                filteredMembers = availableMembers.filter(m => !m.isSisterMember && m.generation === gen);
+-            } else if (memberFilter.startsWith('sg-')) {
+-                if (memberFilter.includes('-gen-')) {
+-                    const [sgIdStr, gen] = memberFilter.replace('sg-', '').split('-gen-');
+-                    const sgId = parseInt(sgIdStr, 10);
+-                    filteredMembers = availableMembers.filter(m => m.groupId === sgId && m.generation === gen);
+-                } else {
+-                    const sgId = parseInt(memberFilter.replace('sg-', ''), 10);
+-                    filteredMembers = availableMembers.filter(m => m.groupId === sgId);
+-                }
+-            }
++            filteredMembers = availableMembers.filter(m => applyMemberFilter(m, memberFilter, teams, sisterGroups));
+         }
+   
+         // --- MODIFIED: selectAll and deselectAll now use the 'filteredMembers' list ---
+@@ -8945,25 +8870,7 @@ const CreateVarietyShowModal = () => {
+ 
+     let filteredMembers = availableMembers;
+     if (memberFilter !== 'all') {
+-        if (memberFilter.startsWith('team-')) {
+-            const teamId = parseInt(memberFilter.replace('team-', ''), 10);
+-            const team = teams.find(t => t.id === teamId);
+-            const teamMemberIds = new Set((team?.members || []).map(String));
+-            filteredMembers = availableMembers.filter(member => teamMemberIds.has(String(member.rosterId || member.id)));
+-        } else if (memberFilter === 'main') {
+-            filteredMembers = availableMembers.filter(m => !m.isSisterMember || (m.kenninGroups || []).includes(groupName));
+-        } else if (memberFilter.startsWith('main-gen-')) {
+-            const gen = memberFilter.replace('main-gen-', '');
+-            filteredMembers = availableMembers.filter(m => !m.isSisterMember && m.generation === gen);
+-        } else if (memberFilter.startsWith('sg-')) {
+-            if (memberFilter.includes('-gen-')) {
+-                const [sgIdStr, gen] = memberFilter.replace('sg-', '').split('-gen-');
+-                filteredMembers = availableMembers.filter(m => String(m.groupId) === sgIdStr && m.generation === gen);
+-            } else {
+-                const sgId = memberFilter.replace('sg-', '');
+-                filteredMembers = availableMembers.filter(m => String(m.groupId) === sgId);
+-            }
+-        }
++        filteredMembers = availableMembers.filter(m => applyMemberFilter(m, memberFilter, teams, sisterGroups));
+     }
+ 
+     const toggleMember = (id) => {
+@@ -9130,26 +9037,7 @@ const FilmProductionModal = () => {
+     }));
+     let filteredMembers = availableMembers.filter(m => !allCastIds.has(m.rosterId));
+     if (memberFilter !== 'all') {
+-        if (memberFilter.startsWith('team-')) {
+-            const teamId = parseInt(memberFilter.replace('team-', ''), 10);
+-            const team = teams.find(t => t.id === teamId);
+-            const teamMemberIds = new Set((team?.members || []).map(String));
+-            filteredMembers = filteredMembers.filter(m => teamMemberIds.has(m.rosterId));
+-        } else if (memberFilter === 'main') {
+-            filteredMembers = filteredMembers.filter(m => !m.isSisterMember || (m.kenninGroups || []).includes(groupName));
+-        } else if (memberFilter.startsWith('main-gen-')) {
+-            const gen = memberFilter.replace('main-gen-', '');
+-            filteredMembers = filteredMembers.filter(m => !m.isSisterMember && m.generation === gen);
+-        } else if (memberFilter.startsWith('sg-')) {
+-            if (memberFilter.includes('-gen-')) {
+-                const [sgIdStr, gen] = memberFilter.replace('sg-', '').split('-gen-');
+-                filteredMembers = filteredMembers.filter(m => String(m.groupId) === sgIdStr && m.generation === gen);
+-            } else {
+-                const sgId = memberFilter.replace('sg-', '');
+-                filteredMembers = filteredMembers.filter(m => String(m.groupId) === sgId);
+-            }
+-        }
+-
++        filteredMembers = filteredMembers.filter(m => applyMemberFilter(m, memberFilter, teams, sisterGroups));
+     }
+     filteredMembers.sort((a, b) => getTotalFansForMember(b) - getTotalFansForMember(a));
+ 
+@@ -9502,28 +9390,7 @@ const FilmDetailsModal = ({ viewedFilm, setViewedFilm, setShowModal, getMemberBy
+         let filteredEligibleMembers = eligibleMembers;
+     
+         if (memberFilter !== 'all') {
+-            if (memberFilter === 'pushed') {
+-                const pushedIds = new Set(pushedMembers.map(String));
+-                filteredEligibleMembers = filteredEligibleMembers.filter(m => pushedIds.has(String(m.rosterId)));
+-            } else if (memberFilter.startsWith('team-')) {
+-                const teamId = parseInt(memberFilter.replace('team-', ''), 10);
+-                const team = teams.find(t => t.id === teamId);
+-                const teamMemberIds = new Set((team?.members || []).map(String));
+-                filteredEligibleMembers = filteredEligibleMembers.filter(m => teamMemberIds.has(String(m.rosterId || m.id)));
+-            } else if (memberFilter === 'main') {
+-                filteredEligibleMembers = filteredEligibleMembers.filter(m => !m.isSisterMember || (m.kenninGroups || []).includes(groupName));
+-            } else if (memberFilter.startsWith('main-gen-')) {
+-                const gen = memberFilter.replace('main-gen-', '');
+-                filteredEligibleMembers = filteredEligibleMembers.filter(m => !m.isSisterMember && m.generation === gen);
+-            } else if (memberFilter.startsWith('sg-')) {
+-                if (memberFilter.includes('-gen-')) {
+-                    const [sgIdStr, gen] = memberFilter.replace('sg-', '').split('-gen-');
+-                    filteredEligibleMembers = filteredEligibleMembers.filter(m => String(m.groupId) === sgIdStr && m.generation === gen);
+-                } else {
+-                    const sgId = memberFilter.replace('sg-', '');
+-                    filteredEligibleMembers = filteredEligibleMembers.filter(m => String(m.groupId) === sgId);
+-                }
+-            }
++            filteredEligibleMembers = eligibleMembers.filter(m => applyMemberFilter(m, memberFilter, teams, sisterGroups, pushedMembers));
+         }
+     
+         if (localMemberSearch.trim()) {
+@@ -10091,30 +9958,7 @@ const KouhakuInvitationModal = () => {
+ 
+         let filteredMembers = availableMembers;
+         if (memberFilter !== 'all') {
+-            if (memberFilter.startsWith('team-')) {
+-                const teamId = parseInt(memberFilter.replace('team-', ''), 10);
+-                const selectedTeam = teams.find(t => t.id === teamId);
+-                if (selectedTeam) {
+-                    const teamMemberIds = new Set(selectedTeam.members.map(String));
+-                    filteredMembers = availableMembers.filter(member => teamMemberIds.has(String(member.rosterId || member.id)));
+-                } else {
+-                    filteredMembers = [];
+-                }
+-            } else if (memberFilter === 'main') {
+-                filteredMembers = availableMembers.filter(m => !m.isSisterMember || (m.kenninGroups || []).includes(groupName));
+-            }
+-            else if (memberFilter.startsWith('main-gen-')) {
+-                const gen = memberFilter.replace('main-gen-', '');
+-                filteredMembers = availableMembers.filter(m => !m.isSisterMember && m.generation === gen);
+-            } else if (memberFilter.startsWith('sg-')) {
+-                if (memberFilter.includes('-gen-')) {
+-                    const [sgIdStr, gen] = memberFilter.replace('sg-', '').split('-gen-');
+-                    filteredMembers = availableMembers.filter(m => String(m.groupId) === sgIdStr && m.generation === gen);
+-                } else {
+-                    const sgId = memberFilter.replace('sg-', '');
+-                    filteredMembers = availableMembers.filter(m => String(m.groupId) === sgId);
+-                }
+-            }
++            filteredMembers = availableMembers.filter(m => applyMemberFilter(m, memberFilter, teams, sisterGroups));
+         }
+ 
+         // --- HANDLERS ---
+@@ -10327,26 +10171,7 @@ const FestivalPerformerSelectionModal = () => {
+ 
+     let filteredMembers = availableMembers;
+     if (memberFilter !== 'all') {
+-        if (memberFilter.startsWith('team-')) {
+-            const teamId = parseInt(memberFilter.replace('team-', ''), 10);
+-            const team = teams.find(t => t.id === teamId);
+-            const teamMemberIds = new Set((team?.members || []).map(String));
+-            filteredMembers = availableMembers.filter(m => teamMemberIds.has(String(m.rosterId || m.id)));
+-        } else if (memberFilter === 'main') {
+-            filteredMembers = availableMembers.filter(m => !m.isSisterMember || (m.kenninGroups || []).includes(groupName));
+-        } else if (memberFilter.startsWith('main-gen-')) {
+-            const gen = memberFilter.replace('main-gen-', '');
+-            filteredMembers = availableMembers.filter(m => !m.isSisterMember && m.generation === gen);
+-        } else if (memberFilter.startsWith('sg-')) {
+-            if (memberFilter.includes('-gen-')) {
+-                const [sgIdStr, gen] = memberFilter.replace('sg-', '').split('-gen-');
+-                const sgId = parseInt(sgIdStr, 10);
+-                filteredMembers = availableMembers.filter(m => m.groupId === sgId && m.generation === gen);
+-            } else {
+-                const sgId = parseInt(memberFilter.replace('sg-', ''), 10);
+-                filteredMembers = availableMembers.filter(m => m.groupId === sgId);
+-            }
+-        }
++        filteredMembers = availableMembers.filter(m => applyMemberFilter(m, memberFilter, teams, sisterGroups));
+     }
+ 
+ filteredMembers.sort((a, b) => getTotalFansForMember(b) - getTotalFansForMember(a));
+@@ -12035,31 +11860,7 @@ if (!gameStarted) {
+                                         // 2. Filter Members
+                                         let filteredMembers = allMembers;
+                                         if (memberFilter !== 'all') {
+-                                            if (memberFilter.startsWith('team-')) {
+-                                                const teamId = parseInt(memberFilter.replace('team-', ''), 10);
+-                                                const team = teams.find(t => t.id === teamId);
+-                                                const teamMemberIds = new Set((team?.members || []).map(String));
+-                                                filteredMembers = allMembers.filter(m => teamMemberIds.has(String(m.rosterId || m.id)));
+-                                            } else if (memberFilter === 'main') {
+-                                                filteredMembers = allMembers.filter(m => !m.isSisterMember);
+-                                            } else if (memberFilter.startsWith('main-gen-')) {
+-                                                const gen = memberFilter.replace('main-gen-', '');
+-                                                filteredMembers = allMembers.filter(m => !m.isSisterMember && m.generation === gen);
+-                                            } else if (memberFilter.startsWith('sg-')) {
+-                                                if (memberFilter.includes('-gen-')) {
+-                                                    const [sgIdStr, gen] = memberFilter.replace('sg-', '').split('-gen-');
+-                                                    const sgId = parseInt(sgIdStr, 10);
+-                                                    filteredMembers = allMembers.filter(m => m.groupId === sgId && m.generation === gen);
+-                                                } else {
+-                                                    // This now correctly finds the sister group by its string ID from the dropdown
+-                                                    const sg = sisterGroups.find(g => `sg-${g.id}` === memberFilter);
+-                                                    if (sg) {
+-                                                        filteredMembers = allMembers.filter(m => String(m.groupId) === String(sg.id));
+-                                                    }
+-                                                }
+-                                            } else { // Fallback for filtering by a sister group's name
+-                                                filteredMembers = allMembers.filter(m => m.isSisterMember && m.displayGroupName === memberFilter);
+-                                            }
++                                            filteredMembers = allMembers.filter(m => applyMemberFilter(m, memberFilter, teams, sisterGroups, pushedMembers));
+                                         }
+ 
+                                 // Apply search filter
+@@ -12249,26 +12050,7 @@ if (!gameStarted) {
+ 
+     // Filter logic
+     if (trainingFilter !== 'all') {
+-        if (trainingFilter.startsWith('team-')) {
+-            const teamId = parseInt(trainingFilter.replace('team-', ''), 10);
+-            const team = teams.find(t => t.id === teamId);
+-            const teamMemberIds = new Set((team?.members || []).map(String));
+-            filteredTrainingMembers = allAvailableMembers.filter(m => teamMemberIds.has(String(m.rosterId || m.id)));
+-        } else if (trainingFilter === 'main') {
+-            filteredTrainingMembers = allAvailableMembers.filter(m => !m.isSisterMember);
+-        } else if (trainingFilter.startsWith('main-gen-')) {
+-            const gen = trainingFilter.replace('main-gen-', '');
+-            filteredTrainingMembers = allAvailableMembers.filter(m => !m.isSisterMember && m.generation === gen);
+-        } else if (trainingFilter.startsWith('sg-')) {
+-             if (trainingFilter.includes('-gen-')) {
+-                const [sgIdStr, gen] = trainingFilter.replace('sg-', '').split('-gen-');
+-                const sgId = parseInt(sgIdStr, 10);
+-                filteredTrainingMembers = allAvailableMembers.filter(m => m.groupId === sgId && m.generation === gen);
+-            } else {
+-                const sgId = parseInt(trainingFilter.replace('sg-', ''), 10);
+-                filteredTrainingMembers = allAvailableMembers.filter(m => m.groupId === sgId);
+-            }
+-        }
++        filteredTrainingMembers = allAvailableMembers.filter(m => applyMemberFilter(m, trainingFilter, teams, sisterGroups));
+     }
+ 
+     return (
+@@ -12745,30 +12527,8 @@ if (!gameStarted) {
+                   // 1. Create the filtered and sorted roster
+                   let filteredPushRoster = getMainGroupRoster();
+ 
+-                  if (pushMemberFilter !== 'all') {
+-                      if (pushMemberFilter.startsWith('team-')) {
+-                          const teamId = parseInt(pushMemberFilter.replace('team-', ''), 10);
+-                          const team = teams.find(t => t.id === teamId);
+-                          const teamMemberIds = new Set((team?.members || []).map(String));
+-                          filteredPushRoster = filteredPushRoster.filter(m => teamMemberIds.has(String(m.rosterId || m.id)));
+-                      } else if (pushMemberFilter === 'main') {
+-                          filteredPushRoster = filteredPushRoster.filter(m => !m.isSisterMember);
+-                      } else if (pushMemberFilter.startsWith('main-gen-')) {
+-                          const gen = pushMemberFilter.replace('main-gen-', '');
+-                          filteredPushRoster = filteredPushRoster.filter(m => !m.isSisterMember && m.generation === gen);
+-                      } else if (pushMemberFilter.startsWith('sg-')) {
+-                           if (pushMemberFilter.includes('-gen-')) {
+-                              const [sgIdStr, gen] = pushMemberFilter.replace('sg-', '').split('-gen-');
+-                              filteredPushRoster = filteredPushRoster.filter(m => String(m.groupId) === sgIdStr && m.generation === gen);
+-                           } else {
+-                              const sg = sisterGroups.find(g => `sg-${g.id}` === pushMemberFilter);
+-                              if (sg) {
+-                                  filteredPushRoster = filteredPushRoster.filter(m => String(m.groupId) === String(sg.id));
+-                              }
+-                           }
+-                      } else { // Fallback for filtering by sister group name
+-                          filteredPushRoster = filteredPushRoster.filter(m => m.isSisterMember && m.displayGroupName === pushMemberFilter);
+-                      }
++                                    if (pushMemberFilter !== 'all') {
++                      filteredPushRoster = filteredPushRoster.filter(m => applyMemberFilter(m, pushMemberFilter, teams, sisterGroups, pushedMembers));
+                   }
+                   
+                   // 2. Sort the filtered roster by average skill
+diff --git a/src/hooks/useIdolManager.tsx b/src/hooks/useIdolManager.tsx
+index fc12288..b368a4f 100644
+--- a/src/hooks/useIdolManager.tsx
++++ b/src/hooks/useIdolManager.tsx
+@@ -2579,66 +2579,65 @@ const [pendingMerch, setPendingMerch] = useState([]);
+                 electionVotePool,
+                 isCampaignActive,
+                 campaignEndWeek,
+-                lastElectionResult: JSON.stringify(lastElectionResult),
+-                lastJankenResult: JSON.stringify(lastJankenResult),
+-                members: JSON.stringify(members),
++                lastElectionResult,
++                lastJankenResult,
++                members,
+                 totalFans,
+-                songs: JSON.stringify(songs),
+-                teams: JSON.stringify(teams),
+-                allSetlists: JSON.stringify(allSetlists),
+-                theaters: JSON.stringify(theaters),
+-                buildings: JSON.stringify(buildings),
+-                sisterGroups: JSON.stringify(sisterGroups),
+-                rivalGroups: JSON.stringify(rivalGroups),
+-                survivalShow: JSON.stringify(survivalShow),
+-                survivalShowHistory: JSON.stringify(survivalShowHistory),
+-                activeChart: JSON.stringify(activeChart),
+-                achievements: JSON.stringify(achievements),
+-                hallOfFame: JSON.stringify(hallOfFame),
+-                events: JSON.stringify(events),
+-                sponsorships: JSON.stringify(sponsorships),
++                songs,
++                teams,
++                allSetlists,
++                theaters,
++                buildings,
++                sisterGroups,
++                rivalGroups,
++                survivalShow,
++                survivalShowHistory,
++                activeChart,
++                achievements,
++                hallOfFame,
++                events,
++                sponsorships,
+                 difficulty,
+-                electionHistory: JSON.stringify(electionHistory),
+-                jankenHistory: JSON.stringify(jankenHistory),
+-                gameHistory: JSON.stringify(gameHistory),
++                electionHistory,
++                jankenHistory,
++                gameHistory,
+                 groupReputation,
+                 kouhakuInvitationAccepted,
+-                kouhakuHistory: JSON.stringify(kouhakuHistory),
++                kouhakuHistory,
+                 kouhakuInvitationOffered,
+-                kouhakuPrep: JSON.stringify(kouhakuPrep),
+-                availableFestivals: JSON.stringify(availableFestivals),
+-                timestamp: Date.now(),                
+-                requestHourStatus: JSON.stringify(requestHourStatus),
++                kouhakuPrep,
++                availableFestivals,
++                requestHourStatus,
+                 votingTickets,
+-                requestHourHistory: JSON.stringify(requestHourHistory),
+-                lastRequestHourResult: JSON.stringify(lastRequestHourResult),
+-                onlineStore: JSON.stringify(onlineStore),
+-                staff: JSON.stringify(staff),
+-                internationalMarkets: JSON.stringify(internationalMarkets),
+-                warehouse: JSON.stringify(warehouse),
+-                pendingMerch: JSON.stringify(pendingMerch),
+-                outfits: JSON.stringify(outfits),
+-                pushedMembers: JSON.stringify(pushedMembers.map(String)),
+-                tours: JSON.stringify(tours),
+-                activeTour: JSON.stringify(activeTour),
+-                musicVideos: JSON.stringify(musicVideos),
+-                varietyShows: JSON.stringify(varietyShows),
+-                varietyStudio: JSON.stringify(varietyStudio),
+-                filmProjects: JSON.stringify(filmProjects),
+-                photoBooks: JSON.stringify(photoBooks),
+-                documentaries: JSON.stringify(documentaries),
+-                collaborations: JSON.stringify(collaborations),
+-                exchangeStudents: JSON.stringify(exchangeStudents),
+-                scandals: JSON.stringify(scandals),
+-                statistics: JSON.stringify(statistics),
+-                filmStudio: JSON.stringify(filmStudio),
+-                merchInventory: JSON.stringify(merchInventory),
+-                activeTrainingCamp: JSON.stringify(activeTrainingCamp),
++                requestHourHistory,
++                lastRequestHourResult,
++                onlineStore,
++                staff,
++                internationalMarkets,
++                warehouse,
++                pendingMerch,
++                outfits,
++                pushedMembers: pushedMembers.map(String),
++                tours,
++                activeTour,
++                musicVideos,
++                varietyShows,
++                varietyStudio,
++                filmProjects,
++                photoBooks,
++                documentaries,
++                collaborations,
++                exchangeStudents,
++                scandals,
++                statistics,
++                filmStudio,
++                merchInventory,
++                activeTrainingCamp,
+                 username: gameUsername,
+-                venues: JSON.stringify(venues),
+-                performanceHistory: JSON.stringify(performanceHistory),
+-                scheduledSingles: JSON.stringify(scheduledSingles),
+-                groupRoles: JSON.stringify(groupRoles),
++                venues,
++                performanceHistory,
++                scheduledSingles,
++                groupRoles,
+                 timestamp: Date.now(),
+             };
+ 
+@@ -2670,12 +2669,30 @@ const [pendingMerch, setPendingMerch] = useState([]);
+             return;
+         }
+         try {
+-            const data = JSON.parse(jsonData);
++            const rawData = JSON.parse(jsonData);
++            
++            const safeParse = (val, defaultVal) => {
++                if (val === undefined || val === null) return defaultVal;
++                if (typeof val === 'string') {
++                    try {
++                        const parsed = JSON.parse(val);
++                        return parsed !== undefined ? parsed : defaultVal;
++                    } catch (e) {
++                        return defaultVal;
++                    }
++                }
++                return val !== undefined ? val : defaultVal;
++            };
++
++            const data = {};
++            for (const key in rawData) {
++                data[key] = safeParse(rawData[key], rawData[key]);
++            }
+             
+             setGroupName(data.groupName || "");
+             setMoney(data.money || 0);
+             setWeek(data.week || 1);
+-            const loadedMembers = JSON.parse(data.members || "[]").map(rawMember => {
++            const loadedMembers = (data.members || []).map(rawMember => {
+                 const member = { ...rawMember };
+                 if (member.relationships && !member.chemistry) {
+                     member.chemistry = {};
+@@ -2702,29 +2719,29 @@ const [pendingMerch, setPendingMerch] = useState([]);
+             });
+             setMembers(loadedMembers);
+             setTotalFans(data.totalFans || 0);
+-            setOnlineStore(JSON.parse(data.onlineStore || '{"level":0}'));
+-            setStaff(JSON.parse(data.staff || '{"merchManager":0}'));
+-            setWarehouse(JSON.parse(data.warehouse || '{"level":1}'));
+-            setPendingMerch(JSON.parse(data.pendingMerch || '[]'));
++            setOnlineStore(data.onlineStore || {level:0});
++            setStaff(data.staff || {merchManager:0});
++            setWarehouse(data.warehouse || {level:1});
++            setPendingMerch(data.pendingMerch || []);
+             setElectionVotePool(data.electionVotePool || 0);
+             setIsCampaignActive(data.isCampaignActive || false);
+             setCampaignEndWeek(data.campaignEndWeek || 0);
+-            setLastElectionResult(JSON.parse(data.lastElectionResult || "null"));
++            setLastElectionResult(data.lastElectionResult || null);
+ 
+-            const loadedSongs = JSON.parse(data.songs || "[]").map(song => ({
++            const loadedSongs = (data.songs || []).map(song => ({
+                 ...song,
+                 baseSalesPotential: song.baseSalesPotential || 0,
+                 weeklySales: song.weeklySales || [],
+                 chartWeeksLeft: song.chartWeeksLeft ?? 0,
+             }));
+             setSongs(loadedSongs);
+-            setTeams(JSON.parse(data.teams || "[]"));
+-            setTheaters(JSON.parse(data.theaters || "[]"));
++            setTeams(data.teams || []);
++            setTheaters(data.theaters || []);
+ 
+-            const loadedBuildings = JSON.parse(data.buildings || "{}");
++            const loadedBuildings = data.buildings || {};
+             if (loadedBuildings.hasOwnProperty('theater')) {
+                 if (loadedBuildings.theater === true) {
+-                    if (!data.theaters || JSON.parse(data.theaters).length === 0) {
++                    if (!data.theaters || data.theaters.length === 0) {
+                         setTheaters([{
+                             owner: 'main',
+                             level: 1,
+@@ -2744,7 +2761,7 @@ const [pendingMerch, setPendingMerch] = useState([]);
+                 };
+                 setBuildings({ practiceRooms: newPracticeRooms });
+             }
+-            const loadedSisterGroups = JSON.parse(data.sisterGroups || "[]").map(sg => {
++            const loadedSisterGroups = (data.sisterGroups || []).map(sg => {
+                 let migratedMembers = sg.members || [];
+                 if (sg.members) {
+                     migratedMembers = sg.members.map(rawMember => {
+@@ -2789,66 +2806,65 @@ const [pendingMerch, setPendingMerch] = useState([]);
+             });
+             setSisterGroups(loadedSisterGroups);
+ 
+-            setRivalGroups(JSON.parse(data.rivalGroups || "[]"));
+-            setActiveChart(JSON.parse(data.activeChart || "null"));
+-            setExchangeStudents(JSON.parse(data.exchangeStudents || "null"));
+-            setAchievements(JSON.parse(data.achievements || "[]"));
+-            setHallOfFame(JSON.parse(data.hallOfFame || "[]"));
+-            setSurvivalShow(JSON.parse(data.survivalShow || "null"));
+-            setSurvivalShowHistory(JSON.parse(data.survivalShowHistory || "[]"));
+-            setJankenTournament(JSON.parse(data.jankenTournament || "null"));
+-            setLastJankenResult(JSON.parse(data.lastJankenResult || "null"));
+-            setLastElectionResult(JSON.parse(data.lastElectionResult || "null"));
+-            setElectionHistory(JSON.parse(data.electionHistory || "[]"));
+-            setJankenHistory(JSON.parse(data.jankenHistory || "[]"));
+-            setGameHistory(JSON.parse(data.gameHistory || "[]"));
++            setRivalGroups(data.rivalGroups || []);
++            setActiveChart(data.activeChart || null);
++            setExchangeStudents(data.exchangeStudents || []);
++            setAchievements(data.achievements || []);
++            setHallOfFame(data.hallOfFame || []);
++            setSurvivalShow(data.survivalShow || null);
++            setSurvivalShowHistory(data.survivalShowHistory || []);
++            setJankenTournament(data.jankenTournament || null);
++            setLastJankenResult(data.lastJankenResult || null);
++            setLastElectionResult(data.lastElectionResult || null);
++            setElectionHistory(data.electionHistory || []);
++            setJankenHistory(data.jankenHistory || []);
++            setGameHistory(data.gameHistory || []);
+             setGroupReputation(data.groupReputation || 0);
+             setKouhakuInvitationAccepted(data.kouhakuInvitationAccepted || false);
+-            setKouhakuHistory(JSON.parse(data.kouhakuHistory || "[]"));
++            setKouhakuHistory(data.kouhakuHistory || []);
+             setKouhakuInvitationOffered(data.kouhakuInvitationOffered || false);
+-            setKouhakuPrep(JSON.parse(data.kouhakuPrep || "null"));
+-            setAvailableFestivals(JSON.parse(data.availableFestivals || "[]"));
++            setKouhakuPrep(data.kouhakuPrep || null);
++            setAvailableFestivals(data.availableFestivals || []);
+             setGameStarted(true);
+-            setRequestHourStatus(JSON.parse(data.requestHourStatus || "null"));
++            setRequestHourStatus(data.requestHourStatus || null);
+             setVotingTickets(data.votingTickets || 0);
+-            setRequestHourHistory(JSON.parse(data.requestHourHistory || "[]"));
+-            setLastRequestHourResult(JSON.parse(data.lastRequestHourResult || "null"));
+-            setFilmProjects(JSON.parse(data.filmProjects || "[]"));
+-            setEvents(JSON.parse(data.events || "[]"));
+-            setSponsorships(JSON.parse(data.sponsorships || "[]"));
++            setRequestHourHistory(data.requestHourHistory || []);
++            setLastRequestHourResult(data.lastRequestHourResult || null);
++            setFilmProjects(data.filmProjects || []);
++            setEvents(data.events || []);
++            setSponsorships(data.sponsorships || []);
+             setDifficulty(data.difficulty || "normal");
+-            setInternationalMarkets(JSON.parse(data.internationalMarkets || "{}"));
+-            setOutfits(JSON.parse(data.outfits || "[]"));
+-            setTours(JSON.parse(data.tours || "[]"));
+-            setActiveTour(JSON.parse(data.activeTour || "null"));
+-            setPushedMembers(JSON.parse(data.pushedMembers || "[]"));
+-            setMusicVideos(JSON.parse(data.musicVideos || "[]"));
+-             const loadedShows = JSON.parse(data.varietyShows || "[]").map(show => ({
++            setInternationalMarkets(data.internationalMarkets || {});
++            setOutfits(data.outfits || []);
++            setTours(data.tours || []);
++            setActiveTour(data.activeTour || null);
++            setPushedMembers(data.pushedMembers || []);
++            setMusicVideos(data.musicVideos || []);
++             const loadedShows = (data.varietyShows || []).map(show => ({
+                 ...show,
+                 seasonDuration: show.seasonDuration || 12,
+                 weeksAired: show.weeksAired || 0,
+                 isActive: show.isActive === undefined ? true : show.isActive
+             }));
+             setVarietyShows(loadedShows);
+-            setVarietyStudio(JSON.parse(data.varietyStudio || '{"level":0}'));
+-            setFilmStudio(JSON.parse(data.filmStudio || '{"level":0}'));
+-            setPhotoBooks(JSON.parse(data.photoBooks || "[]"));
+-            setDocumentaries(JSON.parse(data.documentaries || "[]"));
+-            setCollaborations(JSON.parse(data.collaborations || "[]"));
+-            setScandals(JSON.parse(data.scandals || "[]"));
+-            setStatistics(JSON.parse(data.statistics || "{}"));
+-            setMerchInventory(JSON.parse(data.merchInventory || "{}"));
+-            setActiveTrainingCamp(JSON.parse(data.activeTrainingCamp || "null"));
+-            setPerformanceHistory(JSON.parse(data.performanceHistory || "[]"));
+-            setScheduledSingles(JSON.parse(data.scheduledSingles || "[]"));
+-            let loadedRoles = JSON.parse(data.groupRoles || '{}');
++            setVarietyStudio(data.varietyStudio || {level:0});
++            setFilmStudio(data.filmStudio || {level:0});
++            setPhotoBooks(data.photoBooks || []);
++            setDocumentaries(data.documentaries || []);
++            setCollaborations(data.collaborations || []);
++            setScandals(data.scandals || []);
++            setStatistics(data.statistics || {});
++            setMerchInventory(data.merchInventory || {});
++            setActiveTrainingCamp(data.activeTrainingCamp || null);
++            setPerformanceHistory(data.performanceHistory || []);
++            setScheduledSingles(data.scheduledSingles || []);
++            let loadedRoles = data.groupRoles || {};
+             // Compatibility for old saves
+             if (loadedRoles && loadedRoles.hasOwnProperty('captain')) {
+                 loadedRoles = { 'main': loadedRoles.captain };
+             }
+             setGroupRoles(loadedRoles);
+ 
+-            setGameStarted(true);
+             setMessage(`๐ฎ Game loaded successfully from file!`);
+             setShowModal(null);
+             setUsername(data.username || 'Player');
+@@ -11488,7 +11504,7 @@ if (unitVote && unitVote.isActive && newWeek >= unitVote.endWeek) {
+ 
+             setActiveScandal({ member: target, scandal: scandal });
+             setShowModal('scandalDecision');
+-            return; // Stop the rest of nextWeek to focus on the decision
++            // FIX: Removed early return to prevent game loop exploit
+         }
+ 
+         // --- 3. PROCESS SCHEDULED WEEKLY EVENTS ---
+@@ -11629,9 +11645,7 @@ if (unitVote && unitVote.isActive && newWeek >= unitVote.endWeek) {
+ 
+                 // 4. Clean up all of this week's events and potentially pause the game loop.
+                 setScheduledEvents(prev => prev.filter(e => e.week !== newWeek));
+-                if (shouldReturnAfterEvent && !graduationOccurredThisWeek) {
+-                    return;
+-                }
++                // FIX: Removed early return
+             }
+ 
+                 if (isCampaignActive && newWeek >= campaignEndWeek) {
+@@ -12340,7 +12354,9 @@ if (graduatingExchanges.length > 0) {
+             }
+         }
+         
++        
+         const allMembersForWeeklyUpdate = [...membersForUpdate.map(m => ({ ...m, rosterId: String(m.id) })), ...sisterGroupsForUpdate.flatMap(sg => (sg.members || []).map(m => ({ ...m, rosterId: `sg-${sg.id}-${m.id}` })))];
++        const memberLookupMap = new Map(allMembersForWeeklyUpdate.map(m => [m.rosterId, m]));
+         
+ const groupBonuses = {};
+ for (const [groupId, captainId] of Object.entries(groupRoles)) {
+@@ -12705,7 +12721,7 @@ otherMemberIds.forEach(otherId => {
+         member.chemistry[otherId] = (Math.random() * 20) - 10; // -10 to +10
+     }
+ 
+-    const otherMember = allMembersForWeeklyUpdate.find(m => m.rosterId === otherId);
++    const otherMember = memberLookupMap.get(otherId);
+     if (!otherMember) return;
+ 
+     let change = 0;
