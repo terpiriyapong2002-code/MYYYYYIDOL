@@ -1615,6 +1615,95 @@ const App = () => {
         const [genFilter, setGenFilter] = useState('All');
         const [customUnitName, setCustomUnitName] = useState('');
         const [customUnitMembers, setCustomUnitMembers] = useState([]);
+
+        const isElectionWinner = (memberId) => {
+            const memberIdStr = String(memberId);
+            if (lastElectionResult && lastElectionResult[0]) {
+                const first = lastElectionResult[0];
+                if (String(first.rosterId || first.id) === memberIdStr) {
+                    return true;
+                }
+            }
+            if (electionHistory && electionHistory.length > 0) {
+                return electionHistory.some(historyItem => {
+                    const first = historyItem.results?.[0];
+                    return first && String(first.rosterId || first.id) === memberIdStr;
+                });
+            }
+            return false;
+        };
+
+        const isTitleTrackCenter = (memberId) => {
+            const memberIdStr = String(memberId);
+            if (songs) {
+                for (const song of songs) {
+                    if (song.tracks) {
+                        for (const track of song.tracks) {
+                            if (track.type === 'title') {
+                                const centers = track.center || [];
+                                const centersList = Array.isArray(centers) ? centers : [centers];
+                                if (centersList.map(String).includes(memberIdStr)) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (sisterGroups) {
+                for (const sg of sisterGroups) {
+                    if (sg.songs) {
+                        for (const song of sg.songs) {
+                            if (song.tracks) {
+                                for (const track of song.tracks) {
+                                    if (track.type === 'title') {
+                                        const centers = track.center || [];
+                                        const centersList = Array.isArray(centers) ? centers : [centers];
+                                        if (centersList.map(String).includes(memberIdStr)) {
+                                            return true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+        };
+
+        const getMemberStatusBadges = (member) => {
+            if (!member) return null;
+            const memberId = member.rosterId || member.id;
+            const won = isElectionWinner(memberId);
+            const center = isTitleTrackCenter(memberId);
+            if (!won && !center) return null;
+            return (
+                <span className="inline-flex items-center gap-0.5 ml-1.5" style={{ userSelect: 'none' }}>
+                    {won && (
+                        <span 
+                            title="General Election Winner 👑" 
+                            className="inline-block hover:scale-110 transition-transform cursor-help"
+                            role="img" 
+                            aria-label="Election Winner"
+                        >
+                            👑
+                        </span>
+                    )}
+                    {center && (
+                        <span 
+                            title="Title Track Center 🌟" 
+                            className="inline-block hover:scale-110 transition-transform cursor-help"
+                            role="img" 
+                            aria-label="Title Track Center"
+                        >
+                            🌟
+                        </span>
+                    )}
+                </span>
+            );
+        };
+
         const getProjectedSalesAndRank = () => {
             // Resolve members in the Title Track (Senbatsu)
             const titleTrack = releaseType === 'album' ? albumTracks[0] : tracks[0];
@@ -2242,7 +2331,7 @@ const App = () => {
                         <GripVertical size={18} className="text-gray-400" />
                     </td>
                     <td className="p-2">
-                        <p className="font-medium dark:text-gray-200">{member.name}</p>
+                        <p className="font-medium dark:text-gray-200 flex items-center">{member.name}{getMemberStatusBadges(member)}</p>
                         <p className="text-[6.5px] text-gray-500 dark:text-gray-400">{getMemberGroupStatus(member)}{member.generation ? ` | ${member.generation}` : ''}</p>
                     </td>
                     <td className="p-2">
@@ -2861,7 +2950,7 @@ const App = () => {
                         {potentialGraduates.map(member => (
                             <div key={member.rosterId} onClick={() => handleGraduatingMemberConfirm(member)} className="p-4 border rounded-lg text-center cursor-pointer hover:bg-yellow-100 dark:hover:bg-gray-700 dark:border-gray-600">
                                 <div className="w-16 h-16 bg-gray-300 rounded-full mx-auto mb-2"></div>
-                                <p className="font-bold dark:text-gray-200">{member.name}</p>
+                                <p className="font-bold dark:text-gray-200 flex items-center justify-center">{member.name}{getMemberStatusBadges(member)}</p>
                                 <p className="text-xs text-gray-500 dark:text-gray-400">Fans: {getTotalFansForMember(member).toLocaleString()}</p>
                                 <p className="text-xs text-gray-500 dark:text-gray-400">Years Active: {member.yearsActive}</p>
                             </div>
@@ -3163,6 +3252,7 @@ const App = () => {
                                             </div>
                                             <p className="font-extrabold text-gray-800 dark:text-gray-100 flex items-center justify-center gap-1">
                                                 {member.name}
+                                                {getMemberStatusBadges(member)}
                                                 {isPushed && <span className="text-[10px] bg-red-100 text-red-800 font-bold px-1 rounded">PUSH</span>}
                                             </p>
                                             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{memberGroup} • {member.teamName || 'Trainee'}</p>
@@ -3443,7 +3533,7 @@ const App = () => {
                                             👩‍🎤
                                         </div>
                                         <div className="text-left min-w-0 flex-1">
-                                            <p className="font-bold text-sm text-gray-800 dark:text-gray-200 truncate leading-snug">{member.name}</p>
+                                            <p className="font-bold text-sm text-gray-800 dark:text-gray-200 flex items-center leading-snug">{member.name}{getMemberStatusBadges(member)}</p>
                                             <p className="text-[10px] text-gray-500 dark:text-gray-400 truncate leading-snug">
                                                 {memberGroup} • {member.teamName || 'Trainee'}
                                             </p>
@@ -3757,7 +3847,7 @@ const App = () => {
                                                     <div key={member.rosterId} className="flex items-center justify-between p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
                                                         <div className="flex flex-col">
                                                             <span className={`font-medium dark:text-gray-200 ${member.isAvailable === false ? 'text-gray-400 italic' : ''}`}>
-                                                                {member.name} {member.isSisterMember && `(${member.displayGroupName})`}
+                                                                {member.name} {member.isSisterMember && `(${member.displayGroupName})`}{getMemberStatusBadges(member)}
                                                                 <span className="ml-2 text-xs text-pink-300 font-normal">
                                                                     {(() => {
                                                                         const otherTracks = tracks.filter(t =>
@@ -4039,7 +4129,7 @@ const App = () => {
                                                 <div key={member.rosterId} className="flex items-center justify-between p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
                                                     <div className="flex flex-col">
                                                         <span className={`font-medium dark:text-gray-200 ${member.isAvailable === false ? 'text-gray-400 italic' : ''}`}>
-                                                            {member.name} {member.isSisterMember && `(${member.displayGroupName})`}
+                                                            {member.name} {member.isSisterMember && `(${member.displayGroupName})`}{getMemberStatusBadges(member)}
                                                             <span className="ml-2 text-xs text-pink-300 font-normal">
                                                                 {(() => {
                                                                     const otherTracks = tracks.filter(t =>
