@@ -4212,7 +4212,30 @@ export const useIdolManager = () => {
         const addedMemberFinalIds = addedSelections.map(sm => idChangeMap.get(sm.id) || sm.id);
         const finalTeamRoster = [...existingUnchangedIds, ...addedMemberFinalIds];
 
-        const teamData = { id: newTeamId, name: teamName, groupId, members: finalTeamRoster, currentSetlistId: setlistId, history: teamHistory };
+        const oldSetlistId = isEditing ? oldTeam.currentSetlistId : null;
+        let newSetlistWeeksActive = isEditing ? (oldTeam.setlistWeeksActive || 0) : 0;
+        let newSetlistHistory = isEditing ? [...(oldTeam.setlistHistory || [])] : [];
+
+        if (oldSetlistId !== setlistId) {
+            newSetlistWeeksActive = 0;
+            if (isEditing && oldSetlistId) {
+                const lastIdx = newSetlistHistory.length - 1;
+                if (lastIdx >= 0 && newSetlistHistory[lastIdx].endWeek === null) {
+                    newSetlistHistory[lastIdx].endWeek = week;
+                }
+            }
+            if (setlistId) {
+                newSetlistHistory.push({ setlistId: setlistId, startWeek: week, endWeek: null });
+            }
+        } else if (!isEditing && setlistId) {
+            newSetlistHistory.push({ setlistId: setlistId, startWeek: week, endWeek: null });
+        }
+
+        const teamData = { 
+            id: newTeamId, name: teamName, groupId, members: finalTeamRoster, 
+            currentSetlistId: setlistId, history: teamHistory,
+            setlistWeeksActive: newSetlistWeeksActive, setlistHistory: newSetlistHistory
+        };
 
         const teamExists = teams.some(t => t.id === newTeamId);
         const nextTeams = teamExists
@@ -4221,7 +4244,6 @@ export const useIdolManager = () => {
 
         // --- Part 5: ***CORRECTLY*** Prepare Setlist History State ---
         let nextAllSetlists = allSetlists; // Default to current state
-        const oldSetlistId = isEditing ? oldTeam.currentSetlistId : null;
         const newSetlistId = setlistId;
 
         if (isEditing && oldSetlistId !== newSetlistId) {
@@ -13530,6 +13552,8 @@ export const useIdolManager = () => {
         let totalTheaterFans = 0;
         let totalTheaterShows = 0;
 
+        let theaterSpecialEvents = [];
+
         const simulateScheduledShow = (entityId, type, day) => {
             let performingMembers = [];
             let understudies = [];
@@ -13577,6 +13601,35 @@ export const useIdolManager = () => {
 
             if (performingMembers.length === 0) return;
 
+            // --- Staleness / Hype Multipliers ---
+            let setlistMultiplier = 1.0;
+            let statusTag = "";
+            if (type === 'team') {
+                const team = teamsForUpdate.find(t => String(t.id) === String(entityId));
+                if (team) {
+                    if (!team.currentSetlistId) {
+                        setlistMultiplier = 0.6; // 40% penalty for performing with no setlist
+                        statusTag = "No Setlist Penalty";
+                    } else {
+                        const weeks = team.setlistWeeksActive || 0;
+                        if (weeks === 1) {
+                            setlistMultiplier = 1.8; // 80% Shonichi Opening Day hype bonus!
+                            statusTag = "Shonichi Opening Day Hype!";
+                        } else if (weeks > 156) {
+                            setlistMultiplier = 0.5; // 50% Severe Stale Penalty (3+ years)
+                            statusTag = "Severe Stale Penalty";
+                        } else if (weeks > 104) {
+                            setlistMultiplier = 0.7; // 30% Stale Penalty (2+ years)
+                            statusTag = "Stale Penalty";
+                        }
+                    }
+                }
+            }
+
+            if (statusTag) {
+                theaterSpecialEvents.push(`${teamName} (${statusTag})`);
+            }
+
             totalTheaterShows++;
             const memberCount = performingMembers.length || 1;
             const avgCharisma = performingMembers.reduce((s, m) => s + (m.charisma || 0), 0) / memberCount;
@@ -13596,14 +13649,14 @@ export const useIdolManager = () => {
             const demandMultiplier = (0.5 + (avgCharisma / 200)) * (isBirthdayStage ? 1.5 : 1.0);
             const venue = theaters[0]; // Assuming main theater
             const capacity = venue ? venue.capacity : 250;
-            const attendance = Math.min(capacity, Math.floor(fanDemandHype * 0.05 * demandMultiplier));
+            const attendance = Math.min(capacity, Math.floor(fanDemandHype * 0.05 * demandMultiplier * setlistMultiplier));
             const ticketPrice = venue ? (venue.level === 1 ? 3000 : venue.level === 2 ? 4000 : 5000) : 3000;
             const ticketRevenue = Math.floor(attendance * ticketPrice);
 
             let merchRevenue = Math.floor(attendance * (0.1 + (avgCharisma / 500)) * 1500 * (isBirthdayStage ? 1.5 : 1.0)); 
             const agencyProfit = Math.floor((ticketRevenue + merchRevenue) * 0.6);
             
-            const newFans = Math.floor(((attendance / 10) + (performance / 10)) * 1.0 * (isBirthdayStage ? 1.2 : 1.0));
+            const newFans = Math.floor(((attendance / 10) + (performance / 10)) * 1.0 * (isBirthdayStage ? 1.2 : 1.0) * setlistMultiplier);
 
             totalTheaterRevenue += agencyProfit;
             totalTheaterFans += newFans;
@@ -13629,6 +13682,14 @@ export const useIdolManager = () => {
             });
         };
 
+        // Increment setlist active weeks for all teams that have a setlist assigned
+        teamsForUpdate = teamsForUpdate.map(t => {
+            if (t.currentSetlistId) {
+                return { ...t, setlistWeeksActive: (t.setlistWeeksActive || 0) + 1 };
+            }
+            return t;
+        });
+
         const scheduleDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
         scheduleDays.forEach(day => {
             const dayData = theaterSchedule[day];
@@ -13641,7 +13702,11 @@ export const useIdolManager = () => {
         });
 
         if (totalTheaterShows > 0) {
-            addNotificationInLoop({ type: 'Performance', message: `Held ${totalTheaterShows} theater shows this week! Earned ¥${totalTheaterRevenue.toLocaleString()} and gained ${totalTheaterFans.toLocaleString()} fans.` });
+            let specMsg = "";
+            if (theaterSpecialEvents.length > 0) {
+                specMsg = ` Highlights: ${[...new Set(theaterSpecialEvents)].join(', ')}.`;
+            }
+            addNotificationInLoop({ type: 'Performance', message: `Held ${totalTheaterShows} theater shows this week! Earned ¥${totalTheaterRevenue.toLocaleString()} and gained ${totalTheaterFans.toLocaleString()} fans.${specMsg}` });
         }
 
         // --- 8. FINAL MESSAGES & STATE COMMIT ---

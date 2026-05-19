@@ -801,6 +801,26 @@ const App = () => {
             });
         };
 
+        const handleGenerateQuickSetlist = () => {
+            if (!name.trim()) return setMessage("Setlist needs a name first.");
+            const types = [
+                'Full Cast', 'Full Cast', 'Full Cast', 'Full Cast',
+                'Unit (4-person)', 'Unit (4-person)', 'Unit (4-person)', 'Unit (4-person)',
+                'Solo', 'Full Cast', 'Full Cast', 'Full Cast', 'Full Cast',
+                'Full Cast', 'Full Cast', 'Full Cast'
+            ];
+            const quickTracks = types.map((type, idx) => {
+                return {
+                    id: `new-${Date.now()}-${Math.random()}-${idx}`,
+                    name: generateRandomTheaterSongName(),
+                    type,
+                    origin: 'new'
+                };
+            });
+            setTracklist(quickTracks);
+            setStep('tracks');
+        };
+
         const LibraryModal = () => {
             // Filter out songs already in the current tracklist
             const availableLibrarySongs = theaterSongs.filter(libSong =>
@@ -846,6 +866,7 @@ const App = () => {
                 </div>
                 <div className="flex justify-end gap-2 mt-4">
                     <button onClick={() => setShowModal(null)} className="p-2 bg-gray-300 dark:bg-gray-600 rounded">Cancel</button>
+                    <button onClick={handleGenerateQuickSetlist} disabled={!name.trim()} className="p-2 bg-purple-500 hover:bg-purple-600 text-white rounded disabled:bg-gray-400 font-bold transition-colors">Quick Setlist (16 Songs)</button>
                     <button onClick={() => setStep('tracks')} disabled={!name.trim()} className="p-2 bg-blue-500 text-white rounded disabled:bg-gray-400">Next: Build Tracklist</button>
                 </div>
             </>
@@ -8405,6 +8426,62 @@ const App = () => {
                                 )
                             })}
                         </select>
+                    </div>
+
+
+                    <div>
+                        <h4 className="font-semibold text-lg mb-2 border-b pb-1">Theater Setlist Status</h4>
+                        {team.currentSetlistId ? (() => {
+                            const currentSetlist = allSetlists.find(s => s.id === team.currentSetlistId);
+                            const weeksActive = team.setlistWeeksActive || 0;
+                            let statusText = "Fresh & Active";
+                            let statusColor = "text-green-500";
+                            let statusBg = "bg-green-50 dark:bg-gray-900 border-green-200";
+                            
+                            if (weeksActive === 1) {
+                                statusText = "Shonichi (Opening Day Hype! +80% Attendance/Fans)";
+                                statusColor = "text-green-600 font-extrabold animate-pulse dark:text-green-400";
+                                statusBg = "bg-green-100 dark:bg-green-950 border-green-300";
+                            } else if (weeksActive > 156) {
+                                statusText = `Severe Stale (${weeksActive} weeks active) -50% Attendance penalty!`;
+                                statusColor = "text-red-600 font-bold dark:text-red-400";
+                                statusBg = "bg-red-50 dark:bg-red-950 border-red-200";
+                            } else if (weeksActive > 104) {
+                                statusText = `Stale (${weeksActive} weeks active) -30% Attendance penalty!`;
+                                statusColor = "text-yellow-600 font-bold dark:text-yellow-400";
+                                statusBg = "bg-yellow-50 dark:bg-yellow-950 border-yellow-200";
+                            } else {
+                                statusText = `Fresh (${weeksActive} weeks active)`;
+                                statusColor = "text-blue-500 font-bold dark:text-blue-400";
+                                statusBg = "bg-blue-50 dark:bg-blue-950 border-blue-200";
+                            }
+
+                            return (
+                                <div className={`p-3 rounded-lg border ${statusBg} text-sm space-y-1 mb-3`}>
+                                    <p className="dark:text-gray-200"><strong>Current Setlist:</strong> {currentSetlist ? currentSetlist.name : 'Unknown'}</p>
+                                    <p className="dark:text-gray-200"><strong>Status:</strong> <span className={statusColor}>{statusText}</span></p>
+                                </div>
+                            );
+                        })() : (
+                            <div className="p-3 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-900 rounded-lg text-sm mb-3 text-red-600 dark:text-red-400 font-bold">
+                                No Setlist Assigned! (-40% Attendance penalty)
+                            </div>
+                        )}
+
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Setlist Performance Log:</p>
+                        <div className="space-y-1 max-h-32 overflow-y-auto p-2 border rounded bg-gray-50 dark:bg-gray-800 text-sm mb-4">
+                            {team.setlistHistory && team.setlistHistory.length > 0 ? [...team.setlistHistory].reverse().map((h, i) => {
+                                const sl = allSetlists.find(s => s.id === h.setlistId);
+                                return (
+                                    <div key={i} className="flex justify-between border-b pb-1 last:border-0 last:pb-0 dark:border-gray-700">
+                                        <span className="font-semibold dark:text-gray-300">{sl ? sl.name : 'Unknown Setlist'}</span>
+                                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                                            Wk {h.startWeek} to {h.endWeek ? `Wk ${h.endWeek}` : 'Present'}
+                                        </span>
+                                    </div>
+                                );
+                            }) : <p className="text-gray-500 italic text-xs">No setlist performance history yet.</p>}
+                        </div>
                     </div>
 
 
