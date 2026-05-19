@@ -9019,6 +9019,126 @@ export const useIdolManager = () => {
         }
     };
 
+    const executeFanEvent = (eventType, selectedMemberIds, singleId = null) => {
+        if (selectedMemberIds.length === 0) {
+            return setMessage("You must select at least one member to participate.");
+        }
+
+        const participatingMembers = selectedMemberIds.map(id => getMemberById(id)).filter(m => m && m.isAvailable);
+
+        if (participatingMembers.length === 0) {
+            return setMessage("None of the selected members are available for this event.");
+        }
+
+        const eventConfig = {
+            'fansign': { name: 'National Fansign Event', cost: 50000 },
+            'cheki': { name: '2-Shot Polaroid Event', cost: 30000 },
+            'fanmeet': { name: 'Official Fan Club Fanmeet', cost: 100000 },
+            'onlineCall': { name: 'Online Fan Call Event', cost: 10000 },
+            'offkai': { name: 'Offkai (Fan Meetup)', cost: 20000 },
+            'merchPopup': { name: 'Merch Popup Store Appearance', cost: 50000 },
+            'busTour': { name: 'Fan Club Bus Tour', cost: 200000 },
+        };
+
+        const config = eventConfig[eventType];
+        if (!config) return setMessage("Invalid event type.");
+
+        if (money < config.cost) {
+            return setMessage(`Not enough money for ${config.name}. Requires ¥${config.cost.toLocaleString()}`);
+        }
+
+        let updatedMoney = money - config.cost;
+        let totalRevenue = 0;
+        let totalFansConverted = 0;
+        let reputationBoost = eventType === 'fanmeet' ? 3 : 0;
+
+        const results = participatingMembers.map(member => {
+            let staminaDrain = 0;
+            let stressGain = 0;
+            let moraleGain = 0;
+            let fansConverted = 0;
+            let revenueGenerated = 0;
+            let charismaFactor = (member.charisma || 50) / 100;
+
+            switch (eventType) {
+                case 'fansign':
+                    staminaDrain = 35; stressGain = 15; moraleGain = 10;
+                    fansConverted = Math.floor((member.fans?.casual || 0) * (0.15 + (charismaFactor * 0.1)));
+                    break;
+                case 'cheki':
+                    staminaDrain = 25; stressGain = 20; moraleGain = 5;
+                    fansConverted = Math.floor((member.fans?.casual || 0) * (0.08 + (charismaFactor * 0.07)));
+                    revenueGenerated = 15000 + Math.floor(charismaFactor * 35000);
+                    break;
+                case 'fanmeet':
+                    staminaDrain = 20; stressGain = -15; moraleGain = 25;
+                    fansConverted = Math.floor((member.fans?.casual || 0) * (0.12 + (charismaFactor * 0.08)));
+                    break;
+                case 'onlineCall':
+                    staminaDrain = 10; stressGain = 5; moraleGain = 5;
+                    fansConverted = Math.floor((member.fans?.casual || 0) * (0.05 + (charismaFactor * 0.05)));
+                    break;
+                case 'offkai':
+                    staminaDrain = 15; stressGain = 10; moraleGain = 15;
+                    fansConverted = Math.floor((member.fans?.casual || 0) * 0.40);
+                    break;
+                case 'merchPopup':
+                    staminaDrain = 30; stressGain = 10; moraleGain = 0;
+                    revenueGenerated = 30000 + Math.floor(charismaFactor * 70000);
+                    break;
+                case 'busTour':
+                    staminaDrain = 40; stressGain = -50; moraleGain = 40;
+                    fansConverted = Math.floor((member.fans?.casual || 0) * 0.30);
+                    break;
+            }
+
+            updateMemberState(member.rosterId || member.id, m => ({
+                ...m,
+                fans: {
+                    hardcore: (m.fans?.hardcore || 0) + fansConverted,
+                    casual: Math.max(0, (m.fans?.casual || 0) - fansConverted),
+                },
+                stamina: Math.max(0, (m.stamina || 100) - staminaDrain),
+                stress: (eventType === 'fanmeet' || eventType === 'busTour')
+                    ? Math.max(0, (m.stress || 0) + stressGain)
+                    : Math.min(100, (m.stress || 0) + stressGain),
+                morale: Math.min(100, (m.morale || 0) + moraleGain)
+            }));
+
+            totalFansConverted += fansConverted;
+            totalRevenue += revenueGenerated;
+
+            return {
+                member,
+                fansConverted,
+                revenueGenerated,
+                staminaDrain,
+                stressGain,
+                moraleGain
+            };
+        });
+
+        updatedMoney += totalRevenue;
+        setMoney(updatedMoney);
+        
+        if (reputationBoost > 0) {
+            setGroupReputation(prev => prev + reputationBoost);
+        }
+
+        const eventData = {
+            eventName: config.name,
+            cost: config.cost,
+            totalRevenue,
+            totalFansConverted,
+            reputationBoost,
+            results
+        };
+
+        setModalData({ fanEventResults: eventData });
+        addNotification({ type: 'Fans', message: `${config.name} was a success! Converted ${totalFansConverted.toLocaleString()} fans.` });
+        setShowModal('fanEventResult');
+    };
+
     const executeHandshakeEvent = (selectedMemberIds, singleId) => {
         const allReleases = [...songs, ...sisterGroups.flatMap(sg => sg.songs || [])];
         const eligibleSingle = allReleases.find(s => s.id === singleId);
@@ -16719,6 +16839,6 @@ return {
     // Utilities
     startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
     // Logic
-    holdTitleTrackPerformance, holdUnitPerformance, unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, resolveSurvivalMission, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
+    holdTitleTrackPerformance, holdUnitPerformance, unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, resolveSurvivalMission, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, executeFanEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
 };
 };
