@@ -9771,6 +9771,15 @@ const App = () => {
             return `Round ${round}`;
         };
 
+        const getFinalRoundName = (r) => {
+            if (!finalBracket || finalBracket.length === 0) return 'Finished';
+            const numPairs = finalBracket.length;
+            if (numPairs === 1) return 'Grand Final';
+            if (numPairs === 2) return 'Semifinals';
+            if (numPairs === 3 || numPairs === 4) return 'Quarterfinals';
+            return `Finals - Round ${r}`;
+        };
+
         return (
             <ModalWrapper title="Janken Tournament" maxWidth="max-w-7xl">
                 <style>{`
