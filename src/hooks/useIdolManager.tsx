@@ -12425,7 +12425,7 @@ export const useIdolManager = () => {
                     m.stamina = Math.max(0, (m.stamina || 100) - 20);
                     m.stress = Math.min(100, (m.stress || 0) + 10);
                     m.morale = Math.min(100, (m.morale || 0) + 15);
-                    m.graduationUrgency = Math.max(0, (m.graduationUrgency || 0) - 15);
+                    // m.graduationUrgency = Math.max(0, (m.graduationUrgency || 0) - 15);
 
                     const hardcoreGain = Math.floor(fanGain * 0.3);
                     const casualGain = fanGain - hardcoreGain;
