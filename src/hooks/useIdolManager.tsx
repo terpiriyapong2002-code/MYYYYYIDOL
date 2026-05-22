@@ -4055,7 +4055,7 @@ export const useIdolManager = () => {
         }
 
         const participantIds = underPool.map(m => String(m.rosterId || m.id));
-        
+
         setMoney(prev => prev - cost);
         setActiveUnderTour({
             name: `${resolvedGroupName} Under Live Tour`,
@@ -4319,8 +4319,8 @@ export const useIdolManager = () => {
             newSetlistHistory.push({ setlistId: setlistId, startWeek: week, endWeek: null });
         }
 
-        const teamData = { 
-            id: newTeamId, name: teamName, groupId, members: finalTeamRoster, 
+        const teamData = {
+            id: newTeamId, name: teamName, groupId, members: finalTeamRoster,
             currentSetlistId: setlistId, history: teamHistory,
             setlistWeeksActive: newSetlistWeeksActive, setlistHistory: newSetlistHistory
         };
@@ -5331,7 +5331,7 @@ export const useIdolManager = () => {
             else if (teamSize >= 16) cap = 12;
 
             const availableTeamMembers = getMainGroupRoster().filter(m => team.members.includes(String(m.id)) && m.isAvailable && (m.stamina || 0) >= 30);
-            
+
             // Sort by stamina descending to rotate tired members out
             availableTeamMembers.sort((a, b) => (b.stamina || 0) - (a.stamina || 0));
 
@@ -5342,7 +5342,7 @@ export const useIdolManager = () => {
                 const needed = cap - performingMembers.length;
                 const availableTrainees = members.filter(m => m.status === 'Trainee' && m.isAvailable && (m.stamina || 0) >= 30)
                     .sort((a, b) => (b.stamina || 0) - (a.stamina || 0));
-                
+
                 understudies = availableTrainees.slice(0, needed);
                 performingMembers = [...performingMembers, ...understudies];
             }
@@ -5539,7 +5539,7 @@ export const useIdolManager = () => {
 
         performingMembers.forEach(member => {
             const isUnderstudy = understudies.some(u => (u.rosterId || u.id) === (member.rosterId || member.id));
-            
+
             updateMemberState(member.rosterId || member.id, m => {
                 let statBonusSinging = isUnderstudy ? Math.floor(Math.random() * 2) + 1 : 0; // 1-2 bonus
                 let statBonusDancing = isUnderstudy ? Math.floor(Math.random() * 2) + 1 : 0; // 1-2 bonus
@@ -9280,7 +9280,7 @@ export const useIdolManager = () => {
 
         updatedMoney += totalRevenue;
         setMoney(updatedMoney);
-        
+
         if (reputationBoost > 0) {
             setGroupReputation(prev => prev + reputationBoost);
         }
@@ -12383,7 +12383,7 @@ export const useIdolManager = () => {
         if (activeUnderTour) {
             const tour = activeUnderTour;
             const participantIds = tour.memberIds || [];
-            
+
             // Resolve participant draft objects from membersForUpdate or sisterGroupsForUpdate
             let participants = [];
             participantIds.forEach(id => {
@@ -12410,9 +12410,9 @@ export const useIdolManager = () => {
                 const totalVocal = participants.reduce((sum, m) => sum + (m.singing || 0), 0);
                 const totalDance = participants.reduce((sum, m) => sum + (m.dancing || 0), 0);
                 const totalVisual = participants.reduce((sum, m) => sum + (m.visual || 0), 0);
-                
+
                 const avgPerformance = (totalVocal + totalDance + totalVisual) / (participants.length * 3);
-                
+
                 const weekRevenue = Math.floor(avgPerformance * activeCount * 600);
                 const fanGain = Math.floor(avgPerformance * activeCount * 3);
 
@@ -12421,11 +12421,11 @@ export const useIdolManager = () => {
                 let notificationEvents = [];
                 participants.forEach(m => {
                     if (m.graduated) return;
-                    
+
                     m.stamina = Math.max(0, (m.stamina || 100) - 20);
                     m.stress = Math.min(100, (m.stress || 0) + 10);
                     m.morale = Math.min(100, (m.morale || 0) + 15);
-                    // m.graduationUrgency = Math.max(0, (m.graduationUrgency || 0) - 15);
+                    m.graduationUrgency = Math.max(0, (m.graduationUrgency || 0) - 1);
 
                     const hardcoreGain = Math.floor(fanGain * 0.3);
                     const casualGain = fanGain - hardcoreGain;
@@ -13757,7 +13757,7 @@ export const useIdolManager = () => {
             let understudies = [];
             let teamName = "Unknown";
             let cap = 16;
-            
+
             if (type === 'team') {
                 const team = teamsForUpdate.find(t => String(t.id) === String(entityId));
                 if (!team) return;
@@ -13773,7 +13773,7 @@ export const useIdolManager = () => {
 
                 const availableTeamMembers = sourceMembers.filter(m => team.members.includes(String(m.id)) && m.isAvailable && (m.stamina || 0) >= 30)
                     .sort((a, b) => (b.stamina || 0) - (a.stamina || 0));
-                
+
                 performingMembers = availableTeamMembers.slice(0, cap);
 
                 if (performingMembers.length < cap) {
@@ -13791,7 +13791,7 @@ export const useIdolManager = () => {
                     const sg = sisterGroupsForUpdate.find(g => String(g.id) === String(entityId));
                     if (sg) sourceMembers = sg.members || [];
                 }
-                
+
                 performingMembers = sourceMembers.filter(m => m.status === 'Trainee' && m.isAvailable && (m.stamina || 0) >= 30)
                     .sort((a, b) => (b.stamina || 0) - (a.stamina || 0))
                     .slice(0, cap);
@@ -13831,7 +13831,7 @@ export const useIdolManager = () => {
             totalTheaterShows++;
             const memberCount = performingMembers.length || 1;
             const avgCharisma = performingMembers.reduce((s, m) => s + (m.charisma || 0), 0) / memberCount;
-            
+
             const performance = performingMembers.reduce((sum, m) => {
                 const memberScore = ((m.singing || 0) * 0.3 + (m.dancing || 0) * 0.4 + (m.visual || 0) * 0.2 + (m.charisma || 0) * 0.1);
                 return sum + (memberScore * ((m.stamina || 100) / 100));
@@ -13840,7 +13840,7 @@ export const useIdolManager = () => {
             let isBirthdayStage = false;
             const currentWeekOfYear = (newWeek - 1) % 52 + 1;
             performingMembers.forEach(m => {
-                if(m.birthday === currentWeekOfYear) isBirthdayStage = true;
+                if (m.birthday === currentWeekOfYear) isBirthdayStage = true;
             });
 
             const fanDemandHype = performingMembers.reduce((sum, m) => sum + (typeof m.fans === 'number' ? m.fans : (m.fans?.casual || 0) + (m.fans?.hardcore || 0)), 0);
@@ -13851,9 +13851,9 @@ export const useIdolManager = () => {
             const ticketPrice = venue ? (venue.level === 1 ? 3000 : venue.level === 2 ? 4000 : 5000) : 3000;
             const ticketRevenue = Math.floor(attendance * ticketPrice);
 
-            let merchRevenue = Math.floor(attendance * (0.1 + (avgCharisma / 500)) * 1500 * (isBirthdayStage ? 1.5 : 1.0)); 
+            let merchRevenue = Math.floor(attendance * (0.1 + (avgCharisma / 500)) * 1500 * (isBirthdayStage ? 1.5 : 1.0));
             const agencyProfit = Math.floor((ticketRevenue + merchRevenue) * 0.6);
-            
+
             const newFans = Math.floor(((attendance / 10) + (performance / 10)) * 1.0 * (isBirthdayStage ? 1.2 : 1.0) * setlistMultiplier);
 
             totalTheaterRevenue += agencyProfit;
@@ -16434,843 +16434,843 @@ export const useIdolManager = () => {
             }
 
             return newSg;
-    });
-};
+        });
+    };
 
-const simulateRivalActions = (currentRivals, currentWeek, addNotificationInLoop) => {
-    let updatedRivals = currentRivals.map(rival => {
-        let newRival = { ...rival, history: rival.history || [], members: rival.members || [] };
+    const simulateRivalActions = (currentRivals, currentWeek, addNotificationInLoop) => {
+        let updatedRivals = currentRivals.map(rival => {
+            let newRival = { ...rival, history: rival.history || [], members: rival.members || [] };
 
-        // --- Yearly Aging and Graduation Check ---
-        if (currentWeek > 1 && currentWeek % 52 === 0) {
-            let graduatedThisYear = [];
+            // --- Yearly Aging and Graduation Check ---
+            if (currentWeek > 1 && currentWeek % 52 === 0) {
+                let graduatedThisYear = [];
+                newRival.members.forEach(member => {
+                    member.age += 1;
+                    const careerLength = Math.floor((currentWeek - member.joinWeek) / 52);
+                    let gradChance = 0;
+                    if (member.age > 24 || careerLength > 6) {
+                        gradChance = (member.age - 24) * 0.05 + (careerLength - 6) * 0.1;
+                    }
+                    if (member.id === newRival.aceId) {
+                        gradChance *= 0.3; // Aces are less likely to graduate
+                    }
+
+                    if (Math.random() < gradChance) {
+                        graduatedThisYear.push(member);
+                    }
+                });
+
+                if (graduatedThisYear.length > 0) {
+                    newRival.members = newRival.members.filter(m => !graduatedThisYear.some(g => g.id === m.id));
+                    const gradNames = graduatedThisYear.map(m => m.name).join(', ');
+                    const event = { week: currentWeek, event: `Member(s) Graduated: ${gradNames}.` };
+                    newRival.history.push(event);
+                    addNotificationInLoop({
+                        type: 'Rival',
+                        message: `${rival.name} saw members graduate: ${gradNames}.`
+                    });
+
+                    // Check for Ace graduation
+                    if (graduatedThisYear.some(g => g.id === newRival.aceId) && newRival.members.length > 0) {
+                        const newAce = newRival.members.sort((a, b) => b.fans - a.fans)[0];
+                        newRival.aceId = newAce.id;
+                        const aceEvent = { week: currentWeek, event: `${newAce.name} has been promoted to the new Ace.` };
+                        newRival.history.push(aceEvent);
+                        addNotificationInLoop({
+                            type: 'Rival',
+                            message: `Following a graduation, ${newAce.name} is the new ace of ${rival.name}!`
+                        });
+                    }
+                }
+            }
+
+            // --- Recruitment ---
+            let recruitmentChance = 0.04;
+            if (rival.archetype === 'Rising Stars') recruitmentChance = 0.08;
+            if (Math.random() < recruitmentChance && newRival.members.length < 25) {
+                const newMemberName = generateRandomMemberName();
+                const newMember = {
+                    id: `rival-${rival.id}-${currentWeek}`,
+                    name: newMemberName,
+                    age: 15 + Math.floor(Math.random() * 3),
+                    joinWeek: currentWeek,
+                    fans: 500 + Math.floor(Math.random() * 1000)
+                };
+                newRival.members.push(newMember);
+                const event = { week: currentWeek, event: `Recruited new member: ${newMemberName}` };
+                newRival.history.push(event);
+            }
+
+            // --- Fan Growth & Saturation ---
+            let baseFanGrowth = 0.01;
+            if (rival.archetype === 'Powerhouse') baseFanGrowth = 0.015;
+
+            // Market Saturation to prevent infinite growth
+            let totalFans = newRival.members.reduce((sum, m) => sum + m.fans, 0);
+            if (totalFans > 20000000) {
+                baseFanGrowth *= 0.1; // 90% reduction
+            } else if (totalFans > 5000000) {
+                baseFanGrowth *= 0.4; // 60% reduction
+            }
+
+            // Distribute new fans among members
+            let newFansTotal = 0;
             newRival.members.forEach(member => {
-                member.age += 1;
-                const careerLength = Math.floor((currentWeek - member.joinWeek) / 52);
-                let gradChance = 0;
-                if (member.age > 24 || careerLength > 6) {
-                    gradChance = (member.age - 24) * 0.05 + (careerLength - 6) * 0.1;
-                }
-                if (member.id === newRival.aceId) {
-                    gradChance *= 0.3; // Aces are less likely to graduate
-                }
-
-                if (Math.random() < gradChance) {
-                    graduatedThisYear.push(member);
-                }
+                const fansForMember = Math.floor(member.fans * baseFanGrowth * (0.5 + Math.random()));
+                member.fans += fansForMember;
+                newFansTotal += fansForMember;
             });
+            newRival.fans = newRival.members.reduce((sum, m) => sum + m.fans, 0);
 
-            if (graduatedThisYear.length > 0) {
-                newRival.members = newRival.members.filter(m => !graduatedThisYear.some(g => g.id === m.id));
-                const gradNames = graduatedThisYear.map(m => m.name).join(', ');
-                const event = { week: currentWeek, event: `Member(s) Graduated: ${gradNames}.` };
+
+            // --- Other actions (Song release, etc.) ---
+            let singleReleaseChance = 0.08;
+            if (rival.archetype === 'Powerhouse') singleReleaseChance = 0.12;
+
+            if (Math.random() < singleReleaseChance) {
+                const newSongName = generateSongTitle();
+                newRival.songs = [...(newRival.songs || []), { name: newSongName, sales: 0, releaseWeek: currentWeek }];
+                const event = { week: currentWeek, event: `Released new single: "${newSongName}"` };
                 newRival.history.push(event);
                 addNotificationInLoop({
                     type: 'Rival',
-                    message: `${rival.name} saw members graduate: ${gradNames}.`
+                    message: `${rival.name} has released a new single titled "${newSongName}"!`
                 });
+            }
 
-                // Check for Ace graduation
-                if (graduatedThisYear.some(g => g.id === newRival.aceId) && newRival.members.length > 0) {
-                    const newAce = newRival.members.sort((a, b) => b.fans - a.fans)[0];
-                    newRival.aceId = newAce.id;
-                    const aceEvent = { week: currentWeek, event: `${newAce.name} has been promoted to the new Ace.` };
-                    newRival.history.push(aceEvent);
-                    addNotificationInLoop({
-                        type: 'Rival',
-                        message: `Following a graduation, ${newAce.name} is the new ace of ${rival.name}!`
-                    });
-                }
+            newRival.membersCount = newRival.members.length;
+
+            // Update sales for existing songs
+            if (newRival.songs) {
+                newRival.songs = newRival.songs.map(song => {
+                    if (currentWeek - song.releaseWeek < 8) { // Chart for 8 weeks
+                        const salesThisWeek = Math.floor(Math.random() * 4000) + 1000;
+                        return { ...song, sales: (song.sales || 0) + salesThisWeek };
+                    }
+                    return song;
+                });
+            }
+
+            // Keep history to a reasonable size
+            if (newRival.history.length > 20) {
+                newRival.history = newRival.history.slice(newRival.history.length - 20);
+            }
+
+            return newRival;
+        });
+
+        // Handle new rival group appearance
+        // (This part remains the same)
+        const rivalNames = [
+            'Lunar Princesses', 'Project Nova', 'Sapphire Kiss', 'Onyx7', 'Solstice',
+            'Equinox', 'Galaxy Girls', 'Cosmic Charm', 'Nebula Stars', 'Pixel Pop',
+            'Melty Kiss', 'Cherry Chu', 'Violet Theory', 'Zero Gravity', 'Saka46-X',
+            'Midnight Bloom', 'Neo-Genesis', 'Velvet Riot', 'Aero-Step', 'Diamond Dust',
+            'Pure Rhythm', 'Kira-Kira 5', 'Digital Hearts', 'Urban Muse', 'Crimson Edge',
+            'Starry Palette', 'Glass Wings', 'Next-Gen Idols', 'Prism 9', 'Secret Garden',
+            'Nova-Ray', 'Luminous', 'Bitter-Sweet', 'Infinity Girl', 'Code:Pink',
+            'Vivid Soul', 'Aozora Sisters', 'Techno-Tale', 'Goth-Loli Punk', 'Sugar Rush',
+            'Metal Maidens', 'Silent Siren', 'Aura-Blast', 'Future-Mix', 'Starlight 7',
+            'Honey-BEE', 'Lunar Eclipse', 'Paradox-G', 'Miracle-Step', 'Last-Piece',
+            'Shadow Senbatsu', 'Kaminari Girls', 'Zenith 10', 'Ethereal Flow', 'Rubies of Tokyo',
+            'Midnight Protocol', 'Seifuku Rebellion', 'Afterglow 5', 'Digital Diva Project', 'Heart-Link',
+            'Neon Valkyries', 'Ametrine Dreams', 'Sonic Sweethearts', 'Hyper-Bloom', 'Aozora Project',
+            'Twilight Trigger', 'Platinum Pulse', 'Hana-bi Force', 'Reverse:Fantasy', 'Star-Crossed 9',
+            'Electric Enigma', 'Sakura Storm', 'Vanguard Vibe', 'Opal Odyssey', 'Phantom Idols',
+            'Kuro-Neko Kiss', 'Vector Vixens', 'Cyber-Siren', 'Majestic Moon', 'Alpha-Order',
+            'Gilded Ghost', 'Mirage Melody', 'Chaos Candy', 'Iron Rose', 'Synchro-Step',
+            'Blue-Sky Blade', 'Tear-Drop 4', 'Gravity Queens', 'Nova-Core', 'Tsuki-yomi 7',
+            'Glitter Gang', 'Bionic Berry', 'Royal Resonance', 'Savage Soul', 'Wink Warriors',
+            'Zenith Zero', 'Misty Muse', 'Neon-Knights', 'Radiant Riot', 'Final Fortune'
+        ];
+        if (updatedRivals.length < 5 && Math.random() < 0.02) {
+            const newRivalName = rivalNames.find(name => !updatedRivals.some(r => r.name === name));
+            if (newRivalName) {
+                const archetypes = ['Powerhouse', 'Visual Queens', 'Critical Darlings', 'Rising Stars'];
+                const membersCount = 8 + Math.floor(Math.random() * 8);
+                const members = Array.from({ length: membersCount }, (_, i) => ({
+                    id: `rival-${updatedRivals.length}-${i}`,
+                    name: generateRandomMemberName(),
+                    age: 16 + Math.floor(Math.random() * 5),
+                    joinWeek: currentWeek,
+                    fans: 1000 + Math.floor(Math.random() * 4000),
+                }));
+                const ace = members.sort((a, b) => b.fans - a.fans)[0];
+                const totalFans = members.reduce((sum, m) => sum + m.fans, 0);
+
+                updatedRivals.push({
+                    id: Date.now(),
+                    name: newRivalName,
+                    fans: totalFans,
+                    membersCount: members.length,
+                    members: members,
+                    aceId: ace.id,
+                    songs: [],
+                    archetype: archetypes[Math.floor(Math.random() * archetypes.length)],
+                    aggression: Math.floor(Math.random() * 50) + 25,
+                    history: [{ week: currentWeek, event: `Formed as a new rival group.` }]
+                });
+                addNotificationInLoop({
+                    type: 'Rival',
+                    message: `A new rival group, ${newRivalName}, has appeared on the scene!`
+                });
             }
         }
 
-        // --- Recruitment ---
-        let recruitmentChance = 0.04;
-        if (rival.archetype === 'Rising Stars') recruitmentChance = 0.08;
-        if (Math.random() < recruitmentChance && newRival.members.length < 25) {
-            const newMemberName = generateRandomMemberName();
-            const newMember = {
-                id: `rival-${rival.id}-${currentWeek}`,
-                name: newMemberName,
-                age: 15 + Math.floor(Math.random() * 3),
-                joinWeek: currentWeek,
-                fans: 500 + Math.floor(Math.random() * 1000)
-            };
-            newRival.members.push(newMember);
-            const event = { week: currentWeek, event: `Recruited new member: ${newMemberName}` };
-            newRival.history.push(event);
-        }
-
-        // --- Fan Growth & Saturation ---
-        let baseFanGrowth = 0.01;
-        if (rival.archetype === 'Powerhouse') baseFanGrowth = 0.015;
-
-        // Market Saturation to prevent infinite growth
-        let totalFans = newRival.members.reduce((sum, m) => sum + m.fans, 0);
-        if (totalFans > 20000000) {
-            baseFanGrowth *= 0.1; // 90% reduction
-        } else if (totalFans > 5000000) {
-            baseFanGrowth *= 0.4; // 60% reduction
-        }
-
-        // Distribute new fans among members
-        let newFansTotal = 0;
-        newRival.members.forEach(member => {
-            const fansForMember = Math.floor(member.fans * baseFanGrowth * (0.5 + Math.random()));
-            member.fans += fansForMember;
-            newFansTotal += fansForMember;
-        });
-        newRival.fans = newRival.members.reduce((sum, m) => sum + m.fans, 0);
-
-
-        // --- Other actions (Song release, etc.) ---
-        let singleReleaseChance = 0.08;
-        if (rival.archetype === 'Powerhouse') singleReleaseChance = 0.12;
-
-        if (Math.random() < singleReleaseChance) {
-            const newSongName = generateSongTitle();
-            newRival.songs = [...(newRival.songs || []), { name: newSongName, sales: 0, releaseWeek: currentWeek }];
-            const event = { week: currentWeek, event: `Released new single: "${newSongName}"` };
-            newRival.history.push(event);
-            addNotificationInLoop({
-                type: 'Rival',
-                message: `${rival.name} has released a new single titled "${newSongName}"!`
-            });
-        }
-
-        newRival.membersCount = newRival.members.length;
-
-        // Update sales for existing songs
-        if (newRival.songs) {
-            newRival.songs = newRival.songs.map(song => {
-                if (currentWeek - song.releaseWeek < 8) { // Chart for 8 weeks
-                    const salesThisWeek = Math.floor(Math.random() * 4000) + 1000;
-                    return { ...song, sales: (song.sales || 0) + salesThisWeek };
-                }
-                return song;
-            });
-        }
-
-        // Keep history to a reasonable size
-        if (newRival.history.length > 20) {
-            newRival.history = newRival.history.slice(newRival.history.length - 20);
-        }
-
-        return newRival;
-    });
-
-    // Handle new rival group appearance
-    // (This part remains the same)
-    const rivalNames = [
-        'Lunar Princesses', 'Project Nova', 'Sapphire Kiss', 'Onyx7', 'Solstice',
-        'Equinox', 'Galaxy Girls', 'Cosmic Charm', 'Nebula Stars', 'Pixel Pop',
-        'Melty Kiss', 'Cherry Chu', 'Violet Theory', 'Zero Gravity', 'Saka46-X',
-        'Midnight Bloom', 'Neo-Genesis', 'Velvet Riot', 'Aero-Step', 'Diamond Dust',
-        'Pure Rhythm', 'Kira-Kira 5', 'Digital Hearts', 'Urban Muse', 'Crimson Edge',
-        'Starry Palette', 'Glass Wings', 'Next-Gen Idols', 'Prism 9', 'Secret Garden',
-        'Nova-Ray', 'Luminous', 'Bitter-Sweet', 'Infinity Girl', 'Code:Pink',
-        'Vivid Soul', 'Aozora Sisters', 'Techno-Tale', 'Goth-Loli Punk', 'Sugar Rush',
-        'Metal Maidens', 'Silent Siren', 'Aura-Blast', 'Future-Mix', 'Starlight 7',
-        'Honey-BEE', 'Lunar Eclipse', 'Paradox-G', 'Miracle-Step', 'Last-Piece',
-        'Shadow Senbatsu', 'Kaminari Girls', 'Zenith 10', 'Ethereal Flow', 'Rubies of Tokyo',
-        'Midnight Protocol', 'Seifuku Rebellion', 'Afterglow 5', 'Digital Diva Project', 'Heart-Link',
-        'Neon Valkyries', 'Ametrine Dreams', 'Sonic Sweethearts', 'Hyper-Bloom', 'Aozora Project',
-        'Twilight Trigger', 'Platinum Pulse', 'Hana-bi Force', 'Reverse:Fantasy', 'Star-Crossed 9',
-        'Electric Enigma', 'Sakura Storm', 'Vanguard Vibe', 'Opal Odyssey', 'Phantom Idols',
-        'Kuro-Neko Kiss', 'Vector Vixens', 'Cyber-Siren', 'Majestic Moon', 'Alpha-Order',
-        'Gilded Ghost', 'Mirage Melody', 'Chaos Candy', 'Iron Rose', 'Synchro-Step',
-        'Blue-Sky Blade', 'Tear-Drop 4', 'Gravity Queens', 'Nova-Core', 'Tsuki-yomi 7',
-        'Glitter Gang', 'Bionic Berry', 'Royal Resonance', 'Savage Soul', 'Wink Warriors',
-        'Zenith Zero', 'Misty Muse', 'Neon-Knights', 'Radiant Riot', 'Final Fortune'
-    ];
-    if (updatedRivals.length < 5 && Math.random() < 0.02) {
-        const newRivalName = rivalNames.find(name => !updatedRivals.some(r => r.name === name));
-        if (newRivalName) {
-            const archetypes = ['Powerhouse', 'Visual Queens', 'Critical Darlings', 'Rising Stars'];
-            const membersCount = 8 + Math.floor(Math.random() * 8);
-            const members = Array.from({ length: membersCount }, (_, i) => ({
-                id: `rival-${updatedRivals.length}-${i}`,
-                name: generateRandomMemberName(),
-                age: 16 + Math.floor(Math.random() * 5),
-                joinWeek: currentWeek,
-                fans: 1000 + Math.floor(Math.random() * 4000),
-            }));
-            const ace = members.sort((a, b) => b.fans - a.fans)[0];
-            const totalFans = members.reduce((sum, m) => sum + m.fans, 0);
-
-            updatedRivals.push({
-                id: Date.now(),
-                name: newRivalName,
-                fans: totalFans,
-                membersCount: members.length,
-                members: members,
-                aceId: ace.id,
-                songs: [],
-                archetype: archetypes[Math.floor(Math.random() * archetypes.length)],
-                aggression: Math.floor(Math.random() * 50) + 25,
-                history: [{ week: currentWeek, event: `Formed as a new rival group.` }]
-            });
-            addNotificationInLoop({
-                type: 'Rival',
-                message: `A new rival group, ${newRivalName}, has appeared on the scene!`
-            });
-        }
-    }
-
-    return updatedRivals;
-};
-
-
-const startCollaboration = (rivalId, cost = 250000) => {
-    const rival = rivalGroups.find(r => r.id === parseInt(rivalId, 10));
-    if (!rival) return;
-
-    if (money < cost) {
-        setMessage(`Not enough money to propose a collaboration. Cost: ¥${cost.toLocaleString()}`);
-        return;
-    }
-
-    // Success chance based on reputation and rival's aggression
-    const successChance = 0.5 + (groupReputation / 100) - (rival.aggression / 100);
-
-    if (true) {
-        setMoney(prev => prev - cost);
-
-        // This is the key part: we open the song creation modal with
-        // special data indicating it's a collaboration.
-        setModalData({
-            isCollaboration: true,
-            rivalPartner: rival,
-            // Add the missing properties that CreateSongModal expects
-            targetGroupId: 'main',
-            songs: songs,
-            sisterGroups: sisterGroups
-        });
-        setShowModal('createSong');
-        setMessage(`Proposal accepted! You are now creating a collaboration single with ${rival.name}.`);
-    } else {
-        setMessage(`${rival.name} rejected your collaboration proposal. Maybe improve your reputation or wait for relations to cool down.`);
-    }
-};
-
-const confirmExchangeStudent = (rival, chosenRivalMembers, chosenPlayerMemberIds) => {
-    const playerMembers = chosenPlayerMemberIds.map(id => getMemberById(id)).filter(Boolean);
-    if (playerMembers.length !== chosenPlayerMemberIds.length || chosenRivalMembers.length === 0) {
-        setMessage("Error: One or more selected members could not be found.");
-        return;
-    }
-
-    const newExchangeStudents = chosenRivalMembers.map((rivalMember, index) => {
-        const exchangeMemberObject = {
-            id: `rival-${rival.id}-${Date.now()}-${index}`,
-            rosterId: `rival-${rival.id}-${Date.now()}-${index}`,
-            name: `${rivalMember.name} (${rival.name})`,
-            age: rivalMember.age,
-            singing: rivalMember.singing,
-            dancing: rivalMember.dancing,
-            visual: rivalMember.visual,
-            variety: rivalMember.variety,
-            charisma: rivalMember.charisma,
-            intelligence: rivalMember.intelligence,
-            stamina: 100, morale: 100, stress: 0,
-            fans: rivalMember.fans,
-            isAvailable: true,
-            homeGroup: rival.name,
-            isExchangeStudent: true,
-            isRivalKennin: true,
-            kenninInfo: { groupName: groupName, endWeek: week + 52 },
-            hometown: rivalMember.hometown,
-            personality: rivalMember.personality,
-            nickname: rivalMember.nickname,
-            graduationWindow: { min: 99, max: 99 },
-            ambition: "Exchange Program",
-            teamHistory: [{ week: week, event: `Concurrent position with ${groupName} started` }],
-            singlesParticipation: [], songsParticipation: [], centerHistory: [], chemistry: {}, isGraduating: false, graduationUrgency: 0,
-            generation: 'Exchange',
-        };
-
-        return {
-            rivalId: rival.id,
-            rivalName: rival.name,
-            member: exchangeMemberObject,
-            startWeek: week,
-            endWeek: week + 52,
-        };
-    });
-
-    setExchangeStudents(prev => [...(prev || []), ...newExchangeStudents]);
-
-
-    // --- SET UP THE OUTGOING PLAYER MEMBERS' KENNIN ---
-    playerMembers.forEach(playerMember => {
-        updateMemberState(playerMember.rosterId, m => ({
-            ...m,
-            rivalKennin: {
-                rivalId: rival.id,
-                rivalName: rival.name,
-                endWeek: week + 52,
-            },
-            teamHistory: [...(m.teamHistory || []), { week, event: `Concurrent position with ${rival.name} started` }]
-        }));
-    });
-
-    // --- FINALIZE AND CLOSE ---
-    const messageText = `SUCCESS! An exchange program with ${rival.name} has begun.`;
-    setMessage(messageText);
-    addNotification({ type: 'Special', message: messageText });
-    setShowModal(null);
-};
-
-
-const startExchangeProgram = (rivalId) => {
-    const rival = rivalGroups.find(r => r.id === parseInt(rivalId, 10));
-    if (!rival) return;
-
-    // --- REQUIREMENTS DISABLED FOR TESTING ---
-
-    // --- GENERATE A TEMPORARY ROSTER FOR THE RIVAL ---
-    const rivalRoster = Array.from({ length: rival.membersCount || 16 }, (_, i) => {
-        const isAce = i === 0;
-        const memberName = isAce ? rival.ace.name : generateRandomMemberName();
-        const memberFans = isAce ? rival.ace.fans : 100000 + Math.floor(Math.random() * 50000);
-
-        const firstName = memberName.split(' ')[0];
-        const suffixes = ['rin', 'tan', 'chi', 'nyan', 'pyon', 'run', 'non', 'kyun'];
-        const nickname = `${firstName}-${suffixes[Math.floor(Math.random() * suffixes.length)]}`;
-        const personalities = ['Cheerful', 'Shy', 'Confident', 'Ambitious', 'Easygoing', 'Energetic', 'Quiet', 'Ice Queen', 'Lone Wolf', 'Rebellious', 'Natural Leader', 'Little Sister', 'Stage Genius'];
-
-        return {
-            id: `rival-temp-${rival.id}-${i}`,
-            name: memberName,
-            age: 18 + Math.floor(Math.random() * 5),
-            singing: 70 + Math.floor(Math.random() * 25),
-            dancing: 70 + Math.floor(Math.random() * 25),
-            visual: 70 + Math.floor(Math.random() * 25),
-            variety: 50 + Math.floor(Math.random() * 25),
-            charisma: 65 + Math.floor(Math.random() * 25),
-            intelligence: 60 + Math.floor(Math.random() * 25),
-            fans: { hardcore: Math.floor(memberFans * 0.5), casual: Math.floor(memberFans * 0.5) },
-            hometown: generateRandomHometown(),
-            personality: personalities[Math.floor(Math.random() * personalities.length)],
-            nickname: nickname
-        };
-    });
-
-    // --- OPEN THE MODAL WITH THE GENERATED DATA ---
-    setModalData({ rival, rivalRoster });
-    setShowModal('exchangeStudent');
-};
-
-const startInternalSurvivalShow = (showName, unitName, debutCount, playerParticipantIds, outsiderCount) => {
-    const cost = 500000;
-    if (money < cost) {
-        setMessage("Not enough money to host an internal survival show.");
-        return;
-    }
-    if (playerParticipantIds.length === 0) {
-        setMessage("You must select at least one of your own members to participate.");
-        return;
-    }
-
-    setMoney(prev => prev - cost);
-    addNotification({ type: 'Event', message: `Your internal survival show, "${showName}", has begun!` });
-
-    // Make selected members unavailable and record history
-    playerParticipantIds.forEach(id => {
-        updateMemberState(id, m => ({
-            ...m,
-            isAvailable: false,
-            currentActivity: `In survival show "${showName}"`,
-            activityEnd: week + 12,
-            teamHistory: [...(m.teamHistory || []), { week: week, event: `Joined internal survival show "${showName}"` }]
-        }));
-    });
-
-    const yourContestants = playerParticipantIds.map(id => {
-        const member = getMemberById(id);
-        return {
-            id: member.rosterId,
-            name: member.name,
-            group: getMemberGroupStatus(member).split(' | ')[0],
-            isPlayer: true,
-            vocal: member.singing,
-            dance: member.dancing,
-            visual: member.visual,
-            charisma: member.charisma,
-            popularity: getTotalFansForMember(member) / 100,
-            grade: 'F'
-        };
-    });
-
-    // Generate outside trainee contestants
-    const outsiderContestants = [];
-    const personalities = ['Cheerful', 'Shy', 'Confident', 'Ambitious', 'Easygoing', 'Energetic', 'Quiet'];
-    for (let i = 0; i < outsiderCount; i++) {
-        const traineeName = generateRandomMemberName();
-        outsiderContestants.push({
-            id: `outsider-${Date.now()}-${i}`,
-            name: traineeName,
-            group: "Independent Trainee",
-            isPlayer: false,
-            isOutsider: true, // Flag to identify them later
-            vocal: 30 + Math.random() * 40,
-            dance: 30 + Math.random() * 40,
-            visual: 30 + Math.random() * 40,
-            charisma: 30 + Math.random() * 40,
-            intelligence: 30 + Math.random() * 40,
-            popularity: 100 + Math.random() * 500,
-            grade: 'F',
-            // Add data needed for recruitment
-            hometown: generateRandomHometown(),
-            potential: 50 + Math.random() * 40,
-            personality: personalities[Math.floor(Math.random() * personalities.length)],
-            age: 14 + Math.floor(Math.random() * 5),
-        });
-    }
-
-    const allContestants = [...yourContestants, ...outsiderContestants];
-
-    setSurvivalShow({
-        name: showName,
-        isActive: true,
-        isInternal: true, // Flag for internal show
-        unitName: unitName, // Store unit name
-        debutCount: debutCount, // Store debut group size
-        week: 1,
-        totalWeeks: 12,
-        contestants: allContestants,
-        log: [`Episode 1: The contestants for "${showName}" are revealed!`],
-        eliminatedPlayerMembers: [],
-    });
-
-    setShowModal('liveSurvivalShow');
-};
-
-const createUnitFromSurvival = (winners, unitName, allPlayerParticipants) => {
-    const cost = 50000;
-    const contractFee = 15000;
-    const outsiderWinners = (winners || []).filter(w => w.isOutsider);
-    const playerMemberWinners = (winners || []).filter(w => w.isPlayer);
-    const totalCost = cost + (outsiderWinners.length * contractFee);
-
-    if (money < totalCost) {
-        setMessage("Not enough money to form the unit and sign new trainees.");
-        return;
-    }
-
-    // --- All state updates will be based on these new variables ---
-    let updatedMembers = [...members];
-    let updatedSisterGroups = [...sisterGroups];
-
-    // 1. Create full member objects for the outsider trainees
-    const allCurrentIds = [...members.map(m => m.id), ...sisterGroups.flatMap(sg => (sg.members || []).map(m => m.id))];
-    const startingId = allCurrentIds.length > 0 ? Math.max(0, ...allCurrentIds.map(id => parseInt(id, 10)).filter(id => !isNaN(id))) : 0;
-
-    const newTraineeMembers = outsiderWinners.map((trainee, index) => {
-        const newId = startingId + 1 + index;
-        return {
-            id: newId,
-            rosterId: `sg-temp-${newId}`, // Temporary, will be updated when added to the group
-            name: trainee.name,
-            hometown: trainee.hometown,
-            age: trainee.age,
-            singing: trainee.vocal,
-            dancing: trainee.dance,
-            visual: trainee.visual,
-            charisma: trainee.charisma,
-            intelligence: trainee.intelligence,
-            variety: trainee.variety || 50,
-            potential: trainee.potential,
-            personality: trainee.personality,
-            fans: { hardcore: 0, casual: 500 },
-            stamina: 100,
-            morale: 100,
-            stress: 0,
-            isAvailable: true,
-            generation: '1st Generation',
-            homeGroup: unitName,
-            teamHistory: [{ week: week, event: `Joined unit "${unitName}" via survival show.` }],
-            nickname: trainee.name.split(' ')[0],
-            position: 'under',
-            birthday: Math.floor(Math.random() * 52) + 1,
-            graduated: false,
-            isGraduating: false,
-            rank: 999,
-            trainingFocus: 'none',
-            singlesParticipation: [],
-            songsParticipation: [],
-            centerHistory: [],
-            kenninGroups: [],
-            electionHype: 0,
-            isCurrentCenter: false,
-            chemistry: {},
-            filmHistory: [],
-            graduationWindow: { min: 4, max: 8 },
-            graduationUrgency: 0,
-            ambition: 'Pursue a Solo Dream'
-        };
-    });
-
-    // 2. Add kennin status to the ORIGINAL player members
-    playerMemberWinners.forEach(winner => {
-        const memberId = winner.id;
-        let memberFoundAndUpdated = false;
-
-        // Update in main group
-        updatedMembers = updatedMembers.map(m => {
-            if (String(m.id) === String(memberId) || m.rosterId === memberId) {
-                memberFoundAndUpdated = true;
-                return {
-                    ...m,
-                    kenninGroups: [...(m.kenninGroups || []), unitName],
-                    teamHistory: [...(m.teamHistory || []), { week: week, event: `Joined unit "${unitName}" as a concurrent member.` }]
-                };
-            }
-            return m;
-        });
-
-        // Update in sister groups if not found in main
-        if (!memberFoundAndUpdated) {
-            updatedSisterGroups = updatedSisterGroups.map(sg => {
-                const memberIndex = (sg.members || []).findIndex(m => `sg-${sg.id}-${m.id}` === memberId);
-                if (memberIndex > -1) {
-                    const updatedMember = {
-                        ...(sg.members[memberIndex]),
-                        kenninGroups: [...(sg.members[memberIndex].kenninGroups || []), unitName],
-                        teamHistory: [...(sg.members[memberIndex].teamHistory || []), { week: week, event: `Joined unit "${unitName}" as a concurrent member.` }]
-                    };
-                    sg.members[memberIndex] = updatedMember;
-                }
-                return sg;
-            });
-        }
-    });
-
-    // 3. Create the new unit with the correct member structure
-    const newUnitId = (sisterGroups.length > 0 ? Math.max(0, ...sisterGroups.map(sg => sg.id)) : 0) + 1;
-
-    // Correctly get full objects of player winners
-    const playerWinnerObjects = playerMemberWinners.map(w => getMemberById(w.id)).filter(Boolean);
-
-    const newUnit = {
-        id: newUnitId,
-        name: unitName,
-        type: 'unit',
-        location: 'Special Project',
-        members: [
-            ...newTraineeMembers.map(m => ({ ...m, rosterId: `sg-${newUnitId}-${m.id}`, groupId: newUnitId })),
-            ...playerWinnerObjects.map(m => ({ ...m, rosterId: m.rosterId, isKennin: true }))
-        ],
-        fans: 100, songs: [], income: 0, isAutonomous: false, money: 0, licensedSongs: []
+        return updatedRivals;
     };
 
-    updatedSisterGroups.push(newUnit);
 
-    // 4. Set all state at once
-    setMoney(prev => prev - totalCost);
-    setMembers(updatedMembers);
-    setSisterGroups(updatedSisterGroups);
+    const startCollaboration = (rivalId, cost = 250000) => {
+        const rival = rivalGroups.find(r => r.id === parseInt(rivalId, 10));
+        if (!rival) return;
 
-    addNotification({ type: 'Success', message: `The new unit "${unitName}" has been formed!` });
-
-    // 5. Make all participants available again
-    (allPlayerParticipants || []).forEach(p => {
-        updateMemberState(p.id, m => ({ ...m, isAvailable: true, currentActivity: null, activityEnd: null }));
-    });
-};
-
-const confirmUnitFromVote = () => {
-    if (!lastUnitVoteResult) return;
-    const { unitName, winners } = lastUnitVoteResult;
-
-    // Use the existing sister group creation logic with type 'unit'
-    const newUnitId = confirmCreateSisterGroup({
-        groupName: unitName,
-        type: 'unit',
-        location: 'Special Project'
-    }, winners.map(w => w.rosterId)); // Immediately assign members
-
-    if (newUnitId) {
-        addNotification({ type: 'Management', message: `The fan-voted unit "${unitName}" has been officially formed!` });
-    }
-
-    setLastUnitVoteResult(null);
-    setShowModal(null);
-};
-
-
-const generateSponsorships = () => {
-    if (Math.random() > 0.65) { // 65% chance to generate new offers each week
-        const newOffers = [];
-        const maxOffers = 3;
-
-        // Flatten all tiers into a single array
-        const allTiers = Object.values(sponsorshipTiers).flatMap(category => Object.values(category));
-
-        for (let i = 0; i < (Math.random() * 3 + 1); i++) { // Generate 1-3 potential offers
-            if (newOffers.length >= maxOffers) break;
-
-            const offer = allTiers[Math.floor(Math.random() * allTiers.length)];
-
-            // Rarity check
-            if (Math.random() > offer.rarity) continue;
-
-            // Check if an identical offer already exists
-            if (!sponsorships.some(existing => existing.id === offer.id) && !newOffers.some(existing => existing.id === offer.id)) {
-                newOffers.push({ ...offer, expires: week + 2 }); // Offers last for 2 weeks
-            }
+        if (money < cost) {
+            setMessage(`Not enough money to propose a collaboration. Cost: ¥${cost.toLocaleString()}`);
+            return;
         }
 
-        if (newOffers.length > 0) {
-            setSponsorships(prev => [...prev, ...newOffers]);
-            addNotification({ type: 'Briefcase', message: `New job offers are available on the Buzz tab!` });
+        // Success chance based on reputation and rival's aggression
+        const successChance = 0.5 + (groupReputation / 100) - (rival.aggression / 100);
+
+        if (true) {
+            setMoney(prev => prev - cost);
+
+            // This is the key part: we open the song creation modal with
+            // special data indicating it's a collaboration.
+            setModalData({
+                isCollaboration: true,
+                rivalPartner: rival,
+                // Add the missing properties that CreateSongModal expects
+                targetGroupId: 'main',
+                songs: songs,
+                sisterGroups: sisterGroups
+            });
+            setShowModal('createSong');
+            setMessage(`Proposal accepted! You are now creating a collaboration single with ${rival.name}.`);
+        } else {
+            setMessage(`${rival.name} rejected your collaboration proposal. Maybe improve your reputation or wait for relations to cool down.`);
         }
-    }
-    // Expire old offers
-    setSponsorships(prev => prev.filter(offer => offer.expires > week));
-};
+    };
 
-const acceptSponsorship = (offerId, memberIds) => {
-    const offer = sponsorships.find(s => s.id === offerId);
-    if (!offer) return setMessage("Offer not found.");
+    const confirmExchangeStudent = (rival, chosenRivalMembers, chosenPlayerMemberIds) => {
+        const playerMembers = chosenPlayerMemberIds.map(id => getMemberById(id)).filter(Boolean);
+        if (playerMembers.length !== chosenPlayerMemberIds.length || chosenRivalMembers.length === 0) {
+            setMessage("Error: One or more selected members could not be found.");
+            return;
+        }
 
-    if (money < (offer.cost || 0)) {
-        return setMessage("Not enough money for this opportunity.");
-    }
-    setMoney(prev => prev - (offer.cost || 0));
+        const newExchangeStudents = chosenRivalMembers.map((rivalMember, index) => {
+            const exchangeMemberObject = {
+                id: `rival-${rival.id}-${Date.now()}-${index}`,
+                rosterId: `rival-${rival.id}-${Date.now()}-${index}`,
+                name: `${rivalMember.name} (${rival.name})`,
+                age: rivalMember.age,
+                singing: rivalMember.singing,
+                dancing: rivalMember.dancing,
+                visual: rivalMember.visual,
+                variety: rivalMember.variety,
+                charisma: rivalMember.charisma,
+                intelligence: rivalMember.intelligence,
+                stamina: 100, morale: 100, stress: 0,
+                fans: rivalMember.fans,
+                isAvailable: true,
+                homeGroup: rival.name,
+                isExchangeStudent: true,
+                isRivalKennin: true,
+                kenninInfo: { groupName: groupName, endWeek: week + 52 },
+                hometown: rivalMember.hometown,
+                personality: rivalMember.personality,
+                nickname: rivalMember.nickname,
+                graduationWindow: { min: 99, max: 99 },
+                ambition: "Exchange Program",
+                teamHistory: [{ week: week, event: `Concurrent position with ${groupName} started` }],
+                singlesParticipation: [], songsParticipation: [], centerHistory: [], chemistry: {}, isGraduating: false, graduationUrgency: 0,
+                generation: 'Exchange',
+            };
 
-    // Pay out money reward immediately
-    if (offer.reward.money) {
-        setMoney(prev => prev + offer.reward.money);
-    }
-    // Distribute fan rewards
-    if (offer.reward.fanGain) {
-        distributeFans(offer.reward.fanGain, memberIds);
-    }
-    // Add reputation
-    if (offer.reward.repGain) {
-        setGroupReputation(prev => prev + offer.reward.repGain);
-    }
+            return {
+                rivalId: rival.id,
+                rivalName: rival.name,
+                member: exchangeMemberObject,
+                startWeek: week,
+                endWeek: week + 52,
+            };
+        });
 
-    // Make members unavailable if the job has a duration
-    if (offer.duration > 0) {
-        memberIds.forEach(id => {
+        setExchangeStudents(prev => [...(prev || []), ...newExchangeStudents]);
+
+
+        // --- SET UP THE OUTGOING PLAYER MEMBERS' KENNIN ---
+        playerMembers.forEach(playerMember => {
+            updateMemberState(playerMember.rosterId, m => ({
+                ...m,
+                rivalKennin: {
+                    rivalId: rival.id,
+                    rivalName: rival.name,
+                    endWeek: week + 52,
+                },
+                teamHistory: [...(m.teamHistory || []), { week, event: `Concurrent position with ${rival.name} started` }]
+            }));
+        });
+
+        // --- FINALIZE AND CLOSE ---
+        const messageText = `SUCCESS! An exchange program with ${rival.name} has begun.`;
+        setMessage(messageText);
+        addNotification({ type: 'Special', message: messageText });
+        setShowModal(null);
+    };
+
+
+    const startExchangeProgram = (rivalId) => {
+        const rival = rivalGroups.find(r => r.id === parseInt(rivalId, 10));
+        if (!rival) return;
+
+        // --- REQUIREMENTS DISABLED FOR TESTING ---
+
+        // --- GENERATE A TEMPORARY ROSTER FOR THE RIVAL ---
+        const rivalRoster = Array.from({ length: rival.membersCount || 16 }, (_, i) => {
+            const isAce = i === 0;
+            const memberName = isAce ? rival.ace.name : generateRandomMemberName();
+            const memberFans = isAce ? rival.ace.fans : 100000 + Math.floor(Math.random() * 50000);
+
+            const firstName = memberName.split(' ')[0];
+            const suffixes = ['rin', 'tan', 'chi', 'nyan', 'pyon', 'run', 'non', 'kyun'];
+            const nickname = `${firstName}-${suffixes[Math.floor(Math.random() * suffixes.length)]}`;
+            const personalities = ['Cheerful', 'Shy', 'Confident', 'Ambitious', 'Easygoing', 'Energetic', 'Quiet', 'Ice Queen', 'Lone Wolf', 'Rebellious', 'Natural Leader', 'Little Sister', 'Stage Genius'];
+
+            return {
+                id: `rival-temp-${rival.id}-${i}`,
+                name: memberName,
+                age: 18 + Math.floor(Math.random() * 5),
+                singing: 70 + Math.floor(Math.random() * 25),
+                dancing: 70 + Math.floor(Math.random() * 25),
+                visual: 70 + Math.floor(Math.random() * 25),
+                variety: 50 + Math.floor(Math.random() * 25),
+                charisma: 65 + Math.floor(Math.random() * 25),
+                intelligence: 60 + Math.floor(Math.random() * 25),
+                fans: { hardcore: Math.floor(memberFans * 0.5), casual: Math.floor(memberFans * 0.5) },
+                hometown: generateRandomHometown(),
+                personality: personalities[Math.floor(Math.random() * personalities.length)],
+                nickname: nickname
+            };
+        });
+
+        // --- OPEN THE MODAL WITH THE GENERATED DATA ---
+        setModalData({ rival, rivalRoster });
+        setShowModal('exchangeStudent');
+    };
+
+    const startInternalSurvivalShow = (showName, unitName, debutCount, playerParticipantIds, outsiderCount) => {
+        const cost = 500000;
+        if (money < cost) {
+            setMessage("Not enough money to host an internal survival show.");
+            return;
+        }
+        if (playerParticipantIds.length === 0) {
+            setMessage("You must select at least one of your own members to participate.");
+            return;
+        }
+
+        setMoney(prev => prev - cost);
+        addNotification({ type: 'Event', message: `Your internal survival show, "${showName}", has begun!` });
+
+        // Make selected members unavailable and record history
+        playerParticipantIds.forEach(id => {
             updateMemberState(id, m => ({
                 ...m,
                 isAvailable: false,
-                currentActivity: `On assignment: ${offer.name}`,
-                activityEnd: week + offer.duration
+                currentActivity: `In survival show "${showName}"`,
+                activityEnd: week + 12,
+                teamHistory: [...(m.teamHistory || []), { week: week, event: `Joined internal survival show "${showName}"` }]
             }));
         });
-    }
 
-    // Get member objects for the result modal
-    const members = memberIds.map(id => getMemberById(id)).filter(Boolean);
+        const yourContestants = playerParticipantIds.map(id => {
+            const member = getMemberById(id);
+            return {
+                id: member.rosterId,
+                name: member.name,
+                group: getMemberGroupStatus(member).split(' | ')[0],
+                isPlayer: true,
+                vocal: member.singing,
+                dance: member.dancing,
+                visual: member.visual,
+                charisma: member.charisma,
+                popularity: getTotalFansForMember(member) / 100,
+                grade: 'F'
+            };
+        });
 
-    // Remove the offer from the list
-    setSponsorships(prev => prev.filter(s => s.id !== offerId));
-    addNotification({ type: 'Success', message: `Accepted job: ${offer.name}!` });
+        // Generate outside trainee contestants
+        const outsiderContestants = [];
+        const personalities = ['Cheerful', 'Shy', 'Confident', 'Ambitious', 'Easygoing', 'Energetic', 'Quiet'];
+        for (let i = 0; i < outsiderCount; i++) {
+            const traineeName = generateRandomMemberName();
+            outsiderContestants.push({
+                id: `outsider-${Date.now()}-${i}`,
+                name: traineeName,
+                group: "Independent Trainee",
+                isPlayer: false,
+                isOutsider: true, // Flag to identify them later
+                vocal: 30 + Math.random() * 40,
+                dance: 30 + Math.random() * 40,
+                visual: 30 + Math.random() * 40,
+                charisma: 30 + Math.random() * 40,
+                intelligence: 30 + Math.random() * 40,
+                popularity: 100 + Math.random() * 500,
+                grade: 'F',
+                // Add data needed for recruitment
+                hometown: generateRandomHometown(),
+                potential: 50 + Math.random() * 40,
+                personality: personalities[Math.floor(Math.random() * personalities.length)],
+                age: 14 + Math.floor(Math.random() * 5),
+            });
+        }
 
-    // Set data for and show the result modal
-    setModalData({ offer, members });
-    setShowModal('sponsorshipResult');
-};
+        const allContestants = [...yourContestants, ...outsiderContestants];
 
-const declineSponsorship = (offerId) => {
-    setSponsorships(prev => prev.filter(s => s.id !== offerId));
-    setMessage("Offer declined.");
-    setShowModal(null);
-};
-const simulateLivestream = () => {
-    // Reset the stream each week
-    setActiveStream(null);
+        setSurvivalShow({
+            name: showName,
+            isActive: true,
+            isInternal: true, // Flag for internal show
+            unitName: unitName, // Store unit name
+            debutCount: debutCount, // Store debut group size
+            week: 1,
+            totalWeeks: 12,
+            contestants: allContestants,
+            log: [`Episode 1: The contestants for "${showName}" are revealed!`],
+            eliminatedPlayerMembers: [],
+        });
 
-    // 40% chance of a stream happening each week
-    if (Math.random() > 0.6) return;
+        setShowModal('liveSurvivalShow');
+    };
 
-    const availableMembers = getAllAvailableMembers(true).filter(m => m.isAvailable);
-    if (availableMembers.length === 0) return;
+    const createUnitFromSurvival = (winners, unitName, allPlayerParticipants) => {
+        const cost = 50000;
+        const contractFee = 15000;
+        const outsiderWinners = (winners || []).filter(w => w.isOutsider);
+        const playerMemberWinners = (winners || []).filter(w => w.isPlayer);
+        const totalCost = cost + (outsiderWinners.length * contractFee);
 
-    // Higher charisma members are more likely to stream
-    const member = availableMembers.sort((a, b) => (b.charisma || 0) - (a.charisma || 0))[0];
-    if (Math.random() > (member.charisma || 50) / 150) return; // Member with 75 charisma has 50% chance
+        if (money < totalCost) {
+            setMessage("Not enough money to form the unit and sign new trainees.");
+            return;
+        }
 
-    const streamType = livestreamTypes[Math.floor(Math.random() * livestreamTypes.length)];
+        // --- All state updates will be based on these new variables ---
+        let updatedMembers = [...members];
+        let updatedSisterGroups = [...sisterGroups];
 
-    let fanGain = 0;
-    let message = '';
+        // 1. Create full member objects for the outsider trainees
+        const allCurrentIds = [...members.map(m => m.id), ...sisterGroups.flatMap(sg => (sg.members || []).map(m => m.id))];
+        const startingId = allCurrentIds.length > 0 ? Math.max(0, ...allCurrentIds.map(id => parseInt(id, 10)).filter(id => !isNaN(id))) : 0;
 
-    const skill = member[streamType.stat] || 50;
-    const successRoll = Math.random();
-    const gaffeRoll = Math.random();
+        const newTraineeMembers = outsiderWinners.map((trainee, index) => {
+            const newId = startingId + 1 + index;
+            return {
+                id: newId,
+                rosterId: `sg-temp-${newId}`, // Temporary, will be updated when added to the group
+                name: trainee.name,
+                hometown: trainee.hometown,
+                age: trainee.age,
+                singing: trainee.vocal,
+                dancing: trainee.dance,
+                visual: trainee.visual,
+                charisma: trainee.charisma,
+                intelligence: trainee.intelligence,
+                variety: trainee.variety || 50,
+                potential: trainee.potential,
+                personality: trainee.personality,
+                fans: { hardcore: 0, casual: 500 },
+                stamina: 100,
+                morale: 100,
+                stress: 0,
+                isAvailable: true,
+                generation: '1st Generation',
+                homeGroup: unitName,
+                teamHistory: [{ week: week, event: `Joined unit "${unitName}" via survival show.` }],
+                nickname: trainee.name.split(' ')[0],
+                position: 'under',
+                birthday: Math.floor(Math.random() * 52) + 1,
+                graduated: false,
+                isGraduating: false,
+                rank: 999,
+                trainingFocus: 'none',
+                singlesParticipation: [],
+                songsParticipation: [],
+                centerHistory: [],
+                kenninGroups: [],
+                electionHype: 0,
+                isCurrentCenter: false,
+                chemistry: {},
+                filmHistory: [],
+                graduationWindow: { min: 4, max: 8 },
+                graduationUrgency: 0,
+                ambition: 'Pursue a Solo Dream'
+            };
+        });
 
-    if (gaffeRoll < streamType.gaffeChance && skill < 50) {
-        // Gaffe
-        fanGain = -Math.floor(streamType.baseFanGain * 0.5);
-        message = `${member.name}'s ${streamType.type} stream was a bit awkward, losing some fans.`;
-        addNotification({ type: 'Alert', message });
-    } else {
-        // Success
-        fanGain = Math.floor(streamType.baseFanGain * (skill / 75));
-        message = `${member.name}'s ${streamType.type} stream was a success, gaining ${fanGain.toLocaleString()} fans!`;
-        addNotification({ type: 'Info', message });
-    }
+        // 2. Add kennin status to the ORIGINAL player members
+        playerMemberWinners.forEach(winner => {
+            const memberId = winner.id;
+            let memberFoundAndUpdated = false;
 
-    if (fanGain !== 0) {
-        updateMemberState(member.rosterId, m => ({
-            ...m,
-            fans: {
-                ...m.fans,
-                casual: Math.max(0, (m.fans.casual || 0) + fanGain)
+            // Update in main group
+            updatedMembers = updatedMembers.map(m => {
+                if (String(m.id) === String(memberId) || m.rosterId === memberId) {
+                    memberFoundAndUpdated = true;
+                    return {
+                        ...m,
+                        kenninGroups: [...(m.kenninGroups || []), unitName],
+                        teamHistory: [...(m.teamHistory || []), { week: week, event: `Joined unit "${unitName}" as a concurrent member.` }]
+                    };
+                }
+                return m;
+            });
+
+            // Update in sister groups if not found in main
+            if (!memberFoundAndUpdated) {
+                updatedSisterGroups = updatedSisterGroups.map(sg => {
+                    const memberIndex = (sg.members || []).findIndex(m => `sg-${sg.id}-${m.id}` === memberId);
+                    if (memberIndex > -1) {
+                        const updatedMember = {
+                            ...(sg.members[memberIndex]),
+                            kenninGroups: [...(sg.members[memberIndex].kenninGroups || []), unitName],
+                            teamHistory: [...(sg.members[memberIndex].teamHistory || []), { week: week, event: `Joined unit "${unitName}" as a concurrent member.` }]
+                        };
+                        sg.members[memberIndex] = updatedMember;
+                    }
+                    return sg;
+                });
             }
-        }));
-    }
+        });
 
-    setActiveStream({
-        member,
-        streamType,
-        message
-    });
-};
+        // 3. Create the new unit with the correct member structure
+        const newUnitId = (sisterGroups.length > 0 ? Math.max(0, ...sisterGroups.map(sg => sg.id)) : 0) + 1;
 
-const checkForAnnualFestivals = () => {
-    const currentWeekOfYear = ((week - 1) % 52) + 1;
-    const newlyAvailable = [];
+        // Correctly get full objects of player winners
+        const playerWinnerObjects = playerMemberWinners.map(w => getMemberById(w.id)).filter(Boolean);
 
-    const yearStartWeek = Math.floor((week - 1) / 52) * 52 + 1;
-    const performancesThisYear = performanceHistory.filter(p => p.week >= yearStartWeek);
+        const newUnit = {
+            id: newUnitId,
+            name: unitName,
+            type: 'unit',
+            location: 'Special Project',
+            members: [
+                ...newTraineeMembers.map(m => ({ ...m, rosterId: `sg-${newUnitId}-${m.id}`, groupId: newUnitId })),
+                ...playerWinnerObjects.map(m => ({ ...m, rosterId: m.rosterId, isKennin: true }))
+            ],
+            fans: 100, songs: [], income: 0, isAutonomous: false, money: 0, licensedSongs: []
+        };
 
-    for (const festival of Object.values(annualFestivals)) {
-        // Check if it's the right week of the year and if it hasn't been performed this year
-        if (festival.week === currentWeekOfYear && !performancesThisYear.some(p => p.name.includes(festival.name))) {
+        updatedSisterGroups.push(newUnit);
 
-            // FOR TESTING: This 'if (true)' block bypasses all requirements.
-            if (true) {
-                newlyAvailable.push(festival);
+        // 4. Set all state at once
+        setMoney(prev => prev - totalCost);
+        setMembers(updatedMembers);
+        setSisterGroups(updatedSisterGroups);
+
+        addNotification({ type: 'Success', message: `The new unit "${unitName}" has been formed!` });
+
+        // 5. Make all participants available again
+        (allPlayerParticipants || []).forEach(p => {
+            updateMemberState(p.id, m => ({ ...m, isAvailable: true, currentActivity: null, activityEnd: null }));
+        });
+    };
+
+    const confirmUnitFromVote = () => {
+        if (!lastUnitVoteResult) return;
+        const { unitName, winners } = lastUnitVoteResult;
+
+        // Use the existing sister group creation logic with type 'unit'
+        const newUnitId = confirmCreateSisterGroup({
+            groupName: unitName,
+            type: 'unit',
+            location: 'Special Project'
+        }, winners.map(w => w.rosterId)); // Immediately assign members
+
+        if (newUnitId) {
+            addNotification({ type: 'Management', message: `The fan-voted unit "${unitName}" has been officially formed!` });
+        }
+
+        setLastUnitVoteResult(null);
+        setShowModal(null);
+    };
+
+
+    const generateSponsorships = () => {
+        if (Math.random() > 0.65) { // 65% chance to generate new offers each week
+            const newOffers = [];
+            const maxOffers = 3;
+
+            // Flatten all tiers into a single array
+            const allTiers = Object.values(sponsorshipTiers).flatMap(category => Object.values(category));
+
+            for (let i = 0; i < (Math.random() * 3 + 1); i++) { // Generate 1-3 potential offers
+                if (newOffers.length >= maxOffers) break;
+
+                const offer = allTiers[Math.floor(Math.random() * allTiers.length)];
+
+                // Rarity check
+                if (Math.random() > offer.rarity) continue;
+
+                // Check if an identical offer already exists
+                if (!sponsorships.some(existing => existing.id === offer.id) && !newOffers.some(existing => existing.id === offer.id)) {
+                    newOffers.push({ ...offer, expires: week + 2 }); // Offers last for 2 weeks
+                }
+            }
+
+            if (newOffers.length > 0) {
+                setSponsorships(prev => [...prev, ...newOffers]);
+                addNotification({ type: 'Briefcase', message: `New job offers are available on the Buzz tab!` });
             }
         }
-    }
-    setAvailableFestivals(newlyAvailable);
-    if (newlyAvailable.length > 0) {
-        addNotification({ type: 'Event', message: `Invitations for major festivals have arrived! Check the Activities tab.` });
-        setShowModal('annualFestivals');
-    }
-};
+        // Expire old offers
+        setSponsorships(prev => prev.filter(offer => offer.expires > week));
+    };
 
-const startFestivalPerformance = (festivalId) => {
-    const festival = Object.values(annualFestivals).find(f => f.id === festivalId);
-    if (!festival) return setMessage("Festival not found.");
-    if (money < festival.cost) return setMessage("Not enough money for this festival.");
+    const acceptSponsorship = (offerId, memberIds) => {
+        const offer = sponsorships.find(s => s.id === offerId);
+        if (!offer) return setMessage("Offer not found.");
 
-    // Open the selection modal
-    setModalData({ festival });
-    setShowModal('festivalPerformerSelection');
-};
-
-const executeFestivalPerformance = (festival, performerIds, setlist) => {
-    if (performerIds.length === 0) return setMessage("You must select at least one performer.");
-    if (setlist.filter(i => i.type === 'song').length === 0) return setMessage("Setlist must contain at least one song.");
-
-    setMoney(prev => prev - festival.cost);
-
-    const performers = performerIds.map(id => getMemberById(id));
-    const result = festival.effect(performers, songs, groupName);
-
-    // Standard performance stat changes
-    performers.forEach(member => {
-        if (member) {
-            updateMemberState(member.rosterId, m => ({
-                ...m,
-                stamina: Math.max(0, (m.stamina || 100) - 45),
-                stress: Math.min(100, m.stress + 30),
-                morale: Math.min(100, (m.morale || 0) + 15),
-            }));
+        if (money < (offer.cost || 0)) {
+            return setMessage("Not enough money for this opportunity.");
         }
-    });
+        setMoney(prev => prev - (offer.cost || 0));
 
-    // Custom performer fan gains based on festival tier / size
-    const fanMultiplier = festival.fanMultiplier || 0.005; // Fallback to 0.5%
-    const memberCount = performers.length || 1;
-    const avgSinging = performers.reduce((s, m) => s + (m.singing || 0), 0) / memberCount;
-    const avgDancing = performers.reduce((s, m) => s + (m.dancing || 0), 0) / memberCount;
-    const avgVisual = performers.reduce((s, m) => s + (m.visual || 0), 0) / memberCount;
-    const avgCharisma = performers.reduce((s, m) => s + (m.charisma || 0), 0) / memberCount;
-    const avgSkill = (avgSinging * 0.3 + avgDancing * 0.4 + avgVisual * 0.2 + avgCharisma * 0.1) / 100;
+        // Pay out money reward immediately
+        if (offer.reward.money) {
+            setMoney(prev => prev + offer.reward.money);
+        }
+        // Distribute fan rewards
+        if (offer.reward.fanGain) {
+            distributeFans(offer.reward.fanGain, memberIds);
+        }
+        // Add reputation
+        if (offer.reward.repGain) {
+            setGroupReputation(prev => prev + offer.reward.repGain);
+        }
 
-    let totalPerformerFanGain = 0;
-    performers.forEach(member => {
-        if (!member) return;
-        const currentFans = getTotalFansForMember(member);
-        const fanGainForMember = Math.floor(currentFans * fanMultiplier * (1 + avgSkill));
-        if (fanGainForMember > 0) {
+        // Make members unavailable if the job has a duration
+        if (offer.duration > 0) {
+            memberIds.forEach(id => {
+                updateMemberState(id, m => ({
+                    ...m,
+                    isAvailable: false,
+                    currentActivity: `On assignment: ${offer.name}`,
+                    activityEnd: week + offer.duration
+                }));
+            });
+        }
+
+        // Get member objects for the result modal
+        const members = memberIds.map(id => getMemberById(id)).filter(Boolean);
+
+        // Remove the offer from the list
+        setSponsorships(prev => prev.filter(s => s.id !== offerId));
+        addNotification({ type: 'Success', message: `Accepted job: ${offer.name}!` });
+
+        // Set data for and show the result modal
+        setModalData({ offer, members });
+        setShowModal('sponsorshipResult');
+    };
+
+    const declineSponsorship = (offerId) => {
+        setSponsorships(prev => prev.filter(s => s.id !== offerId));
+        setMessage("Offer declined.");
+        setShowModal(null);
+    };
+    const simulateLivestream = () => {
+        // Reset the stream each week
+        setActiveStream(null);
+
+        // 40% chance of a stream happening each week
+        if (Math.random() > 0.6) return;
+
+        const availableMembers = getAllAvailableMembers(true).filter(m => m.isAvailable);
+        if (availableMembers.length === 0) return;
+
+        // Higher charisma members are more likely to stream
+        const member = availableMembers.sort((a, b) => (b.charisma || 0) - (a.charisma || 0))[0];
+        if (Math.random() > (member.charisma || 50) / 150) return; // Member with 75 charisma has 50% chance
+
+        const streamType = livestreamTypes[Math.floor(Math.random() * livestreamTypes.length)];
+
+        let fanGain = 0;
+        let message = '';
+
+        const skill = member[streamType.stat] || 50;
+        const successRoll = Math.random();
+        const gaffeRoll = Math.random();
+
+        if (gaffeRoll < streamType.gaffeChance && skill < 50) {
+            // Gaffe
+            fanGain = -Math.floor(streamType.baseFanGain * 0.5);
+            message = `${member.name}'s ${streamType.type} stream was a bit awkward, losing some fans.`;
+            addNotification({ type: 'Alert', message });
+        } else {
+            // Success
+            fanGain = Math.floor(streamType.baseFanGain * (skill / 75));
+            message = `${member.name}'s ${streamType.type} stream was a success, gaining ${fanGain.toLocaleString()} fans!`;
+            addNotification({ type: 'Info', message });
+        }
+
+        if (fanGain !== 0) {
             updateMemberState(member.rosterId, m => ({
                 ...m,
                 fans: {
                     ...m.fans,
-                    casual: (m.fans.casual || 0) + fanGainForMember
+                    casual: Math.max(0, (m.fans.casual || 0) + fanGain)
                 }
             }));
-            totalPerformerFanGain += fanGainForMember;
         }
-    });
 
-    // Apply festival-specific effects
-    if (result.fanGain) distributeFans(result.fanGain, performerIds);
-    if (result.internationalFanGain) {
-        const overseasGroups = sisterGroups.filter(sg => sg.type === 'overseas');
-        if (overseasGroups.length > 0) {
-            const gainPerGroup = Math.floor(result.internationalFanGain / overseasGroups.length);
-            overseasGroups.forEach(sg => {
-                setSisterGroups(prev => prev.map(g => g.id === sg.id ? { ...g, fans: (g.fans || 0) + gainPerGroup } : g));
-            });
-        } else {
-            distributeFans(result.internationalFanGain, performerIds);
-        }
-    }
-    if (result.repGain) setGroupReputation(prev => prev + result.repGain);
-    if (result.moneyGain) setMoney(prev => prev + result.moneyGain);
-    if (result.specificMemberFanGain) {
-        updateMemberState(result.specificMemberFanGain.id, m => ({ ...m, fans: { ...m.fans, casual: (m.fans.casual || 0) + result.specificMemberFanGain.gain } }));
-    }
-    if (result.conversionRate) {
-        performerIds.forEach(id => {
-            updateMemberState(id, m => {
-                const toConvert = Math.floor((m.fans.casual || 0) * result.conversionRate);
-                return { ...m, fans: { hardcore: (m.fans.hardcore || 0) + toConvert, casual: (m.fans.casual || 0) - toConvert } };
-            });
+        setActiveStream({
+            member,
+            streamType,
+            message
         });
-    }
-
-    // Create detailed history entry
-    const newEntry = {
-        id: Date.now(),
-        name: `${Math.floor((week - 1) / 52) + 2025} ${festival.name}`,
-        category: "Annual Festival",
-        venueName: festival.location,
-        week,
-        cost: festival.cost,
-        revenue: (result.moneyGain || 0),
-        profit: (result.moneyGain || 0) - festival.cost,
-        fansGained: (result.fanGain || 0) + totalPerformerFanGain,
-        members: performers.map(createMemberSnapshot),
-        tracks: setlist
     };
-    setPerformanceHistory(prev => [newEntry, ...prev]);
-    setHasPerformedThisWeek(true);
 
-    setAvailableFestivals(prev => prev.filter(f => f.id !== festival.id));
-    setModalData({ festival, result });
-    setShowModal('festivalResult');
-};
+    const checkForAnnualFestivals = () => {
+        const currentWeekOfYear = ((week - 1) % 52) + 1;
+        const newlyAvailable = [];
 
-return {
-    // State
-    activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm, setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, setGroupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, theaterSchedule, setTheaterSchedule, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, activeUnderTour, setActiveUnderTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
-    // Firebase/Persistence
-    getSavedGames, saveGame, loadGame,
-    // Utilities
-    startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
-    // Logic
-    holdTitleTrackPerformance, holdUnitPerformance, unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, resolveSurvivalMission, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, getUnderMembersPool, startUnderTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, executeFanEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
-};
+        const yearStartWeek = Math.floor((week - 1) / 52) * 52 + 1;
+        const performancesThisYear = performanceHistory.filter(p => p.week >= yearStartWeek);
+
+        for (const festival of Object.values(annualFestivals)) {
+            // Check if it's the right week of the year and if it hasn't been performed this year
+            if (festival.week === currentWeekOfYear && !performancesThisYear.some(p => p.name.includes(festival.name))) {
+
+                // FOR TESTING: This 'if (true)' block bypasses all requirements.
+                if (true) {
+                    newlyAvailable.push(festival);
+                }
+            }
+        }
+        setAvailableFestivals(newlyAvailable);
+        if (newlyAvailable.length > 0) {
+            addNotification({ type: 'Event', message: `Invitations for major festivals have arrived! Check the Activities tab.` });
+            setShowModal('annualFestivals');
+        }
+    };
+
+    const startFestivalPerformance = (festivalId) => {
+        const festival = Object.values(annualFestivals).find(f => f.id === festivalId);
+        if (!festival) return setMessage("Festival not found.");
+        if (money < festival.cost) return setMessage("Not enough money for this festival.");
+
+        // Open the selection modal
+        setModalData({ festival });
+        setShowModal('festivalPerformerSelection');
+    };
+
+    const executeFestivalPerformance = (festival, performerIds, setlist) => {
+        if (performerIds.length === 0) return setMessage("You must select at least one performer.");
+        if (setlist.filter(i => i.type === 'song').length === 0) return setMessage("Setlist must contain at least one song.");
+
+        setMoney(prev => prev - festival.cost);
+
+        const performers = performerIds.map(id => getMemberById(id));
+        const result = festival.effect(performers, songs, groupName);
+
+        // Standard performance stat changes
+        performers.forEach(member => {
+            if (member) {
+                updateMemberState(member.rosterId, m => ({
+                    ...m,
+                    stamina: Math.max(0, (m.stamina || 100) - 45),
+                    stress: Math.min(100, m.stress + 30),
+                    morale: Math.min(100, (m.morale || 0) + 15),
+                }));
+            }
+        });
+
+        // Custom performer fan gains based on festival tier / size
+        const fanMultiplier = festival.fanMultiplier || 0.005; // Fallback to 0.5%
+        const memberCount = performers.length || 1;
+        const avgSinging = performers.reduce((s, m) => s + (m.singing || 0), 0) / memberCount;
+        const avgDancing = performers.reduce((s, m) => s + (m.dancing || 0), 0) / memberCount;
+        const avgVisual = performers.reduce((s, m) => s + (m.visual || 0), 0) / memberCount;
+        const avgCharisma = performers.reduce((s, m) => s + (m.charisma || 0), 0) / memberCount;
+        const avgSkill = (avgSinging * 0.3 + avgDancing * 0.4 + avgVisual * 0.2 + avgCharisma * 0.1) / 100;
+
+        let totalPerformerFanGain = 0;
+        performers.forEach(member => {
+            if (!member) return;
+            const currentFans = getTotalFansForMember(member);
+            const fanGainForMember = Math.floor(currentFans * fanMultiplier * (1 + avgSkill));
+            if (fanGainForMember > 0) {
+                updateMemberState(member.rosterId, m => ({
+                    ...m,
+                    fans: {
+                        ...m.fans,
+                        casual: (m.fans.casual || 0) + fanGainForMember
+                    }
+                }));
+                totalPerformerFanGain += fanGainForMember;
+            }
+        });
+
+        // Apply festival-specific effects
+        if (result.fanGain) distributeFans(result.fanGain, performerIds);
+        if (result.internationalFanGain) {
+            const overseasGroups = sisterGroups.filter(sg => sg.type === 'overseas');
+            if (overseasGroups.length > 0) {
+                const gainPerGroup = Math.floor(result.internationalFanGain / overseasGroups.length);
+                overseasGroups.forEach(sg => {
+                    setSisterGroups(prev => prev.map(g => g.id === sg.id ? { ...g, fans: (g.fans || 0) + gainPerGroup } : g));
+                });
+            } else {
+                distributeFans(result.internationalFanGain, performerIds);
+            }
+        }
+        if (result.repGain) setGroupReputation(prev => prev + result.repGain);
+        if (result.moneyGain) setMoney(prev => prev + result.moneyGain);
+        if (result.specificMemberFanGain) {
+            updateMemberState(result.specificMemberFanGain.id, m => ({ ...m, fans: { ...m.fans, casual: (m.fans.casual || 0) + result.specificMemberFanGain.gain } }));
+        }
+        if (result.conversionRate) {
+            performerIds.forEach(id => {
+                updateMemberState(id, m => {
+                    const toConvert = Math.floor((m.fans.casual || 0) * result.conversionRate);
+                    return { ...m, fans: { hardcore: (m.fans.hardcore || 0) + toConvert, casual: (m.fans.casual || 0) - toConvert } };
+                });
+            });
+        }
+
+        // Create detailed history entry
+        const newEntry = {
+            id: Date.now(),
+            name: `${Math.floor((week - 1) / 52) + 2025} ${festival.name}`,
+            category: "Annual Festival",
+            venueName: festival.location,
+            week,
+            cost: festival.cost,
+            revenue: (result.moneyGain || 0),
+            profit: (result.moneyGain || 0) - festival.cost,
+            fansGained: (result.fanGain || 0) + totalPerformerFanGain,
+            members: performers.map(createMemberSnapshot),
+            tracks: setlist
+        };
+        setPerformanceHistory(prev => [newEntry, ...prev]);
+        setHasPerformedThisWeek(true);
+
+        setAvailableFestivals(prev => prev.filter(f => f.id !== festival.id));
+        setModalData({ festival, result });
+        setShowModal('festivalResult');
+    };
+
+    return {
+        // State
+        activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm, setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, setGroupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, theaterSchedule, setTheaterSchedule, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, activeUnderTour, setActiveUnderTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
+        // Firebase/Persistence
+        getSavedGames, saveGame, loadGame,
+        // Utilities
+        startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
+        // Logic
+        holdTitleTrackPerformance, holdUnitPerformance, unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, resolveSurvivalMission, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, getUnderMembersPool, startUnderTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, executeFanEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
+    };
 };
