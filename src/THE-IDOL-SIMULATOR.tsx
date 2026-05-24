@@ -6238,6 +6238,102 @@ const App = () => {
             addNotification({ type: 'Event', message: 'Weekly Theater Schedule updated and saved!' });
         };
 
+        const handleAutoAssign = () => {
+            const performingEntities = [];
+            
+            // Collect all teams
+            (teams || []).forEach(t => {
+                performingEntities.push({ type: 'team', entityId: String(t.id) });
+            });
+            
+            // Collect main group trainees if there are any
+            const mainTrainees = (members || []).filter(m => m.status === 'Trainee');
+            if (mainTrainees.length > 0) {
+                performingEntities.push({ type: 'trainee', entityId: 'main' });
+            }
+            
+            // Collect sister group trainees if there are any
+            (sisterGroups || []).forEach(sg => {
+                const sgTrainees = (sg.members || []).filter(m => m.status === 'Trainee');
+                if (sgTrainees.length > 0) {
+                    performingEntities.push({ type: 'trainee', entityId: String(sg.id) });
+                }
+            });
+            
+            if (performingEntities.length === 0) {
+                alert("No teams or trainee groups available to perform!");
+                return;
+            }
+            
+            let newSchedule = JSON.parse(JSON.stringify(localSchedule));
+            
+            // Check if schedule is currently empty
+            let hasSlots = false;
+            ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].forEach(day => {
+                if (newSchedule[day] && newSchedule[day].length > 0) hasSlots = true;
+            });
+            ['saturday', 'sunday'].forEach(day => {
+                if (newSchedule[day]?.matinee?.length > 0 || newSchedule[day]?.evening?.length > 0) hasSlots = true;
+            });
+            
+            // If empty, initialize a default weekly structure
+            if (!hasSlots) {
+                ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].forEach(day => {
+                    newSchedule[day] = [{ type: '', entityId: '' }];
+                });
+                ['saturday', 'sunday'].forEach(day => {
+                    newSchedule[day] = {
+                        matinee: [{ type: '', entityId: '' }],
+                        evening: [{ type: '', entityId: '' }]
+                    };
+                });
+            }
+            
+            // Flatten slots to easily distribute teams
+            const slotsToFill = [];
+            ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].forEach(day => {
+                (newSchedule[day] || []).forEach((_, idx) => {
+                    slotsToFill.push({ day, slotType: null, index: idx });
+                });
+            });
+            ['saturday', 'sunday'].forEach(day => {
+                if (newSchedule[day]) {
+                    (newSchedule[day].matinee || []).forEach((_, idx) => {
+                        slotsToFill.push({ day, slotType: 'matinee', index: idx });
+                    });
+                    (newSchedule[day].evening || []).forEach((_, idx) => {
+                        slotsToFill.push({ day, slotType: 'evening', index: idx });
+                    });
+                }
+            });
+            
+            // Shuffle performing entities
+            const shuffled = [...performingEntities];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            
+            // Fill slots sequentially (cycling through entities) to guarantee balanced schedules
+            slotsToFill.forEach((slot, idx) => {
+                const entity = shuffled[idx % shuffled.length];
+                if (slot.slotType) {
+                    newSchedule[slot.day][slot.slotType][slot.index] = { ...entity };
+                } else {
+                    newSchedule[slot.day][slot.index] = { ...entity };
+                }
+            });
+            
+            setLocalSchedule(newSchedule);
+        };
+
+        const handleClearSchedule = () => {
+            setLocalSchedule({
+                monday: [], tuesday: [], wednesday: [], thursday: [], friday: [],
+                saturday: { matinee: [], evening: [] }, sunday: { matinee: [], evening: [] }
+            });
+        };
+
         const SelectEntity = ({ value, onChange }) => {
             const valObj = value && value.length > 0 ? value[0] : { type: '', entityId: '' };
             const strVal = valObj.type ? `${valObj.type}___${valObj.entityId}` : '';
@@ -6275,6 +6371,21 @@ const App = () => {
         return (
             <ModalWrapper title="Weekly Theater Schedule" maxWidth="max-w-2xl">
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Assign teams or trainee groups to perform on specific days. You can schedule multiple shows per day if you have different theaters available (e.g. Main group in Akihabara, Sister group in Namba).</p>
+
+                <div className="flex gap-2 mb-4">
+                    <button
+                        onClick={handleAutoAssign}
+                        className="flex-grow py-2 px-3 text-sm bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+                    >
+                        <Sparkles size={16} /> Auto-Schedule Week
+                    </button>
+                    <button
+                        onClick={handleClearSchedule}
+                        className="py-2 px-4 text-sm bg-gray-200 hover:bg-gray-300 text-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 rounded-lg font-semibold transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+                    >
+                        <Trash2 size={16} /> Clear All
+                    </button>
+                </div>
 
                 <div className="space-y-2 mb-4 max-h-[60vh] overflow-y-auto pr-2">
                     {['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].map(day => (
