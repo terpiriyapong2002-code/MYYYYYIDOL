@@ -7824,6 +7824,20 @@ const App = () => {
                 "A family member is facing a health struggle, and I want to spend every possible moment by their side. My place is at home right now.",
                 "I’m the eldest daughter, and it’s time for me to support my siblings' dreams just as my family supported mine. I’m heading home to help.",
                 "I’ve spent too many years away from my parents. I want to go back to the countryside and live a life where I can see them every day."
+            ],
+            'Eternal Center': [
+                "For [Years Active] years, I have lived for the center position, feeling the heat of the stage. But I want to leave while the memories are at their absolute peak, as your center.",
+                "I've dedicated every beat of my heart to being the face of [Group]. After [Years Active] beautiful years, I am graduating to let others experience this magical view from the front row.",
+                "Standing at the center has been my greatest pride. I want to graduate while I am still shining brightest in your hearts.",
+                "I have given my absolute all to remain your center. I want to leave a beautiful legacy and exit the stage on my own terms.",
+                "I lived for the center spotlight. But now, I want to step down while the light is still golden, carrying your smiles with me forever."
+            ],
+            'Dedicated Legend': [
+                "After [Years Active] incredible years, [Group] has become my entire life. I have spent my youth building this legacy, and now I am ready to close this final chapter of my legend.",
+                "They called me the foundation, a legend of [Group]. I've stayed for [Years Active] years to make sure our history is immortal, and now I can graduate in peace.",
+                "I've spent a lifetime on this stage, growing from a young trainee to a senior you can rely on. I'm so proud of the long path we walked together.",
+                "My career here has been a beautiful marathon of [Years Active] years. I've achieved everything I ever wanted and more. Thank you for making my dream a reality.",
+                "I wanted to be a member who would never be forgotten. Having spent [Years Active] years with you, I know our bond will live on forever as a legend."
             ]
         };
         const speechOptions = reasons[member.ambition] || ["I have decided to graduate."];

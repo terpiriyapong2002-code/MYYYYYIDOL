@@ -1865,6 +1865,26 @@ export const getTotalFansForMember = (member) => {
 };
 
 
+export const getGraduationWindowForAmbition = (ambition: string) => {
+    switch (ambition) {
+        case 'Study Abroad':
+        case 'Academic Focus':
+            return { min: 1, max: 4 };
+        case 'Find Normal Happiness':
+            return { min: 2, max: 5 };
+        case 'The Unwilling Idol':
+            return { min: 1, max: 3 };
+        case 'Space for Juniors':
+        case 'The Producer':
+            return { min: 6, max: 12 };
+        case 'Eternal Center':
+        case 'Dedicated Legend':
+            return { min: 7, max: 14 };
+        default:
+            return { min: 4, max: 8 };
+    }
+};
+
 export const getGraduationRisk = (member) => {
     if (!member || member.isGraduating) return { text: '', color: '' };
     const urgency = member.graduationUrgency || 0;
@@ -1920,6 +1940,14 @@ export const ambitions = {
     'Family Matters': {
         description: 'As the primary breadwinner for their family, they are motivated by financial success but also under immense pressure. They might stay longer if the pay is good, but could burn out from the stress.',
         baseUrgency: 1.3,
+    },
+    'Eternal Center': {
+        description: 'Wants to remain the shining center and face of the group for as long as possible. Highly motivated by center positions and group fame.',
+        baseUrgency: 0.4,
+    },
+    'Dedicated Legend': {
+        description: 'Dedicated to cementing their status as a legendary figure in the idol industry. They plan for a very long, storied career with the group.',
+        baseUrgency: 0.3,
     },
 };
 
@@ -13460,6 +13488,8 @@ export const useIdolManager = () => {
                     break;
                 case 'Space for Juniors':
                 case 'The Producer':
+                case 'Eternal Center':
+                case 'Dedicated Legend':
                     // These members are invested and have slower base urgency. (Range: 0.05 - 0.2)
                     gradUrgencyIncrease += 0.05 + (Math.random() * 0.15);
                     break;
@@ -13491,6 +13521,7 @@ export const useIdolManager = () => {
             }
             // --- Ambition Dynamics ---
             let newAmbition = member.ambition; // Start with the current ambition
+            let newGraduationWindow = member.graduationWindow;
             if (newWeek % 12 === 0 && Math.random() < 0.2) { // 20% chance to check for an ambition change every 12 weeks
                 let potentialNewAmbition = null;
                 const oldAmbition = member.ambition;
@@ -13510,6 +13541,7 @@ export const useIdolManager = () => {
 
                 if (potentialNewAmbition && potentialNewAmbition !== oldAmbition) {
                     newAmbition = potentialNewAmbition;
+                    newGraduationWindow = getGraduationWindowForAmbition(newAmbition);
                     addNotificationInLoop({
                         type: 'Group',
                         message: `${member.name}'s ambition has changed to: "${newAmbition}"!`
@@ -13626,6 +13658,7 @@ export const useIdolManager = () => {
                 yearsActive: yearsActive,
                 graduationUrgency: newUrgency,
                 ambition: newAmbition,
+                graduationWindow: newGraduationWindow,
                 chemistry: member.chemistry
             }));
         });
@@ -14458,29 +14491,7 @@ export const useIdolManager = () => {
 
             const validStartingAmbitions = Object.keys(ambitions).filter(key => ambitions[key].canBeStarting !== false);
             baseMember.ambition = validStartingAmbitions[Math.floor(Math.random() * validStartingAmbitions.length)];
-            let window = { min: 4, max: 8 }; // Default window
-            switch (baseMember.ambition) {
-                case 'Study Abroad':
-                case 'Academic Focus':
-                    // Short-term members who are likely to leave for school.
-                    window = { min: 1, max: 4 };
-                    break;
-                case 'Find Normal Happiness':
-                    // These members aren't aiming for a long career, just the experience.
-                    window = { min: 2, max: 5 };
-                    break;
-                case 'The Unwilling Idol':
-                    // Pushed into the industry, they have a very short expected career span.
-                    window = { min: 1, max: 3 };
-                    break;
-                case 'Space for Juniors':
-                case 'The Producer':
-                    // Veterans or creatively-invested members who plan to stay longer.
-                    window = { min: 6, max: 12 };
-                    break;
-                // Other ambitions use the default window as their graduation is more event-driven.
-            }
-            baseMember.graduationWindow = window;
+            baseMember.graduationWindow = getGraduationWindowForAmbition(baseMember.ambition);
             baseMember.graduationUrgency = 0;
             return baseMember;
         });
