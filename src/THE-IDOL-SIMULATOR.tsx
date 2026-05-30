@@ -2926,7 +2926,11 @@ const App = () => {
         );
 
         const handleGraduatingMemberConfirm = (member) => {
-            const gradSongName = generateSongTitle('Graduation');
+            const allSongNames = [
+                ...(songs || []).map(s => s.name),
+                ...(sisterGroups || []).flatMap(sg => (sg.songs || []).map(s => s.name))
+            ];
+            const gradSongName = generateSongTitle('Graduation', allSongNames);
             setSongName(gradSongName);
 
             // Pre-configure the tracks for a graduation single
@@ -2995,7 +2999,11 @@ const App = () => {
         };
         const handleSoloistConfirm = (member) => {
             setSelectedSoloist(member);
-            const titleSongName = generateSongTitle(`${member.name} Solo`);
+            const allSongNames = [
+                ...(songs || []).map(s => s.name),
+                ...(sisterGroups || []).flatMap(sg => (sg.songs || []).map(s => s.name))
+            ];
+            const titleSongName = generateSongTitle(`${member.name} Solo`, allSongNames);
             setSongName(titleSongName);
 
             // Setup targetGroup to soloist's homeGroup or main
@@ -3025,7 +3033,11 @@ const App = () => {
         };
         const handleUnitConfirm = (unit) => {
             setSelectedUnitGroup(unit);
-            const titleSongName = generateSongTitle(unit.id === 'custom' ? 'Unit' : unit.name);
+            const allSongNames = [
+                ...(songs || []).map(s => s.name),
+                ...(sisterGroups || []).flatMap(sg => (sg.songs || []).map(s => s.name))
+            ];
+            const titleSongName = generateSongTitle(unit.id === 'custom' ? 'Unit' : unit.name, allSongNames);
             setSongName(titleSongName);
 
             if (unit.id !== 'custom') {
@@ -3416,7 +3428,11 @@ const App = () => {
                     };
                     // Proceed with single selection using this unit
                     setSelectedUnitGroup(newUnitObject);
-                    const titleSongName = generateSongTitle(newUnitObject.name);
+                    const allSongNames = [
+                        ...(songs || []).map(s => s.name),
+                        ...(sisterGroups || []).flatMap(sg => (sg.songs || []).map(s => s.name))
+                    ];
+                    const titleSongName = generateSongTitle(newUnitObject.name, allSongNames);
                     setSongName(titleSongName);
                     setTargetGroup(newUnitObject.name);
                     // Lock members of Title Track & populate
