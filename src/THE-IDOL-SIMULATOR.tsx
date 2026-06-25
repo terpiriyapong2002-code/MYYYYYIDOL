@@ -9,7 +9,7 @@ import { CSS } from '@dnd-kit/utilities';
 
 import DailyChartModal from './DailyChartModal';
 
-import { useIdolManager, getTotalFansForMember, getFormattedDateForWeek, productionTiers, getGraduationRisk, songTitles, generateSongTitle, electionSpeechTemplates, performanceTypes, scandalResponseOptions, tiers, getTheaterCapacity, getTicketPrice, hometowns, generateRandomHometown, warehouseTiers, staffTiers, ambitions, varietyShowTypes, filmProjectScales, filmGenres, scriptTiers, directorTiers, filmPromotionTypes, varietyWriterTiers, varietyProducerTiers, sponsorshipTiers, livestreamTypes, musicShowTypes, annualFestivals } from "./hooks/useIdolManager";
+import { useIdolManager, getTotalFansForMember, getFormattedDateForWeek, productionTiers, getGraduationRisk, songTitles, generateSongTitle, electionSpeechTemplates, performanceTypes, scandalResponseOptions, tiers, getTheaterCapacity, getTicketPrice, hometowns, generateRandomHometown, warehouseTiers, staffTiers, ambitions, varietyShowTypes, filmProjectScales, filmGenres, scriptTiers, directorTiers, filmPromotionTypes, varietyWriterTiers, varietyProducerTiers, sponsorshipTiers, livestreamTypes, musicShowTypes, annualFestivals, getOrdinalSuffix, getReleaseGroupSingleNumber, getGroupSingleNumberForHistory } from "./hooks/useIdolManager";
 
 import React, { useState, useEffect, useCallback, useRef, memo } from 'react';
 import {
@@ -4715,6 +4715,10 @@ const App = () => {
         const release = modalData;
         if (!release) return null;
 
+        const allReleases = [...songs, ...sisterGroups.flatMap(sg => sg.songs || [])];
+        const groupSingleNumber = getReleaseGroupSingleNumber(release, allReleases);
+        const singleNumberStr = groupSingleNumber ? `${getOrdinalSuffix(groupSingleNumber)} Single` : '';
+
         // --- FIXED HELPER VARIABLES ---
         const memberMap = {};
 
@@ -5065,10 +5069,11 @@ const App = () => {
         };
 
         return (
-            <ModalWrapper title={`${release.name} - ${release.type === 'album' ? 'Album' : 'Single'} Details`} maxWidth="max-w-4xl">
+            <ModalWrapper title={`${release.name} ${singleNumberStr ? `(${singleNumberStr})` : ''} - ${release.type === 'album' ? 'Album' : 'Single'} Details`} maxWidth="max-w-4xl">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 text-sm">
                     <div className="p-3 border rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700 text-gray-800 dark:text-gray-200 space-y-2">
                         <p><strong>Released by:</strong> {releasingGroupName}</p>
+                        {singleNumberStr && <p><strong>Single Number:</strong> {singleNumberStr}</p>}
                         <p><strong>Release Date:</strong> {getFormattedDateForWeek(release.releaseWeek)}</p>
                         {release.singleSubType && (
                             <p>
@@ -8489,6 +8494,7 @@ const App = () => {
         const getMemberWarning = (member) => {
             const allTeams = [
                 ...(member.teamName ? [member.teamName] : []),
+                ...(member.kennin && member.kennin.teamName ? [member.kennin.teamName] : []),
                 ...(member.concurrentTeams || []).map(t => t.name)
             ];
             if (allTeams.length === 0) return null;
@@ -13687,27 +13693,35 @@ const App = () => {
                 <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mt-3 flex items-center"><Film size={14} className='mr-1 text-red-500' /> Title Tracks ({titleTrackHistory.length}):</p>
                 <div className="max-h-24 overflow-y-auto text-xs space-y-1 mb-2 p-1 border rounded bg-red-50 dark:bg-gray-800">
                     {titleTrackHistory.length === 0 && <p className="text-gray-500 italic p-1">No title track senbatsu positions.</p>}
-                    {titleTrackHistory.reverse().map((entry, index) => (
-                        <div key={index} className="p-1.5 rounded bg-red-100 dark:bg-gray-700 border border-red-200 dark:border-red-600">
-                            <p className="font-bold text-red-800 dark:text-red-200">{entry.songName}</p>
-                            <p className="text-gray-600 dark:text-gray-400">Single: {entry.singleName} ({entry.group}) • {getFormattedDateForWeek(entry.week)}</p>
+                    {titleTrackHistory.reverse().map((entry, index) => {
+                        const num = getGroupSingleNumberForHistory(entry, songs, sisterGroups);
+                        const singleSuffix = num ? ` (${getOrdinalSuffix(num)} Single)` : '';
+                        return (
+                            <div key={index} className="p-1.5 rounded bg-red-100 dark:bg-gray-700 border border-red-200 dark:border-red-600">
+                                <p className="font-bold text-red-800 dark:text-red-200">{entry.songName}</p>
+                                <p className="text-gray-600 dark:text-gray-400">Single: {entry.singleName}{singleSuffix} ({entry.group}) • {getFormattedDateForWeek(entry.week)}</p>
 
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Position: <span className="font-semibold text-red-700 dark:text-red-300">{entry.row || 'N/A'}</span></p>
-                        </div>
-                    ))}
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Position: <span className="font-semibold text-red-700 dark:text-red-300">{entry.row || 'N/A'}</span></p>
+                            </div>
+                        );
+                    })}
                 </div>
 
                 {/* THIS SECTION IS NOW CORRECTED */}
                 <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mt-3 flex items-center"><Music size={14} className='mr-1 text-green-500' /> B-Side Tracks ({bSideTrackHistory.length}):</p>
                 <div className="max-h-24 overflow-y-auto text-xs space-y-1 mb-2 p-1 border rounded bg-green-50 dark:bg-gray-800">
                     {bSideTrackHistory.length === 0 && <p className="text-gray-500 italic p-1">No B-side track positions.</p>}
-                    {bSideTrackHistory.reverse().map((entry, index) => (
-                        <div key={index} className="p-1.5 rounded bg-green-100 dark:bg-gray-700 border border-green-200 dark:border-green-600">
-                            <p className="font-bold text-green-800 dark:text-green-200">{entry.songName}</p>
-                            <p className="text-gray-600 dark:text-gray-400">Single: {entry.singleName} ({entry.group}) • {getFormattedDateForWeek(entry.week)}</p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Position: <span className="font-semibold text-green-700 dark:text-green-300">{entry.row || 'N/A'}</span></p>
-                        </div>
-                    ))}
+                    {bSideTrackHistory.reverse().map((entry, index) => {
+                        const num = getGroupSingleNumberForHistory(entry, songs, sisterGroups);
+                        const singleSuffix = num ? ` (${getOrdinalSuffix(num)} Single)` : '';
+                        return (
+                            <div key={index} className="p-1.5 rounded bg-green-100 dark:bg-gray-700 border border-green-200 dark:border-green-600">
+                                <p className="font-bold text-green-800 dark:text-green-200">{entry.songName}</p>
+                                <p className="text-gray-600 dark:text-gray-400">Single: {entry.singleName}{singleSuffix} ({entry.group}) • {getFormattedDateForWeek(entry.week)}</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Position: <span className="font-semibold text-green-700 dark:text-green-300">{entry.row || 'N/A'}</span></p>
+                            </div>
+                        );
+                    })}
                 </div>
 
                 {/* THIS IS THE NEW ALBUM SECTION */}
@@ -13726,12 +13740,16 @@ const App = () => {
                 <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mt-3 flex items-center"><Star size={14} className='mr-1 text-yellow-500' /> Center Positions ({centerHistory.length}):</p>
                 <div className="max-h-24 overflow-y-auto text-xs space-y-1 mb-2 p-1 border rounded bg-yellow-50 dark:bg-gray-800">
                     {centerHistory.length === 0 && <p className="text-gray-500 italic p-1">No center history recorded.</p>}
-                    {centerHistory.reverse().map((entry, index) => (
-                        <div key={index} className="p-1 rounded bg-yellow-100 dark:bg-gray-700 border border-yellow-300 dark:border-yellow-600">
-                            <p className="font-bold text-yellow-800 dark:text-yellow-200">{entry.songName}</p>
-                            <p className="text-gray-600 dark:text-gray-400">Single: {entry.singleName} (Group: {entry.group})</p>
-                        </div>
-                    ))}
+                    {centerHistory.reverse().map((entry, index) => {
+                        const num = getGroupSingleNumberForHistory(entry, songs, sisterGroups);
+                        const singleSuffix = num ? ` (${getOrdinalSuffix(num)} Single)` : '';
+                        return (
+                            <div key={index} className="p-1 rounded bg-yellow-100 dark:bg-gray-700 border border-yellow-300 dark:border-yellow-600">
+                                <p className="font-bold text-yellow-800 dark:text-yellow-200">{entry.songName}</p>
+                                <p className="text-gray-600 dark:text-gray-400">Single: {entry.singleName}{singleSuffix} (Group: {entry.group})</p>
+                            </div>
+                        );
+                    })}
                 </div>
 
                 <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mt-3 flex items-center"><Trophy size={14} className='mr-1 text-purple-500' /> Major Concerts ({majorConcertHistory.length}):</p>
@@ -13895,7 +13913,7 @@ const App = () => {
             const allMembers = genMembers;
 
             const membersInTeams = teams.map(team => {
-                const teamMembers = genMembers.filter(m => !m.graduated && (m.teamId === team.id || (m.concurrentTeams || []).some(ct => ct.id === team.id)));
+                const teamMembers = genMembers.filter(m => !m.graduated && m.teamId === team.id);
                 if (teamMembers.length === 0) return null;
                 return {
                     teamName: team.name,
@@ -14836,11 +14854,40 @@ const App = () => {
                             <div className="p-2 rounded-lg shadow-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
                                 <h3 className="text-sm font-bold mb-2 flex items-center"><Users size={18} className="mr-2" /> Theater Teams & Setlists</h3>
                                 <div className="grid grid-cols-1 gap-1.5 max-h-40 overflow-y-auto mb-1.5">
-                                    {(teams || []).map(team => (
+                                    {(teams || []).slice().sort((a, b) => {
+                                        // 1. Get the actual group name for each team
+                                        const aGroupName = (!a.groupId || a.groupId === 'main') 
+                                            ? groupName 
+                                            : (sisterGroups.find(sg => String(sg.id) === String(a.groupId))?.name || 'Unknown');
+                                        const bGroupName = (!b.groupId || b.groupId === 'main') 
+                                            ? groupName 
+                                            : (sisterGroups.find(sg => String(sg.id) === String(b.groupId))?.name || 'Unknown');
+
+                                        // 2. Put main group first
+                                        const aIsMain = (!a.groupId || a.groupId === 'main');
+                                        const bIsMain = (!b.groupId || b.groupId === 'main');
+                                        if (aIsMain && !bIsMain) return -1;
+                                        if (!aIsMain && bIsMain) return 1;
+
+                                        // 3. If they are from different sister groups, sort alphabetically by group name
+                                        if (aGroupName !== bGroupName) {
+                                            return aGroupName.localeCompare(bGroupName);
+                                        }
+
+                                        // 4. Within the same group, sort by team creation date (id ascending)
+                                        return a.id - b.id;
+                                    }).map(team => (
                                         <div key={team.id} className="p-1.5 border rounded bg-gray-50 dark:bg-gray-700 flex justify-between items-center">
                                             <div>
-                                                <h4 className="font-semibold text-sm">{team.name} ({team.members.length} members)</h4>
-                                                <p className="text-xs text-gray-500 dark:text-gray-400">
+                                                <div className="flex items-center gap-2">
+                                                    <h4 className="font-semibold text-sm">{team.name} ({team.members.length} members)</h4>
+                                                    <span className="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase bg-pink-100 text-pink-800 dark:bg-pink-950/40 dark:text-pink-300">
+                                                        {(!team.groupId || team.groupId === 'main') 
+                                                            ? groupName 
+                                                            : (sisterGroups.find(sg => String(sg.id) === String(team.groupId))?.name || 'Sister Group')}
+                                                    </span>
+                                                </div>
+                                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                                                     Setlist: {allSetlists.find(s => s.id === team.currentSetlistId)?.name || 'None'}
                                                 </p>
                                             </div>

@@ -20,6 +20,53 @@ export const getFormattedDateForWeek = (weekNumber) => {
     return `Week ${weekOfMonth}, ${month}, ${year}`;
 };
 
+export const getOrdinalSuffix = (num) => {
+    if (!num) return '';
+    const j = num % 10,
+          k = num % 100;
+    if (j === 1 && k !== 11) {
+        return num + "st";
+    }
+    if (j === 2 && k !== 12) {
+        return num + "nd";
+    }
+    if (j === 3 && k !== 13) {
+        return num + "rd";
+    }
+    return num + "th";
+};
+
+export const getReleaseGroupSingleNumber = (release, allReleases) => {
+    if (!release) return null;
+    if (release.groupSingleNumber) return release.groupSingleNumber;
+    if (release.type !== 'single') return null;
+
+    const groupName = release.targetGroup || 'main';
+    const sameGroupSingles = (allReleases || [])
+        .filter(s => s.type === 'single' && (s.targetGroup === groupName || (groupName === 'main' && (!s.targetGroup || s.targetGroup === 'main'))))
+        .sort((a, b) => a.releaseWeek - b.releaseWeek);
+
+    const index = sameGroupSingles.findIndex(s => s.id === release.id);
+    return index !== -1 ? index + 1 : null;
+};
+
+export const getGroupSingleNumberForHistory = (entry, songs, sisterGroups) => {
+    if (!entry) return null;
+    if (entry.groupSingleNumber) return entry.groupSingleNumber;
+    
+    // Dynamic calculation for older save files
+    const allReleases = [...(songs || []), ...(sisterGroups || []).flatMap(sg => sg.songs || [])];
+    const release = allReleases.find(s => 
+        s.type === 'single' && 
+        (s.id === entry.singleId || s.name === entry.singleName)
+    );
+    
+    if (release) {
+        return getReleaseGroupSingleNumber(release, allReleases);
+    }
+    return null;
+};
+
 
 
 export const getTheaterCapacity = (level) => {
@@ -4168,18 +4215,42 @@ export const useIdolManager = () => {
 
                 const updateFn = m => {
                     const event = { week: week + 1, event: `Removed from Team ${oldTeam.name}` };
-                    let newConcurrent = (m.concurrentTeams || []).filter(ct => ct.id !== oldTeam.id);
                     let newTeamId_ = m.teamId;
                     let newTeamName_ = m.teamName;
+                    let newConcurrent = (m.concurrentTeams || []).filter(ct => ct.id !== oldTeam.id);
+                    let newKennin = m.kennin ? { ...m.kennin } : null;
+                    let newKenninGroups = [...(m.kenninGroups || [])];
+
+                    const oldTeamGroupName = (oldTeam.groupId === 'main')
+                        ? groupName
+                        : (nextSisterGroups.find(sg => String(sg.id) === String(oldTeam.groupId))?.name || 'Unknown Group');
 
                     if (m.teamId === oldTeam.id) {
-                        if (newConcurrent.length > 0) {
-                            const promoted = newConcurrent.shift(); newTeamId_ = promoted.id; newTeamName_ = promoted.name;
-                        } else {
-                            newTeamId_ = null; newTeamName_ = null;
-                        }
+                        newTeamId_ = null;
+                        newTeamName_ = null;
                     }
-                    return { ...m, teamId: newTeamId_, teamName: newTeamName_, concurrentTeams: newConcurrent, teamHistory: [...(m.teamHistory || []), event] };
+
+                    if (m.kennin && String(m.kennin.teamId) === String(oldTeam.id)) {
+                        newKennin = null;
+                        newKenninGroups = newKenninGroups.filter(gName => gName !== oldTeamGroupName);
+                    }
+
+                    const updated = {
+                        ...m,
+                        teamId: newTeamId_,
+                        teamName: newTeamName_,
+                        concurrentTeams: newConcurrent,
+                        kenninGroups: newKenninGroups,
+                        teamHistory: [...(m.teamHistory || []), event]
+                    };
+
+                    if (newKennin) {
+                        updated.kennin = newKennin;
+                    } else {
+                        delete updated.kennin;
+                    }
+
+                    return updated;
                 };
 
                 if (!String(memberId).startsWith('sg-')) {
@@ -4261,38 +4332,86 @@ export const useIdolManager = () => {
             } else { // Handle 'kennin', 'shuffle', 'concurrent', 'add'
                 const updateFn = m => {
                     let historyEvent = '';
-                    let newTeamId_ = m.teamId; let newTeamName_ = m.teamName;
-                    let newConcurrent = [...(m.concurrentTeams || [])];
+                    let newTeamId_ = m.teamId;
+                    let newTeamName_ = m.teamName;
+                    let newKennin = m.kennin ? { ...m.kennin } : null;
                     let newKenninGroups = [...(m.kenninGroups || [])];
+                    let newConcurrent = [...(m.concurrentTeams || [])];
 
                     switch (type) {
                         case 'kennin':
                             historyEvent = `Given Kennin in ${teamGroupName} via Team ${teamName}`;
                             if (!newKenninGroups.includes(teamGroupName)) newKenninGroups.push(teamGroupName);
-                            if (!m.teamId) { newTeamId_ = newTeamId; newTeamName_ = teamName; }
-                            else if (!newConcurrent.some(t => t.id === newTeamId)) newConcurrent.push({ id: newTeamId, name: teamName });
+                            newKennin = {
+                                teamId: newTeamId,
+                                teamName: teamName,
+                                groupId: groupId,
+                                endWeek: week + 52
+                            };
+                            // Also sync concurrentTeams so lookup by this array works
+                            if (!newConcurrent.some(ct => String(ct.id) === String(newTeamId))) {
+                                newConcurrent.push({ id: newTeamId, name: teamName });
+                            }
                             break;
                         case 'shuffle':
                             historyEvent = `Shuffled from Team ${m.teamName} to Team ${teamName}`;
-                            newTeamId_ = newTeamId; newTeamName_ = teamName; newConcurrent = m.concurrentTeams.filter(ct => ct.id !== newTeamId); // Ensure it's not also concurrent
+                            newTeamId_ = newTeamId;
+                            newTeamName_ = teamName;
+                            // Shuffle ends/clears any kennin if it matches the new team, but generally shuffle handles its own assignments.
                             break;
                         case 'concurrent':
                             historyEvent = `Added concurrent position in Team ${teamName}`;
-                            if (m.teamId) { if (!newConcurrent.some(t => t.id === newTeamId) && m.teamId !== newTeamId) newConcurrent.push({ id: newTeamId, name: teamName }); }
-                            else { newTeamId_ = newTeamId; newTeamName_ = teamName; }
+                            newKennin = {
+                                teamId: newTeamId,
+                                teamName: teamName,
+                                groupId: groupId,
+                                endWeek: week + 52
+                            };
+                            if (!newKenninGroups.includes(teamGroupName)) newKenninGroups.push(teamGroupName);
+                            // Also sync concurrentTeams so lookup by this array works
+                            if (!newConcurrent.some(ct => String(ct.id) === String(newTeamId))) {
+                                newConcurrent.push({ id: newTeamId, name: teamName });
+                            }
                             break;
                         default: // 'add'
                             if (!m.teamId) {
                                 historyEvent = `Promoted to Team ${teamName}`;
-                                newTeamId_ = newTeamId; newTeamName_ = teamName;
-                            } else if (!newConcurrent.some(t => t.id === newTeamId) && m.teamId !== newTeamId) {
-                                newConcurrent.push({ id: newTeamId, name: teamName });
+                                newTeamId_ = newTeamId;
+                                newTeamName_ = teamName;
+                            } else {
                                 historyEvent = `Given concurrent position in Team ${teamName}`;
+                                newKennin = {
+                                    teamId: newTeamId,
+                                    teamName: teamName,
+                                    groupId: groupId,
+                                    endWeek: week + 52
+                                };
+                                if (!newKenninGroups.includes(teamGroupName)) newKenninGroups.push(teamGroupName);
+                                // Also sync concurrentTeams so lookup by this array works
+                                if (!newConcurrent.some(ct => String(ct.id) === String(newTeamId))) {
+                                    newConcurrent.push({ id: newTeamId, name: teamName });
+                                }
                             }
                             break;
                     }
                     if (!historyEvent) return m;
-                    return { ...m, teamId: newTeamId_, teamName: newTeamName_, concurrentTeams: newConcurrent, kenninGroups: newKenninGroups, teamHistory: [...(m.teamHistory || []), { event: historyEvent, week: week + 1 }] };
+
+                    const updated = {
+                        ...m,
+                        teamId: newTeamId_,
+                        teamName: newTeamName_,
+                        concurrentTeams: newConcurrent,
+                        kenninGroups: newKenninGroups,
+                        teamHistory: [...(m.teamHistory || []), { event: historyEvent, week: week + 1 }]
+                    };
+
+                    if (newKennin) {
+                        updated.kennin = newKennin;
+                    } else {
+                        delete updated.kennin;
+                    }
+
+                    return updated;
                 };
 
                 if (originalLocation === 'main') {
@@ -4414,6 +4533,12 @@ export const useIdolManager = () => {
                 let newConcurrent = (m.concurrentTeams || []).filter(ct => ct.id !== teamId);
                 let newTeamId = m.teamId;
                 let newTeamName = m.teamName;
+                let newKennin = m.kennin ? { ...m.kennin } : null;
+                let newKenninGroups = [...(m.kenninGroups || [])];
+
+                const groupForTeam = (teamToDisband.groupId === 'main')
+                    ? groupName
+                    : (sisterGroups.find(sg => String(sg.id) === String(teamToDisband.groupId))?.name || 'Unknown Group');
 
                 if (m.teamId === teamId) { // If the disbanded team was primary
                     if (newConcurrent.length > 0) { // Promote the first concurrent team
@@ -4426,7 +4551,27 @@ export const useIdolManager = () => {
                     }
                 }
 
-                return { ...m, teamId: newTeamId, teamName: newTeamName, concurrentTeams: newConcurrent, teamHistory: [...(m.teamHistory || []), event] };
+                if (m.kennin && String(m.kennin.teamId) === String(teamId)) {
+                    newKennin = null;
+                    newKenninGroups = newKenninGroups.filter(gName => gName !== groupForTeam);
+                }
+
+                const updated = {
+                    ...m,
+                    teamId: newTeamId,
+                    teamName: newTeamName,
+                    concurrentTeams: newConcurrent,
+                    kenninGroups: newKenninGroups,
+                    teamHistory: [...(m.teamHistory || []), event]
+                };
+
+                if (newKennin) {
+                    updated.kennin = newKennin;
+                } else {
+                    delete updated.kennin;
+                }
+
+                return updated;
             });
         });
 
@@ -4831,6 +4976,33 @@ export const useIdolManager = () => {
             });
         }
 
+        // --- START: Clear concurrent/kennin positions for all members whose kennin team is in this shuffle ---
+        // This ensures manual kennin gets cancelled when the target team is shuffled
+        const teamsBeingShuffledIds = new Set(teamsToShuffleInto.map(t => String(t.id)));
+        masterRoster.forEach(member => {
+            if (member.kennin && teamsBeingShuffledIds.has(String(member.kennin.teamId))) {
+                // Find the member's state object and clear kennin + concurrentTeams entry
+                let memberObjRef;
+                if (member.isExchangeStudent) {
+                    const idx = exchangeStudentsForUpdate.findIndex(ex => ex.member.rosterId === member.rosterId);
+                    if (idx > -1) memberObjRef = exchangeStudentsForUpdate[idx].member;
+                } else if (member.isSisterMember) {
+                    const sg = sisterGroupsCopy.find(sg => String(sg.id) === String(member.groupId));
+                    if (sg) memberObjRef = sg.members.find(m => m.id === member.id);
+                } else {
+                    memberObjRef = membersCopy.find(m => String(m.id) === String(member.id));
+                }
+                if (memberObjRef) {
+                    const cancelledTeamId = member.kennin.teamId;
+                    const cancelledTeamName = member.kennin.teamName;
+                    delete memberObjRef.kennin;
+                    memberObjRef.concurrentTeams = (memberObjRef.concurrentTeams || []).filter(ct => String(ct.id) !== String(cancelledTeamId));
+                    memberObjRef.teamHistory = [...(memberObjRef.teamHistory || []), { week, event: `Concurrent position with ${cancelledTeamName} cancelled due to Shuffle` }];
+                }
+            }
+        });
+        // --- END: Clear concurrent positions ---
+
         Object.keys(finalAssignments).forEach(rosterId => {
             const assignment = finalAssignments[rosterId];
             const member = memberMap.get(rosterId);
@@ -4901,6 +5073,12 @@ export const useIdolManager = () => {
                 const kenninGroupName = newKenninTeam.groupId === 'main' ? groupName : (sisterGroupsCopy.find(sg => String(sg.id) === String(newKenninTeam.groupId))?.name || 'N/A');
                 memberObjectInState.kennin = { teamId: newKenninTeam.id, teamName: newKenninTeam.name, groupId: newKenninTeam.groupId };
 
+                // Also sync concurrentTeams so lookup by that array also works
+                const existingConcurrent = memberObjectInState.concurrentTeams || [];
+                if (!existingConcurrent.some(ct => String(ct.id) === String(newKenninTeam.id))) {
+                    memberObjectInState.concurrentTeams = [...existingConcurrent, { id: newKenninTeam.id, name: newKenninTeam.name }];
+                }
+
                 const existingKenninGroups = memberObjectInState.kenninGroups || [];
                 if (!existingKenninGroups.includes(kenninGroupName)) {
                     memberObjectInState.kenninGroups = [...existingKenninGroups, kenninGroupName];
@@ -4914,6 +5092,8 @@ export const useIdolManager = () => {
             } else if (wasKenninObject) {
                 const oldKenninGroupName = wasKenninObject.groupId === 'main' ? groupName : (sisterGroupsCopy.find(sg => String(sg.id) === String(wasKenninObject.groupId))?.name || 'N/A');
                 delete memberObjectInState.kennin;
+                // Also clean up concurrentTeams
+                memberObjectInState.concurrentTeams = (memberObjectInState.concurrentTeams || []).filter(ct => String(ct.id) !== String(wasKenninObject.teamId));
                 memberObjectInState.kenninGroups = (memberObjectInState.kenninGroups || []).filter(gName => gName !== oldKenninGroupName);
                 memberObjectInState.teamHistory.push({ week, event: `Concurrent position ended via Shuffle` });
             }
@@ -5051,6 +5231,165 @@ export const useIdolManager = () => {
 
         setGroupRoles(nextGroupRoles);
         // --- END: Fix for Pushed Members & Captains ---
+
+        // --- START: Update all historical IDs & records with idChangeMap ---
+        if (idChangeMap.size > 0) {
+            // 1. Update Chemistry keys in members and sister groups
+            const updateChemistry = (memberObj) => {
+                if (memberObj.chemistry) {
+                    const newChem = {};
+                    Object.keys(memberObj.chemistry).forEach(oldKey => {
+                        const newKey = idChangeMap.has(oldKey) ? idChangeMap.get(oldKey) : oldKey;
+                        newChem[newKey] = memberObj.chemistry[oldKey];
+                    });
+                    memberObj.chemistry = newChem;
+                }
+            };
+            membersCopy.forEach(updateChemistry);
+            sisterGroupsCopy.forEach(sg => {
+                if (sg.members) {
+                    sg.members.forEach(updateChemistry);
+                }
+            });
+
+            // 2. Update Performance History Snapshots
+            const updatedPerformanceHistory = performanceHistory.map(perf => {
+                const updatedMembers = (perf.members || []).map(m => {
+                    const oldRosterId = m.rosterId ? String(m.rosterId) : String(m.id);
+                    if (idChangeMap.has(oldRosterId)) {
+                        const newRosterId = idChangeMap.get(oldRosterId);
+                        let newId = m.id;
+                        let isSisterMember = m.isSisterMember;
+                        let displayGroupName = m.displayGroupName;
+                        let homeGroup = m.homeGroup;
+                        if (newRosterId.startsWith('sg-')) {
+                            const parts = newRosterId.split('-');
+                            newId = parseInt(parts[2], 10);
+                            isSisterMember = true;
+                            const sg = sisterGroupsCopy.find(g => String(g.id) === String(parts[1]));
+                            if (sg) {
+                                displayGroupName = sg.name;
+                                homeGroup = sg.name;
+                            }
+                        } else {
+                            newId = parseInt(newRosterId, 10);
+                            isSisterMember = false;
+                            displayGroupName = groupName;
+                            homeGroup = groupName;
+                        }
+                        return {
+                            ...m,
+                            id: newId,
+                            rosterId: newRosterId,
+                            isSisterMember,
+                            displayGroupName,
+                            homeGroup
+                        };
+                    }
+                    return m;
+                });
+                let kageAna = perf.kageAna;
+                let shimeAna = perf.shimeAna;
+                if (idChangeMap.has(String(kageAna))) kageAna = idChangeMap.get(String(kageAna));
+                if (idChangeMap.has(String(shimeAna))) shimeAna = idChangeMap.get(String(shimeAna));
+                return { ...perf, members: updatedMembers, kageAna, shimeAna };
+            });
+            setPerformanceHistory(updatedPerformanceHistory);
+
+            // 3. Update Film Projects Cast Lists
+            const updatedFilmProjects = filmProjects.map(proj => {
+                if (proj.cast) {
+                    const updatedLead = (proj.cast.lead || []).map(id => idChangeMap.has(String(id)) ? idChangeMap.get(String(id)) : id);
+                    const updatedSupporting = (proj.cast.supporting || []).map(id => idChangeMap.has(String(id)) ? idChangeMap.get(String(id)) : id);
+                    const updatedGeneral = (proj.cast.general || []).map(id => idChangeMap.has(String(id)) ? idChangeMap.get(String(id)) : id);
+                    return {
+                        ...proj,
+                        cast: {
+                            ...proj.cast,
+                            lead: updatedLead,
+                            supporting: updatedSupporting,
+                            general: updatedGeneral
+                        }
+                    };
+                }
+                return proj;
+            });
+            setFilmProjects(updatedFilmProjects);
+
+            // 4. Update Songs and Past Releases
+            const updateTracks = (tracks) => {
+                return (tracks || []).map(t => {
+                    const updatedMembers = (t.members || []).map(m => {
+                        const oldRosterId = String(m.id);
+                        if (idChangeMap.has(oldRosterId)) {
+                            const newRosterId = idChangeMap.get(oldRosterId);
+                            let isSisterMember = m.isSisterMember;
+                            let displayGroupName = m.displayGroupName;
+                            let homeGroup = m.homeGroup;
+                            if (newRosterId.startsWith('sg-')) {
+                                isSisterMember = true;
+                                const sg = sisterGroupsCopy.find(g => String(g.id) === String(newRosterId.split('-')[1]));
+                                if (sg) {
+                                    displayGroupName = sg.name;
+                                    homeGroup = sg.name;
+                                }
+                            } else {
+                                isSisterMember = false;
+                                displayGroupName = groupName;
+                                homeGroup = groupName;
+                            }
+                            return {
+                                ...m,
+                                id: newRosterId,
+                                displayGroupName,
+                                isSisterMember,
+                                homeGroup
+                            };
+                        }
+                        return m;
+                    });
+
+                    const updatedCenter = (t.center || []).map(id => idChangeMap.has(String(id)) ? idChangeMap.get(String(id)) : id);
+
+                    const updatedLineup = {};
+                    if (t.lineup) {
+                        Object.keys(t.lineup).forEach(oldId => {
+                            const newId = idChangeMap.has(oldId) ? idChangeMap.get(oldId) : oldId;
+                            updatedLineup[newId] = t.lineup[oldId];
+                        });
+                    }
+
+                    return {
+                        ...t,
+                        members: updatedMembers,
+                        center: updatedCenter,
+                        lineup: updatedLineup
+                    };
+                });
+            };
+
+            const updatedSongs = songs.map(s => ({ ...s, tracks: updateTracks(s.tracks) }));
+            setSongs(updatedSongs);
+
+            const updatedPastReleases = pastReleases.map(pr => ({ ...pr, tracks: updateTracks(pr.tracks) }));
+            setPastReleases(updatedPastReleases);
+
+            // 5. Update Scheduled Singles
+            const updatedScheduledSingles = scheduledSingles.map(s => {
+                if (s.songData && s.songData.tracks) {
+                    return {
+                        ...s,
+                        songData: {
+                            ...s.songData,
+                            tracks: updateTracks(s.songData.tracks)
+                        }
+                    };
+                }
+                return s;
+            });
+            setScheduledSingles(updatedScheduledSingles);
+        }
+        // --- END: Update all historical IDs & records ---
         const shuffleHistoryEvent = {
             week,
             type: 'Grand Shuffle',
@@ -5358,7 +5697,11 @@ export const useIdolManager = () => {
             if (teamSize >= 20) cap = 16;
             else if (teamSize >= 16) cap = 12;
 
-            const availableTeamMembers = getMainGroupRoster().filter(m => team.members.includes(String(m.id)) && m.isAvailable && (m.stamina || 0) >= 30);
+            const availableTeamMembers = getMainGroupRoster().filter(m =>
+                team.members.map(String).includes(String(m.rosterId || m.id)) &&
+                m.isAvailable &&
+                (m.stamina || 0) >= 30
+            );
 
             // Sort by stamina descending to rotate tired members out
             availableTeamMembers.sort((a, b) => (b.stamina || 0) - (a.stamina || 0));
@@ -7564,6 +7907,18 @@ export const useIdolManager = () => {
             }
         };
         const { songData, productionData } = singleToRelease;
+        const targetGroup = songData.targetGroup || 'main';
+        let priorSinglesCount = 0;
+        if (targetGroup === 'main' || targetGroup === groupName) {
+            priorSinglesCount = (initialSongs || []).filter(s => s.type === 'single').length;
+        } else {
+            const sg = (initialSisterGroups || []).find(g => g.name === targetGroup || String(g.id) === String(targetGroup));
+            if (sg) {
+                priorSinglesCount = (sg.songs || []).filter(s => s.type === 'single').length;
+            }
+        }
+        const groupSingleNumber = priorSinglesCount + 1;
+
         const triviaItems = [];
         let newCollaboration = null;
         const titleTrack = songData.tracks.find(t => t.type === 'title');
@@ -8304,7 +8659,8 @@ export const useIdolManager = () => {
             totalTracks: songData.tracks.length,
             salesHistory: [],
             production: productionData,
-            trivia: triviaItems
+            trivia: triviaItems,
+            groupSingleNumber: groupSingleNumber
         };
 
         const allMembersToUpdateIds = Object.keys(finalFanGains);
@@ -8362,8 +8718,8 @@ export const useIdolManager = () => {
 
                 return {
                     ...m,
-                    singlesParticipation: [...(m.singlesParticipation || []), { singleId: newSong.id, singleName: songData.name, tracks: participatedTracks.map(t => t.name), week: week, isCenter: isTitleCenter, isTitleTrackSenbatsu: isTitleSenbatsu, group: releasingGroupName }],
-                    songsParticipation: [...(m.songsParticipation || []), ...participatedTracks.map(t => ({ songName: t.name, singleName: songData.name, week: week, type: t.type, isCenter: (t.center || []).includes(memberId), group: releasingGroupName, row: t.lineup[memberId] }))],
+                    singlesParticipation: [...(m.singlesParticipation || []), { singleId: newSong.id, singleName: songData.name, tracks: participatedTracks.map(t => t.name), week: week, isCenter: isTitleCenter, isTitleTrackSenbatsu: isTitleSenbatsu, group: releasingGroupName, groupSingleNumber: groupSingleNumber }],
+                    songsParticipation: [...(m.songsParticipation || []), ...participatedTracks.map(t => ({ singleId: newSong.id, songName: t.name, singleName: songData.name, week: week, type: t.type, isCenter: (t.center || []).includes(memberId), group: releasingGroupName, row: t.lineup[memberId], groupSingleNumber: groupSingleNumber }))],
                     centerHistory: [...(m.centerHistory || []), ...newCenterEntries],
                     ambition: newAmbition,
                     morale: finalMorale,
@@ -13257,10 +13613,15 @@ export const useIdolManager = () => {
                     return team;
                 });
 
-                // Remove kennin status from the member
+                // Remove kennin status from the member (also cleans concurrentTeams)
                 localUpdateMemberState(member.rosterId, m => {
                     const { kennin, ...rest } = m;
-                    return { ...rest, teamHistory: [...(m.teamHistory || []), { week: newWeek, event: `Concurrent position with ${endedKenninTeamName} ended` }] };
+                    const expiredTeamId = member.kennin.teamId;
+                    return {
+                        ...rest,
+                        concurrentTeams: (m.concurrentTeams || []).filter(ct => String(ct.id) !== String(expiredTeamId)),
+                        teamHistory: [...(m.teamHistory || []), { week: newWeek, event: `Concurrent position with ${endedKenninTeamName} ended` }]
+                    };
                 });
             }
             // --- END NEW ---
@@ -13798,21 +14159,31 @@ export const useIdolManager = () => {
                 const teamSize = team.members.length;
                 cap = teamSize >= 20 ? 16 : teamSize >= 16 ? 12 : teamSize;
 
-                let sourceMembers = membersForUpdate;
-                if (team.groupId && team.groupId !== 'main') {
-                    const sg = sisterGroupsForUpdate.find(g => String(g.id) === String(team.groupId));
-                    if (sg) sourceMembers = sg.members || [];
-                }
+                // Build a full list of active members in the loop (including main, sister, exchange students) to resolve cross-group concurrent positions (kennin).
+                const allActiveMembersInLoop = [
+                    ...membersForUpdate.map(m => ({ ...m, rosterId: String(m.id), isSisterMember: false, groupId: 'main', homeGroup: groupName })),
+                    ...sisterGroupsForUpdate.flatMap(sg => (sg.members || []).map(m => ({ ...m, rosterId: `sg-${sg.id}-${m.id}`, isSisterMember: true, groupId: sg.id, homeGroup: sg.name }))),
+                    ...(exchangeStudentsForUpdate || []).map(ex => ({ ...ex.member, groupId: 'main' }))
+                ];
 
-                const availableTeamMembers = sourceMembers.filter(m => team.members.includes(String(m.id)) && m.isAvailable && (m.stamina || 0) >= 30)
-                    .sort((a, b) => (b.stamina || 0) - (a.stamina || 0));
+                const availableTeamMembers = allActiveMembersInLoop.filter(m =>
+                    team.members.map(String).includes(String(m.rosterId || m.id)) &&
+                    m.isAvailable &&
+                    (m.stamina || 0) >= 30
+                ).sort((a, b) => (b.stamina || 0) - (a.stamina || 0));
 
                 performingMembers = availableTeamMembers.slice(0, cap);
 
                 if (performingMembers.length < cap) {
                     const needed = cap - performingMembers.length;
-                    const availableTrainees = sourceMembers.filter(m => m.status === 'Trainee' && m.isAvailable && (m.stamina || 0) >= 30)
-                        .sort((a, b) => (b.stamina || 0) - (a.stamina || 0));
+                    const teamGroupId = team.groupId || 'main';
+                    // Trainees must be from the team's home group.
+                    const availableTrainees = allActiveMembersInLoop.filter(m =>
+                        m.status === 'Trainee' &&
+                        (teamGroupId === 'main' ? !m.isSisterMember : String(m.groupId) === String(teamGroupId)) &&
+                        m.isAvailable &&
+                        (m.stamina || 0) >= 30
+                    ).sort((a, b) => (b.stamina || 0) - (a.stamina || 0));
                     understudies = availableTrainees.slice(0, needed);
                     performingMembers = [...performingMembers, ...understudies];
                 }
@@ -14280,16 +14651,23 @@ export const useIdolManager = () => {
         ));
 
         // Update the member's state with the kennin info
-        updateMemberState(memberId, m => ({
-            ...m,
-            kennin: {
-                teamId: targetTeam.id,
-                teamName: targetTeam.name,
-                groupId: 'main',
-                endWeek: week + 52
-            },
-            teamHistory: [...(m.teamHistory || []), { week: week, event: `Started concurrent position with ${targetTeam.name}` }]
-        }));
+        updateMemberState(memberId, m => {
+            const newConcurrent = [...(m.concurrentTeams || [])];
+            if (!newConcurrent.some(ct => String(ct.id) === String(targetTeam.id))) {
+                newConcurrent.push({ id: targetTeam.id, name: targetTeam.name });
+            }
+            return {
+                ...m,
+                kennin: {
+                    teamId: targetTeam.id,
+                    teamName: targetTeam.name,
+                    groupId: 'main',
+                    endWeek: week + 52
+                },
+                concurrentTeams: newConcurrent,
+                teamHistory: [...(m.teamHistory || []), { week: week, event: `Started concurrent position with ${targetTeam.name}` }]
+            };
+        });
 
         setMoney(prev => prev - cost);
         setMessage(`${getMemberById(memberId).name} will hold a concurrent position in ${targetTeam.name} for 52 weeks.`);
