@@ -1771,6 +1771,26 @@ const App = () => {
                 synergyMultiplier = 1.12;
                 synergyFound = true;
                 synergyMessage = "Summer Disco Fever! (+12% Hype)";
+            } else if (songGenre === "City Pop" && songTheme === "Retro Nostalgia") {
+                synergyMultiplier = 1.15;
+                synergyFound = true;
+                synergyMessage = "Neon Sunset Synergy! (+15% Hype)";
+            } else if (songGenre === "Dark Metal" && songTheme === "Gothic Fantasy") {
+                synergyMultiplier = 1.18;
+                synergyFound = true;
+                synergyMessage = "Gothic Metal Synergy! (+18% Hype)";
+            } else if (songGenre === "Hip-Hop / Rap" && songTheme === "Rebel Youth") {
+                synergyMultiplier = 1.16;
+                synergyFound = true;
+                synergyMessage = "Street Anthem Synergy! (+16% Hype)";
+            } else if (songGenre === "Future Bass" && songTheme === "Neo Tokyo") {
+                synergyMultiplier = 1.15;
+                synergyFound = true;
+                synergyMessage = "Akihabara Future Synergy! (+15% Hype)";
+            } else if (songGenre === "Traditional Enka" && songTheme === "Forbidden Love") {
+                synergyMultiplier = 1.15;
+                synergyFound = true;
+                synergyMessage = "Tragic Romance Synergy! (+15% Hype)";
             }
             potential *= synergyMultiplier;
             // Apply MV and Promo multipliers
@@ -3642,6 +3662,11 @@ const App = () => {
                                             <option value="Electro-Dance">Electro-Dance (Dancing/Visual)</option>
                                             <option value="Idol Rock">Idol Rock (Singing/Dancing)</option>
                                             <option value="Cute Disco">Cute Disco (Dancing/Charisma)</option>
+                                            <option value="Hip-Hop / Rap">Hip-Hop / Rap (Singing/Variety)</option>
+                                            <option value="Traditional Enka">Traditional Enka (Singing/Intelligence)</option>
+                                            <option value="Dark Metal">Dark Metal (Singing/Dancing)</option>
+                                            <option value="City Pop">City Pop (Visual/Intelligence)</option>
+                                            <option value="Future Bass">Future Bass (Dancing/Visual)</option>
                                         </select>
                                     </div>
                                     <div>
@@ -3652,6 +3677,11 @@ const App = () => {
                                             <option value="Summer Splash">Summer Splash (+ Variety/Energy)</option>
                                             <option value="Girl Hype">Girl Hype (+ Dance energy)</option>
                                             <option value="Cyber Dream">Cyber Dream (+ Visual/Tech glow)</option>
+                                            <option value="Neo Tokyo">Neo Tokyo (+ Tech/Visual glow)</option>
+                                            <option value="Forbidden Love">Forbidden Love (+ Singing/Emotional intensity)</option>
+                                            <option value="Retro Nostalgia">Retro Nostalgia (+ Golden Era charm)</option>
+                                            <option value="Gothic Fantasy">Gothic Fantasy (+ Dark/Dramatic charisma)</option>
+                                            <option value="Rebel Youth">Rebel Youth (+ High energy/Street style)</option>
                                         </select>
                                     </div>
                                 </div>
@@ -5638,7 +5668,7 @@ const App = () => {
                         <div className="space-y-1 max-h-[500px] overflow-y-auto border-t border-b dark:border-gray-700 p-1">
                             {/* MODIFIED: This now maps over 'filteredMembers' */}
                             {filteredMembers.map(member => (
-                                <div key={member.rosterId} className={`flex items-center justify-between p-2 rounded ${selectedMembers.includes(member.id) ? 'bg-blue-200 dark:bg-blue-800' : 'bg-white dark:bg-gray-800/50'}`}>
+                                <div key={member.rosterId} className={`flex items-center justify-between p-2 rounded ${selectedMembers.includes(member.rosterId) ? 'bg-blue-200 dark:bg-blue-800' : 'bg-white dark:bg-gray-800/50'}`}>
 
                                     <div>
                                         <p className="font-semibold text-sm">{member.name}</p>
@@ -6145,7 +6175,7 @@ const App = () => {
             if (typeof selection === 'number') { // Team selected
                 const team = teams.find(t => t.id === selection);
                 if (!team) return [];
-                return fullRoster.filter(m => team.members.includes(String(m.id)) && m.isAvailable);
+                return fullRoster.filter(m => team.members.includes(String(m.rosterId || m.id)) && m.isAvailable);
             }
 
             if (typeof selection === 'string' && selection.startsWith('sg-')) { // Sister Group selected

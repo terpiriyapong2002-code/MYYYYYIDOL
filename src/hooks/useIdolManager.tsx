@@ -23,7 +23,7 @@ export const getFormattedDateForWeek = (weekNumber) => {
 export const getOrdinalSuffix = (num) => {
     if (!num) return '';
     const j = num % 10,
-          k = num % 100;
+        k = num % 100;
     if (j === 1 && k !== 11) {
         return num + "st";
     }
@@ -53,14 +53,14 @@ export const getReleaseGroupSingleNumber = (release, allReleases) => {
 export const getGroupSingleNumberForHistory = (entry, songs, sisterGroups) => {
     if (!entry) return null;
     if (entry.groupSingleNumber) return entry.groupSingleNumber;
-    
+
     // Dynamic calculation for older save files
     const allReleases = [...(songs || []), ...(sisterGroups || []).flatMap(sg => sg.songs || [])];
-    const release = allReleases.find(s => 
-        s.type === 'single' && 
+    const release = allReleases.find(s =>
+        s.type === 'single' &&
         (s.id === entry.singleId || s.name === entry.singleName)
     );
-    
+
     if (release) {
         return getReleaseGroupSingleNumber(release, allReleases);
     }
@@ -3806,7 +3806,7 @@ export const useIdolManager = () => {
     };
     const assignLowestVocalDanceTraining = (membersToTrain) => {
         const members = Array.isArray(membersToTrain) && membersToTrain.length > 0 ? membersToTrain : getAllAvailableMembers(true);
-        const trainableMembers = members.filter(m => (m.singing || 0) < 100 && (m.dancing || 0) < 100);
+        const trainableMembers = members.filter(m => (m.singing || 0) < 100 || (m.dancing || 0) < 100);
         trainableMembers.forEach(member => {
             const skills = {
                 singing: member.singing || 0,
@@ -4614,6 +4614,152 @@ export const useIdolManager = () => {
         setShowModal('confirm');
     };
 
+    // --- START: History Update Helper ---
+    const updateRosterIdInAllHistory = (idChangeMap, sgCopy = null) => {
+        if (!idChangeMap || idChangeMap.size === 0) return;
+
+        const getUpdatedMember = (m) => {
+            const oldRosterId = m.rosterId ? String(m.rosterId) : String(m.id);
+            if (idChangeMap.has(oldRosterId)) {
+                const newRosterId = idChangeMap.get(oldRosterId);
+                let newId = m.id;
+                let isSisterMember = m.isSisterMember;
+                let displayGroupName = m.displayGroupName;
+                let homeGroup = m.homeGroup;
+                if (newRosterId.startsWith('sg-')) {
+                    const parts = newRosterId.split('-');
+                    newId = parseInt(parts[2], 10);
+                    isSisterMember = true;
+                    const sg = sisterGroups.find(g => String(g.id) === String(parts[1]));
+                    if (sg) {
+                        displayGroupName = sg.name;
+                        homeGroup = sg.name;
+                    }
+                } else {
+                    newId = parseInt(newRosterId, 10);
+                    isSisterMember = false;
+                    displayGroupName = groupName;
+                    homeGroup = groupName;
+                }
+                return {
+                    ...m,
+                    id: newId,
+                    rosterId: newRosterId,
+                    isSisterMember,
+                    displayGroupName: displayGroupName || m.displayGroupName,
+                    homeGroup: homeGroup || m.homeGroup
+                };
+            }
+            return m;
+        };
+
+        const updateMembersList = (membersArray) => {
+            if (!membersArray) return membersArray;
+            return membersArray.map(m => getUpdatedMember(m));
+        };
+
+        const updateTracks = (tracks) => {
+            return (tracks || []).map(t => {
+                const updatedMembers = updateMembersList(t.members);
+                const updatedCenter = (t.center || []).map(id => idChangeMap.has(String(id)) ? idChangeMap.get(String(id)) : id);
+                const updatedLineup = {};
+                if (t.lineup) {
+                    Object.keys(t.lineup).forEach(oldId => {
+                        const newId = idChangeMap.has(oldId) ? idChangeMap.get(oldId) : oldId;
+                        updatedLineup[newId] = t.lineup[oldId];
+                    });
+                }
+                return { ...t, members: updatedMembers, center: updatedCenter, lineup: updatedLineup };
+            });
+        };
+
+        const updateSongsHistory = (songArray) => {
+            if (!songArray) return songArray;
+            return songArray.map(song => ({
+                ...song,
+                tracks: updateTracks(song.tracks)
+            }));
+        };
+
+        setSongs(prev => updateSongsHistory(prev));
+        setPastReleases(prev => updateSongsHistory(prev));
+        setScheduledSingles(prev => prev.map(s => {
+            if (s.songData && s.songData.tracks) {
+                return { ...s, songData: { ...s.songData, tracks: updateTracks(s.songData.tracks) } };
+            }
+            return s;
+        }));
+
+        if (sgCopy) {
+            sgCopy.forEach(sg => {
+                if (sg.songs) sg.songs = updateSongsHistory(sg.songs);
+                if (sg.pastReleases) sg.pastReleases = updateSongsHistory(sg.pastReleases);
+            });
+        } else {
+            setSisterGroups(prev => prev.map(sg => ({
+                ...sg,
+                songs: updateSongsHistory(sg.songs),
+                pastReleases: updateSongsHistory(sg.pastReleases)
+            })));
+        }
+
+        const updateResult = (result) => {
+            if (!result) return result;
+            return {
+                ...result,
+                ranking: result.ranking?.map(r => ({
+                    ...r,
+                    member: r.member ? getUpdatedMember(r.member) : r.member
+                }))
+            };
+        };
+
+        setLastElectionResult(prev => updateResult(prev));
+        setElectionHistory(prev => prev.map(hist => updateResult(hist)));
+
+        setLastJankenResult(prev => updateResult(prev));
+        setJankenHistory(prev => prev.map(hist => updateResult(hist)));
+
+        setSportsFestivalHistory(prev => prev.map(fest => ({
+            ...fest,
+            events: fest.events?.map(ev => ({
+                ...ev,
+                results: ev.results?.map(r => ({
+                    ...r,
+                    member: r.member ? getUpdatedMember(r.member) : r.member
+                }))
+            }))
+        })));
+
+        setPerformanceHistory(prev => prev.map(perf => {
+            const updatedMembers = updateMembersList(perf.members);
+            let kageAna = perf.kageAna;
+            let shimeAna = perf.shimeAna;
+            if (idChangeMap.has(String(kageAna))) kageAna = idChangeMap.get(String(kageAna));
+            if (idChangeMap.has(String(shimeAna))) shimeAna = idChangeMap.get(String(shimeAna));
+            return { ...perf, members: updatedMembers, kageAna, shimeAna };
+        }));
+
+        setFilmProjects(prev => prev.map(proj => {
+            if (proj.cast) {
+                const updatedLead = (proj.cast.lead || []).map(id => idChangeMap.has(String(id)) ? idChangeMap.get(String(id)) : id);
+                const updatedSupporting = (proj.cast.supporting || []).map(id => idChangeMap.has(String(id)) ? idChangeMap.get(String(id)) : id);
+                const updatedGeneral = (proj.cast.general || []).map(id => idChangeMap.has(String(id)) ? idChangeMap.get(String(id)) : id);
+                return {
+                    ...proj,
+                    cast: {
+                        ...proj.cast,
+                        lead: updatedLead,
+                        supporting: updatedSupporting,
+                        general: updatedGeneral
+                    }
+                };
+            }
+            return proj;
+        }));
+    };
+    // --- END: History Update Helper ---
+
     const executeShuffle = (shuffleType, mode, manualAssignments = null) => {
         // This is a complex operation. We create deep copies to manipulate safely.
         let membersCopy = JSON.parse(JSON.stringify(members));
@@ -4742,12 +4888,12 @@ export const useIdolManager = () => {
                 }
             });
 
-            const chanceOfSisterToMainTransfer = 0.10;
-            const chanceOfMainToSisterTransfer = 0.05; // This was already low, which is good.
+            const chanceOfSisterToMainTransfer = 0.30;
+            const chanceOfMainToSisterTransfer = 0.60; // This was already low, which is good.
             const chanceOfSisterToMainKennin = 0.80;
-            const chanceOfMainToSisterKennin = 0.50;
+            const chanceOfMainToSisterKennin = 0.70;
             let crossGroupMoves = 0;
-            const MAX_CROSS_GROUP_MOVES = 3; // Reducing the max number of cross-group moves.
+            const MAX_CROSS_GROUP_MOVES = 10; // Reducing the max number of cross-group moves.
 
             let unassignedMain = unassignedMembers.filter(m => !m.isSisterMember);
             let unassignedSister = unassignedMembers.filter(m => m.isSisterMember);
@@ -4874,9 +5020,13 @@ export const useIdolManager = () => {
                     return String(memberGroupId) === String(groupId);
                 });
 
-                // 3. Separate trainees from tenured members for THIS GROUP and randomize them for natural shuffling.
+                // 3. Separate trainees from tenured members for THIS GROUP. Sort tenured members by fans descending so carrying members are balanced.
                 const traineesToPromote = [...membersOfThisGroup.filter(m => !m.teamId)].sort(() => 0.5 - Math.random());
-                const membersToShuffle = [...membersOfThisGroup.filter(m => !!m.teamId)].sort(() => 0.5 - Math.random());
+                const membersToShuffle = [...membersOfThisGroup.filter(m => !!m.teamId)].sort((a, b) => {
+                    const fansA = (a.fans?.casual || 0) + (a.fans?.hardcore || 0);
+                    const fansB = (b.fans?.casual || 0) + (b.fans?.hardcore || 0);
+                    return fansB - fansA;
+                });
                 // 4. Promote trainees first, only within their own group's teams.
                 traineesToPromote.forEach(trainee => {
                     const promotableTeams = teamsOfThisGroup.filter(team => {
@@ -4907,6 +5057,7 @@ export const useIdolManager = () => {
                 });
 
                 // 5. Shuffle the remaining tenured members within THIS group.
+                const randomizedTeamsOfThisGroup = [...teamsOfThisGroup].sort(() => 0.5 - Math.random());
                 let teamIndex = 0;
                 let direction = 1;
 
@@ -4914,15 +5065,15 @@ export const useIdolManager = () => {
                     let assigned = false;
                     let attempts = 0;
 
-                    while (!assigned && attempts < teamsOfThisGroup.length) {
-                        const targetTeam = teamsOfThisGroup[teamIndex];
+                    while (!assigned && attempts < randomizedTeamsOfThisGroup.length) {
+                        const targetTeam = randomizedTeamsOfThisGroup[teamIndex];
                         const teamSlot = groupTeamSlots.find(s => s.id === targetTeam.id);
 
                         const isDifferentTeam = String(targetTeam.id) !== String(member.teamId);
                         const canAssign = teamSlot && teamSlot.filled < teamSlot.capacity && (
                             isDifferentTeam ||
-                            teamsOfThisGroup.length === 1 ||
-                            attempts === teamsOfThisGroup.length - 1
+                            randomizedTeamsOfThisGroup.length === 1 ||
+                            attempts === randomizedTeamsOfThisGroup.length - 1
                         );
                         if (canAssign) {
                             finalAssignments[member.rosterId] = { primaryTeamId: targetTeam.id };
@@ -4941,7 +5092,7 @@ export const useIdolManager = () => {
                         }
 
                         teamIndex += direction;
-                        if (teamIndex >= teamsOfThisGroup.length || teamIndex < 0) {
+                        if (teamIndex >= randomizedTeamsOfThisGroup.length || teamIndex < 0) {
                             direction *= -1;
                             teamIndex += direction;
                         }
@@ -5252,142 +5403,8 @@ export const useIdolManager = () => {
                 }
             });
 
-            // 2. Update Performance History Snapshots
-            const updatedPerformanceHistory = performanceHistory.map(perf => {
-                const updatedMembers = (perf.members || []).map(m => {
-                    const oldRosterId = m.rosterId ? String(m.rosterId) : String(m.id);
-                    if (idChangeMap.has(oldRosterId)) {
-                        const newRosterId = idChangeMap.get(oldRosterId);
-                        let newId = m.id;
-                        let isSisterMember = m.isSisterMember;
-                        let displayGroupName = m.displayGroupName;
-                        let homeGroup = m.homeGroup;
-                        if (newRosterId.startsWith('sg-')) {
-                            const parts = newRosterId.split('-');
-                            newId = parseInt(parts[2], 10);
-                            isSisterMember = true;
-                            const sg = sisterGroupsCopy.find(g => String(g.id) === String(parts[1]));
-                            if (sg) {
-                                displayGroupName = sg.name;
-                                homeGroup = sg.name;
-                            }
-                        } else {
-                            newId = parseInt(newRosterId, 10);
-                            isSisterMember = false;
-                            displayGroupName = groupName;
-                            homeGroup = groupName;
-                        }
-                        return {
-                            ...m,
-                            id: newId,
-                            rosterId: newRosterId,
-                            isSisterMember,
-                            displayGroupName,
-                            homeGroup
-                        };
-                    }
-                    return m;
-                });
-                let kageAna = perf.kageAna;
-                let shimeAna = perf.shimeAna;
-                if (idChangeMap.has(String(kageAna))) kageAna = idChangeMap.get(String(kageAna));
-                if (idChangeMap.has(String(shimeAna))) shimeAna = idChangeMap.get(String(shimeAna));
-                return { ...perf, members: updatedMembers, kageAna, shimeAna };
-            });
-            setPerformanceHistory(updatedPerformanceHistory);
-
-            // 3. Update Film Projects Cast Lists
-            const updatedFilmProjects = filmProjects.map(proj => {
-                if (proj.cast) {
-                    const updatedLead = (proj.cast.lead || []).map(id => idChangeMap.has(String(id)) ? idChangeMap.get(String(id)) : id);
-                    const updatedSupporting = (proj.cast.supporting || []).map(id => idChangeMap.has(String(id)) ? idChangeMap.get(String(id)) : id);
-                    const updatedGeneral = (proj.cast.general || []).map(id => idChangeMap.has(String(id)) ? idChangeMap.get(String(id)) : id);
-                    return {
-                        ...proj,
-                        cast: {
-                            ...proj.cast,
-                            lead: updatedLead,
-                            supporting: updatedSupporting,
-                            general: updatedGeneral
-                        }
-                    };
-                }
-                return proj;
-            });
-            setFilmProjects(updatedFilmProjects);
-
-            // 4. Update Songs and Past Releases
-            const updateTracks = (tracks) => {
-                return (tracks || []).map(t => {
-                    const updatedMembers = (t.members || []).map(m => {
-                        const oldRosterId = String(m.id);
-                        if (idChangeMap.has(oldRosterId)) {
-                            const newRosterId = idChangeMap.get(oldRosterId);
-                            let isSisterMember = m.isSisterMember;
-                            let displayGroupName = m.displayGroupName;
-                            let homeGroup = m.homeGroup;
-                            if (newRosterId.startsWith('sg-')) {
-                                isSisterMember = true;
-                                const sg = sisterGroupsCopy.find(g => String(g.id) === String(newRosterId.split('-')[1]));
-                                if (sg) {
-                                    displayGroupName = sg.name;
-                                    homeGroup = sg.name;
-                                }
-                            } else {
-                                isSisterMember = false;
-                                displayGroupName = groupName;
-                                homeGroup = groupName;
-                            }
-                            return {
-                                ...m,
-                                id: newRosterId,
-                                displayGroupName,
-                                isSisterMember,
-                                homeGroup
-                            };
-                        }
-                        return m;
-                    });
-
-                    const updatedCenter = (t.center || []).map(id => idChangeMap.has(String(id)) ? idChangeMap.get(String(id)) : id);
-
-                    const updatedLineup = {};
-                    if (t.lineup) {
-                        Object.keys(t.lineup).forEach(oldId => {
-                            const newId = idChangeMap.has(oldId) ? idChangeMap.get(oldId) : oldId;
-                            updatedLineup[newId] = t.lineup[oldId];
-                        });
-                    }
-
-                    return {
-                        ...t,
-                        members: updatedMembers,
-                        center: updatedCenter,
-                        lineup: updatedLineup
-                    };
-                });
-            };
-
-            const updatedSongs = songs.map(s => ({ ...s, tracks: updateTracks(s.tracks) }));
-            setSongs(updatedSongs);
-
-            const updatedPastReleases = pastReleases.map(pr => ({ ...pr, tracks: updateTracks(pr.tracks) }));
-            setPastReleases(updatedPastReleases);
-
-            // 5. Update Scheduled Singles
-            const updatedScheduledSingles = scheduledSingles.map(s => {
-                if (s.songData && s.songData.tracks) {
-                    return {
-                        ...s,
-                        songData: {
-                            ...s.songData,
-                            tracks: updateTracks(s.songData.tracks)
-                        }
-                    };
-                }
-                return s;
-            });
-            setScheduledSingles(updatedScheduledSingles);
+            // Use central helper to update the rest
+            updateRosterIdInAllHistory(idChangeMap, sisterGroupsCopy);
         }
         // --- END: Update all historical IDs & records ---
         const shuffleHistoryEvent = {
@@ -7264,9 +7281,9 @@ export const useIdolManager = () => {
         const unselectedMembers = potentialParticipants.filter(m => !allParticipatingIds.has(String(m.rosterId || m.id)));
 
         unselectedMembers.forEach(member => {
-            let urgencyIncrease = 3;
+            let urgencyIncrease = 1;
             if (member.ambition === 'Prove My Worth') {
-                urgencyIncrease = 10;
+                urgencyIncrease = 4;
             }
             updateMemberState(member.rosterId || member.id, m => ({
                 ...m,
@@ -9107,6 +9124,12 @@ export const useIdolManager = () => {
                 kenninGroups: [],
             };
             setMembers(prev => [...prev, newMainMember]);
+
+            // 3. Update all histories with the id change
+            const idChangeMap = new Map();
+            idChangeMap.set(String(member.rosterId || `sg-${sgId}-${mId}`), String(newId));
+            updateRosterIdInAllHistory(idChangeMap);
+
             setMessage(`${member.name} successfully transferred to ${groupName}! (¥${cost.toLocaleString()})`);
             setSelectedMember(newMainMember);
 
@@ -12809,7 +12832,7 @@ export const useIdolManager = () => {
                     m.stamina = Math.max(0, (m.stamina || 100) - 20);
                     m.stress = Math.min(100, (m.stress || 0) + 10);
                     m.morale = Math.min(100, (m.morale || 0) + 15);
-                    m.graduationUrgency = Math.max(0, (m.graduationUrgency || 0) - 1);
+                    m.graduationUrgency = Math.max(0, (m.graduationUrgency || 0) - 2);
 
                     const hardcoreGain = Math.floor(fanGain * 0.3);
                     const casualGain = fanGain - hardcoreGain;
@@ -13844,23 +13867,23 @@ export const useIdolManager = () => {
             switch (member.ambition) {
                 case 'Find Normal Happiness':
                 case 'The Unwilling Idol':
-                    // These members feel the pull of normal life more strongly. (Range: 0.4 - 0.7)
-                    gradUrgencyIncrease += 0.4 + (Math.random() * 0.3);
+                    // These members feel the pull of normal life more strongly. (Range: 0.25 - 0.45)
+                    gradUrgencyIncrease += 0.25 + (Math.random() * 0.2);
                     break;
                 case 'Space for Juniors':
                 case 'The Producer':
                 case 'Eternal Center':
                 case 'Dedicated Legend':
-                    // These members are invested and have slower base urgency. (Range: 0.05 - 0.2)
-                    gradUrgencyIncrease += 0.05 + (Math.random() * 0.15);
+                    // These members are invested and have slower base urgency. (Range: 0.03 - 0.1)
+                    gradUrgencyIncrease += 0.03 + (Math.random() * 0.07);
                     break;
                 case 'Academic Focus':
-                    // Education is a constant pressure. (Range: 0.5 - 0.8)
-                    gradUrgencyIncrease += 0.5 + (Math.random() * 0.3);
+                    // Education is a constant pressure. (Range: 0.3 - 0.5)
+                    gradUrgencyIncrease += 0.3 + (Math.random() * 0.2);
                     break;
                 default:
-                    // Standard "aging" for most idols. (Range: 0.15 - 0.4)
-                    gradUrgencyIncrease += 0.15 + (Math.random() * 0.25);
+                    // Standard "aging" for most idols. (Range: 0.08 - 0.25)
+                    gradUrgencyIncrease += 0.08 + (Math.random() * 0.17);
                     break;
             }
 
