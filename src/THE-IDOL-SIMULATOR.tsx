@@ -24,6 +24,28 @@ import {
 
 import { MerchTab } from './MerchTab';
 
+// Helper to get the original home group from a member's team history (for generation filtering)
+const getOriginalHomeGroup = (member, sisterGroups = []) => {
+    if (!member) return 'main';
+    // Check for a stored original home group first
+    if (member.originalHomeGroup) return member.originalHomeGroup;
+    // Look at the first "Joined" event in team history to determine origin
+    const joinEvent = (member.teamHistory || []).find(e => e.event && e.event.includes('Joined'));
+    if (joinEvent) {
+        const match = joinEvent.event.match(/Joined (.*?) as/);
+        if (match && match[1]) {
+            const joinedGroupName = match[1];
+            // Check if this group name matches any sister group
+            const sg = sisterGroups.find(sg => sg.name === joinedGroupName);
+            if (sg) return joinedGroupName;
+            // Otherwise it's the main group
+            return 'main';
+        }
+    }
+    // Fallback: use current homeGroup
+    return member.homeGroup || 'main';
+};
+
 const applyMemberFilter = (member, filterKey, teams = [], sisterGroups = [], pushedMembers = []) => {
     if (!member) return false;
     if (filterKey === 'all' || filterKey === 'All') return true;
@@ -50,13 +72,8 @@ const applyMemberFilter = (member, filterKey, teams = [], sisterGroups = [], pus
 
     if (filterKey.startsWith('main-gen-')) {
         const gen = filterKey.replace('main-gen-', '');
-        const isInMain = !member.isSisterMember ||
-            (member.isSister === false) ||
-            (member.isSisterMember === false) ||
-            (member.kenninGroups || []).includes('main') ||
-            (member.kennin && String(member.kennin.groupId) === 'main') ||
-            (member.homeGroup === 'main');
-        return isInMain && member.generation === gen;
+        const originalGroup = getOriginalHomeGroup(member, sisterGroups);
+        return originalGroup === 'main' && member.generation === gen;
     }
 
     if (filterKey.startsWith('sg-')) {
@@ -74,7 +91,9 @@ const applyMemberFilter = (member, filterKey, teams = [], sisterGroups = [], pus
 
         if (filterKey.includes('-gen-')) {
             const gen = filterKey.split('-gen-')[1];
-            return isInSG && member.generation === gen;
+            const originalGroup = getOriginalHomeGroup(member, sisterGroups);
+            const isOriginallyFromSG = sgName && originalGroup === sgName;
+            return isOriginallyFromSG && member.generation === gen;
         }
         return isInSG;
     }
@@ -99,7 +118,7 @@ const App = () => {
         // Utilities
         startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
         // Logic
-        holdTitleTrackPerformance, holdUnitPerformance, unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, getUnderMembersPool, startUnderTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, executeFanEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek: nextWeekHook, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
+        holdTitleTrackPerformance, holdUnitPerformance, unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, getUnderMembersPool, startUnderTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, executeFanEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek: nextWeekHook, confirmExchangeStudent, confirmCreateSisterGroup, promoteSubgroupMember, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
 
     } = useIdolManager();
 
@@ -554,10 +573,16 @@ const App = () => {
     const [pushMemberFilter, setPushMemberFilter] = useState('all');
     const [showRecentOnly, setShowRecentOnly] = useState(true);
     const allMembers = getMainGroupRoster();
-    const mainGroupGenerations = [...new Set(allMembers.filter(m => !m.isSisterMember).map(m => m.generation).filter(Boolean))];
+    const mainGroupGenerations = [...new Set(allMembers.filter(m => {
+        const origGroup = getOriginalHomeGroup(m, sisterGroups);
+        return origGroup === 'main';
+    }).map(m => m.generation).filter(Boolean))];
     const sisterGroupDetails = sisterGroups.filter(sg => !sg.isDisbanded).map(sg => ({
         ...sg,
-        generations: [...new Set(allMembers.filter(m => String(m.groupId) === String(sg.id)).map(m => m.generation).filter(Boolean))]
+        generations: [...new Set(allMembers.filter(m => {
+            const origGroup = getOriginalHomeGroup(m, sisterGroups);
+            return origGroup === sg.name || String(m.groupId) === String(sg.id);
+        }).map(m => m.generation).filter(Boolean))]
     }));
 
     useEffect(() => {
@@ -2585,10 +2610,15 @@ const App = () => {
                     selectableMembers = unitMemberIds.map(id => getMemberById(id)).filter(Boolean);
                 } else {
                     // It's a regular sister group. Find members by their groupId OR Kennin status.
+                    // Also include members from child sub-groups whose parentGroupId matches this group.
+                    const childSubgroupIds = (sisterGroups || [])
+                        .filter(child => child.type === 'subgroup' && !child.isDisbanded && String(child.parentGroupId) === String(sg.id))
+                        .map(child => String(child.id));
                     selectableMembers = allAvailableForSong.filter(m =>
                         String(m.groupId) === String(sg.id) ||
                         (m.kennin && String(m.kennin.groupId) === String(sg.id)) ||
-                        (m.kenninGroups || []).includes(sg.name)
+                        (m.kenninGroups || []).includes(sg.name) ||
+                        childSubgroupIds.includes(String(m.groupId))
                     );
                 }
             }
@@ -3007,10 +3037,15 @@ const App = () => {
                         });
                         return unitMemberIds.map(id => getMemberById(id)).filter(Boolean);
                     } else {
+                        // Also include members from child sub-groups whose parentGroupId matches this group.
+                        const childSubgroupIds = (sisterGroups || [])
+                            .filter(child => child.type === 'subgroup' && !child.isDisbanded && String(child.parentGroupId) === String(sg.id))
+                            .map(child => String(child.id));
                         return allAvailableForSong.filter(m =>
                             String(m.groupId) === String(sg.id) ||
                             (m.kennin && String(m.kennin.groupId) === String(sg.id)) ||
-                            (m.kenninGroups || []).includes(sg.name)
+                            (m.kenninGroups || []).includes(sg.name) ||
+                            childSubgroupIds.includes(String(m.groupId))
                         );
                     }
                 }
@@ -4912,13 +4947,20 @@ const App = () => {
 
                 // --- START: Logic to find member's original group ---
                 let groupNameForGen;
-                // Find the first "Joined" event in the member's history to determine their origin group.
-                const joinEvent = (member.teamHistory || []).find(e => e.event && e.event.includes('Joined'));
 
-                if (joinEvent) {
-                    const match = joinEvent.event.match(/Joined (.*?) as/);
-                    if (match && match[1]) {
-                        groupNameForGen = match[1];
+                // Check the stored originalHomeGroup first (set at recruitment time)
+                if (member.originalHomeGroup) {
+                    groupNameForGen = member.originalHomeGroup === 'main' ? groupName : member.originalHomeGroup;
+                }
+
+                // Fallback: Find the first "Joined" event in the member's history to determine their origin group.
+                if (!groupNameForGen) {
+                    const joinEvent = (member.teamHistory || []).find(e => e.event && e.event.includes('Joined'));
+                    if (joinEvent) {
+                        const match = joinEvent.event.match(/Joined (.*?) as/);
+                        if (match && match[1]) {
+                            groupNameForGen = match[1];
+                        }
                     }
                 }
 
@@ -5191,7 +5233,7 @@ const App = () => {
                                         const unassigned = [];
                                         if (track.lineup && track.members) {
                                             track.members.forEach(memberObject => {
-                                                const row = track.lineup[String(memberObject.id)];
+                                                const row = track.lineup[String(memberObject.rosterId || memberObject.id)] || track.lineup[String(memberObject.id)];
                                                 if (row && rows[row]) {
                                                     rows[row].push(memberObject.name);
                                                 } else {
@@ -5257,7 +5299,7 @@ const App = () => {
                                     const unassigned = [];
                                     if (track.lineup && track.members) {
                                         track.members.forEach(memberObject => {
-                                            const row = track.lineup[String(memberObject.id)];
+                                            const row = track.lineup[String(memberObject.rosterId || memberObject.id)] || track.lineup[String(memberObject.id)];
                                             if (row && rows[row]) {
                                                 rows[row].push(memberObject.name);
                                             } else {
@@ -5305,7 +5347,8 @@ const App = () => {
                                     track.members.forEach(memberId => {
                                         const member = memberMap[getRosterIdForTrackMember(memberId, release)];
                                         if (member) {
-                                            const row = track.lineup[String(memberId)];
+                                            const lookupId = String(member.rosterId || memberId);
+                                            const row = track.lineup[lookupId] || track.lineup[String(memberId)];
                                             if (row && rows[row]) { rows[row].push(member.name); } else { unassigned.push(member.name); }
                                         }
                                     });
@@ -12850,7 +12893,8 @@ const App = () => {
         const [groupData, setGroupData] = useState({
             groupName: '',
             location: '',
-            type: 'domestic'
+            type: 'domestic',
+            parentGroupId: 'main'
         });
 
         const handleChange = (e) => {
@@ -12858,9 +12902,10 @@ const App = () => {
 
             setGroupData(prev => {
                 const newState = { ...prev, [name]: value };
-                // If the type changes, reset the location
+                // If the type changes, reset the location and parentGroupId
                 if (name === 'type') {
-                    newState.location = '';
+                    newState.location = value === 'subgroup' ? 'Tokyo' : '';
+                    newState.parentGroupId = value === 'subgroup' ? 'main' : undefined;
                 }
                 return newState;
             });
@@ -12879,12 +12924,10 @@ const App = () => {
                 setMessage("A group with this name already exists.");
                 return;
             }
-            // The bug was here. We must pass the correct type.
-            // The confirm function will handle making it autonomous.
             onConfirm(groupData);
         };
 
-        const cost = groupData.type === 'domestic' ? 200000 : 500000;
+        const cost = groupData.type === 'subgroup' ? 100000 : (groupData.type === 'domestic' ? 200000 : 500000);
         const overseasLocations = {
             'Shanghai': 'China',
             'Bangkok': 'Thailand',
@@ -12893,18 +12936,18 @@ const App = () => {
 
         return (
             <ModalWrapper title="Found New Sister Group" maxWidth="max-w-lg">
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Establish a new sister group to expand your idol empire. Domestic groups focus on synergy, while overseas groups operate autonomously in their region.</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Establish a new sister group to expand your idol empire. Domestic groups focus on synergy, overseas groups operate autonomously, and sub-groups feed talent into their parent groups.</p>
 
                 {/* Group Name */}
                 <div className="mb-4">
                     <label className="block text-sm font-bold mb-1">Group Name</label>
-                    <input type="text" name="groupName" value={groupData.groupName} onChange={handleChange} className="w-full p-2 border rounded" placeholder="e.g. NMB48" />
+                    <input type="text" name="groupName" value={groupData.groupName} onChange={handleChange} className="w-full p-2 border rounded dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100" placeholder="e.g. Hiragana Keyaki" />
                 </div>
 
                 {/* Group Type */}
                 <div className="mb-4">
                     <label className="block text-sm font-bold mb-1">Group Type</label>
-                    <div className="flex gap-4">
+                    <div className="flex flex-wrap gap-4 text-sm">
                         <label className="flex items-center">
                             <input type="radio" name="type" value="domestic" checked={groupData.type === 'domestic'} onChange={handleChange} className="mr-2" />
                             Domestic (¥200,000)
@@ -12913,26 +12956,61 @@ const App = () => {
                             <input type="radio" name="type" value="overseas" checked={groupData.type === 'overseas'} onChange={handleChange} className="mr-2" />
                             Overseas (¥500,000)
                         </label>
+                        <label className="flex items-center">
+                            <input type="radio" name="type" value="subgroup" checked={groupData.type === 'subgroup'} onChange={handleChange} className="mr-2" />
+                            Sub-group (¥100,000)
+                        </label>
                     </div>
                 </div>
+
+                {/* Parent Group (Sub-group only) */}
+                {groupData.type === 'subgroup' && (
+                    <div className="mb-4">
+                        <label className="block text-sm font-bold mb-1">Parent Group</label>
+                        <select
+                            name="parentGroupId"
+                            value={groupData.parentGroupId || 'main'}
+                            onChange={(e) => {
+                                const val = e.target.value;
+                                setGroupData(prev => {
+                                    let newLoc = prev.location;
+                                    if (val === 'main') {
+                                        newLoc = 'Tokyo';
+                                    } else {
+                                        const pSg = sisterGroups.find(g => String(g.id) === String(val));
+                                        if (pSg) newLoc = pSg.location;
+                                    }
+                                    return { ...prev, parentGroupId: val, location: newLoc };
+                                });
+                            }}
+                            className="w-full p-2 border rounded bg-white dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
+                        >
+                            <option value="main">{groupName} (Main)</option>
+                            {sisterGroups.filter(sg => sg.type !== 'unit' && sg.type !== 'subgroup' && !sg.isDisbanded).map(sg => (
+                                <option key={sg.id} value={sg.id}>{sg.name}</option>
+                            ))}
+                        </select>
+                        <p className="text-xs text-gray-500 mt-1">This is the group members can be promoted to.</p>
+                    </div>
+                )}
 
                 {/* Location - Conditional Input */}
                 <div className="mb-4">
                     <label className="block text-sm font-bold mb-1">Base of Operations</label>
-                    {groupData.type === 'domestic' ? (
+                    {groupData.type === 'overseas' ? (
                         <>
-                            <input type="text" name="location" value={groupData.location} onChange={handleChange} className="w-full p-2 border rounded" placeholder="e.g. Namba, Osaka" />
-                            <p className="text-xs text-gray-500 mt-1">For domestic groups, this determines regional identity.</p>
-                        </>
-                    ) : (
-                        <>
-                            <select name="location" value={groupData.location} onChange={handleChange} className="w-full p-2 border rounded bg-white dark:bg-gray-800">
+                            <select name="location" value={groupData.location} onChange={handleChange} className="w-full p-2 border rounded bg-white dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100">
                                 <option value="">-- Select a Country --</option>
                                 {Object.entries(overseasLocations).map(([city, country]) => (
                                     <option key={city} value={city}>{country} ({city})</option>
                                 ))}
                             </select>
                             <p className="text-xs text-gray-500 mt-1">This determines the group's country and the language for new member names.</p>
+                        </>
+                    ) : (
+                        <>
+                            <input type="text" name="location" value={groupData.location} onChange={handleChange} className="w-full p-2 border rounded dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100" placeholder="e.g. Namba, Osaka" />
+                            <p className="text-xs text-gray-500 mt-1">For domestic and sub-groups, this determines regional identity.</p>
                         </>
                     )}
                 </div>
@@ -12942,6 +13020,63 @@ const App = () => {
                     <button onClick={() => setShowModal(null)} className="px-4 py-2 bg-gray-300 dark:bg-gray-600 rounded">Cancel</button>
                     <button onClick={handleSubmit} disabled={money < cost || !groupData.location} className="px-4 py-2 bg-green-600 text-white rounded font-bold disabled:bg-gray-400">
                         Establish (¥{cost.toLocaleString()})
+                    </button>
+                </div>
+            </ModalWrapper>
+        );
+    };
+
+    const PromoteSubgroupMemberModal = () => {
+        if (!modalData || !modalData.member || !modalData.subGroup) return null;
+        const { member, subGroup, parentName } = modalData;
+        const parentGroupId = subGroup.parentGroupId;
+
+        return (
+            <ModalWrapper title="Promote Member" maxWidth="max-w-md">
+                <div className="text-center mb-4">
+                    <div className="text-4xl mb-2">⬆️</div>
+                    <h3 className="text-lg font-bold">{member.name}</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {subGroup.name} → {parentName}
+                    </p>
+                </div>
+
+                <div className="bg-indigo-50 dark:bg-indigo-900/30 rounded-lg p-4 mb-4 border border-indigo-200 dark:border-indigo-800">
+                    <h4 className="font-semibold text-sm mb-2 text-indigo-700 dark:text-indigo-300">Promotion Benefits</h4>
+                    <ul className="text-sm space-y-1">
+                        <li className="flex items-center gap-2">
+                            <span className="text-green-500 font-bold">✓</span>
+                            <span><strong>Free Transfer</strong> — No cost required</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                            <span className="text-green-500 font-bold">✓</span>
+                            <span><strong>+30 Morale</strong> — Boost from recognition</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                            <span className="text-green-500 font-bold">✓</span>
+                            <span><strong>+10 Charisma</strong> — Increased confidence</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-4 text-center">
+                    {member.name} will be transferred from <strong>{subGroup.name}</strong> to <strong>{parentName}</strong> and will receive stat buffs.
+                </p>
+
+                <div className="flex justify-end items-center gap-3 pt-4 border-t dark:border-gray-600">
+                    <button onClick={() => setShowModal(null)} className="px-4 py-2 bg-gray-300 dark:bg-gray-600 rounded">
+                        Cancel
+                    </button>
+                    <button
+                        onClick={() => {
+                            const memberRosterId = member.rosterId || `sg-${member.groupId}-${member.id}`;
+                            promoteSubgroupMember(memberRosterId, subGroup.id, parentGroupId);
+                            setShowModal(null);
+                            setSelectedMember(null);
+                        }}
+                        className="px-4 py-2 bg-indigo-600 text-white rounded font-bold hover:bg-indigo-700 transition-colors"
+                    >
+                        Confirm Promotion
                     </button>
                 </div>
             </ModalWrapper>
@@ -14998,13 +15133,31 @@ const App = () => {
                                     {/* Sister Group & Unit Cards */}
                                     {(sisterGroups || []).filter(sg => !sg.isDisbanded).map(sg => {
                                         const isUnit = sg.type === 'unit';
+                                        const isSubgroup = sg.type === 'subgroup';
+
+                                        const getGroupTypeLabel = (group) => {
+                                            if (group.type === 'unit') return 'Special Unit';
+                                            if (group.type === 'subgroup') {
+                                                const parentName = group.parentGroupId === 'main' ? groupName : (sisterGroups.find(g => String(g.id) === String(group.parentGroupId))?.name || 'Unknown');
+                                                return `Sub-group of ${parentName}`;
+                                            }
+                                            return group.type === 'overseas' ? 'Overseas' : 'Domestic';
+                                        };
+
                                         return (
-                                            <div key={sg.id} className={`p-1.5 border rounded flex justify-between items-center ${isUnit ? 'bg-purple-50 dark:bg-purple-900/40' : 'bg-gray-50 dark:bg-gray-700'}`}>
+                                            <div key={sg.id} className={`p-1.5 border rounded flex justify-between items-center ${
+                                                isUnit ? 'bg-purple-50 dark:bg-purple-900/40' : 
+                                                isSubgroup ? 'bg-indigo-50/50 dark:bg-indigo-950/20 border-indigo-200 dark:border-indigo-900/50' : 
+                                                'bg-gray-50 dark:bg-gray-700'
+                                            }`}>
                                                 <div>
-                                                    <span className={`font-semibold text-sm ${isUnit ? 'text-purple-600 dark:text-purple-300' : ''}`}>{sg.name}</span>
+                                                    <span className={`font-semibold text-sm ${
+                                                        isUnit ? 'text-purple-600 dark:text-purple-300' : 
+                                                        isSubgroup ? 'text-indigo-600 dark:text-indigo-300' : ''
+                                                    }`}>{sg.name}</span>
                                                     <p className="text-xs text-gray-500 dark:text-gray-400 flex items-center">
                                                         {isUnit ? <Sparkles size={12} className='mr-1 text-purple-400' /> : <MapPin size={12} className='mr-1' />}
-                                                        {isUnit ? `Special Unit | ${(sg.members || []).length} Members` : `${sg.location} | ${(sg.members || []).length} Members | ${sg.type === 'overseas' ? 'Overseas' : 'Domestic'}`}
+                                                        {isUnit ? `Special Unit | ${(sg.members || []).length} Members` : `${sg.location} | ${(sg.members || []).length} Members | ${getGroupTypeLabel(sg)}`}
                                                     </p>
                                                 </div>
                                                 <div className="flex gap-1">
@@ -16714,6 +16867,25 @@ const App = () => {
                             )}
                             {/* ^-- END OF INSERTION --^ */}
 
+                            {/* Subgroup Promotion Button */}
+                            {(() => {
+                                if (!selectedMember.isSisterMember) return null;
+                                const memberRosterId = selectedMember.rosterId || `sg-${selectedMember.groupId}-${selectedMember.id}`;
+                                const memberGroupId = memberRosterId.split('-')[1];
+                                const memberGroup = (sisterGroups || []).find(sg => String(sg.id) === String(memberGroupId));
+                                if (!memberGroup || memberGroup.type !== 'subgroup') return null;
+                                const parentName = memberGroup.parentGroupId === 'main' ? groupName : (sisterGroups.find(g => String(g.id) === String(memberGroup.parentGroupId))?.name || 'Parent');
+                                return (
+                                    <button
+                                        onClick={() => { setModalData({ member: selectedMember, subGroup: memberGroup, parentName }); setShowModal('promoteSubgroupMember'); }}
+                                        className="p-2 bg-indigo-500 text-white rounded text-sm col-span-2 font-semibold hover:bg-indigo-600 transition-colors"
+                                        disabled={!selectedMember.isAvailable}
+                                    >
+                                        ⬆ Promote to {parentName}
+                                    </button>
+                                );
+                            })()}
+
                             <button
                                 onClick={() => askAboutGraduation(selectedMember.id)}
                                 className="p-2 bg-yellow-200 text-yellow-800 rounded text-sm"
@@ -16909,6 +17081,7 @@ const App = () => {
             {showModal === 'groupMediaJob' && <GroupMediaModal />}
             {showModal === 'trainingCamp' && <TrainingCampModal />}
             {showModal === 'createSisterGroup' && <CreateSisterGroupModal currentGroups={[{ name: groupName, id: 'main' }, ...sisterGroups]} onConfirm={confirmCreateSisterGroup} />}
+            {showModal === 'promoteSubgroupMember' && <PromoteSubgroupMemberModal />}
             {showModal === 'createUnit' && <FormUnitModal />}
             {showModal === 'customSetlist' && <CustomSetlistModal />}
             {showModal === 'setlistDetails' && modalData && <SetlistDetailsModal setlist={modalData} allTheaterSongs={theaterSongs} getFormattedDateForWeek={getFormattedDateForWeek} />}

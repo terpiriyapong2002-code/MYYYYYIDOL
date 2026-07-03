@@ -4623,31 +4623,19 @@ export const useIdolManager = () => {
             if (idChangeMap.has(oldRosterId)) {
                 const newRosterId = idChangeMap.get(oldRosterId);
                 let newId = m.id;
-                let isSisterMember = m.isSisterMember;
-                let displayGroupName = m.displayGroupName;
-                let homeGroup = m.homeGroup;
                 if (newRosterId.startsWith('sg-')) {
                     const parts = newRosterId.split('-');
                     newId = parseInt(parts[2], 10);
-                    isSisterMember = true;
-                    const sg = sisterGroups.find(g => String(g.id) === String(parts[1]));
-                    if (sg) {
-                        displayGroupName = sg.name;
-                        homeGroup = sg.name;
-                    }
                 } else {
                     newId = parseInt(newRosterId, 10);
-                    isSisterMember = false;
-                    displayGroupName = groupName;
-                    homeGroup = groupName;
                 }
+                // SNAPSHOT FIX: Only update id and rosterId.
+                // Do NOT overwrite isSisterMember, displayGroupName, or homeGroup
+                // so that past releases remain as historical snapshots.
                 return {
                     ...m,
                     id: newId,
                     rosterId: newRosterId,
-                    isSisterMember,
-                    displayGroupName: displayGroupName || m.displayGroupName,
-                    homeGroup: homeGroup || m.homeGroup
                 };
             }
             return m;
@@ -4888,12 +4876,12 @@ export const useIdolManager = () => {
                 }
             });
 
-            const chanceOfSisterToMainTransfer = 0.30;
+            const chanceOfSisterToMainTransfer = 0.40;
             const chanceOfMainToSisterTransfer = 0.60; // This was already low, which is good.
-            const chanceOfSisterToMainKennin = 0.80;
-            const chanceOfMainToSisterKennin = 0.70;
+            const chanceOfSisterToMainKennin = 0.50;
+            const chanceOfMainToSisterKennin = 0.50;
             let crossGroupMoves = 0;
-            const MAX_CROSS_GROUP_MOVES = 10; // Reducing the max number of cross-group moves.
+            const MAX_CROSS_GROUP_MOVES = 6; // Reducing the max number of cross-group moves.
 
             let unassignedMain = unassignedMembers.filter(m => !m.isSisterMember);
             let unassignedSister = unassignedMembers.filter(m => m.isSisterMember);
@@ -9119,6 +9107,7 @@ export const useIdolManager = () => {
                 id: newId, // Assign new integer ID
                 name: member.name.replace(` (K: ${sgName})`, '').replace(` (${sgName})`, ''), // Clean up name for main roster
                 homeGroup: 'main',
+                originalHomeGroup: member.originalHomeGroup || sgName, // Preserve original home group for generation tracking
                 isSister: false,
                 groupId: undefined,
                 kenninGroups: [],
@@ -14572,6 +14561,8 @@ export const useIdolManager = () => {
 
         if (newGroupType === 'unit') {
             cost = 50000; // Special low cost for forming a unit
+        } else if (newGroupType === 'subgroup') {
+            cost = 100000; // Cost for establishing a subgroup
         } else {
             cost = newGroupType === 'domestic' ? 200000 : 500000;
         }
@@ -14589,6 +14580,7 @@ export const useIdolManager = () => {
             name: groupData.groupName,
             location: groupData.location || 'Special Project',
             type: newGroupType,
+            parentGroupId: groupData.parentGroupId,
             members: initialMemberIds,
             fans: 100, songs: [], income: 0, isAutonomous: newGroupType === 'overseas', money: 0, licensedSongs: []
         };
@@ -14612,6 +14604,94 @@ export const useIdolManager = () => {
 
         // **FIX 2 of 2: Return the new ID on success**
         return newId;
+    };
+
+    const promoteSubgroupMember = (memberRosterId, subGroupId, parentGroupId) => {
+        const sg = sisterGroups.find(g => g.id === subGroupId);
+        if (!sg) {
+            setMessage("Subgroup not found.");
+            return;
+        }
+
+        const parts = String(memberRosterId).split('-');
+        const sgId = parseInt(parts[1], 10);
+        const mId = parseInt(parts[2], 10);
+        const originalMember = sg.members.find(m => m.id === mId);
+        if (!originalMember) {
+            setMessage("Member not found in subgroup.");
+            return;
+        }
+
+        // Remove from subgroup members list
+        setSisterGroups(prev => prev.map(g =>
+            g.id === subGroupId ? { ...g, members: g.members.filter(m => m.id !== mId) } : g
+        ));
+
+        const updatedMorale = Math.min(100, (originalMember.morale || 0) + 30);
+        const updatedCharisma = Math.min(100, (originalMember.charisma || 0) + 10);
+        const promotionEvent = { week: week, event: `Promoted from sub-group ${sg.name} to parent group` };
+
+        if (parentGroupId === 'main') {
+            // Transfer to main group members list
+            const newId = Math.max(0, ...members.map(m => m.id)) + 1;
+            const promotedMember = {
+                ...originalMember,
+                id: newId,
+                homeGroup: 'main',
+                originalHomeGroup: originalMember.originalHomeGroup || originalMember.homeGroup || sg.name,
+                isSister: false,
+                groupId: undefined,
+                kenninGroups: [],
+                morale: updatedMorale,
+                charisma: updatedCharisma,
+                teamHistory: [...(originalMember.teamHistory || []), promotionEvent]
+            };
+            setMembers(prev => [...prev, promotedMember]);
+
+            // Update all histories with the id change
+            const idChangeMap = new Map();
+            idChangeMap.set(String(memberRosterId), String(newId));
+            updateRosterIdInAllHistory(idChangeMap);
+
+            const successMessage = `${originalMember.name} has been promoted from ${sg.name} to the main group ${groupName}! 🎉`;
+            setMessage(successMessage);
+            addNotification({ type: 'Special', message: successMessage });
+        } else {
+            // Transfer to parent sister group
+            const parentSg = sisterGroups.find(g => String(g.id) === String(parentGroupId));
+            if (!parentSg) {
+                setMessage("Parent sister group not found.");
+                return;
+            }
+
+            const promotedMember = {
+                ...originalMember,
+                homeGroup: parentSg.name,
+                originalHomeGroup: originalMember.originalHomeGroup || originalMember.homeGroup || sg.name,
+                isSister: true,
+                groupId: parentSg.id,
+                kenninGroups: [],
+                morale: updatedMorale,
+                charisma: updatedCharisma,
+                teamHistory: [...(originalMember.teamHistory || []), promotionEvent]
+            };
+
+            setSisterGroups(prev => prev.map(g =>
+                String(g.id) === String(parentGroupId)
+                    ? { ...g, members: [...(g.members || []), promotedMember] }
+                    : g
+            ));
+
+            // Update all histories with the rosterId change (since parent group changes)
+            const newRosterId = `sg-${parentGroupId}-${mId}`;
+            const idChangeMap = new Map();
+            idChangeMap.set(String(memberRosterId), String(newRosterId));
+            updateRosterIdInAllHistory(idChangeMap);
+
+            const successMessage = `${originalMember.name} has been promoted from subgroup ${sg.name} to sister group ${parentSg.name}! 🎉`;
+            setMessage(successMessage);
+            addNotification({ type: 'Special', message: successMessage });
+        }
     };
 
     const licenseSongToGroup = (songId, groupId) => {
@@ -14883,6 +14963,7 @@ export const useIdolManager = () => {
                 centerHistory: [],
                 teamHistory: [joinEvent], // <-- THE FIX
                 homeGroup: isMainGroup ? 'main' : (sisterGroups.find(g => g.id === targetGroupId)?.name || 'Unknown Group'),
+                originalHomeGroup: isMainGroup ? 'main' : (sisterGroups.find(g => g.id === targetGroupId)?.name || 'Unknown Group'),
                 kenninGroups: [],
                 electionHype: 0,
                 isCurrentCenter: false,
@@ -17683,6 +17764,6 @@ export const useIdolManager = () => {
         // Utilities
         startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
         // Logic
-        holdTitleTrackPerformance, holdUnitPerformance, unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, resolveSurvivalMission, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, getUnderMembersPool, startUnderTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, executeFanEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
+        holdTitleTrackPerformance, holdUnitPerformance, unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, resolveSurvivalMission, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, getUnderMembersPool, startUnderTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, executeFanEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, promoteSubgroupMember, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
     };
 };
