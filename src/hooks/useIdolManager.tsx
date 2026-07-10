@@ -2983,7 +2983,6 @@ export const useIdolManager = () => {
                 }
                 return member;
             });
-            setMembers(loadedMembers);
             setTotalFans(data.totalFans || 0);
             setOnlineStore(data.onlineStore || { level: 0 });
             setStaff(data.staff || { merchManager: 0 });
@@ -3001,7 +3000,6 @@ export const useIdolManager = () => {
                 chartWeeksLeft: song.chartWeeksLeft ?? 0,
             }));
             setSongs(loadedSongs);
-            setTeams(data.teams || []);
             setTheaters(data.theaters || []);
             setTheaterSchedule(data.theaterSchedule || {
                 monday: [], tuesday: [], wednesday: [], thursday: [], friday: [],
@@ -3076,7 +3074,104 @@ export const useIdolManager = () => {
 
                 return { ...sg, members: migratedMembers, songs: migratedSongs };
             });
-            setSisterGroups(loadedSisterGroups);
+
+            // --- SELF-HEALING / LEGACY SAVE FIX ---
+            const healMemberKenninState = (member) => {
+                let updated = false;
+                let newConcurrentTeams = member.concurrentTeams || [];
+                let newKenninGroups = member.kenninGroups || [];
+
+                if (!member.kennin) {
+                    if (newConcurrentTeams.length > 0) {
+                        newConcurrentTeams = [];
+                        updated = true;
+                    }
+                    if (newKenninGroups.length > 0) {
+                        newKenninGroups = [];
+                        updated = true;
+                    }
+                } else {
+                    const targetTeamId = member.kennin.teamId;
+                    const targetGroupId = member.kennin.groupId;
+                    const targetGroupName = targetGroupId === 'main' ? (data.groupName || groupName || 'main') : (loadedSisterGroups.find(sg => String(sg.id) === String(targetGroupId))?.name || 'Unknown');
+
+                    const activeConcurrentTeams = (member.concurrentTeams || []).filter(ct => String(ct.id) === String(targetTeamId));
+                    if (activeConcurrentTeams.length === 0) {
+                        newConcurrentTeams = [{ id: targetTeamId, name: member.kennin.teamName }];
+                        updated = true;
+                    } else if (member.concurrentTeams.length !== activeConcurrentTeams.length) {
+                        newConcurrentTeams = activeConcurrentTeams;
+                        updated = true;
+                    }
+
+                    const activeKenninGroups = (member.kenninGroups || []).filter(gName => gName === targetGroupName || gName === String(targetGroupId));
+                    if (activeKenninGroups.length === 0) {
+                        newKenninGroups = [targetGroupName];
+                        updated = true;
+                    } else if (member.kenninGroups.length !== activeKenninGroups.length) {
+                        newKenninGroups = activeKenninGroups;
+                        updated = true;
+                    }
+                }
+
+                if (updated) {
+                    return {
+                        ...member,
+                        concurrentTeams: newConcurrentTeams,
+                        kenninGroups: newKenninGroups
+                    };
+                }
+                return member;
+            };
+
+            const healedMembers = loadedMembers.map(healMemberKenninState);
+            const healedSisterGroups = loadedSisterGroups.map(sg => ({
+                ...sg,
+                members: (sg.members || []).map(healMemberKenninState)
+            }));
+
+            // Build allowed teams list for each member to heal teams
+            const validTeamsForMember = new Map();
+            healedMembers.forEach(m => {
+                const rosterId = String(m.id);
+                const validIds = [];
+                if (m.teamId) validIds.push(String(m.teamId));
+                if (m.kennin && m.kennin.teamId) validIds.push(String(m.kennin.teamId));
+                validTeamsForMember.set(rosterId, new Set(validIds));
+            });
+            healedSisterGroups.forEach(sg => {
+                (sg.members || []).forEach(m => {
+                    const rosterId = `sg-${sg.id}-${m.id}`;
+                    const validIds = [];
+                    if (m.teamId) validIds.push(String(m.teamId));
+                    if (m.kennin && m.kennin.teamId) validIds.push(String(m.kennin.teamId));
+                    validTeamsForMember.set(rosterId, new Set(validIds));
+                });
+            });
+            (data.exchangeStudents || []).forEach(ex => {
+                const rosterId = String(ex.member.rosterId);
+                const validIds = [];
+                if (ex.member.teamId) validIds.push(String(ex.member.teamId));
+                if (ex.member.kennin && ex.member.kennin.teamId) validIds.push(String(ex.member.kennin.teamId));
+                validTeamsForMember.set(rosterId, new Set(validIds));
+            });
+
+            const healedTeams = (data.teams || []).map(team => {
+                const teamIdStr = String(team.id);
+                const filteredMembers = (team.members || []).filter(mId => {
+                    const mIdStr = String(mId);
+                    const allowedTeams = validTeamsForMember.get(mIdStr);
+                    if (allowedTeams) {
+                        return allowedTeams.has(teamIdStr);
+                    }
+                    return true;
+                });
+                return { ...team, members: filteredMembers };
+            });
+
+            setMembers(healedMembers);
+            setSisterGroups(healedSisterGroups);
+            setTeams(healedTeams);
 
             setRivalGroups(data.rivalGroups || []);
             setActiveChart(data.activeChart || null);
@@ -5134,9 +5229,21 @@ export const useIdolManager = () => {
                 if (memberObjRef) {
                     const cancelledTeamId = member.kennin.teamId;
                     const cancelledTeamName = member.kennin.teamName;
+                    const cancelledTeamGroupId = member.kennin.groupId;
+                    const cancelledGroupName = (String(cancelledTeamGroupId) === 'main')
+                        ? groupName
+                        : (sisterGroupsCopy.find(sg => String(sg.id) === String(cancelledTeamGroupId))?.name || 'Unknown Group');
+
                     delete memberObjRef.kennin;
                     memberObjRef.concurrentTeams = (memberObjRef.concurrentTeams || []).filter(ct => String(ct.id) !== String(cancelledTeamId));
+                    memberObjRef.kenninGroups = (memberObjRef.kenninGroups || []).filter(gName => gName !== cancelledGroupName && gName !== String(cancelledTeamGroupId) && gName !== 'main');
                     memberObjRef.teamHistory = [...(memberObjRef.teamHistory || []), { week, event: `Concurrent position with ${cancelledTeamName} cancelled due to Shuffle` }];
+
+                    // Also remove from the target team's members array in teamsCopy
+                    const targetTeam = teamsCopy.find(t => String(t.id) === String(cancelledTeamId));
+                    if (targetTeam) {
+                        targetTeam.members = (targetTeam.members || []).filter(mId => String(mId) !== String(member.rosterId));
+                    }
                 }
             }
         });
@@ -5233,8 +5340,14 @@ export const useIdolManager = () => {
                 delete memberObjectInState.kennin;
                 // Also clean up concurrentTeams
                 memberObjectInState.concurrentTeams = (memberObjectInState.concurrentTeams || []).filter(ct => String(ct.id) !== String(wasKenninObject.teamId));
-                memberObjectInState.kenninGroups = (memberObjectInState.kenninGroups || []).filter(gName => gName !== oldKenninGroupName);
+                memberObjectInState.kenninGroups = (memberObjectInState.kenninGroups || []).filter(gName => gName !== oldKenninGroupName && gName !== String(wasKenninObject.groupId) && gName !== 'main');
                 memberObjectInState.teamHistory.push({ week, event: `Concurrent position ended via Shuffle` });
+
+                // Also remove them from the team's members list
+                const targetTeam = teamsCopy.find(t => String(t.id) === String(wasKenninObject.teamId));
+                if (targetTeam) {
+                    targetTeam.members = (targetTeam.members || []).filter(mId => String(mId) !== String(rosterId));
+                }
             }
         });
 
@@ -14627,6 +14740,35 @@ export const useIdolManager = () => {
             g.id === subGroupId ? { ...g, members: g.members.filter(m => m.id !== mId) } : g
         ));
 
+        // Clean up member from all teams' rosters (both by their roster ID e.g. "sg-2-12", and their numeric ID in the subgroup e.g. 12)
+        const possibleIdsToRemove = new Set([
+            String(memberRosterId),
+            String(mId),
+            String(originalMember.id),
+            `sg-${subGroupId}-${originalMember.id}`,
+            `sg-${subGroupId}-${mId}`
+        ]);
+
+        setTeams(prev => prev.map(t => ({
+            ...t,
+            members: t.members.filter(mId => !possibleIdsToRemove.has(String(mId)))
+        })));
+
+        // Clean up group roles/captaincy for any variant of the ID
+        setGroupRoles(prev => {
+            const next = { ...prev };
+            possibleIdsToRemove.forEach(id => {
+                delete next[id];
+            });
+            // Clear captaincy if they held it in any team
+            for (const roleKey in next) {
+                if (possibleIdsToRemove.has(String(next[roleKey]))) {
+                    delete next[roleKey];
+                }
+            }
+            return next;
+        });
+
         const updatedMorale = Math.min(100, (originalMember.morale || 0) + 30);
         const updatedCharisma = Math.min(100, (originalMember.charisma || 0) + 10);
         const promotionEvent = { week: week, event: `Promoted from sub-group ${sg.name} to parent group` };
@@ -14642,6 +14784,10 @@ export const useIdolManager = () => {
                 isSister: false,
                 groupId: undefined,
                 kenninGroups: [],
+                concurrentTeams: [],
+                kennin: undefined,
+                teamId: undefined,
+                teamName: undefined,
                 morale: updatedMorale,
                 charisma: updatedCharisma,
                 teamHistory: [...(originalMember.teamHistory || []), promotionEvent]
@@ -14671,6 +14817,10 @@ export const useIdolManager = () => {
                 isSister: true,
                 groupId: parentSg.id,
                 kenninGroups: [],
+                concurrentTeams: [],
+                kennin: undefined,
+                teamId: undefined,
+                teamName: undefined,
                 morale: updatedMorale,
                 charisma: updatedCharisma,
                 teamHistory: [...(originalMember.teamHistory || []), promotionEvent]

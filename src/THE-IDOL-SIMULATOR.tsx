@@ -2614,6 +2614,7 @@ const App = () => {
                     const childSubgroupIds = (sisterGroups || [])
                         .filter(child => child.type === 'subgroup' && !child.isDisbanded && String(child.parentGroupId) === String(sg.id))
                         .map(child => String(child.id));
+
                     selectableMembers = allAvailableForSong.filter(m =>
                         String(m.groupId) === String(sg.id) ||
                         (m.kennin && String(m.kennin.groupId) === String(sg.id)) ||
@@ -4909,8 +4910,37 @@ const App = () => {
                                 return scoreA - scoreB;
                             }
 
-                            // If groups have the same score (e.g., two sister group teams), sort them alphabetically
-                            return a.localeCompare(b);
+                            // Compare group creation order first, then team creation order
+                            const getGroupAndTeamInfo = (key) => {
+                                let isMainGroup = key.startsWith(mainGroupName);
+                                let gName = mainGroupName;
+                                let tName = '';
+
+                                if (!isMainGroup) {
+                                    const matchingSg = sisterGroups.find(sg => key.startsWith(sg.name));
+                                    if (matchingSg) {
+                                        gName = matchingSg.name;
+                                    }
+                                }
+
+                                if (key.includes(' Team ')) {
+                                    tName = key.split(' Team ')[1];
+                                }
+
+                                const sgIndex = isMainGroup ? -1 : sisterGroups.findIndex(sg => sg.name === gName);
+                                const teamIndex = tName ? teams.findIndex(t => t.name === tName) : 999;
+
+                                return { sgIndex, teamIndex };
+                            };
+
+                            const infoA = getGroupAndTeamInfo(a);
+                            const infoB = getGroupAndTeamInfo(b);
+
+                            if (infoA.sgIndex !== infoB.sgIndex) {
+                                return infoA.sgIndex - infoB.sgIndex;
+                            }
+
+                            return infoA.teamIndex - infoB.teamIndex;
                         })
                         .map(groupKeyName => (
                             <div key={groupKeyName} className="mt-1 text-sm">
@@ -15034,9 +15064,11 @@ const App = () => {
                                         if (aIsMain && !bIsMain) return -1;
                                         if (!aIsMain && bIsMain) return 1;
 
-                                        // 3. If they are from different sister groups, sort alphabetically by group name
+                                        // 3. If they are from different sister groups, sort by group creation order
                                         if (aGroupName !== bGroupName) {
-                                            return aGroupName.localeCompare(bGroupName);
+                                            const aSgIdx = sisterGroups.findIndex(sg => String(sg.id) === String(a.groupId));
+                                            const bSgIdx = sisterGroups.findIndex(sg => String(sg.id) === String(b.groupId));
+                                            return aSgIdx - bSgIdx;
                                         }
 
                                         // 4. Within the same group, sort by team creation date (id ascending)
@@ -15077,6 +15109,36 @@ const App = () => {
                                         <Plus size={16} className='inline mr-1' /> Custom Setlist
                                     </button>
                                 </div>
+                                {allSetlists.length > 0 && teams.length > 0 && (
+                                    <button
+                                        onClick={() => {
+                                            const availableSetlists = [...allSetlists];
+                                            if (availableSetlists.length === 0) return setMessage("No setlists available to assign.");
+                                            const updatedTeams = teams.map(team => {
+                                                const randomSetlist = availableSetlists[Math.floor(Math.random() * availableSetlists.length)];
+                                                const oldSetlistId = team.currentSetlistId;
+                                                let newSetlistHistory = [...(team.setlistHistory || [])];
+                                                let newSetlistWeeksActive = team.setlistWeeksActive || 0;
+                                                if (oldSetlistId !== randomSetlist.id) {
+                                                    newSetlistWeeksActive = 0;
+                                                    if (oldSetlistId) {
+                                                        const lastIdx = newSetlistHistory.length - 1;
+                                                        if (lastIdx >= 0 && newSetlistHistory[lastIdx].endWeek === null) {
+                                                            newSetlistHistory[lastIdx] = { ...newSetlistHistory[lastIdx], endWeek: week };
+                                                        }
+                                                    }
+                                                    newSetlistHistory.push({ setlistId: randomSetlist.id, startWeek: week, endWeek: null });
+                                                }
+                                                return { ...team, currentSetlistId: randomSetlist.id, setlistWeeksActive: newSetlistWeeksActive, setlistHistory: newSetlistHistory };
+                                            });
+                                            setTeams(updatedTeams);
+                                            setMessage(`🎵 Random setlists assigned to all ${teams.length} teams!`);
+                                        }}
+                                        className="w-full mt-1.5 p-1.5 text-sm bg-purple-600 hover:bg-purple-700 text-white rounded font-semibold transition-colors"
+                                    >
+                                        <Shuffle size={14} className="inline mr-1" /> Auto Random Assign Setlist to All Teams
+                                    </button>
+                                )}
 
                                 {/* --- NEW SETLIST DISPLAY AREA --- */}
                                 <div className="mt-3 border-t pt-2">
