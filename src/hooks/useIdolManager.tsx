@@ -5304,11 +5304,11 @@ export const useIdolManager = () => {
                 if (isPromotion) {
                     memberEventText = `Promoted to Team ${newPrimaryTeam.name} via Shuffle`;
                 } else {
-                    memberEventText = isTransfer ? `Transferred to Team ${newPrimaryTeam.name} via Shuffle` : `Shuffled to Team ${newPrimaryTeam.name}`;
+                    memberEventText = isTransfer ? `Transferred to Team "${newPrimaryTeam.name}" (${newTeamGroupName}) via Shuffle` : `Shuffled to Team ${newPrimaryTeam.name}`;
                 }
                 memberObjectInState.teamHistory.push({ week, event: memberEventText });
 
-                const teamEventText = `Member ${isPromotion ? 'Promoted' : (isTransfer ? 'Transferred In' : 'Shuffled In')}: ${member.name} (from ${fromLocationText})`;
+                const teamEventText = `Member ${isPromotion ? 'Promoted' : (isTransfer ? 'Transferred In' : 'Shuffled In')}: ${member.name} (from ${fromLocationText})${isTransfer ? ` to Team "${newPrimaryTeam.name}" (${newTeamGroupName})` : ''}`;
                 addHistoryToTeam(newPrimaryTeam.id, teamEventText);
 
                 memberObjectInState.teamId = newPrimaryTeam.id;
@@ -6256,7 +6256,7 @@ export const useIdolManager = () => {
         let cost = 1000000; // Default for main election
         let electionName = 'General Election';
         let participantsPool = [];
-        const domesticGroups = sisterGroups.filter(sg => sg.type === 'domestic');
+        const allSisterGroups = sisterGroups; // Include all sister groups (domestic and subgroup)
 
         switch (type) {
             case 'world':
@@ -6279,7 +6279,7 @@ export const useIdolManager = () => {
                 electionName = 'General Election';
                 const mainAndDomesticMembers = [
                     ...members,
-                    ...domesticGroups.flatMap(sg => (sg.members || []).map(m => getMemberById(`sg-${sg.id}-${m.id}`)).filter(Boolean)),
+                    ...allSisterGroups.flatMap(sg => (sg.members || []).map(m => getMemberById(`sg-${sg.id}-${m.id}`)).filter(Boolean)),
                     ...exchangeStudents.map(ex => ex.member)
                 ];
                 participantsPool = mainAndDomesticMembers;
