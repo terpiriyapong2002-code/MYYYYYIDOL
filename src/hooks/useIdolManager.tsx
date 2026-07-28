@@ -113,6 +113,16 @@ export const productionTiers = {
     promo: { none: { name: 'Word of Mouth', cost: 0, effect: 'Base pre-release buzz.' }, social: { name: 'Social Media Ads', cost: 30000, effect: '+10% Pre-release Fans.' }, teaser: { name: 'Teaser Rollout', cost: 60000, effect: '+15% Pre-release Fans & Hype.' }, variety: { name: 'Variety Show Appearances', cost: 120000, effect: '+20% General Public Awareness.' }, blitz: { name: 'Full Media Blitz', cost: 200000, effect: '+25% Pre-release Fans & Chart Rank.' }, global: { name: 'Global Promotion Campaign', cost: 400000, effect: '+35% Pre-release Fans, Strong Overseas Charts.' } }
 };
 
+export const inflationConfigDefault = {
+    globalInflation: 0.25,
+    perMemberPenalty: 0.02,
+    prestigeStep: 0.10,
+    loanInterestRate: 0.12,
+    maxLoanAmount: 5000000
+};
+
+
+
 // Performance Types Data
 export const performanceTypes = [
     // ===== Official =====
@@ -2317,6 +2327,37 @@ export const useIdolManager = () => {
     const [gameStarted, setGameStarted] = useState(false);
     const [groupName, setGroupName] = useState('');
     const [money, setMoney] = useState(250000);
+    const [inflationConfig, setInflationConfig] = useState(inflationConfigDefault);
+    const [outstandingLoan, setOutstandingLoan] = useState(0);
+
+    const takeLoan = (amount) => {
+        if (outstandingLoan > 0) {
+            setMessage("You already have an active loan! Pay it off before taking another.");
+            return false;
+        }
+        if (amount > inflationConfig.maxLoanAmount) {
+            setMessage(`Maximum loan amount is ¥${inflationConfig.maxLoanAmount.toLocaleString()}`);
+            return false;
+        }
+        const fee = Math.round(amount * inflationConfig.loanInterestRate);
+        const totalDebt = amount + fee;
+        setMoney(prev => prev + amount);
+        setOutstandingLoan(totalDebt);
+        addNotification({ type: 'Finance', message: `Took a loan of ¥${amount.toLocaleString()} with ¥${fee.toLocaleString()} interest. Total debt: ¥${totalDebt.toLocaleString()}.` });
+        setMessage(`Loan approved! +¥${amount.toLocaleString()} received.`);
+        return true;
+    };
+
+    const repayLoanIfPossible = (currentMoneyAmount) => {
+        const moneyToUse = currentMoneyAmount !== undefined ? currentMoneyAmount : money;
+        if (outstandingLoan > 0 && moneyToUse >= outstandingLoan) {
+            const debt = outstandingLoan;
+            setMoney(prev => prev - debt);
+            setOutstandingLoan(0);
+            addNotification({ type: 'Finance', message: `Loan of ¥${debt.toLocaleString()} fully auto-repaid!` });
+        }
+    };
+
     const [week, setWeek] = useState(1);
     const [members, setMembers] = useState([]);
     const [selectedMember, setSelectedMember] = useState(null);
@@ -7321,16 +7362,32 @@ export const useIdolManager = () => {
         setMessage(`Unit "${unit.name}" was disbanded.`);
     };
     const scheduleNewSingle = ({ songData, productionData, releaseWeek, physicalVersions, includeHandshakeTickets }) => {
-        // ---- START: Existing Cost Logic ----
+        // ---- START: Inflation & Senbatsu Cost Scaling Logic ----
         const baseCostPerVersion = 100000;
         const productionTierCost = Object.keys(productionData).reduce((total, key) => {
+            if (key === 'prestigeLevel') return total;
             const choice = productionData[key];
             const tiers = { training: { standard: { cost: 0 }, workshop: { cost: 50000 }, overseas: { cost: 250000 }, bootcamp: { cost: 400000 }, elite: { cost: 650000 }, oneOnOne: { cost: 900000 } }, song: { inHouse: { cost: 0 }, rookie: { cost: 50000 }, external: { cost: 100000 }, trend: { cost: 180000 }, famous: { cost: 400000 }, hitmaker: { cost: 750000 } }, mv: { none: { cost: 0 }, practice: { cost: 20000 }, performance: { cost: 60000 }, location: { cost: 150000 }, storyline: { cost: 300000 }, cinematic: { cost: 600000 }, blockbuster: { cost: 1000000 } }, outfits: { existing: { cost: 0 }, recolor: { cost: 40000 }, custom: { cost: 120000 }, concept: { cost: 200000 }, luxury: { cost: 450000 } }, promo: { none: { cost: 0 }, social: { cost: 30000 }, teaser: { cost: 60000 }, variety: { cost: 120000 }, blitz: { cost: 200000 }, global: { cost: 400000 } } };
             return total + (tiers[key]?.[choice]?.cost || 0);
         }, 10000);
 
-        const physicalCost = songData.releaseFormat === 'physical' ? baseCostPerVersion * physicalVersions : 0;
-        const handshakeTicketCost = includeHandshakeTickets ? 300000 : 0;
+        const { globalInflation, perMemberPenalty, prestigeStep } = inflationConfig;
+        let inflatedBaseCost = productionTierCost * (1 + globalInflation);
+
+        const uniqueMembers = new Set(songData.tracks ? songData.tracks.flatMap(t => (t.members || []).map(m => String(m.id || m))) : []);
+        const senbatsuCount = uniqueMembers.size > 0 ? uniqueMembers.size : 16;
+        let senbatsuMultiplier = 1.0;
+        if (senbatsuCount > 16) {
+            senbatsuMultiplier = 1 + (senbatsuCount - 16) * perMemberPenalty;
+        }
+
+        const prestigeLevel = productionData?.prestigeLevel || 0;
+        const prestigeMultiplier = 1 + prestigeLevel * prestigeStep;
+
+        const scaledProductionCost = inflatedBaseCost * senbatsuMultiplier * prestigeMultiplier;
+
+        const physicalCost = songData.releaseFormat === 'physical' ? baseCostPerVersion * physicalVersions * (1 + globalInflation) : 0;
+        const handshakeTicketCost = includeHandshakeTickets ? 300000 * (1 + globalInflation) : 0;
 
         let costMultiplier = 1.0;
         if (songData.singleSubType === 'solo') {
@@ -7339,14 +7396,14 @@ export const useIdolManager = () => {
             costMultiplier = 0.7;
         }
 
-        const totalCost = Math.round((productionTierCost + physicalCost + handshakeTicketCost) * costMultiplier);
+        const totalCost = Math.round((scaledProductionCost + physicalCost + handshakeTicketCost) * costMultiplier);
 
         if (money < totalCost) {
             setMessage("Not enough money for this production!");
             return;
         }
         setMoney(prev => prev - totalCost);
-        // ---- END: Existing Cost Logic ----
+        // ---- END: Cost Logic ----
 
         // ---- START: Existing Timeline & Object Creation ----
         const timeline = [];
@@ -7402,12 +7459,17 @@ export const useIdolManager = () => {
     const scheduleNewAlbum = ({ albumData, productionData, releaseWeek }) => {
 
         const productionTierCost = Object.keys(productionData).reduce((total, key) => {
+            if (key === 'prestigeLevel') return total;
             const choice = productionData[key];
             const tiers = { training: { standard: { cost: 0 }, workshop: { cost: 50000 }, overseas: { cost: 250000 }, bootcamp: { cost: 400000 }, elite: { cost: 650000 }, oneOnOne: { cost: 900000 } }, song: { inHouse: { cost: 0 }, rookie: { cost: 50000 }, external: { cost: 100000 }, trend: { cost: 180000 }, famous: { cost: 400000 }, hitmaker: { cost: 750000 } }, mv: { none: { cost: 0 }, practice: { cost: 20000 }, performance: { cost: 60000 }, location: { cost: 150000 }, storyline: { cost: 300000 }, cinematic: { cost: 600000 }, blockbuster: { cost: 1000000 } }, outfits: { existing: { cost: 0 }, recolor: { cost: 40000 }, custom: { cost: 120000 }, concept: { cost: 200000 }, luxury: { cost: 450000 } }, promo: { none: { cost: 0 }, social: { cost: 30000 }, teaser: { cost: 60000 }, variety: { cost: 120000 }, blitz: { cost: 200000 }, global: { cost: 400000 } } };
             return total + (tiers[key]?.[choice]?.cost || 0);
         }, 10000);
 
-        const totalCost = productionTierCost + baseCostAlbum + (albumData.releaseFormat === 'physical' ? albumPhysicalSurcharge : 0);
+        const { globalInflation, prestigeStep } = inflationConfig;
+        const prestigeLevel = productionData?.prestigeLevel || 0;
+        const prestigeMultiplier = 1 + prestigeLevel * prestigeStep;
+        const baseAlbumCost = (baseCostAlbum + (albumData.releaseFormat === 'physical' ? albumPhysicalSurcharge : 0)) * (1 + globalInflation);
+        const totalCost = Math.round((productionTierCost * (1 + globalInflation) + baseAlbumCost) * prestigeMultiplier);
 
         if (money < totalCost) {
             setMessage("Not enough money for this album production!");
@@ -17908,7 +17970,7 @@ export const useIdolManager = () => {
 
     return {
         // State
-        activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm, setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, setGroupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, theaterSchedule, setTheaterSchedule, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, activeUnderTour, setActiveUnderTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
+        inflationConfig, setInflationConfig, outstandingLoan, setOutstandingLoan, takeLoan, repayLoanIfPossible, activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm, setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, setGroupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, theaterSchedule, setTheaterSchedule, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, activeUnderTour, setActiveUnderTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
         // Firebase/Persistence
         getSavedGames, saveGame, loadGame,
         // Utilities

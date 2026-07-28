@@ -113,12 +113,14 @@ const App = () => {
     const {
         // State
         activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm, setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, resolveSurvivalMission, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, setGroupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, theaterSchedule, setTheaterSchedule, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch,         activeTour, setActiveTour, activeUnderTour, setActiveUnderTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
+
         // Firebase/Persistence
         getSavedGames, saveGame, loadGame,
         // Utilities
         startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
         // Logic
-        holdTitleTrackPerformance, holdUnitPerformance, unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, getUnderMembersPool, startUnderTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, executeFanEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek: nextWeekHook, confirmExchangeStudent, confirmCreateSisterGroup, promoteSubgroupMember, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
+        holdTitleTrackPerformance, holdUnitPerformance, unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, getUnderMembersPool, startUnderTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, executeFanEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek: nextWeekHook, confirmExchangeStudent, confirmCreateSisterGroup, promoteSubgroupMember, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining, inflationConfig, outstandingLoan, takeLoan, repayLoanIfPossible,
+
 
     } = useIdolManager();
 
@@ -131,6 +133,7 @@ const App = () => {
     const [showScrollTop, setShowScrollTop] = useState(true);
     const [selectedUnderTourGroup, setSelectedUnderTourGroup] = useState('main');
     const [showUnderMembersPoolList, setShowUnderMembersPoolList] = useState(false);
+    const [loanInputAmount, setLoanInputAmount] = useState(500000);
 
 
     const scrollToTop = () => {
@@ -7777,6 +7780,8 @@ const App = () => {
         );
     };
 
+
+
     const SaveGameModal = () => {
         const [saveUsername, setSaveUsername] = useState(username);
 
@@ -12436,11 +12441,11 @@ const App = () => {
 
         return (
             <ModalWrapper title={`Lineup for ${festival.name}`} maxWidth="max-w-4xl">
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <div className="flex justify-between items-center mb-2">
                             <h4 className="font-semibold">Select Performers ({selectedMemberIds.length})</h4>
-                            <select id="member-filter" value={memberFilter} onChange={e => setMemberFilter(e.target.value)} className="p-1 text-xs rounded border">
+                            <select id="member-filter" value={memberFilter} onChange={e => setMemberFilter(e.target.value)} className="p-1 text-xs rounded border dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
                                 <option value="all">All Groups</option>
                                 <optgroup label="Groups">
                                     <option value="main">{groupName}</option>
@@ -12453,12 +12458,41 @@ const App = () => {
                                 {sisterGroupDetails.map(sg => (sg.generations.length > 0 && (<optgroup key={`sg-gen-group-${sg.id}`} label={`${sg.name} Gens`}>{sg.generations.map(gen => (<option key={`sg-${sg.id}-gen-${gen}`} value={`sg-${sg.id}-gen-${gen}`}>{gen}</option>))}</optgroup>)))}
                             </select>
                         </div>
+
+                        {/* Select All / Deselect All (Filtered) */}
+                        <div className="flex gap-2 mb-2">
+                            <button
+                                onClick={() => {
+                                    const filteredIds = filteredMembers.map(m => m.rosterId);
+                                    setSelectedMemberIds(prev => [...new Set([...prev, ...filteredIds])]);
+                                }}
+                                className="px-3 py-1 text-xs bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300 rounded font-semibold hover:bg-blue-200 dark:hover:bg-blue-800/50 transition"
+                            >
+                                Select All ({filteredMembers.length})
+                            </button>
+                            <button
+                                onClick={() => {
+                                    const filteredIds = new Set(filteredMembers.map(m => m.rosterId));
+                                    setSelectedMemberIds(prev => prev.filter(id => !filteredIds.has(id)));
+                                }}
+                                className="px-3 py-1 text-xs bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300 rounded font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+                            >
+                                Deselect All
+                            </button>
+                            <button
+                                onClick={() => setSelectedMemberIds([])}
+                                className="px-3 py-1 text-xs bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300 rounded font-semibold hover:bg-red-200 dark:hover:bg-red-800/50 transition"
+                            >
+                                Clear All
+                            </button>
+                        </div>
+
                         <div className="mb-2">
                             <label htmlFor="festival-import-lineup" className="text-xs font-medium">Import Lineup:</label>
                             <select
                                 id="festival-import-lineup"
                                 onChange={(e) => applyPreviousLineup(e.target.value)}
-                                className="w-full text-xs p-1 border rounded"
+                                className="w-full text-xs p-1 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
                             >
                                 <option value="">-- Select a past lineup --</option>
                                 {lastElectionResult && (
@@ -12471,40 +12505,68 @@ const App = () => {
                                 {historicalTracks.map(track => (<option key={track.id} value={track.id}>{track.name}</option>))}
                             </select>
                         </div>
-                        <div className="space-y-1 max-h-[400px] overflow-y-auto border p-1 rounded">
+                        <div className="space-y-1 max-h-[400px] overflow-y-auto border dark:border-gray-700 p-1 rounded">
                             {filteredMembers.map(member => (
-                                <div key={member.rosterId} onClick={() => toggleMember(member.rosterId)} className={`flex items-center justify-between p-2 rounded cursor-pointer ${selectedMemberIds.includes(member.rosterId) ? 'bg-blue-100 dark:bg-blue-800' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}`}>
+                                <div key={member.rosterId} onClick={() => toggleMember(member.rosterId)} className={`flex items-center justify-between p-2 rounded cursor-pointer transition-all duration-150 ${selectedMemberIds.includes(member.rosterId) ? 'bg-blue-100 dark:bg-blue-800 border-l-4 border-blue-500' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}`}>
                                     <div>
                                         <p className="font-semibold text-sm">{member.name}</p>
-                                        <p className="text-xs text-gray-500">{getMemberGroupStatus(member)}</p>
-                                        <p className="text-xs text-gray-500">Vo:{Math.round(member.singing)} Da:{Math.round(member.dancing)} | Fans: {getTotalFansForMember(member).toLocaleString()}</p>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">{getMemberGroupStatus(member)} {member.generation ? `· ${member.generation}` : ''}</p>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">Vo:{Math.round(member.singing)} Da:{Math.round(member.dancing)} | Fans: {getTotalFansForMember(member).toLocaleString()}</p>
                                     </div>
-                                    <input type="checkbox" checked={selectedMemberIds.includes(member.rosterId)} readOnly />
+                                    <input type="checkbox" checked={selectedMemberIds.includes(member.rosterId)} readOnly className="form-checkbox h-4 w-4 text-blue-600 rounded" />
                                 </div>
                             ))}
                         </div>
                     </div>
                     <div>
                         <h4 className="font-semibold mb-2">Build Setlist ({setlist.length})</h4>
-                        <select onChange={e => addTrackToSetlist(e.target.value)} className="w-full p-2 border rounded mb-2 bg-white dark:bg-gray-700">
-                            <option value="">-- Add Song to Setlist --</option>
-                            {allTracks.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
-                        </select>
-                        <div className="space-y-1 max-h-[360px] overflow-y-auto border p-1 rounded">
+                        <div className="flex gap-2 mb-2">
+                            <select onChange={e => addTrackToSetlist(e.target.value)} className="flex-1 p-2 border rounded bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 text-sm">
+                                <option value="">-- Add Song to Setlist --</option>
+                                {allTracks.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                            </select>
+                        </div>
+
+                        {/* Random Setlist & Clear */}
+                        <div className="flex gap-2 mb-2">
+                            <button
+                                onClick={() => {
+                                    const count = Math.min(Math.max(4, Math.floor(Math.random() * 5) + 4), allTracks.length);
+                                    const shuffled = [...allTracks].sort(() => 0.5 - Math.random());
+                                    const randomSongs = shuffled.slice(0, count).map(t => ({ type: 'song', item: t.item }));
+                                    setSetlist(randomSongs);
+                                }}
+                                disabled={allTracks.length === 0}
+                                className="px-3 py-1 text-xs bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-300 rounded font-semibold hover:bg-purple-200 dark:hover:bg-purple-800/50 transition disabled:opacity-50"
+                            >
+                                <Shuffle size={12} className="inline mr-1" />Random Setlist
+                            </button>
+                            <button
+                                onClick={() => setSetlist([])}
+                                disabled={setlist.length === 0}
+                                className="px-3 py-1 text-xs bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300 rounded font-semibold hover:bg-red-200 dark:hover:bg-red-800/50 transition disabled:opacity-50"
+                            >
+                                Clear Setlist
+                            </button>
+                        </div>
+
+                        <div className="space-y-1 max-h-[360px] overflow-y-auto border dark:border-gray-700 p-1 rounded">
                             {setlist.map((item, index) => (
-                                <div key={index} className="flex justify-between items-center p-1 bg-gray-100 dark:bg-gray-700 rounded">
-                                    <span>{item.item.name}</span>
-                                    <button onClick={() => removeSetlistItem(index)} className="text-red-500 font-bold px-2">X</button>
+                                <div key={index} className="flex justify-between items-center p-1.5 bg-gray-100 dark:bg-gray-700 rounded">
+                                    <span className="text-sm"><span className="text-xs text-gray-400 mr-1.5 font-mono">{index + 1}.</span>{item.item.name}</span>
+                                    <button onClick={() => removeSetlistItem(index)} className="text-red-500 font-bold px-2 hover:text-red-700 transition">×</button>
                                 </div>
                             ))}
+                            {setlist.length === 0 && <p className="text-xs text-gray-400 text-center py-8 italic">No songs added yet. Add songs manually or use Random Setlist.</p>}
                         </div>
                     </div>
                 </div>
                 <div className="flex justify-end gap-2 mt-4">
-                    <button onClick={() => setShowModal('annualFestivals')} className="p-2 bg-gray-300 dark:bg-gray-600 rounded px-4">Back</button>
-                    <button onClick={handleConfirm} disabled={selectedMemberIds.length === 0 || setlist.length === 0} className="p-3 bg-green-500 text-white rounded font-bold disabled:bg-gray-400">Confirm & Perform</button>
+                    <button onClick={() => setShowModal('annualFestivals')} className="p-2 bg-gray-300 dark:bg-gray-600 rounded px-4 font-semibold text-sm hover:bg-gray-400 dark:hover:bg-gray-500 transition">Back</button>
+                    <button onClick={handleConfirm} disabled={selectedMemberIds.length === 0 || setlist.length === 0} className="p-3 bg-green-500 text-white rounded font-bold disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-green-600 transition">Confirm & Perform ({selectedMemberIds.length} members, {setlist.length} songs)</button>
                 </div>
             </ModalWrapper>
+
         );
     };
 
@@ -15369,6 +15431,117 @@ const App = () => {
                                 })()}
                             </div>
 
+                            {/* Finance & Loans */}
+                            <div className="p-2 rounded-lg shadow-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+                                <h3 className="text-base font-bold mb-2 flex items-center"><DollarSign size={18} className="mr-2 text-emerald-500" /> Finance & Loans</h3>
+
+                                {/* Inflation Info */}
+                                <div className="mb-3 p-2 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50">
+                                    <h4 className="text-xs font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-1.5 flex items-center"><TrendingUp size={14} className="mr-1" /> Inflation Rates</h4>
+                                    <div className="grid grid-cols-2 gap-1 text-xs">
+                                        <div className="flex justify-between p-1 bg-white/50 dark:bg-black/20 rounded">
+                                            <span className="text-gray-600 dark:text-gray-400">Global Inflation</span>
+                                            <span className="font-bold text-amber-700 dark:text-amber-300">+{Math.round(inflationConfig.globalInflation * 100)}%</span>
+                                        </div>
+                                        <div className="flex justify-between p-1 bg-white/50 dark:bg-black/20 rounded">
+                                            <span className="text-gray-600 dark:text-gray-400">Per Member Cost</span>
+                                            <span className="font-bold text-amber-700 dark:text-amber-300">+{Math.round(inflationConfig.perMemberPenalty * 100)}%</span>
+                                        </div>
+                                        <div className="flex justify-between p-1 bg-white/50 dark:bg-black/20 rounded">
+                                            <span className="text-gray-600 dark:text-gray-400">Prestige Step</span>
+                                            <span className="font-bold text-amber-700 dark:text-amber-300">+{Math.round(inflationConfig.prestigeStep * 100)}%</span>
+                                        </div>
+                                        <div className="flex justify-between p-1 bg-white/50 dark:bg-black/20 rounded">
+                                            <span className="text-gray-600 dark:text-gray-400">Loan Interest</span>
+                                            <span className="font-bold text-amber-700 dark:text-amber-300">{Math.round(inflationConfig.loanInterestRate * 100)}%</span>
+                                        </div>
+                                    </div>
+                                    <p className="text-[10px] text-amber-600/70 dark:text-amber-500/70 mt-1.5 italic">Inflation affects single/album production costs, physical versions, and handshake tickets.</p>
+                                </div>
+
+                                {/* Outstanding Loan Status */}
+                                <div className={`mb-3 p-2 rounded-lg border ${
+                                    outstandingLoan > 0
+                                        ? 'bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800/50'
+                                        : 'bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800/50'
+                                }`}>
+                                    <div className="flex justify-between items-center">
+                                        <div>
+                                            <h4 className={`text-xs font-bold uppercase tracking-wider ${
+                                                outstandingLoan > 0 ? 'text-red-700 dark:text-red-400' : 'text-green-700 dark:text-green-400'
+                                            }`}>
+                                                {outstandingLoan > 0 ? '⚠ Outstanding Debt' : '✓ No Outstanding Debt'}
+                                            </h4>
+                                            <p className={`text-lg font-extrabold mt-0.5 ${
+                                                outstandingLoan > 0 ? 'text-red-800 dark:text-red-300' : 'text-green-800 dark:text-green-300'
+                                            }`}>
+                                                ¥{outstandingLoan.toLocaleString()}
+                                            </p>
+                                        </div>
+                                        {outstandingLoan > 0 && (
+                                            <button
+                                                onClick={() => repayLoanIfPossible(money)}
+                                                disabled={money < outstandingLoan}
+                                                className="px-3 py-1.5 text-xs bg-red-600 hover:bg-red-700 text-white rounded font-bold disabled:bg-gray-400 disabled:cursor-not-allowed transition"
+                                            >
+                                                {money >= outstandingLoan ? `Repay ¥${outstandingLoan.toLocaleString()}` : `Need ¥${(outstandingLoan - money).toLocaleString()} more`}
+                                            </button>
+                                        )}
+                                    </div>
+                                    {outstandingLoan > 0 && money < outstandingLoan && (
+                                        <p className="text-[10px] text-red-500 dark:text-red-400 mt-1 italic">Loans are auto-repaid when your balance exceeds the debt amount.</p>
+                                    )}
+                                </div>
+
+                                {/* Take Loan */}
+                                <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/50">
+                                    <h4 className="text-xs font-bold text-blue-700 dark:text-blue-400 uppercase tracking-wider mb-1.5 flex items-center"><Briefcase size={14} className="mr-1" /> Take a Loan</h4>
+                                    <p className="text-[10px] text-blue-600/70 dark:text-blue-400/70 mb-2">Borrow up to ¥{inflationConfig.maxLoanAmount.toLocaleString()} with a {Math.round(inflationConfig.loanInterestRate * 100)}% interest fee. Only one loan at a time.</p>
+                                    <div className="flex flex-col gap-1.5">
+                                        <div className="flex gap-1 flex-wrap">
+                                            {[500000, 1000000, 2000000, 3000000, 5000000].map(amount => (
+                                                <button
+                                                    key={amount}
+                                                    onClick={() => setLoanInputAmount(amount)}
+                                                    className={`px-2 py-1 text-xs rounded font-semibold transition ${
+                                                        loanInputAmount === amount
+                                                            ? 'bg-blue-600 text-white'
+                                                            : 'bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/50 dark:text-blue-300 dark:hover:bg-blue-800/50'
+                                                    }`}
+                                                >
+                                                    ¥{(amount / 10000).toLocaleString()}万
+                                                </button>
+                                            ))}
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <input
+                                                type="number"
+                                                value={loanInputAmount}
+                                                onChange={(e) => setLoanInputAmount(Math.max(0, Math.min(inflationConfig.maxLoanAmount, parseInt(e.target.value) || 0)))}
+                                                className="flex-1 p-1.5 text-sm border rounded bg-white dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 font-mono"
+                                                min={0}
+                                                max={inflationConfig.maxLoanAmount}
+                                                step={100000}
+                                            />
+                                            <button
+                                                onClick={() => takeLoan(loanInputAmount)}
+                                                disabled={outstandingLoan > 0 || loanInputAmount <= 0}
+                                                className="px-4 py-1.5 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded font-bold disabled:bg-gray-400 disabled:cursor-not-allowed transition"
+                                            >
+                                                Borrow
+                                            </button>
+                                        </div>
+                                        <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                                            <span>Interest: <span className="font-bold text-red-600 dark:text-red-400">¥{Math.round(loanInputAmount * inflationConfig.loanInterestRate).toLocaleString()}</span></span>
+                                            <span>Total Debt: <span className="font-bold">¥{Math.round(loanInputAmount * (1 + inflationConfig.loanInterestRate)).toLocaleString()}</span></span>
+                                        </div>
+                                        {outstandingLoan > 0 && (
+                                            <p className="text-[10px] text-red-500 font-semibold mt-0.5">⚠ You already have an active loan. Repay it first!</p>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
                             {/* App Settings */}
                             <div className="p-2 rounded-lg shadow-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
                                 <h3 className="text-sm font-bold mb-2 flex items-center"><Sparkles size={18} className="mr-2" /> App Settings</h3>
@@ -16469,6 +16642,8 @@ const App = () => {
                         )
                     }
 
+
+
                     {/* ----- MERCHANDISE TAB ----- */}
                     {currentTab === 'merch' && (
                         <MerchTab
@@ -17064,7 +17239,6 @@ const App = () => {
                                 { id: 'history', label: 'History' },
                                 { id: 'rivals', label: 'Rivals' },
                                 { id: 'buzz', label: 'Buzz', icon: MessageSquare },
-
                             ].map(tab => (
                                 <button
                                     key={tab.id}
