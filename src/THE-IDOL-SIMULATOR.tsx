@@ -111,8 +111,7 @@ const App = () => {
 
     // Destructure everything from the custom hook
     const {
-        // State
-        activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm, setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, resolveSurvivalMission, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, setGroupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, theaterSchedule, setTheaterSchedule, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch,         activeTour, setActiveTour, activeUnderTour, setActiveUnderTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
+        activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm, setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, resolveSurvivalMission, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, setGroupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, theaterSchedule, setTheaterSchedule, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, activeUnderTour, setActiveUnderTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek, activeDrama, setActiveDrama, resolveDramaChoice,
 
         // Firebase/Persistence
         getSavedGames, saveGame, loadGame,
@@ -17198,6 +17197,29 @@ const App = () => {
                             })()}
                         </div>
 
+                        {/* Senpai-Kohai Rivalries & Drama */}
+                        {selectedMember.rivalries && Object.keys(selectedMember.rivalries).length > 0 && (
+                            <div className="mt-3 text-sm border-t border-gray-200 dark:border-gray-700 pt-3">
+                                <h4 className="font-semibold mb-2 flex items-center text-red-600 dark:text-red-400">
+                                    ⚔️ Active Rivalries & Drama
+                                </h4>
+                                <div className="space-y-1">
+                                    {Object.entries(selectedMember.rivalries).map(([rivalId, data]) => {
+                                        const rivalObj = getMemberById(rivalId);
+                                        if (!rivalObj) return null;
+                                        return (
+                                            <div key={rivalId} className="flex justify-between items-center bg-red-50 dark:bg-red-900/30 p-2 rounded-lg text-xs">
+                                                <span className="font-medium text-gray-800 dark:text-gray-200">{rivalObj.name} ({rivalObj.generation || 'Member'})</span>
+                                                <span className="font-bold text-red-600 dark:text-red-300 text-[10px] uppercase bg-red-200 dark:bg-red-800/50 px-2 py-0.5 rounded">
+                                                    {data.relationship === 'jealous_senpai' ? '🔥 Jealous Senpai' : data.relationship === 'respected_rival' ? '🤝 Respected Rival' : '⚔️ Rival'}
+                                                </span>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        )}
+
                         {/* Goals & Ambition */}
                         <div className="mt-3 text-sm border-t pt-3">
                             <h4 className="font-semibold mb-2 flex items-center"><Goal size={16} className="mr-2" />Goals & Ambition</h4>
@@ -17366,6 +17388,13 @@ const App = () => {
                     handleScandalResponse={handleScandalResponse}
                 />
             )}
+            {showModal === 'senpaiKohaiDrama' && (
+                <SenpaiKohaiDramaModal
+                    activeDrama={activeDrama}
+                    resolveDramaChoice={resolveDramaChoice}
+                    setShowModal={setShowModal}
+                />
+            )}
             {showModal === 'scandalResult' && (
                 <ScandalResultModal
                     modalData={modalData}
@@ -17444,6 +17473,125 @@ const App = () => {
 };
 
 // Modals extracted to top-level to avoid unmounting and state-reset bugs
+const SenpaiKohaiDramaModal = ({
+    activeDrama,
+    resolveDramaChoice,
+    setShowModal
+}) => {
+    if (!activeDrama) return null;
+
+    const { senpai, kohai, description } = activeDrama;
+
+    const options = [
+        {
+            id: 'mediate',
+            title: '🤝 Mediate & Reconcile (Producer Intervention)',
+            tag: 'RECONCILE',
+            tagColor: 'bg-green-600',
+            description: 'Step in backstage to help them talk it out. Turn friction into mutual respect.',
+            outcome: '+20 Morale to Senpai, +20 Chemistry, establishes "Respected Rivals" status.'
+        },
+        {
+            id: 'push_kohai',
+            title: '⭐ Push the New Star (Declare New Ace)',
+            tag: 'FAVOR KOHAI',
+            tagColor: 'bg-purple-600',
+            description: 'Publicly endorse the junior idol as the group\'s new centerpiece.',
+            outcome: '+1,500 Fans & +10 Charisma to Kohai (Rising Ace), but Senpai suffers -30 Morale & +25 Stress.'
+        },
+        {
+            id: 'console_senpai',
+            title: '💬 Console the Veteran (Promise Future Push)',
+            tag: 'HONOR VETERAN',
+            tagColor: 'bg-blue-600',
+            description: 'Reassure the senior idol with a featured B-Side position and solo media jobs.',
+            outcome: '+35 Morale & -20 Stress for Senpai, prevents early graduation risk.'
+        },
+        {
+            id: 'fuel_rivalry',
+            title: '🔥 Fuel the Rivalry (Double Center Publicity Feud)',
+            tag: 'PUBLICITY DUEL',
+            tagColor: 'bg-red-600',
+            description: 'Pitch their intense backstage rivalry to media and fans for massive pre-order hype!',
+            outcome: '+25% Single Sales Hype! Performance stats +15% during concerts, but keeps stress high (+15).'
+        }
+    ];
+
+    return (
+        <div className="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in fade-in">
+            <div className="w-full max-w-2xl rounded-2xl bg-gray-900 border border-red-500/40 shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-5">
+                {/* Header */}
+                <div className="p-4 flex justify-between items-center bg-gradient-to-r from-red-900/60 via-purple-900/60 to-gray-900 border-b border-red-500/30">
+                    <div className="flex items-center gap-3">
+                        <span className="text-xs font-black uppercase tracking-widest bg-gradient-to-r from-red-600 to-amber-600 text-white py-1 px-3 rounded-full shadow-lg flex items-center gap-1">
+                            ⚔️ SENPAI vs KOHAI DRAMA
+                        </span>
+                        <h3 className="font-bold text-lg text-white">Backstage Rivalry Erupted!</h3>
+                    </div>
+                    <button onClick={() => setShowModal(null)} className="w-8 h-8 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-colors">
+                        <X size={18} />
+                    </button>
+                </div>
+
+                {/* Body Content */}
+                <div className="p-6 grid gap-5">
+                    {/* Event Description Card */}
+                    <div className="p-4 bg-red-950/40 border border-red-500/30 rounded-xl text-center">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-red-400 mb-1">Senbatsu Selection Friction</h4>
+                        <p className="text-sm text-gray-200 leading-relaxed font-medium">{description}</p>
+                    </div>
+
+                    {/* Side-by-Side Face Off */}
+                    <div className="grid grid-cols-2 gap-4">
+                        {/* Senpai Card */}
+                        <div className="p-4 rounded-xl bg-gradient-to-b from-gray-800/80 to-red-950/30 border border-red-500/20 text-center">
+                            <span className="text-[10px] font-extrabold uppercase bg-red-500/20 text-red-300 py-0.5 px-2 rounded">Snubbed Senpai</span>
+                            <h4 className="text-lg font-bold text-white mt-1">{senpai.name}</h4>
+                            <p className="text-xs text-gray-400">{senpai.generation || 'Senior'} • Active {senpai.yearsActive || 1} yrs</p>
+                            <div className="mt-2 text-xs italic text-red-200/80 bg-black/30 p-2 rounded border border-red-500/10">
+                                "{senpai.personality === 'Hot-headed' ? 'How could a rookie get picked over me?!' : senpai.personality === 'Ice Queen' ? 'I expect an explanation for this decision.' : 'I feel like my hard work was completely ignored...'}"
+                            </div>
+                        </div>
+
+                        {/* Kohai Card */}
+                        <div className="p-4 rounded-xl bg-gradient-to-b from-gray-800/80 to-purple-950/30 border border-purple-500/20 text-center">
+                            <span className="text-[10px] font-extrabold uppercase bg-purple-500/20 text-purple-300 py-0.5 px-2 rounded">Rising Kohai</span>
+                            <h4 className="text-lg font-bold text-white mt-1">{kohai.name}</h4>
+                            <p className="text-xs text-gray-400">{kohai.generation || 'Junior'} • Archetype: {kohai.archetype || 'Trainee'}</p>
+                            <div className="mt-2 text-xs italic text-purple-200/80 bg-black/30 p-2 rounded border border-purple-500/10">
+                                "{kohai.personality === 'Ambitious' ? 'I earned this spot and I will prove it!' : kohai.personality === 'Shy' ? 'I am sorry Senpai, but I will do my best...' : 'I\'m ready to take center stage!'}"
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Producer Action Choices */}
+                    <div>
+                        <h4 className="font-bold text-xs uppercase tracking-wider text-gray-300 mb-3 text-center">How will you handle this drama?</h4>
+                        <div className="grid grid-cols-1 gap-2.5 max-h-[220px] overflow-y-auto pr-1">
+                            {options.map((opt) => (
+                                <button
+                                    key={opt.id}
+                                    onClick={() => resolveDramaChoice(opt.id)}
+                                    className="w-full text-left p-3 border border-white/10 rounded-xl hover:bg-white/10 bg-white/5 transition-all text-white group"
+                                >
+                                    <div className="flex justify-between items-center">
+                                        <span className="font-bold text-sm text-yellow-300 group-hover:text-yellow-200">{opt.title}</span>
+                                        <span className={`text-[10px] font-black uppercase text-white py-0.5 px-2 rounded ${opt.tagColor}`}>
+                                            {opt.tag}
+                                        </span>
+                                    </div>
+                                    <p className="text-xs text-gray-300 mt-1">{opt.description}</p>
+                                    <p className="text-[11px] font-semibold text-emerald-400 mt-0.5">↳ Outcome: {opt.outcome}</p>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const ScandalDecisionModal = ({
     activeScandal,
     setShowModal,

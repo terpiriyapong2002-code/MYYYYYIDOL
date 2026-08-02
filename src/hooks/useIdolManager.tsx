@@ -1437,9 +1437,13 @@ export const sponsorshipTiers = {
         15: { id: 'model_15', name: 'Final Fantasy Character Model', description: 'Become the face and motion capture model for a lead character in the next Final Fantasy game. Taps into a massive global gaming audience.', requires: { stat: 'visual', value: 93, members: 1 }, reward: { money: 1200000, fanGain: 500000, repGain: 3 }, duration: 0, rarity: 0.06 },
         16: { id: 'model_16', name: 'Anna Sui Collaboration Line', description: 'Collaborate with the iconic designer Anna Sui on a limited-edition makeup or fashion line.', requires: { stat: 'visual', value: 90, members: 1 }, reward: { money: 1500000, fanGain: 300000, repGain: 5 }, duration: 12, rarity: 0.05 },
         17: { id: 'model_17', name: '"World\'s Most Beautiful Faces" List', description: 'An official inclusion in the globally recognized "100 Most Beautiful Faces" list, causing a massive viral buzz.', requires: { stat: 'visual', value: 99, members: 1 }, reward: { money: 50000, fanGain: 500000, repGain: 10 }, duration: 0, rarity: 0.01 },
-        18: { id: 'model_18', name: 'Peach John Lingerie Line', description: 'Become the main model for a new collection from the hugely popular lingerie brand Peach John.', requires: { stat: 'visual', value: 88, members: 1 }, reward: { money: 900000, fanGain: 280000 }, duration: 0, rarity: 0.1 },
         19: { id: 'model_19', name: 'High-Fashion Streetwear Lookbook (BAPE)', description: 'Model for a cult-classic streetwear brand, boosting "cool" factor and attracting a different fan demographic.', requires: { stat: 'visual', value: 85, members: 2 }, reward: { money: 600000, fanGain: 220000, repGain: 2 }, duration: 0, rarity: 0.12 },
         20: { id: 'model_20', name: 'Times Square Billboard Campaign', description: 'A solo billboard campaign in the middle of New York\'s Times Square. The absolute peak of global exposure.', requires: { stat: 'visual', value: 100, members: 1 }, reward: { money: 5000000, fanGain: 1200000, repGain: 20 }, duration: 4, rarity: 0.005 },
+        21: { id: 'model_21', name: 'Social Media Youth Fashion Campaign', description: 'A trending TikTok & Instagram outfit campaign for a top youth apparel line. Offers come in frequently.', requires: { stat: 'visual', value: 62, members: 1 }, reward: { money: 450000, fanGain: 140000 }, duration: 0, rarity: 0.75 },
+        22: { id: 'model_22', name: 'National Spring Catalog Cover', description: 'Star on the front cover of a widely distributed nationwide fashion catalog.', requires: { stat: 'visual', value: 68, members: 2 }, reward: { money: 750000, fanGain: 220000 }, duration: 0, rarity: 0.70 },
+        23: { id: 'model_23', name: 'Popular Haircare & Styling Commercial', description: 'A high-exposure TV and web commercial for a major hair styling product line.', requires: { stat: 'visual', value: 72, members: 1 }, reward: { money: 950000, fanGain: 290000 }, duration: 4, rarity: 0.65 },
+        24: { id: 'model_24', name: 'Tokyo Fashion Showcase Guest Model', description: 'Spotlight guest runway appearance drawing massive teen media buzz.', requires: { stat: 'visual', value: 76, members: 3 }, reward: { money: 1200000, fanGain: 350000, repGain: 2 }, duration: 0, rarity: 0.60 },
+        25: { id: 'model_25', name: 'Viral Beauty & Cosmetics Social Blitz', description: 'An explosive social media cosmetics campaign that goes viral across teen platforms.', requires: { stat: 'visual', value: 70, members: 1 }, reward: { money: 1500000, fanGain: 400000 }, duration: 0, rarity: 0.65 },
     },
     tv: {
         1: { id: 'tv_1', name: 'Local TV Guesting', description: 'A short guest appearance on a local morning show.', requires: { stat: 'charisma', value: 45, members: 3 }, reward: { money: 20000, fanGain: 5000 }, duration: 0, rarity: 1.0 },
@@ -1462,7 +1466,11 @@ export const sponsorshipTiers = {
         18: { id: 'tv_18', name: 'Hollywood TV Series Regular', description: 'Land a main, season-long role in a major American TV series. The ultimate international breakthrough.', requires: { stat: 'charisma', value: 97, members: 1 }, reward: { money: 7000000, fanGain: 1200000, repGain: 15 }, duration: 20, rarity: 0.02 },
         19: { id: 'tv_19', name: 'Present at Japan Academy Film Prize', description: 'Present an award at Japan\'s equivalent of the Oscars. A pure prestige and reputation-building activity.', requires: { stat: 'charisma', value: 93, members: 2 }, reward: { money: 150000, fanGain: 200000, repGain: 10 }, duration: 0, rarity: 0.05 },
         20: { id: 'tv_20', name: 'Group Documentary on NHK', description: 'A prime-time, feature-length documentary about the group airs on NHK, Japan\'s public broadcaster. Solidifies their status as national icons.', requires: { stat: 'charisma', value: 90, members: 10 }, reward: { money: 2000000, fanGain: 800000, repGain: 18 }, duration: 0, rarity: 0.04 },
-
+        21: { id: 'tv_21', name: 'Weekly Prime-Time Quiz & Game Guest', description: 'Regular guest appearances on a high-rating nationwide evening quiz show.', requires: { stat: 'variety', value: 62, members: 2 }, reward: { money: 500000, fanGain: 130000 }, duration: 0, rarity: 0.80 },
+        22: { id: 'tv_22', name: 'Nationwide Talk Show Feature', description: 'A fun sit-down interview segment on a popular weekend talk show.', requires: { stat: 'charisma', value: 68, members: 3 }, reward: { money: 800000, fanGain: 210000 }, duration: 0, rarity: 0.70 },
+        23: { id: 'tv_23', name: 'Youth Drama Special Guest Star', description: 'A high-profile guest role in a popular teen TV drama series, charming young viewers.', requires: { stat: 'charisma', value: 72, members: 1 }, reward: { money: 1100000, fanGain: 280000, repGain: 1 }, duration: 4, rarity: 0.65 },
+        24: { id: 'tv_24', name: 'National Variety Special Co-Host', description: 'Co-hosting a hilarious seasonal variety special alongside veteran comedians.', requires: { stat: 'variety', value: 75, members: 4 }, reward: { money: 1400000, fanGain: 340000, repGain: 2 }, duration: 0, rarity: 0.60 },
+        25: { id: 'tv_25', name: 'Major Network Holiday Gala Feature', description: 'Headline performance & panel feature during a prime holiday network television gala.', requires: { stat: 'charisma', value: 78, members: 5 }, reward: { money: 1800000, fanGain: 400000, repGain: 3 }, duration: 0, rarity: 0.65 },
     },
     brand: {
         1: { id: 'brand_1', name: 'Convenience Store Snack CM', description: 'A short commercial for a new snack sold in convenience stores nationwide.', requires: { stat: 'visual', value: 55, members: 3 }, reward: { money: 250000, fanGain: 15000 }, duration: 0, rarity: 0.9 },
@@ -1485,8 +1493,14 @@ export const sponsorshipTiers = {
         18: { id: 'brand_18', name: 'Louis Vuitton Muse', description: 'The absolute pinnacle of high fashion. Become a global muse for Louis Vuitton, attending shows and fronting campaigns.', requires: { stat: 'visual', value: 99, members: 1 }, reward: { money: 12000000, fanGain: 1500000, repGain: 20 }, duration: 24, rarity: 0.01 },
         19: { id: 'brand_19', name: 'Gundam Franchise Theme Song', description: 'The group provides the theme song for a new Gundam series, a cultural cornerstone in Japan with a massive, dedicated fanbase.', requires: { stat: 'singing', value: 90, members: 7 }, reward: { money: 2500000, fanGain: 700000, repGain: 5 }, duration: 0, rarity: 0.03 },
         20: { id: 'brand_20', name: 'Super Bowl Commercial', description: 'The group stars in a commercial that will air during the Super Bowl. The single most expensive and viewed ad slot in the world.', requires: { stat: 'charisma', value: 95, members: 5 }, reward: { money: 20000000, fanGain: 3000000, repGain: 10 }, duration: 0, rarity: 0.005 },
+        21: { id: 'brand_21', name: 'Popular Soft Drink Summer CM', description: 'Star in a refreshing, upbeat summer TV ad for a top-selling soda brand.', requires: { stat: 'charisma', value: 62, members: 3 }, reward: { money: 600000, fanGain: 150000 }, duration: 0, rarity: 0.80 },
+        22: { id: 'brand_22', name: 'Convenience Store Campaign Face', description: 'Posters, promotional items, and TV commercials for a nationwide convenience store chain.', requires: { stat: 'visual', value: 68, members: 4 }, reward: { money: 850000, fanGain: 230000 }, duration: 0, rarity: 0.75 },
+        23: { id: 'brand_23', name: 'Popular Mobile App CM Campaign', description: 'A hilarious and catchy commercial campaign for a top-charting mobile app.', requires: { stat: 'variety', value: 72, members: 2 }, reward: { money: 1100000, fanGain: 300000 }, duration: 0, rarity: 0.70 },
+        24: { id: 'brand_24', name: 'Nationwide Snack & Confectionery Endorsement', description: 'Become the official face of a beloved chocolate and snack brand across Japan.', requires: { stat: 'charisma', value: 75, members: 3 }, reward: { money: 1400000, fanGain: 360000, repGain: 2 }, duration: 8, rarity: 0.65 },
+        25: { id: 'brand_25', name: 'Major Tech & Earphones Ambassador', description: 'Front a stylish national campaign for trendy wireless earbuds and tech accessories.', requires: { stat: 'visual', value: 78, members: 2 }, reward: { money: 1750000, fanGain: 400000, repGain: 2 }, duration: 0, rarity: 0.60 },
     }
 };
+
 export const livestreamTypes = [
     { type: 'Gaming', stat: 'variety', baseFanGain: 1000, description: 'is playing a popular new game!', gaffeChance: 0.2 },
     { type: 'Q&A', stat: 'intelligence', baseFanGain: 1500, description: 'is answering questions from fans!', gaffeChance: 0.15 },
@@ -2721,6 +2735,8 @@ export const useIdolManager = () => {
     const [statistics, setStatistics] = useState({ totalRevenue: 0, totalConcerts: 0, totalSongs: 0, revenueHistory: [] });
     const [modalData, setModalData] = useState(null);
     const [activeScandal, setActiveScandal] = useState(null);
+    const [activeDrama, setActiveDrama] = useState(null);
+    const [dramaHistory, setDramaHistory] = useState([]);
     const [selectedSisterGroup, setSelectedSisterGroup] = useState(null);
     const [selectedTheaterTeam, setSelectedTheaterTeam] = useState(null);
     const [username, setUsername] = useState('Guest');
@@ -7451,9 +7467,213 @@ export const useIdolManager = () => {
         // --- END: Existing Graduation Urgency Logic ---
 
 
+        // --- START: Senpai-Kohai Drama & Rivalry Detection ---
+        checkSenpaiKohaiDrama((songData.tracks || []).find(t => t.type === 'title')?.members || [], songData.targetGroup, songData.name);
+        // --- END: Senpai-Kohai Drama & Rivalry Detection ---
+
         // --- Final UI Updates ---
         setShowModal(null);
         setMessage(`Production for "${songData.name}" scheduled for Week ${releaseWeek}! Cost: ¥${totalCost.toLocaleString()}`);
+    };
+
+    const checkSenpaiKohaiDrama = (titleTrackMembers, targetGroupName, releaseName) => {
+        if (!titleTrackMembers || titleTrackMembers.length === 0) return;
+
+        const allAvailable = getAllAvailableMembers(true);
+        const senbatsuIds = new Set(titleTrackMembers.map(m => String(m.rosterId || m.id)));
+
+        const senbatsuList = allAvailable.filter(m => senbatsuIds.has(String(m.rosterId || m.id)));
+        const omittedList = allAvailable.filter(m => {
+            const isMatchGroup = targetGroupName === 'main'
+                ? (m.homeGroup === 'main' || (m.kenninGroups || []).includes(groupName))
+                : (m.homeGroup === targetGroupName || (m.kenninGroups || []).includes(targetGroupName));
+            return isMatchGroup && !m.graduated && !senbatsuIds.has(String(m.rosterId || m.id));
+        });
+
+        const getGenNum = (genStr) => {
+            if (!genStr) return 99;
+            const match = String(genStr).match(/\d+/);
+            return match ? parseInt(match[0], 10) : 99;
+        };
+
+        const kohaisInSenbatsu = senbatsuList.filter(m => {
+            const genNum = getGenNum(m.generation);
+            return genNum > 1 || (m.yearsActive || 0) <= 1;
+        });
+
+        const omittedSenpais = omittedList.filter(m => {
+            const genNum = getGenNum(m.generation);
+            return (genNum <= 1 || (m.yearsActive || 0) >= 2);
+        });
+
+        if (kohaisInSenbatsu.length > 0 && omittedSenpais.length > 0) {
+            const kohai = kohaisInSenbatsu[Math.floor(Math.random() * kohaisInSenbatsu.length)];
+            const senpai = omittedSenpais[Math.floor(Math.random() * omittedSenpais.length)];
+
+            const highJealousyPersonalities = ['Hot-headed', 'Ambitious', 'Ice Queen', 'Rebellious', 'Lone Wolf'];
+            const lowJealousyPersonalities = ['Motherly', 'Natural Leader', 'Elegance', 'Cheerful', 'Easygoing'];
+
+            let triggerChance = 0.5;
+            if (highJealousyPersonalities.includes(senpai.personality)) triggerChance = 0.85;
+            if (lowJealousyPersonalities.includes(senpai.personality)) triggerChance = 0.15;
+
+            if (Math.random() < triggerChance) {
+                const senpaiId = senpai.rosterId || senpai.id;
+                const kohaiId = kohai.rosterId || kohai.id;
+
+                const dramaObj = {
+                    id: `drama-${Date.now()}`,
+                    type: 'senbatsu_snub',
+                    senpai,
+                    kohai,
+                    singleName: releaseName || 'New Single',
+                    description: `${senpai.name} (${senpai.generation || 'Senior'}) was left out of Senbatsu while rookie ${kohai.name} (${kohai.generation || 'Junior'}) secured a spot for "${releaseName || 'the new single'}". ${senpai.name} is deeply upset backstage!`,
+                };
+
+                updateMemberState(senpaiId, m => {
+                    const currentChem = m.chemistry || {};
+                    const currentRivalries = m.rivalries || {};
+                    return {
+                        ...m,
+                        chemistry: { ...currentChem, [kohaiId]: Math.min((currentChem[kohaiId] || 0) - 30, -20) },
+                        rivalries: {
+                            ...currentRivalries,
+                            [kohaiId]: {
+                                relationship: 'jealous_senpai',
+                                tensionScore: 80,
+                                surpassedWeek: week,
+                                reason: `Snubbed from ${releaseName} in favor of ${kohai.name}`
+                            }
+                        }
+                    };
+                });
+
+                setActiveDrama(dramaObj);
+                setShowModal('senpaiKohaiDrama');
+            }
+        }
+    };
+
+    const resolveDramaChoice = (choiceId) => {
+        if (!activeDrama) return;
+        const { senpai, kohai, singleName } = activeDrama;
+
+        const senpaiId = senpai.rosterId || senpai.id;
+        const kohaiId = kohai.rosterId || kohai.id;
+
+        if (choiceId === 'mediate') {
+            updateMemberState(senpaiId, m => ({
+                ...m,
+                morale: Math.min(100, (m.morale || 70) + 20),
+                stress: Math.max(0, (m.stress || 0) - 15),
+                chemistry: { ...(m.chemistry || {}), [kohaiId]: 25 },
+                rivalries: { ...(m.rivalries || {}), [kohaiId]: { relationship: 'respected_rival', tensionScore: 20 } }
+            }));
+            updateMemberState(kohaiId, m => ({
+                ...m,
+                morale: Math.min(100, (m.morale || 70) + 10),
+                chemistry: { ...(m.chemistry || {}), [senpaiId]: 25 },
+                rivalries: { ...(m.rivalries || {}), [senpaiId]: { relationship: 'respected_rival', tensionScore: 20 } }
+            }));
+
+            addNotification({
+                type: 'Group',
+                message: `🤝 Producer mediated between ${senpai.name} and ${kohai.name}. They formed a bond as respected rivals!`
+            });
+            setFanPosts(prev => [
+                { id: Date.now(), author: `wota_${Math.floor(Math.random() * 1000)}`, text: `Saw ${senpai.name} and ${kohai.name} smiling backstage! Love seeing senior and junior support each other ❤️`, likes: Math.floor(Math.random() * 500) + 50 },
+                ...prev
+            ]);
+        } else if (choiceId === 'push_kohai') {
+            updateMemberState(kohaiId, m => ({
+                ...m,
+                charisma: (m.charisma || 10) + 10,
+                fans: {
+                    hardcore: (m.fans?.hardcore || 0) + 1000,
+                    casual: (m.fans?.casual || 0) + 3000
+                },
+                electionHype: (m.electionHype || 0) + 15
+            }));
+            updateMemberState(senpaiId, m => ({
+                ...m,
+                morale: Math.max(0, (m.morale || 70) - 30),
+                stress: Math.min(100, (m.stress || 0) + 25),
+                graduationUrgency: Math.min(100, (m.graduationUrgency || 0) + 15)
+            }));
+
+            addNotification({
+                type: 'Scandal',
+                message: `⭐ ${kohai.name} received full backing as the Rising Ace! ${senpai.name} feels alienated and stressed.`
+            });
+            setFanPosts(prev => [
+                { id: Date.now(), author: `idol_insider`, text: `It's official: management is all-in on ${kohai.name}. Poor ${senpai.name} got completely pushed aside...`, likes: Math.floor(Math.random() * 1200) + 200 },
+                ...prev
+            ]);
+        } else if (choiceId === 'console_senpai') {
+            updateMemberState(senpaiId, m => ({
+                ...m,
+                morale: Math.min(100, (m.morale || 70) + 35),
+                stress: Math.max(0, (m.stress || 0) - 20),
+                graduationUrgency: Math.max(0, (m.graduationUrgency || 0) - 10)
+            }));
+            updateMemberState(kohaiId, m => ({
+                ...m,
+                morale: Math.max(0, (m.morale || 70) - 5)
+            }));
+
+            addNotification({
+                type: 'Group',
+                message: `💬 Reassured ${senpai.name} with future opportunities. She feels valued and ready to support the group.`
+            });
+            setFanPosts(prev => [
+                { id: Date.now(), author: `senpai_stan`, text: `Glad management is giving ${senpai.name} proper respect! She deserves the world.`, likes: Math.floor(Math.random() * 800) + 100 },
+                ...prev
+            ]);
+        } else if (choiceId === 'fuel_rivalry') {
+            updateMemberState(senpaiId, m => ({
+                ...m,
+                singing: (m.singing || 10) + 5,
+                dancing: (m.dancing || 10) + 5,
+                stress: Math.min(100, (m.stress || 0) + 15)
+            }));
+            updateMemberState(kohaiId, m => ({
+                ...m,
+                singing: (m.singing || 10) + 5,
+                dancing: (m.dancing || 10) + 5,
+                stress: Math.min(100, (m.stress || 0) + 15)
+            }));
+
+            setScheduledSingles(prev => prev.map(s => {
+                if (s.songData && s.songData.name === singleName) {
+                    return {
+                        ...s,
+                        productionData: {
+                            ...s.productionData,
+                            rivalryBonus: 1.25
+                        }
+                    };
+                }
+                return s;
+            }));
+
+            addNotification({
+                type: 'Media',
+                message: `🔥 Pitched ${senpai.name} vs ${kohai.name} feud to the media! Hype skyrocketed (+25% Single Sales potential)!`
+            });
+            setFanPosts(prev => [
+                { id: Date.now(), author: `drama_wota`, text: `DID YOU SEE THE MEDIA INTERVIEW?! ${senpai.name} and ${kohai.name} are literally glaring at each other! THIS IS CINEMA 🔥🔥🔥`, likes: Math.floor(Math.random() * 3000) + 500 },
+                { id: Date.now() + 1, author: `group_fanboy`, text: `#Team${senpai.name} or #Team${kohai.name}? I can't decide, preordering 10 copies of both covers!!`, likes: Math.floor(Math.random() * 2000) + 300 },
+                ...prev
+            ]);
+        }
+
+        setDramaHistory(prev => [
+            { week, senpaiName: senpai.name, kohaiName: kohai.name, choiceId, singleName: singleName || 'Single' },
+            ...prev
+        ]);
+
+        setActiveDrama(null);
+        setShowModal(null);
     };
 
     const scheduleNewAlbum = ({ albumData, productionData, releaseWeek }) => {
@@ -12996,7 +13216,6 @@ export const useIdolManager = () => {
                     m.stamina = Math.max(0, (m.stamina || 100) - 20);
                     m.stress = Math.min(100, (m.stress || 0) + 10);
                     m.morale = Math.min(100, (m.morale || 0) + 15);
-                    m.graduationUrgency = Math.max(0, (m.graduationUrgency || 0) - 2);
 
                     const hardcoreGain = Math.floor(fanGain * 0.3);
                     const casualGain = fanGain - hardcoreGain;
@@ -17970,7 +18189,7 @@ export const useIdolManager = () => {
 
     return {
         // State
-        inflationConfig, setInflationConfig, outstandingLoan, setOutstandingLoan, takeLoan, repayLoanIfPossible, activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm, setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, setGroupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, theaterSchedule, setTheaterSchedule, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, activeUnderTour, setActiveUnderTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
+        inflationConfig, setInflationConfig, outstandingLoan, setOutstandingLoan, takeLoan, repayLoanIfPossible, activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm, setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, setGroupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, theaterSchedule, setTheaterSchedule, setWeek, setMoney, activeDrama, setActiveDrama, dramaHistory, setDramaHistory, resolveDramaChoice, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, activeUnderTour, setActiveUnderTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
         // Firebase/Persistence
         getSavedGames, saveGame, loadGame,
         // Utilities
