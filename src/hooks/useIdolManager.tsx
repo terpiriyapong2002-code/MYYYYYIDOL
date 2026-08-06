@@ -7439,6 +7439,56 @@ export const useIdolManager = () => {
         setScheduledSingles(prev => [...prev, newScheduledRelease]);
         // ---- END: Existing Timeline & Object Creation ----
 
+        // --- START: Honorary Graduation Single Logic ---
+        if (songData.singleSubType === 'graduation' || songData.isGraduationSingle || (songData.graduatingMemberIds && songData.graduatingMemberIds.length > 0)) {
+            const gradIds = (songData.graduatingMemberIds || []).map(String);
+            if (gradIds.length > 0) {
+                setMembers(prev => prev.map(m => {
+                    const mRosterId = String(m.rosterId || m.id);
+                    if (gradIds.includes(mRosterId) || gradIds.includes(String(m.id))) {
+                        return {
+                            ...m,
+                            isGraduating: true,
+                            graduationWeek: releaseWeek + 8,
+                            graduationSingleName: songData.name
+                        };
+                    }
+                    return m;
+                }));
+                setSisterGroups(prevGroups => prevGroups.map(sg => ({
+                    ...sg,
+                    members: (sg.members || []).map(m => {
+                        const mRosterId = `sg-${sg.id}-${m.id}`;
+                        if (gradIds.includes(mRosterId) || gradIds.includes(String(m.id))) {
+                            return {
+                                ...m,
+                                isGraduating: true,
+                                graduationWeek: releaseWeek + 8,
+                                graduationSingleName: songData.name
+                            };
+                        }
+                        return m;
+                    })
+                })));
+
+                const graduationEventsToSchedule = gradIds.map(id => {
+                    const member = getMemberById(id);
+                    const memberName = member ? member.name : 'Idol';
+                    return {
+                        week: releaseWeek + 8,
+                        type: 'FINAL_GRADUATION',
+                        memberId: id,
+                        memberName: memberName,
+                        title: `Official Graduation of ${memberName}`
+                    };
+                });
+                if (graduationEventsToSchedule.length > 0) {
+                    setScheduledEvents(prev => [...prev, ...graduationEventsToSchedule]);
+                }
+            }
+        }
+        // --- END: Honorary Graduation Single Logic ---
+
         // --- START: Existing Graduation Urgency Logic ---
         const allParticipatingIds = new Set(songData.tracks.flatMap(t => (t.members || []).map(m => String(m.id))));
 
@@ -8345,6 +8395,10 @@ export const useIdolManager = () => {
             }
         }
         let baseSalesPotential = ((fanSales * 0.9) + (skillPower * 0.1)) * formatBonus;
+        if (songData.singleSubType === 'graduation' || songData.isGraduationSingle) {
+            baseSalesPotential *= 1.20; // +20% Graduation Boost
+            triviaItems.push(`Honorary Graduation Single: Fan nostalgia and emotional farewell support boosted overall sales potential by +20%!`);
+        }
         // --- COLLABORATION LOGIC ---
         let updatedRivalGroups = rivalGroups ? JSON.parse(JSON.stringify(rivalGroups)) : [];
         const isCollaboration = songData.isCollaboration && songData.rivalPartner;
@@ -8479,7 +8533,9 @@ export const useIdolManager = () => {
         const songListOfGroup = releasingGroupNameForTrivia === groupName ? initialSongs : (initialSisterGroups.find(sg => sg.name === releasingGroupNameForTrivia)?.songs || []);
 
         const currentSubtype = songData.singleSubType || 'group';
-        const previousSingle = songListOfGroup.filter(s => s.type === 'single' && s.releaseWeek < week && (s.singleSubType || 'group') === currentSubtype).sort((a, b) => b.releaseWeek - a.releaseWeek)[0];
+        // For graduation singles, compare against the last 'group' single (not the last graduation single)
+        const subtypeForComparison = currentSubtype === 'graduation' ? 'group' : currentSubtype;
+        const previousSingle = songListOfGroup.filter(s => s.type === 'single' && s.releaseWeek < week && (s.singleSubType || 'group') === subtypeForComparison).sort((a, b) => b.releaseWeek - a.releaseWeek)[0];
 
         // --- 2. SINGLE-TO-SINGLE SENBATSU CHANGES ---
         if (previousSingle) {
@@ -9017,12 +9073,31 @@ export const useIdolManager = () => {
         // --- END OF NEW TRIVIA CODE ---
 
         // --- 7. GRADUATION TRIVIA ---
-        if (songData.isGraduationSingle && titleTrack?.center?.length > 0) {
-            const gradMember = getTriviaMember(titleTrack.center[0]);
-            if (gradMember) {
-                triviaItems.push(`Final Single Participation of ${gradMember.name}.`);
-                triviaItems.push(`Last Senbatsu of ${gradMember.name}.`);
-                triviaItems.push(`Final A-Side Center of ${gradMember.name}.`);
+        if (songData.isGraduationSingle || songData.singleSubType === 'graduation') {
+            const gradIds = (songData.graduatingMemberIds || []).map(String);
+            if (gradIds.length > 0) {
+                // Find all graduating participants
+                const allGraduatingParticipants = allParticipatingMembers.filter(m => {
+                    const mId = String(m.rosterId || m.id);
+                    return gradIds.includes(mId) || gradIds.includes(String(m.id));
+                });
+                if (allGraduatingParticipants.length > 0) {
+                    triviaItems.push(`Final Single & Last Senbatsu: ${formatNames(allGraduatingParticipants.map(m => m.name))} — this is their final single participation and last senbatsu appearance before graduation. 🎓`);
+                }
+
+                // Find graduating members who are center
+                if (titleTrack?.center?.length > 0) {
+                    const graduatingCenters = titleTrack.center
+                        .map(id => getTriviaMember(id))
+                        .filter(Boolean)
+                        .filter(m => {
+                            const mId = String(m.rosterId || m.id);
+                            return gradIds.includes(mId) || gradIds.includes(String(m.id));
+                        });
+                    if (graduatingCenters.length > 0) {
+                        triviaItems.push(`Final A-Side Center: ${formatNames(graduatingCenters.map(m => m.name))} — a legendary final bow at the center position. 🎓`);
+                    }
+                }
             }
         }
         // --- 8. SUB-FORMAT TRIVIA ---
@@ -9043,6 +9118,7 @@ export const useIdolManager = () => {
             type: 'single',
             singleSubType: songData.singleSubType,
             isGraduationSingle: songData.isGraduationSingle,
+            graduatingMemberIds: songData.graduatingMemberIds || [],
             isElectionSingle: songData.isElectionSingle,
             isCollaboration: songData.isCollaboration || false,
             rivalPartner: songData.rivalPartner || null,
@@ -13340,6 +13416,9 @@ export const useIdolManager = () => {
                     const finalTotalSales = (song.totalSales || 0) + salesThisWeek;
 
                     if (newChartWeeksLeft === 0) { // --- Song has finished its chart run ---
+                        if (song.singleSubType === 'graduation' || song.isGraduationSingle) {
+                            addNotificationInLoop({ type: 'Graduation', message: `🎓 Chart run for Graduation Single "${song.name}" has completed! Final graduation ceremonies begin for designated members.` });
+                        }
                         if (song.isElectionSingle) {
                             tempElectionVotePool += finalTotalSales;
                             addNotificationInLoop({ type: 'Election', message: `Votes from "${song.name}" are tallied! Added: ${finalTotalSales.toLocaleString()} votes.` });

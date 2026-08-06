@@ -1634,7 +1634,10 @@ const App = () => {
         const [songGenre, setSongGenre] = useState('Bubblegum Pop');
         const [songTheme, setSongTheme] = useState('Sweet Hearts');
         // --- New Single Formats State ---
-        const [singleSubType, setSingleSubType] = useState('group'); // 'group', 'unit', 'solo'
+        const [singleSubType, setSingleSubType] = useState('group'); // 'group', 'unit', 'solo', 'graduation'
+        const [graduatingMemberIds, setGraduatingMemberIds] = useState([]);
+        const [gradFilterKey, setGradFilterKey] = useState('All');
+        const [gradSearchFilter, setGradSearchFilter] = useState('');
         const [selectedSoloist, setSelectedSoloist] = useState(null);
         const [selectedUnitGroup, setSelectedUnitGroup] = useState(null);
         // --- Search & Filters for Solo & Sub-Unit Creation ---
@@ -2796,7 +2799,8 @@ const App = () => {
                         cdType: t.cdType
                     };
                 }),
-                isGraduationSingle: releaseType === 'graduationSingle', // This is the new line
+                isGraduationSingle: singleSubType === 'graduation' || releaseType === 'graduationSingle',
+                graduatingMemberIds: graduatingMemberIds,
                 isElectionSingle: isElectionSingle,
                 isCollaboration: isCollaboration,
                 rivalPartner: rivalPartner,
@@ -3154,7 +3158,7 @@ const App = () => {
                     <Sparkles className="text-yellow-400 animate-pulse" />
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-xl mx-auto">Select the format of your upcoming single release. Different formats provide unique balance modifications and strategic bonuses.</p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl w-full mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl w-full mb-8">
                     {/* 1. Group Single */}
                     <button
                         onClick={() => { setSingleSubType('group'); setStep('selection'); }}
@@ -3204,6 +3208,23 @@ const App = () => {
                             <p>• Cost: <strong className="text-amber-600 dark:text-amber-400">40% (60% Discount)</strong></p>
                             <p>• Members: <strong>Exactly 1 Member</strong></p>
                             <p>• Effects: <strong className="text-amber-600 dark:text-amber-400">+50 Morale, Massive Fan Gains</strong></p>
+                        </div>
+                    </button>
+                    {/* 4. Honorary Graduation Single */}
+                    <button
+                        onClick={() => { setSingleSubType('graduation'); setStep('selection'); }}
+                        className="p-6 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-2xl border-2 border-slate-200 dark:border-slate-700 shadow-lg hover:border-rose-400 hover:ring-2 hover:ring-rose-300 hover:shadow-rose-100 dark:hover:shadow-rose-955/20 focus:outline-none transition-all duration-300 transform hover:-translate-y-1 flex flex-col items-center text-center group"
+                    >
+                        <div className="p-4 bg-rose-100 dark:bg-rose-950/40 rounded-full mb-4 text-rose-500 group-hover:scale-110 transition-transform">
+                            <GraduationCap size={32} />
+                        </div>
+                        <span className="font-extrabold text-xl tracking-wide">Graduation Single 🎓</span>
+                        <p className="text-xs text-rose-500 dark:text-rose-400 mt-1 font-semibold uppercase">+20% Sales & Hype Boost</p>
+                        <p className="text-sm font-medium mt-3 text-gray-600 dark:text-gray-300 flex-grow">A monumental farewell single for graduating idols. Designated members will perform during promotions and graduate upon completion.</p>
+                        <div className="mt-4 pt-3 border-t w-full text-xs text-left space-y-1 text-gray-500 dark:text-gray-400">
+                            <p>• Cost: <strong>100% (Standard)</strong></p>
+                            <p>• Members: <strong>Custom Selection</strong></p>
+                            <p>• Effects: <strong className="text-rose-600 dark:text-rose-400">+20% Sales/Hype, Auto-Graduation</strong></p>
                         </div>
                     </button>
                 </div>
@@ -3725,6 +3746,142 @@ const App = () => {
                                 </div>
 
                             </div>
+
+                            {singleSubType === 'graduation' && (() => {
+                                const visibleGraduationRoster = selectableMembers.filter(m => {
+                                    const matchesFilter = applyMemberFilter(m, gradFilterKey, teams, sisterGroups);
+                                    const matchesSearch = !gradSearchFilter.trim() || (m.name || '').toLowerCase().includes(gradSearchFilter.toLowerCase().trim());
+                                    return matchesFilter && matchesSearch;
+                                });
+                                const visibleIds = visibleGraduationRoster.map(m => String(m.rosterId || m.id));
+                                const allVisibleSelected = visibleIds.length > 0 && visibleIds.every(id => graduatingMemberIds.includes(id));
+
+                                const handleToggleSelectAllGrad = () => {
+                                    if (allVisibleSelected) {
+                                        setGraduatingMemberIds(prev => prev.filter(id => !visibleIds.includes(id)));
+                                    } else {
+                                        setGraduatingMemberIds(prev => Array.from(new Set([...prev, ...visibleIds])));
+                                    }
+                                };
+
+                                return (
+                                    <div className="p-4 bg-gradient-to-r from-rose-50 to-pink-50 dark:from-rose-950/40 dark:to-pink-950/40 border-2 border-rose-300 dark:border-rose-800 rounded-2xl mb-4 shadow-sm">
+                                        <h4 className="font-extrabold text-sm text-rose-800 dark:text-rose-200 flex items-center gap-2 mb-1">
+                                            <GraduationCap size={18} className="text-rose-500" />
+                                            Designate Graduating Idols ({graduatingMemberIds.length} selected)
+                                        </h4>
+                                        <p className="text-xs text-rose-600 dark:text-rose-300 mb-3">
+                                            Check the idols who will participate in this single and formally graduate after promotions finish (8 charting weeks).
+                                        </p>
+
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
+                                            <div>
+                                                <label className="block text-[11px] font-bold text-rose-700 dark:text-rose-300 mb-0.5">Filter Group / Generation</label>
+                                                <select
+                                                    value={gradFilterKey}
+                                                    onChange={e => setGradFilterKey(e.target.value)}
+                                                    className="w-full p-1.5 text-xs rounded-lg border-rose-300 bg-white dark:bg-slate-800 dark:border-rose-700 dark:text-gray-200 shadow-sm"
+                                                >
+                                                    <option value="All">All Groups & Generations</option>
+
+                                                    {(teams || []).length > 0 && (
+                                                        <optgroup label="Teams">
+                                                            {teams.map(team => (
+                                                                <option key={`grad-team-${team.id}`} value={`team-${team.id}`}>{team.name}</option>
+                                                            ))}
+                                                        </optgroup>
+                                                    )}
+
+                                                    <optgroup label="Groups">
+                                                        <option key="grad-main" value="main">{groupName}</option>
+                                                        {sisterGroups.map(sg => (
+                                                            <option key={`grad-sg-${sg.id}`} value={`sg-${sg.id}`}>{sg.name}</option>
+                                                        ))}
+                                                    </optgroup>
+
+                                                    {mainGroupGenerations.length > 0 && (
+                                                        <optgroup label={`${groupName} Generations`}>
+                                                            {mainGroupGenerations.map(gen => (
+                                                                <option key={`grad-main-gen-${gen}`} value={`main-gen-${gen}`}>{gen}</option>
+                                                            ))}
+                                                        </optgroup>
+                                                    )}
+                                                    {sisterGroupDetails.map(sg => (
+                                                        sg.generations.length > 0 && (
+                                                            <optgroup key={`grad-sg-gen-group-${sg.id}`} label={`${sg.name} Generations`}>
+                                                                {sg.generations.map(gen => (
+                                                                    <option key={`grad-sg-${sg.id}-gen-${gen}`} value={`sg-${sg.id}-gen-${gen}`}>{gen}</option>
+                                                                ))}
+                                                            </optgroup>
+                                                        )
+                                                    ))}
+                                                </select>
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-[11px] font-bold text-rose-700 dark:text-rose-300 mb-0.5">Search Idol</label>
+                                                <input
+                                                    type="text"
+                                                    placeholder="Type idol name..."
+                                                    value={gradSearchFilter}
+                                                    onChange={e => setGradSearchFilter(e.target.value)}
+                                                    className="w-full p-1.5 text-xs rounded-lg border-rose-300 bg-white dark:bg-slate-800 dark:border-rose-700 dark:text-gray-200 shadow-sm"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center justify-between gap-2 mb-2">
+                                            <button
+                                                type="button"
+                                                onClick={handleToggleSelectAllGrad}
+                                                className="px-2.5 py-1 text-xs font-bold rounded-lg transition-colors bg-rose-500 hover:bg-rose-600 text-white shadow-sm"
+                                            >
+                                                {allVisibleSelected ? 'Deselect All Filtered' : 'Select All Filtered'} ({visibleGraduationRoster.length})
+                                            </button>
+
+                                            <button
+                                                type="button"
+                                                onClick={() => setGraduatingMemberIds([])}
+                                                className="px-2 py-1 text-xs font-semibold bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-lg transition-colors"
+                                            >
+                                                Clear All Selection
+                                            </button>
+                                        </div>
+
+                                        <div className="max-h-48 overflow-y-auto space-y-1 pr-1 border rounded-lg p-2 bg-white/70 dark:bg-slate-900/50">
+                                            {visibleGraduationRoster.length === 0 ? (
+                                                <p className="text-xs text-gray-500 italic p-2 text-center">No idols match the current filter.</p>
+                                            ) : (
+                                                visibleGraduationRoster.map(m => {
+                                                    const mId = String(m.rosterId || m.id);
+                                                    const isSelected = graduatingMemberIds.includes(mId);
+                                                    return (
+                                                        <label key={mId} className="flex items-center justify-between text-xs p-1.5 rounded hover:bg-rose-50 dark:hover:bg-rose-950/30 cursor-pointer">
+                                                            <span className="flex items-center gap-2">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    checked={isSelected}
+                                                                    onChange={(e) => {
+                                                                        if (e.target.checked) {
+                                                                            setGraduatingMemberIds(prev => [...prev, mId]);
+                                                                        } else {
+                                                                            setGraduatingMemberIds(prev => prev.filter(id => id !== mId));
+                                                                        }
+                                                                    }}
+                                                                    className="rounded text-rose-600 focus:ring-rose-500"
+                                                                />
+                                                                <span className="font-semibold text-gray-800 dark:text-gray-200">{m.name}</span>
+                                                                <span className="text-[10px] text-gray-500">({m.displayGroupName || groupName} • {m.teamName || 'Kenkyuusei'} • {m.generation || 'Gen 1'})</span>
+                                                            </span>
+                                                            {isSelected && <span className="text-[10px] font-bold text-rose-600 bg-rose-100 px-1.5 py-0.5 rounded">🎓 GRADUATING</span>}
+                                                        </label>
+                                                    );
+                                                })
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })()}
 
                             <div>
 
