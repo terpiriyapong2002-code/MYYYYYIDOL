@@ -54,6 +54,10 @@ const applyMemberFilter = (member, filterKey, teams = [], sisterGroups = [], pus
         return pushedMembers.map(String).includes(String(member.rosterId || member.id));
     }
 
+    if (filterKey === 'trainee' || filterKey === 'trainees') {
+        return !!member.isTrainee || member.position === 'trainee' || member.homeGroup === 'Trainees (Kenkyuusei)';
+    }
+
     if (filterKey.startsWith('team-')) {
         const teamId = parseInt(filterKey.replace('team-', ''), 10);
         const team = teams.find(t => t.id === teamId);
@@ -118,7 +122,7 @@ const App = () => {
         // Utilities
         startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
         // Logic
-        holdTitleTrackPerformance, holdUnitPerformance, unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, getUnderMembersPool, startUnderTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, executeFanEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek: nextWeekHook, confirmExchangeStudent, confirmCreateSisterGroup, promoteSubgroupMember, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining, inflationConfig, outstandingLoan, takeLoan, repayLoanIfPossible,
+        holdTitleTrackPerformance, holdUnitPerformance, unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, getUnderMembersPool, startUnderTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, executeFanEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek: nextWeekHook, confirmExchangeStudent, confirmCreateSisterGroup, promoteSubgroupMember, promoteTrainee, promoteMultipleTrainees, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining, inflationConfig, outstandingLoan, takeLoan, repayLoanIfPossible,
 
 
     } = useIdolManager();
@@ -1182,6 +1186,316 @@ const App = () => {
         );
     };
 
+    const PromoteTraineeModal = ({ member, groupName, sisterGroups, teams, promoteTrainee, setShowModal }) => {
+        const [targetGroupId, setTargetGroupId] = useState('main');
+        const [targetTeamId, setTargetTeamId] = useState('');
+
+        if (!member) return null;
+
+        const isMain = targetGroupId === 'main';
+        const availableTeams = isMain
+            ? teams
+            : (teams || []).filter(t => String(t.groupId) === String(targetGroupId));
+
+        const handleConfirm = () => {
+            promoteTrainee(member.id, targetGroupId, targetTeamId || null);
+            setShowModal(null);
+        };
+
+        return (
+            <ModalWrapper title={`Promote Trainee: ${member.name}`} maxWidth="max-w-md">
+                <div className="space-y-4">
+                    <div className="p-3 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950/40 dark:to-yellow-950/40 border border-amber-200 dark:border-amber-800 rounded-lg text-sm">
+                        <p className="text-amber-900 dark:text-amber-200">
+                            Promoting <strong>{member.name}</strong> will grant them official member status, boost morale (+20), recover stamina (+10), increase fans (+1,000), and unlock team assignment, transfers, and kennin!
+                        </p>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-semibold mb-1 dark:text-gray-200">Promote to Group</label>
+                        <select
+                            value={targetGroupId}
+                            onChange={(e) => {
+                                setTargetGroupId(e.target.value);
+                                setTargetTeamId('');
+                            }}
+                            className="w-full p-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200"
+                        >
+                            <option value="main">{groupName} (Main Group)</option>
+                            {(sisterGroups || []).filter(sg => !sg.isDisbanded).map(sg => (
+                                <option key={sg.id} value={sg.id}>{sg.name}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-semibold mb-1 dark:text-gray-200">Assign to Team (Optional)</label>
+                        <select
+                            value={targetTeamId}
+                            onChange={(e) => setTargetTeamId(e.target.value)}
+                            className="w-full p-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200"
+                        >
+                            <option value="">No Team (Under Member)</option>
+                            {(availableTeams || []).map(team => (
+                                <option key={team.id} value={team.id}>Team {team.name}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="flex justify-end gap-2 pt-3 border-t dark:border-gray-700">
+                        <button
+                            onClick={() => setShowModal(null)}
+                            className="px-4 py-2 text-sm bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            onClick={handleConfirm}
+                            className="px-4 py-2 text-sm font-bold bg-amber-500 hover:bg-amber-600 text-white rounded-lg shadow flex items-center gap-1"
+                        >
+                            <Sparkles size={16} /> Confirm Promotion
+                        </button>
+                    </div>
+                </div>
+            </ModalWrapper>
+        );
+    };
+
+    const PromotionCenterModal = () => {
+        const [targetGroupId, setTargetGroupId] = useState('main');
+        const [targetTeamId, setTargetTeamId] = useState('');
+        const [sourceGroupFilter, setSourceGroupFilter] = useState('all');
+        const [searchQuery, setSearchQuery] = useState('');
+        const [selectedMemberIds, setSelectedMemberIds] = useState([]);
+
+        const allAvailable = getAllAvailableMembers(true);
+        const allTrainees = allAvailable.filter(m => m.isTrainee || m.position === 'trainee' || m.homeGroup === 'Trainees (Kenkyuusei)');
+
+        const filteredTrainees = allTrainees.filter(member => {
+            if (sourceGroupFilter !== 'all') {
+                if (sourceGroupFilter === 'main' && member.isSisterMember) return false;
+                if (sourceGroupFilter.startsWith('sg-')) {
+                    const sgId = sourceGroupFilter.replace('sg-', '');
+                    if (String(member.groupId) !== String(sgId) && member.homeGroup !== sisterGroups.find(g => String(g.id) === String(sgId))?.name) return false;
+                }
+            }
+            if (searchQuery.trim()) {
+                return member.name.toLowerCase().includes(searchQuery.toLowerCase());
+            }
+            return true;
+        });
+
+        const isMainTarget = targetGroupId === 'main';
+        const targetGroupObj = isMainTarget ? null : sisterGroups.find(g => String(g.id) === String(targetGroupId));
+        const targetGroupName = isMainTarget ? groupName : (targetGroupObj ? targetGroupObj.name : 'Selected Group');
+
+        const availableTeamsForTargetGroup = teams.filter(t => {
+            if (isMainTarget) return !t.groupId || String(t.groupId) === 'main';
+            return String(t.groupId) === String(targetGroupId);
+        });
+
+        const targetTeamObj = availableTeamsForTargetGroup.find(t => String(t.id) === String(targetTeamId));
+        const targetTeamName = targetTeamObj ? targetTeamObj.name : null;
+
+        const membersInTargetGroup = allAvailable.filter(m => {
+            if (isMainTarget) return !m.isSisterMember || m.homeGroup === groupName;
+            return String(m.groupId) === String(targetGroupId) || m.homeGroup === targetGroupName;
+        });
+
+        const regularCountInTargetGroup = membersInTargetGroup.filter(m => !m.isTrainee).length;
+        const traineeCountInTargetGroup = membersInTargetGroup.filter(m => m.isTrainee).length;
+
+        let membersInTargetTeamCount = 0;
+        if (targetTeamObj) {
+            membersInTargetTeamCount = (targetTeamObj.members || []).length;
+        }
+
+        const handleToggleSelect = (id) => {
+            const strId = String(id);
+            setSelectedMemberIds(prev =>
+                prev.includes(strId) ? prev.filter(i => i !== strId) : [...prev, strId]
+            );
+        };
+
+        const handleSelectAll = () => {
+            setSelectedMemberIds(filteredTrainees.map(m => String(m.rosterId || m.id)));
+        };
+
+        const handleDeselectAll = () => {
+            setSelectedMemberIds([]);
+        };
+
+        const handleConfirmBulkPromotion = () => {
+            if (selectedMemberIds.length === 0) return;
+            promoteMultipleTrainees(selectedMemberIds, targetGroupId, targetTeamId || null);
+            setShowModal(null);
+        };
+
+        return (
+            <ModalWrapper title="🌟 Trainee Promotion Center" maxWidth="max-w-4xl">
+                <div className="space-y-4 text-gray-800 dark:text-gray-200">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                        Batch promote trainees into official groups and teams. Select your destination group and team below, then choose the trainees you wish to promote.
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gradient-to-r from-amber-50 to-pink-50 dark:from-slate-800 dark:to-slate-900 p-4 rounded-xl border border-amber-200 dark:border-amber-800/40">
+                        <div>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-300 mb-1">
+                                Destination Group
+                            </label>
+                            <select
+                                value={targetGroupId}
+                                onChange={(e) => {
+                                    setTargetGroupId(e.target.value);
+                                    setTargetTeamId('');
+                                }}
+                                className="w-full p-2 text-sm border rounded-lg bg-white dark:bg-gray-800 dark:border-gray-600 font-semibold"
+                            >
+                                <option value="main">⭐ {groupName} (Main Group)</option>
+                                {sisterGroups.filter(sg => !sg.isDisbanded).map(sg => (
+                                    <option key={sg.id} value={sg.id}>🌸 {sg.name} ({sg.location})</option>
+                                ))}
+                            </select>
+                            <div className="mt-2 text-xs flex gap-3 text-gray-600 dark:text-gray-400">
+                                <span>Group Regulars: <strong className="text-green-600 dark:text-green-400">{regularCountInTargetGroup}</strong></span>
+                                <span>Group Trainees: <strong className="text-amber-600 dark:text-amber-400">{traineeCountInTargetGroup}</strong></span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-300 mb-1">
+                                Destination Team
+                            </label>
+                            <select
+                                value={targetTeamId}
+                                onChange={(e) => setTargetTeamId(e.target.value)}
+                                className="w-full p-2 text-sm border rounded-lg bg-white dark:bg-gray-800 dark:border-gray-600 font-semibold"
+                            >
+                                <option value="">-- No Specific Team (Under Member) --</option>
+                                {availableTeamsForTargetGroup.map(team => (
+                                    <option key={team.id} value={team.id}>Team {team.name} ({(team.members || []).length} members)</option>
+                                ))}
+                            </select>
+                            {targetTeamObj && (
+                                <div className="mt-2 text-xs text-gray-600 dark:text-gray-400">
+                                    Current Roster in Team {targetTeamName}: <strong className="text-blue-600 dark:text-blue-400">{membersInTargetTeamCount} members</strong>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-2 pt-2 border-t dark:border-gray-700">
+                        <div className="flex items-center gap-2 w-full md:w-auto">
+                            <input
+                                type="text"
+                                placeholder="Search trainee..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="p-2 border rounded-lg text-sm bg-white dark:bg-gray-800 dark:border-gray-600 w-full md:w-48"
+                            />
+                            <select
+                                value={sourceGroupFilter}
+                                onChange={(e) => setSourceGroupFilter(e.target.value)}
+                                className="p-2 border rounded-lg text-sm bg-white dark:bg-gray-800 dark:border-gray-600"
+                            >
+                                <option value="all">All Source Groups</option>
+                                <option value="main">Main Group Trainees</option>
+                                {sisterGroups.filter(sg => !sg.isDisbanded).map(sg => (
+                                    <option key={sg.id} value={`sg-${sg.id}`}>{sg.name} Trainees</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="flex gap-2 text-xs w-full md:w-auto justify-end">
+                            <button onClick={handleSelectAll} className="px-3 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded font-semibold hover:bg-blue-200">
+                                Select All ({filteredTrainees.length})
+                            </button>
+                            <button onClick={handleDeselectAll} className="px-3 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded font-semibold hover:bg-gray-300">
+                                Deselect All
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="max-h-72 overflow-y-auto border rounded-xl dark:border-gray-700 shadow-inner bg-white dark:bg-gray-800">
+                        <table className="w-full text-xs text-left">
+                            <thead className="sticky top-0 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-bold border-b dark:border-gray-600">
+                                <tr>
+                                    <th className="p-2.5 w-10 text-center">Select</th>
+                                    <th className="p-2.5">Name</th>
+                                    <th className="p-2.5">Current Group</th>
+                                    <th className="p-2.5">Vocal</th>
+                                    <th className="p-2.5">Dance</th>
+                                    <th className="p-2.5">Visual</th>
+                                    <th className="p-2.5">Fans</th>
+                                    <th className="p-2.5">Morale</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y dark:divide-gray-700">
+                                {filteredTrainees.map(member => {
+                                    const idKey = String(member.rosterId || member.id);
+                                    const isSelected = selectedMemberIds.includes(idKey);
+                                    return (
+                                        <tr
+                                            key={idKey}
+                                            onClick={() => handleToggleSelect(idKey)}
+                                            className={`cursor-pointer transition-colors ${isSelected ? 'bg-amber-100/70 dark:bg-amber-900/40 font-semibold' : 'hover:bg-gray-50 dark:hover:bg-gray-750'}`}
+                                        >
+                                            <td className="p-2.5 text-center" onClick={(e) => e.stopPropagation()}>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={isSelected}
+                                                    onChange={() => handleToggleSelect(idKey)}
+                                                    className="w-4 h-4 rounded text-amber-500 focus:ring-amber-400"
+                                                />
+                                            </td>
+                                            <td className="p-2.5 flex items-center gap-1.5">
+                                                <span className="font-bold">{member.name}</span>
+                                                <span className="text-[10px] px-1.5 py-0.5 bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-300 rounded font-semibold">Trainee</span>
+                                            </td>
+                                            <td className="p-2.5 text-gray-600 dark:text-gray-400">{getMemberGroupStatus(member)}</td>
+                                            <td className="p-2.5">{Math.round(member.vocal || member.singing || 0)}</td>
+                                            <td className="p-2.5">{Math.round(member.dance || member.dancing || 0)}</td>
+                                            <td className="p-2.5">{Math.round(member.visual || 0)}</td>
+                                            <td className="p-2.5 text-blue-600 dark:text-blue-400">{((member.fans?.hardcore || 0) + (member.fans?.casual || 0)).toLocaleString()}</td>
+                                            <td className="p-2.5">{member.morale || 80}%</td>
+                                        </tr>
+                                    );
+                                })}
+                                {filteredTrainees.length === 0 && (
+                                    <tr>
+                                        <td colSpan={8} className="p-8 text-center text-gray-500 dark:text-gray-400 italic">
+                                            No eligible trainees found.
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div className="flex justify-between items-center pt-3 border-t dark:border-gray-700">
+                        <div className="text-sm font-bold">
+                            Selected: <span className="text-amber-600 dark:text-amber-400">{selectedMemberIds.length} Trainees</span>
+                        </div>
+                        <div className="flex gap-2">
+                            <button
+                                onClick={() => setShowModal(null)}
+                                className="px-4 py-2 text-sm bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleConfirmBulkPromotion}
+                                disabled={selectedMemberIds.length === 0}
+                                className="px-5 py-2 text-sm font-bold bg-gradient-to-r from-amber-500 to-pink-500 hover:from-amber-600 hover:to-pink-600 text-white rounded-lg shadow-lg flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                <Sparkles size={16} /> Promote {selectedMemberIds.length} Trainee(s) to {targetGroupName}{targetTeamName ? ` (${targetTeamName})` : ''}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </ModalWrapper>
+        );
+    };
+
 
     const ElectionSummaryModal = ({ modalData, onHide, getMemberGroupStatus, groupName, sisterGroups }) => {
         const { participating, nonParticipating, onConfirm } = modalData;
@@ -1713,20 +2027,20 @@ const App = () => {
             return (
                 <span className="inline-flex items-center gap-0.5 ml-1.5" style={{ userSelect: 'none' }}>
                     {won && (
-                        <span 
-                            title="General Election Winner 👑" 
+                        <span
+                            title="General Election Winner 👑"
                             className="inline-block hover:scale-110 transition-transform cursor-help"
-                            role="img" 
+                            role="img"
                             aria-label="Election Winner"
                         >
                             👑
                         </span>
                     )}
                     {center && (
-                        <span 
-                            title="Title Track Center 🌟" 
+                        <span
+                            title="Title Track Center 🌟"
                             className="inline-block hover:scale-110 transition-transform cursor-help"
-                            role="img" 
+                            role="img"
                             aria-label="Title Track Center"
                         >
                             🌟
@@ -6491,7 +6805,7 @@ const App = () => {
 
     const TheaterScheduleModal = () => {
         const [localSchedule, setLocalSchedule] = useState(JSON.parse(JSON.stringify(theaterSchedule)));
-        
+
         const updateSchedule = (day, slot, value) => {
             setLocalSchedule(prev => {
                 const newSchedule = { ...prev };
@@ -6515,7 +6829,7 @@ const App = () => {
                 cleanedSchedule[d].matinee = cleanArray(cleanedSchedule[d].matinee);
                 cleanedSchedule[d].evening = cleanArray(cleanedSchedule[d].evening);
             });
-            
+
             setTheaterSchedule(cleanedSchedule);
             setShowModal(null);
             addNotification({ type: 'Event', message: 'Weekly Theater Schedule updated and saved!' });
@@ -6523,18 +6837,18 @@ const App = () => {
 
         const handleAutoAssign = () => {
             const performingEntities = [];
-            
+
             // Collect all teams
             (teams || []).forEach(t => {
                 performingEntities.push({ type: 'team', entityId: String(t.id) });
             });
-            
+
             // Collect main group trainees if there are any
             const mainTrainees = (members || []).filter(m => m.status === 'Trainee');
             if (mainTrainees.length > 0) {
                 performingEntities.push({ type: 'trainee', entityId: 'main' });
             }
-            
+
             // Collect sister group trainees if there are any
             (sisterGroups || []).forEach(sg => {
                 const sgTrainees = (sg.members || []).filter(m => m.status === 'Trainee');
@@ -6542,14 +6856,14 @@ const App = () => {
                     performingEntities.push({ type: 'trainee', entityId: String(sg.id) });
                 }
             });
-            
+
             if (performingEntities.length === 0) {
                 alert("No teams or trainee groups available to perform!");
                 return;
             }
-            
+
             let newSchedule = JSON.parse(JSON.stringify(localSchedule));
-            
+
             // Check if schedule is currently empty
             let hasSlots = false;
             ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].forEach(day => {
@@ -6558,7 +6872,7 @@ const App = () => {
             ['saturday', 'sunday'].forEach(day => {
                 if (newSchedule[day]?.matinee?.length > 0 || newSchedule[day]?.evening?.length > 0) hasSlots = true;
             });
-            
+
             // If empty, initialize a default weekly structure
             if (!hasSlots) {
                 ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].forEach(day => {
@@ -6571,7 +6885,7 @@ const App = () => {
                     };
                 });
             }
-            
+
             // Flatten slots to easily distribute teams
             const slotsToFill = [];
             ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].forEach(day => {
@@ -6589,14 +6903,14 @@ const App = () => {
                     });
                 }
             });
-            
+
             // Shuffle performing entities
             const shuffled = [...performingEntities];
             for (let i = shuffled.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
             }
-            
+
             // Fill slots sequentially (cycling through entities) to guarantee balanced schedules
             slotsToFill.forEach((slot, idx) => {
                 const entity = shuffled[idx % shuffled.length];
@@ -6606,7 +6920,7 @@ const App = () => {
                     newSchedule[slot.day][slot.index] = { ...entity };
                 }
             });
-            
+
             setLocalSchedule(newSchedule);
         };
 
@@ -6646,7 +6960,7 @@ const App = () => {
                             </optgroup>
                         ))}
                     </select>
-                    {strVal && <button onClick={() => onChange([])} className="text-red-500 hover:text-red-700 ml-1" title="Remove Show"><Trash2 size={16}/></button>}
+                    {strVal && <button onClick={() => onChange([])} className="text-red-500 hover:text-red-700 ml-1" title="Remove Show"><Trash2 size={16} /></button>}
                 </div>
             );
         };
@@ -6689,7 +7003,7 @@ const App = () => {
                             </div>
                         </div>
                     ))}
-                    
+
                     {['saturday', 'sunday'].map(day => (
                         <div key={day} className="flex flex-col gap-2 bg-pink-50 dark:bg-gray-800 p-2 rounded border border-pink-200 dark:border-gray-700">
                             <span className="font-bold text-pink-700 dark:text-pink-400 capitalize">{day}</span>
@@ -8948,7 +9262,7 @@ const App = () => {
                             let statusText = "Fresh & Active";
                             let statusColor = "text-green-500";
                             let statusBg = "bg-green-50 dark:bg-gray-900 border-green-200";
-                            
+
                             if (weeksActive === 1) {
                                 statusText = "Shonichi (Opening Day Hype! +80% Attendance/Fans)";
                                 statusColor = "text-green-600 font-extrabold animate-pulse dark:text-green-400";
@@ -13208,7 +13522,16 @@ const App = () => {
                             <input type="radio" name="type" value="subgroup" checked={groupData.type === 'subgroup'} onChange={handleChange} className="mr-2" />
                             Sub-group (¥100,000)
                         </label>
+                        <label className="flex items-center">
+                            <input type="radio" name="type" value="trainee" checked={groupData.type === 'trainee'} onChange={handleChange} className="mr-2" />
+                            🌱 Trainee Group (¥100,000)
+                        </label>
                     </div>
+                    {groupData.type === 'trainee' && (
+                        <p className="text-xs text-amber-600 dark:text-amber-400 mt-2 bg-amber-50 dark:bg-amber-950/30 p-2 rounded border border-amber-200 dark:border-amber-800">
+                            A Trainee (Kenkyuusei) group for new recruits. Trainees participate in SSK and shuffles within their own group, but cannot be transferred or given kennin until promoted.
+                        </p>
+                    )}
                 </div>
 
                 {/* Parent Group (Sub-group only) */}
@@ -14955,6 +15278,9 @@ const App = () => {
                                     <button onClick={() => setShowModal('holdAudition')} className="w-full px-3 py-1.5 text-sm bg-green-600 text-white rounded font-semibold">
                                         <Plus size={16} className='inline mr-1' /> Hold Audition
                                     </button>
+                                    <button onClick={() => setShowModal('promotionCenter')} className="w-full px-3 py-1.5 text-sm bg-gradient-to-r from-amber-500 to-pink-500 text-white rounded font-semibold mt-1.5 flex items-center justify-center gap-1 shadow-md hover:from-amber-600 hover:to-pink-600">
+                                        <Sparkles size={16} className='inline mr-1' /> Trainee Promotion Center (Batch Promote)
+                                    </button>
                                     <button onClick={startDraftKaigi} className="w-full px-3 py-1.5 text-sm bg-blue-600 text-white rounded font-semibold mt-1.5">
                                         <Users size={16} className='inline mr-1' /> Host Draft Kaigi (¥200k)
                                     </button>
@@ -15095,7 +15421,7 @@ const App = () => {
                                 <h3 className="text-base font-bold mb-2 flex items-center text-indigo-600 dark:text-indigo-400">
                                     <Music size={18} className="mr-2" /> Under Lives & Under Members
                                 </h3>
-                                
+
                                 <div className="flex flex-col gap-2.5">
                                     <div className="flex flex-col gap-1">
                                         <label className="text-xs font-semibold text-gray-500 dark:text-gray-400">Select Group:</label>
@@ -15114,7 +15440,7 @@ const App = () => {
                                     {(() => {
                                         const pool = getUnderMembersPool(selectedUnderTourGroup);
                                         const availablePool = pool.filter(m => m.isAvailable && !m.graduated);
-                                        
+
                                         return (
                                             <>
                                                 <div className="p-2.5 rounded-lg bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-100/50 dark:border-indigo-900/30 flex justify-between items-center">
@@ -15189,8 +15515,8 @@ const App = () => {
                                                                 {availablePool.length < 3
                                                                     ? `Need 3 Under Members (Have ${availablePool.length})`
                                                                     : money < 15000
-                                                                    ? `Insufficient Funds (¥15,000 required)`
-                                                                    : `Start Under Live Tour (¥15k)`}
+                                                                        ? `Insufficient Funds (¥15,000 required)`
+                                                                        : `Start Under Live Tour (¥15k)`}
                                                             </button>
                                                         </div>
                                                     )}
@@ -15269,11 +15595,11 @@ const App = () => {
                                 <div className="grid grid-cols-1 gap-1.5 max-h-40 overflow-y-auto mb-1.5">
                                     {(teams || []).slice().sort((a, b) => {
                                         // 1. Get the actual group name for each team
-                                        const aGroupName = (!a.groupId || a.groupId === 'main') 
-                                            ? groupName 
+                                        const aGroupName = (!a.groupId || a.groupId === 'main')
+                                            ? groupName
                                             : (sisterGroups.find(sg => String(sg.id) === String(a.groupId))?.name || 'Unknown');
-                                        const bGroupName = (!b.groupId || b.groupId === 'main') 
-                                            ? groupName 
+                                        const bGroupName = (!b.groupId || b.groupId === 'main')
+                                            ? groupName
                                             : (sisterGroups.find(sg => String(sg.id) === String(b.groupId))?.name || 'Unknown');
 
                                         // 2. Put main group first
@@ -15297,8 +15623,8 @@ const App = () => {
                                                 <div className="flex items-center gap-2">
                                                     <h4 className="font-semibold text-sm">{team.name} ({team.members.length} members)</h4>
                                                     <span className="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase bg-pink-100 text-pink-800 dark:bg-pink-950/40 dark:text-pink-300">
-                                                        {(!team.groupId || team.groupId === 'main') 
-                                                            ? groupName 
+                                                        {(!team.groupId || team.groupId === 'main')
+                                                            ? groupName
                                                             : (sisterGroups.find(sg => String(sg.id) === String(team.groupId))?.name || 'Sister Group')}
                                                     </span>
                                                 </div>
@@ -15425,16 +15751,14 @@ const App = () => {
                                         };
 
                                         return (
-                                            <div key={sg.id} className={`p-1.5 border rounded flex justify-between items-center ${
-                                                isUnit ? 'bg-purple-50 dark:bg-purple-900/40' : 
-                                                isSubgroup ? 'bg-indigo-50/50 dark:bg-indigo-950/20 border-indigo-200 dark:border-indigo-900/50' : 
-                                                'bg-gray-50 dark:bg-gray-700'
-                                            }`}>
+                                            <div key={sg.id} className={`p-1.5 border rounded flex justify-between items-center ${isUnit ? 'bg-purple-50 dark:bg-purple-900/40' :
+                                                    isSubgroup ? 'bg-indigo-50/50 dark:bg-indigo-950/20 border-indigo-200 dark:border-indigo-900/50' :
+                                                        'bg-gray-50 dark:bg-gray-700'
+                                                }`}>
                                                 <div>
-                                                    <span className={`font-semibold text-sm ${
-                                                        isUnit ? 'text-purple-600 dark:text-purple-300' : 
-                                                        isSubgroup ? 'text-indigo-600 dark:text-indigo-300' : ''
-                                                    }`}>{sg.name}</span>
+                                                    <span className={`font-semibold text-sm ${isUnit ? 'text-purple-600 dark:text-purple-300' :
+                                                            isSubgroup ? 'text-indigo-600 dark:text-indigo-300' : ''
+                                                        }`}>{sg.name}</span>
                                                     <p className="text-xs text-gray-500 dark:text-gray-400 flex items-center">
                                                         {isUnit ? <Sparkles size={12} className='mr-1 text-purple-400' /> : <MapPin size={12} className='mr-1' />}
                                                         {isUnit ? `Special Unit | ${(sg.members || []).length} Members` : `${sg.location} | ${(sg.members || []).length} Members | ${getGroupTypeLabel(sg)}`}
@@ -15463,6 +15787,9 @@ const App = () => {
                                     </button>
                                     <button onClick={() => setShowModal('createSisterGroup')} className="flex-1 p-1.5 text-sm bg-red-500 text-white rounded font-semibold">
                                         Establish Group
+                                    </button>
+                                    <button onClick={() => setShowModal('promotionCenter')} className="flex-1 p-1.5 text-sm bg-gradient-to-r from-amber-500 to-pink-500 text-white rounded font-semibold flex items-center justify-center gap-1">
+                                        <Sparkles size={14} /> Promote Trainees
                                     </button>
                                 </div>
                             </div>
@@ -15616,21 +15943,18 @@ const App = () => {
                                 </div>
 
                                 {/* Outstanding Loan Status */}
-                                <div className={`mb-3 p-2 rounded-lg border ${
-                                    outstandingLoan > 0
+                                <div className={`mb-3 p-2 rounded-lg border ${outstandingLoan > 0
                                         ? 'bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800/50'
                                         : 'bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800/50'
-                                }`}>
+                                    }`}>
                                     <div className="flex justify-between items-center">
                                         <div>
-                                            <h4 className={`text-xs font-bold uppercase tracking-wider ${
-                                                outstandingLoan > 0 ? 'text-red-700 dark:text-red-400' : 'text-green-700 dark:text-green-400'
-                                            }`}>
+                                            <h4 className={`text-xs font-bold uppercase tracking-wider ${outstandingLoan > 0 ? 'text-red-700 dark:text-red-400' : 'text-green-700 dark:text-green-400'
+                                                }`}>
                                                 {outstandingLoan > 0 ? '⚠ Outstanding Debt' : '✓ No Outstanding Debt'}
                                             </h4>
-                                            <p className={`text-lg font-extrabold mt-0.5 ${
-                                                outstandingLoan > 0 ? 'text-red-800 dark:text-red-300' : 'text-green-800 dark:text-green-300'
-                                            }`}>
+                                            <p className={`text-lg font-extrabold mt-0.5 ${outstandingLoan > 0 ? 'text-red-800 dark:text-red-300' : 'text-green-800 dark:text-green-300'
+                                                }`}>
                                                 ¥{outstandingLoan.toLocaleString()}
                                             </p>
                                         </div>
@@ -15659,11 +15983,10 @@ const App = () => {
                                                 <button
                                                     key={amount}
                                                     onClick={() => setLoanInputAmount(amount)}
-                                                    className={`px-2 py-1 text-xs rounded font-semibold transition ${
-                                                        loanInputAmount === amount
+                                                    className={`px-2 py-1 text-xs rounded font-semibold transition ${loanInputAmount === amount
                                                             ? 'bg-blue-600 text-white'
                                                             : 'bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/50 dark:text-blue-300 dark:hover:bg-blue-800/50'
-                                                    }`}
+                                                        }`}
                                                 >
                                                     ¥{(amount / 10000).toLocaleString()}万
                                                 </button>
@@ -17233,6 +17556,15 @@ const App = () => {
                         })()}
 
 
+                        {selectedMember.isTrainee && (
+                            <button
+                                onClick={() => { setModalData(selectedMember); setShowModal("promoteTrainee"); }}
+                                className="w-full mb-3 py-2.5 px-4 bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 hover:from-amber-600 hover:to-yellow-600 text-white font-bold text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2 border border-yellow-300"
+                            >
+                                <Sparkles size={18} /> Promote Trainee to Official Group
+                            </button>
+                        )}
+
                         <div className="grid grid-cols-2 gap-2 mb-4">
                             <button
                                 onClick={() => { setModalData(selectedMember); setShowModal("rename"); }}
@@ -17497,6 +17829,8 @@ const App = () => {
             {showModal === 'trainingCamp' && <TrainingCampModal />}
             {showModal === 'createSisterGroup' && <CreateSisterGroupModal currentGroups={[{ name: groupName, id: 'main' }, ...sisterGroups]} onConfirm={confirmCreateSisterGroup} />}
             {showModal === 'promoteSubgroupMember' && <PromoteSubgroupMemberModal />}
+            {showModal === 'promoteTrainee' && modalData && <PromoteTraineeModal member={modalData} groupName={groupName} sisterGroups={sisterGroups} teams={teams} promoteTrainee={promoteTrainee} setShowModal={setShowModal} />}
+            {showModal === 'promotionCenter' && <PromotionCenterModal />}
             {showModal === 'createUnit' && <FormUnitModal />}
             {showModal === 'customSetlist' && <CustomSetlistModal />}
             {showModal === 'setlistDetails' && modalData && <SetlistDetailsModal setlist={modalData} allTheaterSongs={theaterSongs} getFormattedDateForWeek={getFormattedDateForWeek} />}

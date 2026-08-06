@@ -15456,7 +15456,9 @@ export const useIdolManager = () => {
                 fans: { hardcore: 0, casual: 0 },
                 potential: c.potential,
                 personality: c.personality,
-                position: 'under',
+                position: 'trainee',
+                isTrainee: true,
+                joinedAsTraineeWeek: week,
                 birthday: Math.floor(Math.random() * 52) + 1,
                 equippedOutfit: null,
                 scandals: 0,
@@ -15500,12 +15502,161 @@ export const useIdolManager = () => {
             ? groupName
             : (sisterGroups.find(g => g.id === targetGroupId)?.name || 'the group');
 
-        const successMessage = `Successfully recruited ${newMembers.length} new member(s) to the ${generationName} of ${groupForMessage}!`;
+        const successMessage = `Successfully recruited ${newMembers.length} new member(s) to the ${generationName} of ${groupForMessage} (Trainee Status)!`;
         setMessage(successMessage);
         addNotification({ type: 'Recruitment', message: successMessage });
 
         setShowModal(null);
         setAuditionCandidates([]);
+    };
+
+    const promoteTrainee = (memberId, targetGroupId, targetTeamId = null) => {
+        promoteMultipleTrainees([memberId], targetGroupId, targetTeamId);
+    };
+
+    const promoteMultipleTrainees = (memberIds, targetGroupId, targetTeamId = null) => {
+        if (!memberIds || memberIds.length === 0) return;
+
+        const isMainGroup = targetGroupId === 'main';
+        const targetGroupObj = isMainGroup ? null : sisterGroups.find(sg => String(sg.id) === String(targetGroupId) || sg.name === targetGroupId);
+        const targetGroupName = isMainGroup ? groupName : (targetGroupObj ? targetGroupObj.name : targetGroupId);
+
+        let targetTeamName = null;
+        if (targetTeamId) {
+            const teamObj = teams.find(t => String(t.id) === String(targetTeamId));
+            if (teamObj) targetTeamName = teamObj.name;
+        }
+
+        const idsToPromote = memberIds.map(id => String(id));
+        const promotedNames = [];
+        const idsToRemoveFromTeams = new Set();
+        const idsToAddToTargetTeam = [];
+
+        const processMemberPromotion = (targetMember, location, sgIdx = -1) => {
+            const oldId = String(targetMember.id);
+            const oldRosterId = targetMember.rosterId ? String(targetMember.rosterId) : null;
+            idsToRemoveFromTeams.add(oldId);
+            if (oldRosterId) idsToRemoveFromTeams.add(oldRosterId);
+            if (sgIdx !== -1 && sisterGroups[sgIdx]) {
+                idsToRemoveFromTeams.add(`sg-${sisterGroups[sgIdx].id}-${oldId}`);
+            }
+
+            promotedNames.push(targetMember.name);
+
+            const promotionEvent = {
+                week: week,
+                event: `🌟 Promoted to official member of ${targetGroupName}${targetTeamName ? ' (Team ' + targetTeamName + ')' : ''}!`
+            };
+
+            const updatedMember = {
+                ...targetMember,
+                isTrainee: false,
+                position: 'regular',
+                homeGroup: targetGroupName,
+                originalHomeGroup: targetMember.originalHomeGroup || targetMember.homeGroup,
+                teamId: targetTeamId || null,
+                teamName: targetTeamName || null,
+                promotedWeek: week,
+                morale: Math.min(100, (targetMember.morale || 80) + 20),
+                stamina: Math.min(100, (targetMember.stamina || 80) + 10),
+                fans: {
+                    hardcore: (targetMember.fans?.hardcore || 0) + 300,
+                    casual: (targetMember.fans?.casual || 0) + 700
+                },
+                teamHistory: [...(targetMember.teamHistory || []), promotionEvent]
+            };
+
+            if (targetTeamId) {
+                if (isMainGroup) {
+                    idsToAddToTargetTeam.push(String(updatedMember.id));
+                } else {
+                    const sgId = targetGroupObj ? targetGroupObj.id : targetGroupId;
+                    idsToAddToTargetTeam.push(`sg-${sgId}-${updatedMember.id}`);
+                }
+            }
+
+            return updatedMember;
+        };
+
+        let newMembers = [...members];
+        let newSisterGroups = [...sisterGroups];
+
+        idsToPromote.forEach(mId => {
+            let memberIdx = newMembers.findIndex(m => String(m.id) === mId || String(m.rosterId) === mId);
+            if (memberIdx !== -1) {
+                const targetMember = newMembers[memberIdx];
+                if (!targetMember.isTrainee) return;
+                const updated = processMemberPromotion(targetMember, 'main');
+                if (isMainGroup) {
+                    newMembers[memberIdx] = updated;
+                } else {
+                    newMembers.splice(memberIdx, 1);
+                    newSisterGroups = newSisterGroups.map(sg => (String(sg.id) === String(targetGroupId) || sg.name === targetGroupId) ? {
+                        ...sg,
+                        members: [...(sg.members || []), updated]
+                    } : sg);
+                }
+            } else {
+                newSisterGroups.forEach((sg, idx) => {
+                    const sgMemberIdx = (sg.members || []).findIndex(m => String(m.id) === mId || String(m.rosterId) === mId || `sg-${sg.id}-${m.id}` === mId);
+                    if (sgMemberIdx !== -1) {
+                        const targetMember = sg.members[sgMemberIdx];
+                        if (!targetMember.isTrainee) return;
+                        const updated = processMemberPromotion(targetMember, 'sister', idx);
+                        if (isMainGroup) {
+                            newSisterGroups[idx] = {
+                                ...sg,
+                                members: sg.members.filter((_, i) => i !== sgMemberIdx)
+                            };
+                            newMembers.push(updated);
+                        } else if (String(sg.id) === String(targetGroupId) || sg.name === targetGroupId) {
+                            const updatedMembers = [...sg.members];
+                            updatedMembers[sgMemberIdx] = updated;
+                            newSisterGroups[idx] = { ...sg, members: updatedMembers };
+                        } else {
+                            newSisterGroups[idx] = {
+                                ...sg,
+                                members: sg.members.filter((_, i) => i !== sgMemberIdx)
+                            };
+                            newSisterGroups = newSisterGroups.map((otherSg) => (String(otherSg.id) === String(targetGroupId) || otherSg.name === targetGroupId) ? {
+                                ...otherSg,
+                                members: [...(otherSg.members || []), updated]
+                            } : otherSg);
+                        }
+                    }
+                });
+            }
+        });
+
+        setMembers(newMembers);
+        setSisterGroups(newSisterGroups);
+
+        if (idsToRemoveFromTeams.size > 0) {
+            setTeams(prevTeams => prevTeams.map(t => {
+                const cleanedMembers = (t.members || []).filter(id => !idsToRemoveFromTeams.has(String(id)));
+                if (targetTeamId && String(t.id) === String(targetTeamId)) {
+                    const uniqueNewIds = idsToAddToTargetTeam.filter(id => !cleanedMembers.includes(id));
+                    return {
+                        ...t,
+                        members: [...cleanedMembers, ...uniqueNewIds],
+                        history: [...(t.history || []), {
+                            week: week,
+                            event: `Promoted member(s): ${promotedNames.join(', ')}`
+                        }]
+                    };
+                }
+                return {
+                    ...t,
+                    members: cleanedMembers
+                };
+            }));
+        }
+
+        if (promotedNames.length > 0) {
+            const successMsg = `🎉 Promoted ${promotedNames.length} Trainee(s) (${promotedNames.join(', ')}) to official member of ${targetGroupName}${targetTeamName ? ' (Team ' + targetTeamName + ')' : ''}!`;
+            setMessage(successMsg);
+            addNotification({ type: 'Promotion', message: successMsg });
+        }
     };
 
     const upgradeTheater = (ownerId) => {
@@ -18274,6 +18425,6 @@ export const useIdolManager = () => {
         // Utilities
         startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
         // Logic
-        holdTitleTrackPerformance, holdUnitPerformance, unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, resolveSurvivalMission, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, getUnderMembersPool, startUnderTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, executeFanEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, promoteSubgroupMember, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
+        holdTitleTrackPerformance, holdUnitPerformance, unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, resolveSurvivalMission, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, getUnderMembersPool, startUnderTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, executeFanEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, promoteSubgroupMember, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, promoteTrainee, promoteMultipleTrainees, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
     };
 };
