@@ -7828,19 +7828,15 @@ export const useIdolManager = () => {
         const titleTrack = newSingle.tracks.find(t => t.type === 'title');
         if (!titleTrack) return;
 
-        const senbatsuMembers = titleTrack.members.map(m => allMembers.find(fullM => (fullM.rosterId || String(fullM.id)) === String(m.id))).filter(Boolean);
-        const senbatsuIds = new Set(senbatsuMembers.map(m => String(m.rosterId || m.id)));
+        const senbatsuMembers = titleTrack.members.map(m => allMembers.find(fullM => (fullM.rosterId || String(fullM.id)) === String(m.id) || fullM.name === m.name)).filter(Boolean);
+        const senbatsuNames = new Set(senbatsuMembers.map(m => (m.name || '').trim()).filter(Boolean));
         const centerIds = new Set((titleTrack.center || []).map(String));
 
         const prevTitleTrack = previousSingle?.tracks.find(t => t.type === 'title');
-        const prevSenbatsuIds = new Set((prevTitleTrack?.members || []).map(m => {
-            if (String(m.id).startsWith('sg-')) return String(m.id);
-            if (previousSingle.targetGroup && previousSingle.targetGroup !== 'main') {
-                const sg = sisterGroups.find(g => g.name === previousSingle.targetGroup || String(g.id) === String(previousSingle.targetGroup));
-                if (sg) return `sg-${sg.id}-${m.id}`;
-            }
-            return String(m.id);
-        }));
+        const prevSenbatsuNames = new Set((prevTitleTrack?.members || []).map(m => {
+            const triviaMember = allMembers.find(fullM => String(fullM.id) === String(m.id) || String(fullM.rosterId) === String(m.id) || fullM.name === m.name);
+            return (triviaMember?.name || m.name || '').trim();
+        }).filter(Boolean));
 
         // --- EXISTING REACTIONS ---
 
@@ -7872,9 +7868,9 @@ export const useIdolManager = () => {
 
         // 2. Senbatsu inclusion reactions
         senbatsuMembers.forEach(member => {
-            const memberId = String(member.rosterId || member.id);
-            if (centerIds.has(memberId)) return;
-            if (!prevSenbatsuIds.has(memberId)) { // This member is new to senbatsu or is returning
+            const memberName = (member.name || '').trim();
+            if (centerIds.has(String(member.rosterId || member.id))) return;
+            if (!prevSenbatsuNames.has(memberName)) { // This member is new to senbatsu or is returning
 
                 // --- HAPPY REACTION VARIANTS ---
                 const happyReactions = [
@@ -7939,9 +7935,9 @@ export const useIdolManager = () => {
         });
 
         // 3. Senbatsu exclusion reactions
-        prevSenbatsuIds.forEach(memberId => {
-            if (!senbatsuIds.has(memberId)) { // Dropped from senbatsu
-                const member = getMemberById(memberId);
+        [...prevSenbatsuNames].forEach(memberName => {
+            if (!senbatsuNames.has(memberName)) { // Dropped from senbatsu
+                const member = allMembers.find(m => (m.name || '').trim() === memberName && !m.isGraduated && !m.isDisbanded);
                 if (member) {
                     const randomSenbatsuMember = titleTrack.members.length > 0 ? titleTrack.members[Math.floor(Math.random() * titleTrack.members.length)].name : 'someone else';
 
@@ -8541,32 +8537,23 @@ export const useIdolManager = () => {
         if (previousSingle) {
             const prevTitleTrack = previousSingle.tracks.find(t => t.type === 'title');
             if (prevTitleTrack) {
-                // FIX: Robustly create roster IDs from previous single data
-                const prevSenbatsuRosterIds = new Set((prevTitleTrack.members || []).map(m => {
-                    const memberIdStr = String(m.id);
-                    if (memberIdStr.startsWith('sg-')) return memberIdStr; // Already a unique ID
-                    // Construct the unique ID based on the group that released the *previous* single
-                    if (previousSingle.targetGroup && previousSingle.targetGroup !== 'main') {
-                        const sg = initialSisterGroups.find(g => g.name === previousSingle.targetGroup || String(g.id) === String(previousSingle.targetGroup));
-                        if (sg) return `sg-${sg.id}-${memberIdStr}`;
-                    }
-                    return memberIdStr; // Assume main group member if no other info
-                }));
+                const prevSenbatsuMemberNames = new Set((prevTitleTrack.members || []).map(m => {
+                    const triviaMember = getTriviaMember(m.id || m.rosterId);
+                    return (triviaMember?.name || m.name || '').trim();
+                }).filter(Boolean));
 
-                const currentSenbatsuRosterIds = new Set(trivia_senbatsuMembers.map(m => String(m.rosterId)));
+                const currentSenbatsuMemberNames = new Set(trivia_senbatsuMembers.map(m => (m.name || '').trim()).filter(Boolean));
 
-                // Retained Members (The user's core request)
-                const retainedMemberIds = [...prevSenbatsuRosterIds].filter(id => currentSenbatsuRosterIds.has(id));
-                if (retainedMemberIds.length > 0) {
-                    const retainedMemberNames = retainedMemberIds.map(id => getTriviaMember(id)?.name).filter(Boolean);
-                    if (retainedMemberNames.length > 0) {
-                        triviaItems.push(`Continuing in Senbatsu: ${formatNames(retainedMemberNames)}.`);
-                    }
+                // Retained Members (Continuing in Senbatsu)
+                const retainedMemberNames = [...currentSenbatsuMemberNames].filter(name => prevSenbatsuMemberNames.has(name));
+                if (retainedMemberNames.length > 0) {
+                    triviaItems.push(`Continuing in Senbatsu: ${formatNames(retainedMemberNames)}.`);
                 }
 
                 // Comeback Members
                 const comebackMembers = trivia_senbatsuMembers.filter(member => {
-                    if (currentSenbatsuRosterIds.has(String(member.rosterId)) && !prevSenbatsuRosterIds.has(String(member.rosterId))) {
+                    const memberName = (member.name || '').trim();
+                    if (currentSenbatsuMemberNames.has(memberName) && !prevSenbatsuMemberNames.has(memberName)) {
                         const history = member.singlesParticipation || [];
                         return history.some(p => p.isTitleTrackSenbatsu && p.group === releasingGroupNameForTrivia && p.singleId !== newSongId);
                     }
@@ -8576,13 +8563,15 @@ export const useIdolManager = () => {
                     triviaItems.push(`Comeback to Senbatsu: ${formatNames(comebackMembers.map(m => m.name))}!`);
                 }
 
-                // Dropped Members
-                const droppedMemberIds = [...prevSenbatsuRosterIds].filter(id => !currentSenbatsuRosterIds.has(id));
-                if (droppedMemberIds.length > 0) {
-                    const droppedMemberNames = droppedMemberIds.map(id => getTriviaMember(id)?.name).filter(Boolean);
-                    if (droppedMemberNames.length > 0) {
-                        triviaItems.push(`Dropped from Senbatsu: ${formatNames(droppedMemberNames)}.`);
-                    }
+                // Dropped Members (Must still be active in agency, not graduated/disbanded)
+                const allActiveMembersInAgency = [...initialMembers, ...initialSisterGroups.flatMap(sg => sg.members || [])];
+                const droppedMemberNames = [...prevSenbatsuMemberNames].filter(name => {
+                    if (currentSenbatsuMemberNames.has(name)) return false;
+                    const activeMember = allActiveMembersInAgency.find(m => (m.name || '').trim() === name);
+                    return !!activeMember && !activeMember.isGraduated && !activeMember.isDisbanded;
+                });
+                if (droppedMemberNames.length > 0) {
+                    triviaItems.push(`Dropped from Senbatsu: ${formatNames(droppedMemberNames)}.`);
                 }
             }
         }
@@ -9947,16 +9936,16 @@ export const useIdolManager = () => {
         const postedMemberIds = new Set(); // Keep track of who we already talked about
 
         const currentTitleTrack = currentSingle?.tracks.find(t => t.type === 'title');
-        const currentSenbatsuIds = new Set(currentTitleTrack?.members.map(m => m.id) || []);
+        const currentSenbatsuNames = new Set((currentTitleTrack?.members || []).map(m => (m.name || '').trim()).filter(Boolean));
 
         const prevTitleTrack = previousSingle?.tracks.find(t => t.type === 'title');
-        const prevSenbatsuIds = new Set(prevTitleTrack?.members.map(m => m.id) || []);
+        const prevSenbatsuNames = new Set((prevTitleTrack?.members || []).map(m => (m.name || '').trim()).filter(Boolean));
 
         // 1. Dropped from Senbatsu but Sold Out (High drama!)
         const droppedAndSoldOut = results.filter(r =>
             r.isSoldOut &&
-            !currentSenbatsuIds.has(r.member.rosterId) &&
-            prevSenbatsuIds.has(r.member.rosterId)
+            !currentSenbatsuNames.has((r.member.name || '').trim()) &&
+            prevSenbatsuNames.has((r.member.name || '').trim())
         );
 
         droppedAndSoldOut.forEach(r => {

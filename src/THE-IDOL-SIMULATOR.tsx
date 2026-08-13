@@ -1265,19 +1265,34 @@ const App = () => {
         const [targetGroupId, setTargetGroupId] = useState('main');
         const [targetTeamId, setTargetTeamId] = useState('');
         const [sourceGroupFilter, setSourceGroupFilter] = useState('all');
+        const [generationFilter, setGenerationFilter] = useState('all');
         const [searchQuery, setSearchQuery] = useState('');
         const [selectedMemberIds, setSelectedMemberIds] = useState([]);
 
         const allAvailable = getAllAvailableMembers(true);
         const allTrainees = allAvailable.filter(m => m.isTrainee || m.position === 'trainee' || m.homeGroup === 'Trainees (Kenkyuusei)');
 
+        const availableGenerations = Array.from(new Set(
+            allTrainees.map(m => m.generation).filter(Boolean)
+        )).sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true }));
+
         const filteredTrainees = allTrainees.filter(member => {
             if (sourceGroupFilter !== 'all') {
-                if (sourceGroupFilter === 'main' && member.isSisterMember) return false;
-                if (sourceGroupFilter.startsWith('sg-')) {
-                    const sgId = sourceGroupFilter.replace('sg-', '');
-                    if (String(member.groupId) !== String(sgId) && member.homeGroup !== sisterGroups.find(g => String(g.id) === String(sgId))?.name) return false;
+                if (sourceGroupFilter === 'main') {
+                    if (member.isSisterMember) return false;
+                } else if (sourceGroupFilter.startsWith('main-gen-')) {
+                    const gen = sourceGroupFilter.replace('main-gen-', '');
+                    if (member.isSisterMember || String(member.generation) !== String(gen)) return false;
+                } else if (sourceGroupFilter.startsWith('sg-')) {
+                    const parts = sourceGroupFilter.replace('sg-', '').split('-gen-');
+                    const sgId = parts[0];
+                    const isMatchGroup = String(member.groupId) === String(sgId) || member.homeGroup === sisterGroups.find(g => String(g.id) === String(sgId))?.name;
+                    if (!isMatchGroup) return false;
+                    if (parts[1] && String(member.generation) !== String(parts[1])) return false;
                 }
+            }
+            if (generationFilter !== 'all') {
+                if (String(member.generation) !== String(generationFilter)) return false;
             }
             if (searchQuery.trim()) {
                 return member.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -1385,13 +1400,13 @@ const App = () => {
                     </div>
 
                     <div className="flex flex-col md:flex-row justify-between items-center gap-2 pt-2 border-t dark:border-gray-700">
-                        <div className="flex items-center gap-2 w-full md:w-auto">
+                        <div className="flex items-center gap-2 w-full md:w-auto flex-wrap">
                             <input
                                 type="text"
                                 placeholder="Search trainee..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="p-2 border rounded-lg text-sm bg-white dark:bg-gray-800 dark:border-gray-600 w-full md:w-48"
+                                className="p-2 border rounded-lg text-sm bg-white dark:bg-gray-800 dark:border-gray-600 w-full md:w-40"
                             />
                             <select
                                 value={sourceGroupFilter}
@@ -1402,6 +1417,18 @@ const App = () => {
                                 <option value="main">Main Group Trainees</option>
                                 {sisterGroups.filter(sg => !sg.isDisbanded).map(sg => (
                                     <option key={sg.id} value={`sg-${sg.id}`}>{sg.name} Trainees</option>
+                                ))}
+                            </select>
+                            <select
+                                value={generationFilter}
+                                onChange={(e) => setGenerationFilter(e.target.value)}
+                                className="p-2 border rounded-lg text-sm bg-white dark:bg-gray-800 dark:border-gray-600 font-semibold text-purple-700 dark:text-purple-300"
+                            >
+                                <option value="all">All Generations</option>
+                                {availableGenerations.map(gen => (
+                                    <option key={String(gen)} value={String(gen)}>
+                                        {String(gen).startsWith('Gen') ? String(gen) : `Gen ${gen}`}
+                                    </option>
                                 ))}
                             </select>
                         </div>
@@ -1421,6 +1448,7 @@ const App = () => {
                                 <tr>
                                     <th className="p-2.5 w-10 text-center">Select</th>
                                     <th className="p-2.5">Name</th>
+                                    <th className="p-2.5">Gen</th>
                                     <th className="p-2.5">Current Group</th>
                                     <th className="p-2.5">Vocal</th>
                                     <th className="p-2.5">Dance</th>
@@ -1451,6 +1479,9 @@ const App = () => {
                                                 <span className="font-bold">{member.name}</span>
                                                 <span className="text-[10px] px-1.5 py-0.5 bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-300 rounded font-semibold">Trainee</span>
                                             </td>
+                                            <td className="p-2.5 font-semibold text-purple-600 dark:text-purple-400">
+                                                {member.generation ? (String(member.generation).startsWith('Gen') ? member.generation : `Gen ${member.generation}`) : 'Gen 1'}
+                                            </td>
                                             <td className="p-2.5 text-gray-600 dark:text-gray-400">{getMemberGroupStatus(member)}</td>
                                             <td className="p-2.5">{Math.round(member.vocal || member.singing || 0)}</td>
                                             <td className="p-2.5">{Math.round(member.dance || member.dancing || 0)}</td>
@@ -1462,7 +1493,7 @@ const App = () => {
                                 })}
                                 {filteredTrainees.length === 0 && (
                                     <tr>
-                                        <td colSpan={8} className="p-8 text-center text-gray-500 dark:text-gray-400 italic">
+                                        <td colSpan={9} className="p-8 text-center text-gray-500 dark:text-gray-400 italic">
                                             No eligible trainees found.
                                         </td>
                                     </tr>
@@ -5587,19 +5618,24 @@ const App = () => {
                 if (previousSingle) {
                     const prevTitleTrack = previousSingle.tracks.find(t => t.type === 'title');
                     if (prevTitleTrack) {
-                        const prevSenbatsuIds = (prevTitleTrack.members || []).map(m => getRosterIdForTrackMember(m.id, previousSingle));
-                        const currentSenbatsuIds = (titleTrack.members || []).map(m => getRosterIdForTrackMember(m.id, release));
-                        const droppedMemberIds = prevSenbatsuIds.filter(id => !currentSenbatsuIds.includes(id));
+                        const prevSenbatsuNames = new Set((prevTitleTrack.members || []).map(m => {
+                            const member = memberMap[m.id] || memberMap[getRosterIdForTrackMember(m.id, previousSingle)];
+                            return (member?.name || m.name || '').trim();
+                        }).filter(Boolean));
 
-                        if (droppedMemberIds.length > 0) {
-                            const droppedMemberNames = droppedMemberIds.map(id => {
-                                const member = memberMap[id];
-                                return member ? member.name : '';
-                            }).filter(Boolean);
+                        const currentSenbatsuNames = new Set((titleTrack.members || []).map(m => {
+                            const member = memberMap[m.id] || memberMap[getRosterIdForTrackMember(m.id, release)];
+                            return (member?.name || m.name || '').trim();
+                        }).filter(Boolean));
 
-                            if (droppedMemberNames.length > 0) {
-                                triviaItems.push(`Dropped from Senbatsu: ${formatNames(droppedMemberNames)}.`);
-                            }
+                        const droppedMemberNames = [...prevSenbatsuNames].filter(name => {
+                            if (currentSenbatsuNames.has(name)) return false;
+                            const member = Object.values(memberMap).find(m => (m.name || '').trim() === name);
+                            return !!member && !member.isGraduated && !member.isDisbanded;
+                        });
+
+                        if (droppedMemberNames.length > 0) {
+                            triviaItems.push(`Dropped from Senbatsu: ${formatNames(droppedMemberNames)}.`);
                         }
                     }
                 }
