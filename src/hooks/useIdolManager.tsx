@@ -1921,6 +1921,221 @@ export const annualFestivals = {
             repGain: 6,
             message: "The Music Bank broadcast was a huge ratings hit. The group's performance reached millions of new potential fans worldwide. (+6 Rep, +470k total fans)"
         })
+    },
+
+    // --- 6 Japan Local Monthly Festivals ---
+    idolStreetFest: {
+        id: 'idolStreetFest',
+        name: 'Akihabara Idol Street Festival',
+        week: 5, // Late January
+        location: 'Japan',
+        description: 'A lively outdoor street event in Akihabara where idol groups perform on pop-up stages. Great for building grassroots local fans.',
+        requirements: {
+            reputation: 5,
+            totalFans: 5000,
+            message: "Reputation 5+, and 5k+ total fans."
+        },
+        cost: 15000,
+        fanMultiplier: 0.002, // 0.2%
+        effect: (performers) => ({
+            fanGain: 8000,
+            message: "The Akihabara crowd went wild! The group won over dozens of new local fans from the street stages. (+8,000 fans)"
+        })
+    },
+    valentineLive: {
+        id: 'valentineLive',
+        name: 'Valentine Live Showcase',
+        week: 7, // Mid-February
+        location: 'Japan',
+        description: 'A seasonal fan-appreciation showcase around Valentine\'s Day. Great for tightening the bond with existing fans and attracting new ones.',
+        requirements: {
+            reputation: 10,
+            totalFans: 20000,
+            message: "Reputation 10+, and 20k+ total fans."
+        },
+        cost: 25000,
+        fanMultiplier: 0.003, // 0.3%
+        effect: (performers) => {
+            const leader = performers.sort((a, b) => b.charisma - a.charisma)[0];
+            return {
+                fanGain: 15000,
+                conversionRate: 0.15,
+                specificMemberFanGain: { id: leader.rosterId, gain: 5000 },
+                message: `${leader.name}'s heartfelt Valentine message made fans emotional! Gained 15,000 fans and boosted fan loyalty. ❤️`
+            };
+        }
+    },
+    springIdolFair: {
+        id: 'springIdolFair',
+        name: 'Spring Idol Fair',
+        week: 14, // Early April (Cherry Blossom Season)
+        location: 'Japan',
+        description: 'A beloved cherry blossom season event held at an outdoor park. A perfect mid-sized festival with a warm, festive atmosphere.',
+        requirements: {
+            reputation: 12,
+            totalFans: 30000,
+            message: "Reputation 12+, and 30k+ total fans."
+        },
+        cost: 40000,
+        fanMultiplier: 0.003, // 0.3%
+        effect: (performers) => ({
+            fanGain: 20000,
+            message: "The cherry blossom backdrop made for a magical spring performance. The group gained 20,000 warm-weather fans! 🌸"
+        })
+    },
+    summerIdolCup: {
+        id: 'summerIdolCup',
+        name: 'Summer Idol Cup (Osaka)',
+        week: 25, // Late June
+        location: 'Japan',
+        description: 'A competitive mid-sized Osaka festival where multiple idol groups battle for fan votes. Winning earns a bonus reputation boost.',
+        requirements: {
+            reputation: 20,
+            totalFans: 75000,
+            message: "Reputation 20+, and 75k+ total fans."
+        },
+        cost: 60000,
+        fanMultiplier: 0.004, // 0.4%
+        effect: (performers) => {
+            const avgSkill = performers.reduce((s, m) => s + (m.dancing || 0) + (m.singing || 0), 0) / (performers.length * 2);
+            const won = avgSkill > 60;
+            return {
+                fanGain: won ? 35000 : 18000,
+                repGain: won ? 3 : 0,
+                message: won
+                    ? `The group dominated the Summer Idol Cup! They won the fan vote and are now the talk of Osaka! (+35,000 fans, +3 Rep)`
+                    : `A solid showing at the Summer Idol Cup. The group didn't take the crown but earned new fans in Osaka. (+18,000 fans)`
+            };
+        }
+    },
+    autumnLocalFest: {
+        id: 'autumnLocalFest',
+        name: 'Autumn Harvest Local Festival',
+        week: 40, // Early October
+        location: 'Japan',
+        description: 'A charming regional autumn festival circuit held in smaller cities across Japan. Great for building a loyal hometown fanbase.',
+        requirements: {
+            reputation: 8,
+            totalFans: 10000,
+            message: "Reputation 8+, and 10k+ total fans."
+        },
+        cost: 20000,
+        fanMultiplier: 0.002, // 0.2%
+        effect: (performers) => ({
+            fanGain: 12000,
+            conversionRate: 0.10,
+            message: "The group toured through regional autumn festivals, connecting with fans in smaller cities. Gained 12,000 new fans and high loyalty! 🍁"
+        })
+    },
+    yearEndIdolSummit: {
+        id: 'yearEndIdolSummit',
+        name: 'Year-End Idol Summit',
+        week: 50, // Mid-December
+        location: 'Japan',
+        description: 'A year-end gathering of idol acts at a mid-size venue in Tokyo. A great chance to close out the year with a fan boost.',
+        requirements: {
+            reputation: 18,
+            totalFans: 60000,
+            message: "Reputation 18+, and 60k+ total fans."
+        },
+        cost: 50000,
+        fanMultiplier: 0.004, // 0.4%
+        effect: (performers) => ({
+            fanGain: 25000,
+            message: "The Year-End Idol Summit was a perfect send-off for the year! The group's highlight reel went viral. Gained 25,000 fans. 🎉"
+        })
+    },
+
+    // --- 4 Big Prestigious Festivals ---
+    nhkKohaku: {
+        id: 'nhkKohaku',
+        name: 'NHK Kōhaku Uta Gassen',
+        week: 52, // New Year's Eve
+        location: 'Japan',
+        description: 'The most prestigious New Year\'s Eve TV event in Japan, watched by nearly half the nation. Being invited is an honor in itself.',
+        requirements: {
+            reputation: 90,
+            hitSingleSales: 1500000,
+            message: "Reputation 90+, and a single with 1.5M+ sales."
+        },
+        cost: 300000,
+        fanMultiplier: 0.020, // 2.0%
+        effect: (performers, allSongs, groupName) => {
+            const vocalLeader = performers.sort((a, b) => b.singing - a.singing)[0];
+            return {
+                fanGain: 300000,
+                repGain: 12,
+                specificMemberFanGain: { id: vocalLeader.rosterId, gain: 100000 },
+                message: `A HISTORIC moment! The group performed on NHK Kōhaku Uta Gassen on New Year's Eve! ${vocalLeader.name}'s vocals moved the nation to tears. (+12 Rep, +400k fans) 🎊`
+            };
+        }
+    },
+    mtvVideoMusicAwards: {
+        id: 'mtv_vma',
+        name: 'MTV Video Music Awards',
+        week: 36, // Early September
+        location: 'Global',
+        description: 'One of the most-watched award shows globally. A performance here catapults artists to a completely new level of worldwide recognition.',
+        requirements: {
+            reputation: 82,
+            internationalFans: 600000,
+            message: "Reputation 82+, and 600k+ International Fans."
+        },
+        cost: 1500000,
+        fanMultiplier: 0.018, // 1.8%
+        effect: (performers) => {
+            const visualLeader = performers.sort((a, b) => b.visual - a.visual)[0];
+            return {
+                fanGain: 200000,
+                internationalFanGain: 500000,
+                repGain: 10,
+                specificMemberFanGain: { id: visualLeader.rosterId, gain: 80000 },
+                message: `The MTV VMA stage was THEIRS! ${visualLeader.name}'s fashion and charisma became the night's biggest talking point worldwide. (+10 Rep, +700k total fans) 🏆`
+            };
+        }
+    },
+    glastonbury: {
+        id: 'glastonbury',
+        name: 'Glastonbury Festival',
+        week: 25, // Late June
+        location: 'Global',
+        description: 'The most iconic and respected music festival in the world. Performing on the Pyramid Stage here is considered a defining career moment.',
+        requirements: {
+            reputation: 88,
+            internationalFans: 700000,
+            message: "Reputation 88+, and 700k+ International Fans."
+        },
+        cost: 1800000,
+        fanMultiplier: 0.020, // 2.0%
+        effect: (performers) => ({
+            fanGain: 250000,
+            internationalFanGain: 600000,
+            repGain: 15,
+            message: "A LEGENDARY Glastonbury Pyramid Stage performance! The crowd of 100,000 sang along to every song. This moment will be talked about for decades. (+15 Rep, +850k total fans) 🎸"
+        })
+    },
+    tokyoDomeNewYear: {
+        id: 'tokyoDomeNewYear',
+        name: 'Tokyo Dome New Year Special',
+        week: 1, // First week of the new year
+        location: 'Japan',
+        description: 'Kicking off the new year with a sold-out performance at the legendary Tokyo Dome — the ultimate domestic milestone for any Japanese act.',
+        requirements: {
+            reputation: 78,
+            hitSingleSales: 800000,
+            message: "Reputation 78+, and a single with 800k+ sales."
+        },
+        cost: 800000,
+        fanMultiplier: 0.016, // 1.6%
+        effect: (performers) => {
+            const leader = performers.sort((a, b) => (b.charisma + b.singing) - (a.charisma + a.singing))[0];
+            return {
+                fanGain: 180000,
+                repGain: 8,
+                specificMemberFanGain: { id: leader.rosterId, gain: 60000 },
+                message: `TOKYO DOME SOLD OUT! ${leader.name} opened the new year with a breathtaking solo moment that had 55,000 fans screaming. (+8 Rep, +240k total fans) 🗼`
+            };
+        }
     }
 };
 
@@ -4843,22 +5058,38 @@ export const useIdolManager = () => {
             })));
         }
 
-        const updateResult = (result) => {
-            if (!result) return result;
-            return {
-                ...result,
-                ranking: result.ranking?.map(r => ({
-                    ...r,
-                    member: r.member ? getUpdatedMember(r.member) : r.member
-                }))
-            };
-        };
+        setLastElectionResult(prev => {
+            if (!prev) return prev;
+            if (Array.isArray(prev)) {
+                return prev.map(m => getUpdatedMember(m));
+            }
+            return prev;
+        });
 
-        setLastElectionResult(prev => updateResult(prev));
-        setElectionHistory(prev => prev.map(hist => updateResult(hist)));
+        setElectionHistory(prev => {
+            if (!prev) return prev;
+            return prev.map(hist => ({
+                ...hist,
+                results: Array.isArray(hist.results) ? hist.results.map(m => getUpdatedMember(m)) : hist.results
+            }));
+        });
 
-        setLastJankenResult(prev => updateResult(prev));
-        setJankenHistory(prev => prev.map(hist => updateResult(hist)));
+        setLastJankenResult(prev => {
+            if (!prev) return prev;
+            if (Array.isArray(prev)) {
+                return prev.map(m => getUpdatedMember(m));
+            }
+            return prev;
+        });
+
+        setJankenHistory(prev => {
+            if (!prev) return prev;
+            return prev.map(hist => ({
+                ...hist,
+                senbatsu: Array.isArray(hist.senbatsu) ? hist.senbatsu.map(m => getUpdatedMember(m)) : hist.senbatsu,
+                winner: hist.winner ? getUpdatedMember(hist.winner) : hist.winner
+            }));
+        });
 
         setSportsFestivalHistory(prev => prev.map(fest => ({
             ...fest,
@@ -15520,10 +15751,18 @@ export const useIdolManager = () => {
         const promotedNames = [];
         const idsToRemoveFromTeams = new Set();
         const idsToAddToTargetTeam = [];
+        const idChangeMap = new Map();
 
         const processMemberPromotion = (targetMember, location, sgIdx = -1) => {
             const oldId = String(targetMember.id);
-            const oldRosterId = targetMember.rosterId ? String(targetMember.rosterId) : null;
+            const oldRosterId = targetMember.rosterId ? String(targetMember.rosterId) : (sgIdx !== -1 && sisterGroups[sgIdx] ? `sg-${sisterGroups[sgIdx].id}-${oldId}` : oldId);
+            const newRosterId = isMainGroup ? oldId : (targetGroupObj ? `sg-${targetGroupObj.id}-${oldId}` : `sg-${targetGroupId}-${oldId}`);
+
+            if (oldRosterId !== newRosterId) {
+                idChangeMap.set(oldRosterId, newRosterId);
+                idChangeMap.set(oldId, newRosterId);
+            }
+
             idsToRemoveFromTeams.add(oldId);
             if (oldRosterId) idsToRemoveFromTeams.add(oldRosterId);
             if (sgIdx !== -1 && sisterGroups[sgIdx]) {
@@ -15539,6 +15778,7 @@ export const useIdolManager = () => {
 
             const updatedMember = {
                 ...targetMember,
+                rosterId: newRosterId,
                 isTrainee: false,
                 position: 'regular',
                 homeGroup: targetGroupName,
@@ -15639,6 +15879,10 @@ export const useIdolManager = () => {
                     members: cleanedMembers
                 };
             }));
+        }
+
+        if (idChangeMap.size > 0) {
+            updateRosterIdInAllHistory(idChangeMap);
         }
 
         if (promotedNames.length > 0) {

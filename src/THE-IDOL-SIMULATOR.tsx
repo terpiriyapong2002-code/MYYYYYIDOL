@@ -2481,6 +2481,36 @@ const App = () => {
             return a.name.localeCompare(b.name);
         }).slice(0, 10);
 
+        const resolveToCurrentRosterId = (item, availableList) => {
+            if (!item) return null;
+            const targetId = typeof item === 'object' ? String(item.rosterId || item.id) : String(item);
+            const targetNumId = typeof item === 'object' ? String(item.id) : String(item);
+            const targetName = typeof item === 'object' ? item.name : null;
+
+            // 1. Direct rosterId match
+            let found = availableList.find(m => String(m.rosterId) === targetId);
+            if (found) return String(found.rosterId);
+
+            // 2. Direct numeric id match
+            found = availableList.find(m => String(m.id) === targetNumId || String(m.rosterId) === targetNumId);
+            if (found) return String(found.rosterId);
+
+            // 3. Try getMemberById resolution
+            const resolvedObj = getMemberById(targetId) || getMemberById(targetNumId);
+            if (resolvedObj) {
+                found = availableList.find(m => String(m.rosterId) === String(resolvedObj.rosterId) || String(m.id) === String(resolvedObj.id));
+                if (found) return String(found.rosterId);
+            }
+
+            // 4. Fallback by name
+            if (targetName) {
+                found = availableList.find(m => m.name === targetName);
+                if (found) return String(found.rosterId);
+            }
+
+            return null;
+        };
+
         const applyPreviousLineup = (trackId) => {
 
             if (String(trackId) === 'janken-senbatsu') {
@@ -2495,16 +2525,19 @@ const App = () => {
 
                 if (unitMembers.length === 0) return;
 
-                const newMemberIds = unitMembers.map(m => String(m.rosterId || m.id));
-                const centerMember = unitMembers.find(m => m.rank === 1);
-                const newCenterIds = centerMember ? [String(centerMember.rosterId || centerMember.id)] : [];
+                const newMemberIds = [];
+                const newCenterIds = [];
                 const newHotlineup = {};
 
                 unitMembers.forEach(member => {
-                    const memberId = String(member.rosterId || member.id);
+                    const memberId = resolveToCurrentRosterId(member, selectableMembers);
+                    if (!memberId) return;
+
+                    newMemberIds.push(memberId);
                     const rank = member.rank;
 
                     if (rank === 1) { // Rank 1
+                        newCenterIds.push(memberId);
                         newHotlineup[memberId] = '1st Row';
                     } else if (rank <= 3) { // Ranks 2-3
                         newHotlineup[memberId] = '2nd Row';
@@ -2554,16 +2587,19 @@ const App = () => {
 
                 const unitMembers = lastElectionResult.filter(m => m.rank >= range.min && m.rank <= range.max);
 
-                const newMemberIds = unitMembers.map(m => m.rosterId || m.id);
-                let newCenterIds = [];
+                const newMemberIds = [];
+                const newCenterIds = [];
                 const newHotlineup = {};
 
                 unitMembers.forEach(member => {
                     const relativeRank = member.rank - range.min + 1;
-                    const memberId = String(member.rosterId || member.id);
+                    const memberId = resolveToCurrentRosterId(member, selectableMembers);
+                    if (!memberId) return;
+
+                    newMemberIds.push(memberId);
 
                     if (relativeRank === 1) {
-                        newCenterIds = [memberId];
+                        newCenterIds.push(memberId);
                         newHotlineup[memberId] = '1st Row';
                     } else if (relativeRank <= 3) {
                         newHotlineup[memberId] = '2nd Row';
@@ -2605,22 +2641,25 @@ const App = () => {
 
             const { members: historicMemberIds, center: historicCenterId, lineup: historicLineup } = selectedHistory.data;
 
-            // Get all currently available members for this release
-            const availableMemberIds = new Set(selectableMembers.map(m => String(m.rosterId || m.id)));
-
-            // Filter the old lineup to only include currently available members
-            const newMemberIds = historicMemberIds.filter(id => availableMemberIds.has(String(id)));
-
-            // Validate the center
-            const newCenterIds = [].concat(historicCenterId || []).filter(id => availableMemberIds.has(String(id)));
-
-            // Clean the lineup object, removing any members who are no longer available
-            const newHotlineup = Object.keys(historicLineup).reduce((acc, key) => {
-                if (newMemberIds.includes(String(key))) {
-                    acc[key] = historicLineup[key];
+            const newMemberIds = [];
+            (historicMemberIds || []).forEach(id => {
+                const currentRosterId = resolveToCurrentRosterId(id, selectableMembers);
+                if (currentRosterId && !newMemberIds.includes(currentRosterId)) {
+                    newMemberIds.push(currentRosterId);
                 }
-                return acc;
-            }, {});
+            });
+
+            const newCenterIds = [].concat(historicCenterId || []).map(id => resolveToCurrentRosterId(id, selectableMembers)).filter(Boolean);
+
+            const newHotlineup = {};
+            if (historicLineup) {
+                Object.keys(historicLineup).forEach(oldId => {
+                    const currentRosterId = resolveToCurrentRosterId(oldId, selectableMembers);
+                    if (currentRosterId && newMemberIds.includes(currentRosterId)) {
+                        newHotlineup[currentRosterId] = historicLineup[oldId];
+                    }
+                });
+            }
 
             // Update the state for the currently selected track
             const updateFn = (prevTracks) => prevTracks.map((track, index) => {
@@ -5987,21 +6026,25 @@ const App = () => {
                 if (range) {
                     memberIdsToSelect = lastElectionResult
                         .filter(m => m.rank >= range.min && m.rank <= range.max)
-                        .map(m => m.rosterId || m.id);
+                        .map(m => resolveToCurrentRosterId(m, availableMembers))
+                        .filter(Boolean);
                 }
             } else if (trackId === 'janken-senbatsu') {
                 if (!lastJankenResult) return;
                 memberIdsToSelect = lastJankenResult
                     .filter(m => m.rank >= 1 && m.rank <= 16)
-                    .map(m => m.rosterId || m.id);
+                    .map(m => resolveToCurrentRosterId(m, availableMembers))
+                    .filter(Boolean);
             } else {
                 const selectedHistory = historicalTracks.find(t => t.id === trackId);
                 if (selectedHistory) {
-                    memberIdsToSelect = selectedHistory.data.members;
+                    memberIdsToSelect = (selectedHistory.data.members || [])
+                        .map(mId => resolveToCurrentRosterId(mId, availableMembers))
+                        .filter(Boolean);
                 }
             }
 
-            const availableMemberIds = new Set(availableMembers.map(m => m.rosterId));
+            const availableMemberIds = new Set(availableMembers.map(m => String(m.rosterId)));
             const finalSelection = memberIdsToSelect.filter(id => availableMemberIds.has(id));
 
             setSelectedMembers(finalSelection);
@@ -6348,21 +6391,25 @@ const App = () => {
                 if (range) {
                     memberIdsToSelect = lastElectionResult
                         .filter(m => m.rank >= range.min && m.rank <= range.max)
-                        .map(m => m.rosterId || m.id);
+                        .map(m => resolveToCurrentRosterId(m, availableMembers))
+                        .filter(Boolean);
                 }
             } else if (trackId === 'janken-senbatsu') {
                 if (!lastJankenResult) return;
                 memberIdsToSelect = lastJankenResult
                     .filter(m => m.rank >= 1 && m.rank <= 16)
-                    .map(m => m.rosterId || m.id);
+                    .map(m => resolveToCurrentRosterId(m, availableMembers))
+                    .filter(Boolean);
             } else {
                 const selectedHistory = historicalTracks.find(t => t.id === trackId);
                 if (selectedHistory) {
-                    memberIdsToSelect = selectedHistory.data.members;
+                    memberIdsToSelect = (selectedHistory.data.members || [])
+                        .map(mId => resolveToCurrentRosterId(mId, availableMembers))
+                        .filter(Boolean);
                 }
             }
 
-            const availableMemberIds = new Set(availableMembers.map(m => m.rosterId));
+            const availableMemberIds = new Set(availableMembers.map(m => String(m.rosterId)));
             const finalSelection = memberIdsToSelect.filter(id => availableMemberIds.has(id));
 
             setSelectedMembers(finalSelection);
@@ -12889,27 +12936,25 @@ const App = () => {
                 if (range) {
                     memberIdsToSelect = lastElectionResult
                         .filter(m => m.rank >= range.min && m.rank <= range.max)
-                        .map(m => m.rosterId || m.id);
+                        .map(m => resolveToCurrentRosterId(m, availableMembers))
+                        .filter(Boolean);
                 }
             } else if (trackId === 'janken-senbatsu') {
                 if (!lastJankenResult) return;
                 memberIdsToSelect = lastJankenResult
                     .filter(m => m.rank >= 1 && m.rank <= 16)
-                    .map(m => m.rosterId || m.id);
+                    .map(m => resolveToCurrentRosterId(m, availableMembers))
+                    .filter(Boolean);
             } else {
                 const selectedHistory = historicalTracks.find(t => t.id === trackId);
                 if (selectedHistory) {
-                    // This is the key fix: We take the historical member IDs and find
-                    // their CURRENT unique rosterId using the getMemberById function.
-                    // This handles cases where members have transferred groups.
-                    memberIdsToSelect = selectedHistory.data.members.map(historicalId => {
-                        const currentMemberObject = getMemberById(historicalId);
-                        return currentMemberObject ? String(currentMemberObject.rosterId) : null;
-                    }).filter(Boolean); // Filter out any nulls if a member was not found
+                    memberIdsToSelect = (selectedHistory.data.members || [])
+                        .map(mId => resolveToCurrentRosterId(mId, availableMembers))
+                        .filter(Boolean);
                 }
             }
 
-            const availableMemberIds = new Set(availableMembers.map(m => m.rosterId));
+            const availableMemberIds = new Set(availableMembers.map(m => String(m.rosterId)));
             const finalSelection = memberIdsToSelect.filter(id => availableMemberIds.has(id));
 
             setSelectedMemberIds(finalSelection);
