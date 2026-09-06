@@ -24,20 +24,68 @@ import {
 
 import { MerchTab } from './MerchTab';
 
+// Helper to check if a group name or object is a trainee group / subgroup
+const isTraineeGroupNameOrGroup = (groupNameOrId, sisterGroups = []) => {
+    if (!groupNameOrId) return false;
+    const str = String(groupNameOrId).toLowerCase().trim();
+    if (str === 'trainee' || str === 'trainees' || str === 'kenkyuusei' || str === 'trainees (kenkyuusei)' || str.includes('trainee') || str.includes('kenkyuusei')) {
+        return true;
+    }
+    const sg = sisterGroups.find(g => String(g.id) === String(groupNameOrId) || (g.name && g.name.toLowerCase() === str));
+    if (sg) {
+        if (sg.type === 'trainee' || sg.type === 'subgroup' || sg.isTraineeGroup === true || sg.isTrainee === true) {
+            return true;
+        }
+        const sgNameLower = (sg.name || '').toLowerCase();
+        if (sgNameLower.includes('trainee') || sgNameLower.includes('kenkyuusei')) {
+            return true;
+        }
+    }
+    return false;
+};
+
 // Helper to get the original home group from a member's team history (for generation filtering)
 const getOriginalHomeGroup = (member, sisterGroups = []) => {
     if (!member) return 'main';
+
+    const isCurrentlyTrainee = !!member.isTrainee || member.position === 'trainee';
+
     // Check for a stored original home group first
-    if (member.originalHomeGroup) return member.originalHomeGroup;
+    if (member.originalHomeGroup) {
+        if (isTraineeGroupNameOrGroup(member.originalHomeGroup, sisterGroups)) {
+            // If they are still an unpromoted trainee in that trainee group, keep it
+            if (isCurrentlyTrainee && isTraineeGroupNameOrGroup(member.homeGroup, sisterGroups)) {
+                return member.originalHomeGroup;
+            }
+            // Otherwise they have been promoted to their official group, so their home group is their current group
+            return member.homeGroup || 'main';
+        }
+        return member.originalHomeGroup;
+    }
+
     // Look at the first "Joined" event in team history to determine origin
     const joinEvent = (member.teamHistory || []).find(e => e.event && e.event.includes('Joined'));
     if (joinEvent) {
         const match = joinEvent.event.match(/Joined (.*?) as/);
         if (match && match[1]) {
             const joinedGroupName = match[1];
+            if (isTraineeGroupNameOrGroup(joinedGroupName, sisterGroups)) {
+                if (isCurrentlyTrainee && isTraineeGroupNameOrGroup(member.homeGroup, sisterGroups)) {
+                    return joinedGroupName;
+                }
+                return member.homeGroup || 'main';
+            }
             // Check if this group name matches any sister group
             const sg = sisterGroups.find(sg => sg.name === joinedGroupName);
-            if (sg) return joinedGroupName;
+            if (sg) {
+                if (isTraineeGroupNameOrGroup(sg, sisterGroups)) {
+                    if (isCurrentlyTrainee && isTraineeGroupNameOrGroup(member.homeGroup, sisterGroups)) {
+                        return joinedGroupName;
+                    }
+                    return member.homeGroup || 'main';
+                }
+                return joinedGroupName;
+            }
             // Otherwise it's the main group
             return 'main';
         }
@@ -55,7 +103,7 @@ const applyMemberFilter = (member, filterKey, teams = [], sisterGroups = [], pus
     }
 
     if (filterKey === 'trainee' || filterKey === 'trainees') {
-        return !!member.isTrainee || member.position === 'trainee' || member.homeGroup === 'Trainees (Kenkyuusei)';
+        return !!member.isTrainee || member.position === 'trainee' || member.homeGroup === 'Trainees (Kenkyuusei)' || isTraineeGroupNameOrGroup(member.homeGroup, sisterGroups);
     }
 
     if (filterKey.startsWith('team-')) {
@@ -76,8 +124,8 @@ const applyMemberFilter = (member, filterKey, teams = [], sisterGroups = [], pus
 
     if (filterKey.startsWith('main-gen-')) {
         const gen = filterKey.replace('main-gen-', '');
-        const originalGroup = getOriginalHomeGroup(member, sisterGroups);
-        return originalGroup === 'main' && member.generation === gen;
+        const isMain = !member.isSisterMember || member.homeGroup === 'main' || String(member.groupId) === 'main' || !member.groupId;
+        return isMain && String(member.generation) === String(gen);
     }
 
     if (filterKey.startsWith('sg-')) {
@@ -95,9 +143,8 @@ const applyMemberFilter = (member, filterKey, teams = [], sisterGroups = [], pus
 
         if (filterKey.includes('-gen-')) {
             const gen = filterKey.split('-gen-')[1];
-            const originalGroup = getOriginalHomeGroup(member, sisterGroups);
-            const isOriginallyFromSG = sgName && originalGroup === sgName;
-            return isOriginallyFromSG && member.generation === gen;
+            const isHomeSG = String(member.groupId) === String(sgId) || (sgName && member.homeGroup === sgName);
+            return isHomeSG && String(member.generation) === String(gen);
         }
         return isInSG;
     }
@@ -613,16 +660,10 @@ const App = () => {
     const [pushMemberFilter, setPushMemberFilter] = useState('all');
     const [showRecentOnly, setShowRecentOnly] = useState(true);
     const allMembers = getMainGroupRoster();
-    const mainGroupGenerations = [...new Set(allMembers.filter(m => {
-        const origGroup = getOriginalHomeGroup(m, sisterGroups);
-        return origGroup === 'main';
-    }).map(m => m.generation).filter(Boolean))];
+    const mainGroupGenerations = [...new Set(allMembers.filter(m => (!m.isSisterMember || m.homeGroup === 'main' || String(m.groupId) === 'main' || !m.groupId)).map(m => m.generation).filter(Boolean))];
     const sisterGroupDetails = sisterGroups.filter(sg => !sg.isDisbanded).map(sg => ({
         ...sg,
-        generations: [...new Set(allMembers.filter(m => {
-            const origGroup = getOriginalHomeGroup(m, sisterGroups);
-            return origGroup === sg.name || String(m.groupId) === String(sg.id);
-        }).map(m => m.generation).filter(Boolean))]
+        generations: [...new Set(allMembers.filter(m => String(m.groupId) === String(sg.id) || (sg.name && m.homeGroup === sg.name)).map(m => m.generation).filter(Boolean))]
     }));
 
     useEffect(() => {
@@ -3070,10 +3111,10 @@ const App = () => {
         });
 
         // --- NEW: Generate structured data for the new filter ---
-        const mainGroupGenerations = [...new Set(selectableMembers.filter(m => (!m.isSisterMember || m.homeGroup === 'main')).map(m => m.generation).filter(Boolean))];
+        const mainGroupGenerations = [...new Set(selectableMembers.filter(m => (!m.isSisterMember || m.homeGroup === 'main' || String(m.groupId) === 'main' || !m.groupId)).map(m => m.generation).filter(Boolean))];
         const sisterGroupDetails = sisterGroups.map(sg => ({
             ...sg,
-            generations: [...new Set(selectableMembers.filter(m => m.groupId === sg.id).map(m => m.generation).filter(Boolean))]
+            generations: [...new Set(selectableMembers.filter(m => String(m.groupId) === String(sg.id) || (sg.name && m.homeGroup === sg.name)).map(m => m.generation).filter(Boolean))]
         }));
 
         // --- NEW: Logic to filter members based on the detailed dropdown selection ---
@@ -4743,50 +4784,7 @@ const App = () => {
                                                 const isMemberInAnyTrack = tracks.some(track => track.members.map(String).includes(String(member.id)));
                                                 return !isMemberInAnyTrack;
                                             }
-
-                                            if (filterKey.startsWith('team-')) {
-                                                const teamId = parseInt(filterKey.replace('team-', ''), 10);
-                                                const selectedTeam = teams.find(t => t.id === teamId);
-
-                                                if (!selectedTeam) return false;
-
-                                                // Member must have the correct teamId to be considered.
-                                                if (member.teamId !== teamId) {
-                                                    return false;
-                                                }
-
-                                                // CORRECTED LOGIC:
-                                                // If the selected team is a main group team, only show main group members.
-                                                if (selectedTeam.groupId === 'main') {
-                                                    return !member.isSister;
-                                                }
-                                                // Otherwise, it's a sister group team, so only show sister group members.
-                                                else {
-                                                    return member.isSister;
-                                                }
-                                            }
-
-                                            if (filterKey === 'main') {
-                                                return !member.isSister;
-                                            }
-
-                                            if (filterKey.startsWith('main-gen-')) {
-                                                const gen = filterKey.replace('main-gen-', '');
-                                                return !member.isSister && member.generation === gen;
-                                            }
-
-                                            if (filterKey.startsWith('sg-')) {
-                                                if (filterKey.includes('-gen-')) {
-                                                    const [sgIdStr, gen] = filterKey.replace('sg-', '').split('-gen-');
-                                                    const sgId = parseInt(sgIdStr, 10);
-                                                    return member.groupId === sgId && member.generation === gen;
-                                                } else {
-                                                    const sgId = parseInt(filterKey.replace('sg-', ''), 10);
-                                                    return member.groupId === sgId;
-                                                }
-                                            }
-
-                                            return false;
+                                            return applyMemberFilter(member, filterKey, teams, sisterGroups);
                                         })
                                         .map(member => {
                                             const isSelected = currentTrack?.members.map(String).includes(String(member.rosterId));
@@ -6138,10 +6136,10 @@ const App = () => {
         const filteredTypes = filterCategory === 'All' ? performanceTypes : performanceTypes.filter(p => p.category === filterCategory);
 
         // --- NEW: Generate structured data for the new filter ---
-        const mainGroupGenerations = [...new Set(availableMembers.filter(m => !m.isSisterMember).map(m => m.generation).filter(Boolean))];
+        const mainGroupGenerations = [...new Set(availableMembers.filter(m => (!m.isSisterMember || m.homeGroup === 'main' || String(m.groupId) === 'main' || !m.groupId)).map(m => m.generation).filter(Boolean))];
         const sisterGroupDetails = sisterGroups.map(sg => ({
             ...sg,
-            generations: [...new Set(availableMembers.filter(m => m.groupId === sg.id).map(m => m.generation).filter(Boolean))]
+            generations: [...new Set(availableMembers.filter(m => String(m.groupId) === String(sg.id) || (sg.name && m.homeGroup === sg.name)).map(m => m.generation).filter(Boolean))]
         }));
 
         // --- NEW: Logic to filter members based on the detailed dropdown selection ---
@@ -6537,10 +6535,10 @@ const App = () => {
         ].filter((track, index, self) => index === self.findIndex((t) => t.id === track.id)); // Ensure unique tracks
 
         // Data for filter dropdown
-        const mainGroupGenerations = [...new Set(availableMembers.filter(m => !m.isSisterMember).map(m => m.generation).filter(Boolean))];
+        const mainGroupGenerations = [...new Set(availableMembers.filter(m => (!m.isSisterMember || m.homeGroup === 'main' || String(m.groupId) === 'main' || !m.groupId)).map(m => m.generation).filter(Boolean))];
         const sisterGroupDetails = sisterGroups.map(sg => ({
             ...sg,
-            generations: [...new Set(availableMembers.filter(m => String(m.groupId) === String(sg.id)).map(m => m.generation).filter(Boolean))]
+            generations: [...new Set(availableMembers.filter(m => String(m.groupId) === String(sg.id) || (sg.name && m.homeGroup === sg.name)).map(m => m.generation).filter(Boolean))]
         }));
 
         // Corrected filtering logic
@@ -7745,10 +7743,10 @@ const App = () => {
         const [memberSearch, setMemberSearch] = useState('');
         const availableMembers = getAllAvailableMembers(true).filter(m => m.isAvailable);
 
-        const mainGroupGenerations = [...new Set(availableMembers.filter(m => !m.isSisterMember).map(m => m.generation).filter(Boolean))];
+        const mainGroupGenerations = [...new Set(availableMembers.filter(m => (!m.isSisterMember || m.homeGroup === 'main' || String(m.groupId) === 'main' || !m.groupId)).map(m => m.generation).filter(Boolean))];
         const sisterGroupDetails = sisterGroups.map(sg => ({
             ...sg,
-            generations: [...new Set(availableMembers.filter(m => String(m.groupId) === String(sg.id)).map(m => m.generation).filter(Boolean))]
+            generations: [...new Set(availableMembers.filter(m => String(m.groupId) === String(sg.id) || (sg.name && m.homeGroup === sg.name)).map(m => m.generation).filter(Boolean))]
         }));
 
         const toggleMember = (memberId) => {
@@ -9094,10 +9092,10 @@ const App = () => {
         const fullRoster = getMainGroupRoster();
 
         // --- NEW: Generate structured data for the new filter ---
-        const mainGroupGenerations = [...new Set(fullRoster.filter(m => !m.isSisterMember).map(m => m.generation).filter(Boolean))];
+        const mainGroupGenerations = [...new Set(fullRoster.filter(m => (!m.isSisterMember || m.homeGroup === 'main' || String(m.groupId) === 'main' || !m.groupId)).map(m => m.generation).filter(Boolean))];
         const sisterGroupDetails = sisterGroups.map(sg => ({
             ...sg,
-            generations: [...new Set(fullRoster.filter(m => String(m.groupId) === String(sg.id)).map(m => m.generation).filter(Boolean))]
+            generations: [...new Set(fullRoster.filter(m => String(m.groupId) === String(sg.id) || (sg.name && m.homeGroup === sg.name)).map(m => m.generation).filter(Boolean))]
         }));
 
         // CORRECTED: Use rosterId for all operations
@@ -9144,25 +9142,7 @@ const App = () => {
 
         // --- NEW: Updated filtering logic ---
         const filteredRoster = fullRoster.filter(member => {
-            if (filterKey === 'All') return true;
-
-            if (filterKey === 'main') return !member.isSisterMember;
-            if (filterKey.startsWith('main-gen-')) {
-                const gen = filterKey.replace('main-gen-', '');
-                return !member.isSisterMember && member.generation === gen;
-            }
-
-            if (filterKey.startsWith('sg-')) {
-                if (filterKey.includes('-gen-')) {
-                    const [sgIdStr, gen] = filterKey.replace('sg-', '').split('-gen-');
-                    return String(member.groupId) === sgIdStr && member.generation === gen;
-                } else {
-                    const sgId = filterKey.replace('sg-', '');
-                    return String(member.groupId) === sgId;
-                }
-            }
-
-            return false;
+            return applyMemberFilter(member, filterKey, teams, sisterGroups);
         });
 
         // CORRECTED: Use rosterId
@@ -9876,10 +9856,10 @@ const App = () => {
         const availableMembers = getAllAvailableMembers(true).filter(m => m.isAvailable);
 
         // --- NEW: Generate data for the filter dropdown ---
-        const mainGroupGenerations = [...new Set(availableMembers.filter(m => !m.isSisterMember).map(m => m.generation).filter(Boolean))];
+        const mainGroupGenerations = [...new Set(availableMembers.filter(m => (!m.isSisterMember || m.homeGroup === 'main' || String(m.groupId) === 'main' || !m.groupId)).map(m => m.generation).filter(Boolean))];
         const sisterGroupDetails = sisterGroups.map(sg => ({
             ...sg,
-            generations: [...new Set(availableMembers.filter(m => m.groupId === sg.id).map(m => m.generation).filter(Boolean))]
+            generations: [...new Set(availableMembers.filter(m => String(m.groupId) === String(sg.id) || (sg.name && m.homeGroup === sg.name)).map(m => m.generation).filter(Boolean))]
         }));
 
         // --- NEW: Logic to filter members based on the dropdown selection ---
@@ -11675,10 +11655,10 @@ const App = () => {
         const writerCost = varietyWriterTiers[writerTier].cost;
         const totalCost = baseCost + producerCost + writerCost;
 
-        const mainGroupGenerations = [...new Set(availableMembers.filter(m => !m.isSisterMember).map(m => m.generation).filter(Boolean))];
+        const mainGroupGenerations = [...new Set(availableMembers.filter(m => (!m.isSisterMember || m.homeGroup === 'main' || String(m.groupId) === 'main' || !m.groupId)).map(m => m.generation).filter(Boolean))];
         const sisterGroupDetails = sisterGroups.filter(sg => !sg.isDisbanded).map(sg => ({
             ...sg,
-            generations: [...new Set(availableMembers.filter(m => String(m.groupId) === String(sg.id)).map(m => m.generation).filter(Boolean))]
+            generations: [...new Set(availableMembers.filter(m => String(m.groupId) === String(sg.id) || (sg.name && m.homeGroup === sg.name)).map(m => m.generation).filter(Boolean))]
         }));
 
         let filteredMembers = availableMembers;
@@ -11844,10 +11824,10 @@ const App = () => {
         const allCastIds = new Set([...cast.lead, ...cast.supporting, ...cast.general]);
 
         // --- Filter Data & Logic ---
-        const mainGroupGenerations = [...new Set(availableMembers.filter(m => !m.isSisterMember).map(m => m.generation).filter(Boolean))];
+        const mainGroupGenerations = [...new Set(availableMembers.filter(m => (!m.isSisterMember || m.homeGroup === 'main' || String(m.groupId) === 'main' || !m.groupId)).map(m => m.generation).filter(Boolean))];
         const sisterGroupDetails = sisterGroups.filter(sg => !sg.isDisbanded).map(sg => ({
             ...sg,
-            generations: [...new Set(availableMembers.filter(m => String(m.groupId) === String(sg.id)).map(m => m.generation).filter(Boolean))]
+            generations: [...new Set(availableMembers.filter(m => String(m.groupId) === String(sg.id) || (sg.name && m.homeGroup === sg.name)).map(m => m.generation).filter(Boolean))]
         }));
         let filteredMembers = availableMembers.filter(m => !allCastIds.has(m.rosterId));
         if (memberFilter !== 'all') {
@@ -12770,10 +12750,10 @@ const App = () => {
         // --- END OF KEY CHANGE ---
 
         // --- FILTERING LOGIC (Now operates on the full group list) ---
-        const mainGroupGenerations = [...new Set(availableMembers.filter(m => !m.isSisterMember).map(m => m.generation).filter(Boolean))];
+        const mainGroupGenerations = [...new Set(availableMembers.filter(m => (!m.isSisterMember || m.homeGroup === 'main' || String(m.groupId) === 'main' || !m.groupId)).map(m => m.generation).filter(Boolean))];
         const sisterGroupDetails = sisterGroups.map(sg => ({
             ...sg,
-            generations: [...new Set(availableMembers.filter(m => String(m.groupId) === String(sg.id)).map(m => m.generation).filter(Boolean))]
+            generations: [...new Set(availableMembers.filter(m => String(m.groupId) === String(sg.id) || (sg.name && m.homeGroup === sg.name)).map(m => m.generation).filter(Boolean))]
         }));
 
         let filteredMembers = availableMembers;
@@ -13004,10 +12984,10 @@ const App = () => {
         };
 
 
-        const mainGroupGenerations = [...new Set(availableMembers.filter(m => !m.isSisterMember).map(m => m.generation).filter(Boolean))];
+        const mainGroupGenerations = [...new Set(availableMembers.filter(m => (!m.isSisterMember || m.homeGroup === 'main' || String(m.groupId) === 'main' || !m.groupId)).map(m => m.generation).filter(Boolean))];
         const sisterGroupDetails = sisterGroups.filter(sg => !sg.isDisbanded).map(sg => ({
             ...sg,
-            generations: [...new Set(availableMembers.filter(m => String(m.groupId) === String(sg.id)).map(m => m.generation).filter(Boolean))]
+            generations: [...new Set(availableMembers.filter(m => String(m.groupId) === String(sg.id) || (sg.name && m.homeGroup === sg.name)).map(m => m.generation).filter(Boolean))]
         }));
 
         let filteredMembers = availableMembers;
@@ -15952,10 +15932,10 @@ const App = () => {
                                     // --- End of new code ---
 
                                     const roster = getMainGroupRoster();
-                                    const mainGroupGenerations = [...new Set(roster.filter(m => !m.isSisterMember).map(m => m.generation).filter(Boolean))];
+                                    const mainGroupGenerations = [...new Set(roster.filter(m => (!m.isSisterMember || m.homeGroup === 'main' || String(m.groupId) === 'main' || !m.groupId)).map(m => m.generation).filter(Boolean))];
                                     const sisterGroupDetails = sisterGroups.filter(sg => !sg.isDisbanded).map(sg => ({
                                         ...sg,
-                                        generations: [...new Set(roster.filter(m => String(m.groupId) === String(sg.id)).map(m => m.generation).filter(Boolean))]
+                                        generations: [...new Set(roster.filter(m => String(m.groupId) === String(sg.id) || (sg.name && m.homeGroup === sg.name)).map(m => m.generation).filter(Boolean))]
                                     }));
 
                                     return (
