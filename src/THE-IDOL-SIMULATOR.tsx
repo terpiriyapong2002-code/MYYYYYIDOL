@@ -137,7 +137,41 @@ const App = () => {
     const [selectedUnderTourGroup, setSelectedUnderTourGroup] = useState('main');
     const [showUnderMembersPoolList, setShowUnderMembersPoolList] = useState(false);
     const [loanInputAmount, setLoanInputAmount] = useState(500000);
+    const resolveToCurrentRosterId = (item, availableList = null) => {
+        if (!item) return null;
+        const targetId = typeof item === 'object' ? String(item.rosterId || item.id || item.memberId || '') : String(item);
+        const targetNumId = typeof item === 'object' ? String(item.id || item.memberId || item.rosterId || '') : String(item);
+        const targetName = typeof item === 'object' ? item.name : null;
 
+        if (targetId === 'undefined' || targetId === '' || targetId === 'null') {
+            return null;
+        }
+
+        const pool = Array.isArray(availableList) && availableList.length > 0 ? availableList : getAllAvailableMembers(true);
+
+        // 1. Direct rosterId match
+        let found = pool.find(m => String(m.rosterId) === targetId);
+        if (found) return String(found.rosterId);
+
+        // 2. Direct numeric id match
+        found = pool.find(m => String(m.id) === targetNumId || String(m.rosterId) === targetNumId);
+        if (found) return String(found.rosterId);
+
+        // 3. Try getMemberById resolution
+        const resolvedObj = getMemberById(targetId) || getMemberById(targetNumId);
+        if (resolvedObj) {
+            found = pool.find(m => String(m.rosterId) === String(resolvedObj.rosterId) || String(m.id) === String(resolvedObj.id));
+            if (found) return String(found.rosterId);
+        }
+
+        // 4. Fallback by name
+        if (targetName) {
+            found = pool.find(m => m.name === targetName);
+            if (found) return String(found.rosterId);
+        }
+
+        return null;
+    };
 
     const scrollToTop = () => {
         mainContentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1721,7 +1755,7 @@ const App = () => {
             if (!member) return null;
             const oldRank = member.previousRank;
             const newRank = member.rank;
-            const hadPreviousRankings = (member.electionHistory || []).length > 0;
+            const hadPreviousRankings = (member.electionHistory || []).some(entry => entry.week < week || (entry.week === week && (member.electionHistory || []).length > 1));
 
             if (oldRank === 999 || !oldRank) {
                 return hadPreviousRankings
@@ -2447,7 +2481,7 @@ const App = () => {
                     id: `${release.id}-${track.name}-${release.targetGroup}`,
                     name: `${track.name} (from ${artistName}'s ${release.name})`,
                     data: {
-                        members: (track.members || []).map(m => String(m.id)),
+                        members: (track.members || []).map(m => typeof m === 'object' ? String(m.rosterId || m.id || m.memberId) : String(m)),
                         center: track.center || [],
                         lineup: track.lineup || {}
                     }
@@ -2467,7 +2501,7 @@ const App = () => {
                         id: `${release.id}-${track.name}-${sg.id}`,
                         name: `${track.name} (from ${artistName}'s ${release.name})`,
                         data: {
-                            members: (track.members || []).map(m => String(m.id)),
+                            members: (track.members || []).map(m => typeof m === 'object' ? String(m.rosterId || m.id || m.memberId) : String(m)),
                             center: track.center ? String(track.center) : null,
                             lineup: track.lineup || {}
                         }
@@ -2483,9 +2517,13 @@ const App = () => {
 
         const resolveToCurrentRosterId = (item, availableList) => {
             if (!item) return null;
-            const targetId = typeof item === 'object' ? String(item.rosterId || item.id) : String(item);
-            const targetNumId = typeof item === 'object' ? String(item.id) : String(item);
+            const targetId = typeof item === 'object' ? String(item.rosterId || item.id || item.memberId || '') : String(item);
+            const targetNumId = typeof item === 'object' ? String(item.id || item.memberId || item.rosterId || '') : String(item);
             const targetName = typeof item === 'object' ? item.name : null;
+
+            if (targetId === 'undefined' || targetId === '' || targetId === 'null') {
+                return null;
+            }
 
             // 1. Direct rosterId match
             let found = availableList.find(m => String(m.rosterId) === targetId);
@@ -6002,7 +6040,7 @@ const App = () => {
                     id: `${release.id}-${track.name}`, // Simplified ID
                     name: `${track.name} (${release.name} - ${artistName})`,
                     data: {
-                        members: (track.members || []).map(m => String(m.id)),
+                        members: (track.members || []).map(m => typeof m === 'object' ? String(m.rosterId || m.id || m.memberId) : String(m)),
                         center: track.center || [],
                         lineup: track.lineup || {}
                     }
@@ -6367,7 +6405,7 @@ const App = () => {
                     id: `${release.id}-${track.name}`, // Simplified ID
                     name: `${track.name} (${release.name} - ${artistName})`,
                     data: {
-                        members: (track.members || []).map(m => String(m.id)),
+                        members: (track.members || []).map(m => typeof m === 'object' ? String(m.rosterId || m.id || m.memberId) : String(m)),
                         center: track.center || [],
                         lineup: track.lineup || {}
                     }
@@ -12914,7 +12952,7 @@ const App = () => {
                     id: `${release.id}-${track.name}`,
                     name: `${track.name} (${release.name} - ${artistName})`,
                     data: {
-                        members: (track.members || []).map(m => String(m.rosterId || m.id)),
+                        members: (track.members || []).map(m => typeof m === 'object' ? String(m.rosterId || m.id || m.memberId) : String(m)),
                     }
                 }));
             });
@@ -12922,6 +12960,7 @@ const App = () => {
         const applyPreviousLineup = (trackId) => {
             if (!trackId) return;
 
+            const allGroupMembersPool = getAllAvailableMembers(true);
             let memberIdsToSelect = [];
 
             if (trackId.startsWith('election-')) {
@@ -12936,20 +12975,20 @@ const App = () => {
                 if (range) {
                     memberIdsToSelect = lastElectionResult
                         .filter(m => m.rank >= range.min && m.rank <= range.max)
-                        .map(m => resolveToCurrentRosterId(m, availableMembers))
+                        .map(m => resolveToCurrentRosterId(m, allGroupMembersPool))
                         .filter(Boolean);
                 }
             } else if (trackId === 'janken-senbatsu') {
                 if (!lastJankenResult) return;
                 memberIdsToSelect = lastJankenResult
                     .filter(m => m.rank >= 1 && m.rank <= 16)
-                    .map(m => resolveToCurrentRosterId(m, availableMembers))
+                    .map(m => resolveToCurrentRosterId(m, allGroupMembersPool))
                     .filter(Boolean);
             } else {
                 const selectedHistory = historicalTracks.find(t => t.id === trackId);
                 if (selectedHistory) {
                     memberIdsToSelect = (selectedHistory.data.members || [])
-                        .map(mId => resolveToCurrentRosterId(mId, availableMembers))
+                        .map(mId => resolveToCurrentRosterId(mId, allGroupMembersPool))
                         .filter(Boolean);
                 }
             }

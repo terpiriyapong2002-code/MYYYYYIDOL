@@ -3073,6 +3073,106 @@ export const useIdolManager = () => {
     const [activeChart, setActiveChart] = useState(null)
     const [exchangeStudents, setExchangeStudents] = useState([]); // Array of { rivalId, member, startWeek, endWeek }
 
+    const getUnitNameFromRank = (rank, numberOfSpots = 80) => {
+        if (rank > numberOfSpots) return "Unranked";
+        if (rank === 1) return "Center";
+        if (rank <= 7) return "Kami 7";
+        if (rank <= 16) return "Senbatsu";
+        if (rank <= 32) return "Undergirls";
+        if (rank <= 48) return "Next Girls";
+        if (rank <= 64) return "Future Girls";
+        if (rank <= 80) return "Upcoming Girls";
+        return "Unranked";
+    };
+
+    const reconcileMemberElectionHistories = (membersList, sisterGroupsList, fullElectionHistory) => {
+        if (!fullElectionHistory || fullElectionHistory.length === 0) {
+            return { reconciledMembers: membersList, reconciledSisterGroups: sisterGroupsList };
+        }
+
+        const healMember = (m, isSister, sgId) => {
+            if (!m) return m;
+            let history = [...(m.electionHistory || [])];
+            let changed = false;
+
+            // Fix any corrupted rosterId on main or sister group members
+            let correctedRosterId = m.rosterId;
+            if (!isSister && m.rosterId && String(m.rosterId).startsWith('sg-')) {
+                correctedRosterId = String(m.id);
+                changed = true;
+            } else if (isSister && sgId && (!m.rosterId || !String(m.rosterId).startsWith('sg-'))) {
+                correctedRosterId = `sg-${sgId}-${m.id}`;
+                changed = true;
+            }
+
+            // Check each election in fullElectionHistory
+            fullElectionHistory.forEach(election => {
+                if (!election || !election.results || !election.week) return;
+                const matchInElection = election.results.find(r =>
+                    (r && m.name && (r.name || '').trim() === (m.name || '').trim()) ||
+                    (correctedRosterId && r.rosterId && String(correctedRosterId) === String(r.rosterId)) ||
+                    (!isSister && !r.isSisterMember && String(m.id) === String(r.id))
+                );
+
+                if (matchInElection && matchInElection.rank) {
+                    const alreadyHasWeek = history.some(h => h.week === election.week);
+                    if (!alreadyHasWeek) {
+                        const unitName = getUnitNameFromRank(matchInElection.rank, election.spots || 80);
+                        history.push({
+                            week: election.week,
+                            rank: matchInElection.rank,
+                            unit: unitName,
+                            year: Math.floor(election.week / 52) + 1
+                        });
+                        changed = true;
+                    }
+                }
+            });
+
+            if (changed) {
+                history.sort((a, b) => a.week - b.week);
+                // Also restore latest rank if member was rank 999 but has history
+                const latestHistory = history[history.length - 1];
+                const lastElection = fullElectionHistory[fullElectionHistory.length - 1];
+                let currentRank = m.rank;
+                if (latestHistory && lastElection && latestHistory.week === lastElection.week) {
+                    currentRank = latestHistory.rank;
+                }
+
+                return {
+                    ...m,
+                    rosterId: correctedRosterId,
+                    electionHistory: history,
+                    rank: currentRank
+                };
+            }
+
+            return m;
+        };
+
+        const reconciledMembers = (membersList || []).map(m => healMember(m, false, null));
+        const reconciledSisterGroups = (sisterGroupsList || []).map(sg => ({
+            ...sg,
+            members: (sg.members || []).map(m => healMember(m, true, sg.id))
+        }));
+
+        return { reconciledMembers, reconciledSisterGroups };
+    };
+
+    // Auto-heal election histories on load / state changes
+    useEffect(() => {
+        if (electionHistory && electionHistory.length > 0) {
+            setMembers(prevMembers => {
+                const { reconciledMembers } = reconcileMemberElectionHistories(prevMembers, [], electionHistory);
+                return reconciledMembers;
+            });
+            setSisterGroups(prevSg => {
+                const { reconciledSisterGroups } = reconcileMemberElectionHistories([], prevSg, electionHistory);
+                return reconciledSisterGroups;
+            });
+        }
+    }, [electionHistory.length]);
+
     // START/LOAD/SAVE FUNCTIONS
 
     const getSavedGames = () => {
@@ -3441,8 +3541,11 @@ export const useIdolManager = () => {
                 return { ...team, members: filteredMembers };
             });
 
-            setMembers(healedMembers);
-            setSisterGroups(healedSisterGroups);
+            const loadedElectionHistory = data.electionHistory || [];
+            const { reconciledMembers, reconciledSisterGroups } = reconcileMemberElectionHistories(healedMembers, healedSisterGroups, loadedElectionHistory);
+
+            setMembers(reconciledMembers);
+            setSisterGroups(reconciledSisterGroups);
             setTeams(healedTeams);
 
             setRivalGroups(data.rivalGroups || []);
@@ -4441,16 +4544,18 @@ export const useIdolManager = () => {
         const resolvedGroupName = targetSg ? targetSg.name : groupName;
 
         const allGroupMembers = getAllAvailableMembers(true).filter(m => {
-            if (resolvedGroupName === groupName) {
-                return m.homeGroup === 'main' || (m.kenninGroups || []).includes(groupName);
+            if (m.isTrainee) return false;
+            const isMainTarget = resolvedGroupName === groupName || targetGroup === 'main';
+            if (isMainTarget) {
+                return m.homeGroup === 'main' || m.homeGroup === groupName || m.groupId === 'main' || (!m.isSisterMember && m.groupId !== 'sister') || (m.kenninGroups || []).includes(groupName);
             } else {
-                return m.homeGroup === resolvedGroupName || (m.kenninGroups || []).includes(resolvedGroupName);
+                return m.homeGroup === resolvedGroupName || String(m.groupId) === String(targetSg?.id) || (m.kenninGroups || []).includes(resolvedGroupName);
             }
         });
 
         const groupSongs = songs.filter(s => {
             const songArtist = s.targetGroup || s.artist;
-            if (resolvedGroupName === groupName) {
+            if (resolvedGroupName === groupName || targetGroup === 'main') {
                 return songArtist === 'main' || songArtist === groupName;
             } else {
                 return songArtist === resolvedGroupName || String(s.groupId) === String(targetSg?.id);
@@ -4471,9 +4576,13 @@ export const useIdolManager = () => {
             return allGroupMembers;
         }
 
-        const titleTrackMemberIds = new Set((titleTrack.members || []).map(m => String(m.id || m.rosterId)));
+        const titleTrackMemberIds = new Set((titleTrack.members || []).map(m => typeof m === 'object' ? String(m.rosterId || m.id) : String(m)));
 
-        return allGroupMembers.filter(m => !titleTrackMemberIds.has(String(m.id || m.rosterId)));
+        return allGroupMembers.filter(m => {
+            const rosterIdStr = String(m.rosterId || m.id);
+            const numIdStr = String(m.id);
+            return !titleTrackMemberIds.has(rosterIdStr) && !titleTrackMemberIds.has(numIdStr);
+        });
     };
 
     const startUnderTour = (targetGroup = 'main') => {
@@ -5190,14 +5299,43 @@ export const useIdolManager = () => {
 
         const memberMap = new Map(masterRoster.map(m => [m.rosterId, m]));
         const acesAndCaptains = Object.values(groupRoles);
+        // Excludes units and subgroups only (non-shufflable special groups)
+        const isNonShufflableGroup = (sg) => {
+            if (!sg) return false;
+            return sg.type === 'unit' || sg.type === 'subgroup';
+        };
+
+        // True for trainee-type groups that shuffle internally only
+        const isTraineeOnlyGroup = (sg) => {
+            if (!sg) return false;
+            return sg.type === 'trainee' || sg.isTraineeGroup === true;
+        };
+
+        // Helper: is a given member in a trainee group?
+        const isMemberInTraineeGroup = (member) => {
+            if (!member.isSisterMember) return false;
+            const sg = sisterGroupsCopy.find(sg => String(sg.id) === String(member.groupId));
+            return isTraineeOnlyGroup(sg);
+        };
+
+        // All teams that participate in the shuffle (non-shufflable groups excluded)
         const teamsToShuffleInto = teamsCopy.filter(t => {
-            if (shuffleType === 'world') return true;
             const sg = sisterGroupsCopy.find(sg => String(sg.id) === String(t.groupId));
+            if (sg && isNonShufflableGroup(sg)) return false;
+            if (t.isTraineeTeam) return false;
+            if (shuffleType === 'world') return true;
             return !sg || sg.type !== 'overseas';
+        });
+
+        // Teams eligible for CROSS-GROUP transfers/kennin (excludes trainee group teams)
+        const teamsForCrossGroupMoves = teamsToShuffleInto.filter(t => {
+            const sg = sisterGroupsCopy.find(sg => String(sg.id) === String(t.groupId));
+            return !isTraineeOnlyGroup(sg);
         });
         if (mode === 'auto') {
             // --- NEW: Balanced Capacity Calculation ---
             const allPlayerGroupsForShuffle = [{ id: 'main', name: groupName }, ...sisterGroupsCopy.filter(sg => {
+                if (isNonShufflableGroup(sg)) return false;
                 if (shuffleType === 'world') return true;
                 return sg.type !== 'overseas';
             })];
@@ -5266,13 +5404,14 @@ export const useIdolManager = () => {
             let crossGroupMoves = 0;
             const MAX_CROSS_GROUP_MOVES = 6; // Reducing the max number of cross-group moves.
 
+            // Exclude trainee group members from cross-group moves
             let unassignedMain = unassignedMembers.filter(m => !m.isSisterMember);
-            let unassignedSister = unassignedMembers.filter(m => m.isSisterMember);
+            let unassignedSister = unassignedMembers.filter(m => m.isSisterMember && !isMemberInTraineeGroup(m));
 
             if (crossGroupMoves < MAX_CROSS_GROUP_MOVES && Math.random() < chanceOfSisterToMainTransfer && unassignedSister.length > 0) {
                 const memberIndex = Math.floor(Math.random() * unassignedSister.length);
                 const memberToTransfer = unassignedSister.splice(memberIndex, 1)[0];
-                const potentialTeams = teamsCopy.filter(t => t.groupId === 'main');
+                const potentialTeams = teamsForCrossGroupMoves.filter(t => t.groupId === 'main');
                 if (potentialTeams.length > 0) {
                     const targetTeam = potentialTeams[Math.floor(Math.random() * potentialTeams.length)];
                     finalAssignments[memberToTransfer.rosterId] = { primaryTeamId: targetTeam.id };
@@ -5284,7 +5423,7 @@ export const useIdolManager = () => {
             }
 
             if (crossGroupMoves < MAX_CROSS_GROUP_MOVES && Math.random() < chanceOfMainToSisterTransfer && unassignedMain.length > 0) {
-                const overseasTeams = teamsCopy.filter(t => {
+                const overseasTeams = teamsToShuffleInto.filter(t => {
                     const sg = sisterGroupsCopy.find(sg => String(sg.id) === String(t.groupId));
                     return sg && sg.type === 'overseas';
                 });
@@ -5304,7 +5443,7 @@ export const useIdolManager = () => {
 
                 const memberIndex = Math.floor(Math.random() * unassignedMain.length);
                 const memberToTransfer = unassignedMain.splice(memberIndex, 1)[0];
-                const potentialTeams = teamsCopy.filter(t => t.groupId !== 'main');
+                const potentialTeams = teamsForCrossGroupMoves.filter(t => t.groupId !== 'main');
                 if (potentialTeams.length > 0) {
                     const targetTeam = potentialTeams[Math.floor(Math.random() * potentialTeams.length)];
                     finalAssignments[memberToTransfer.rosterId] = { primaryTeamId: targetTeam.id };
@@ -5316,12 +5455,13 @@ export const useIdolManager = () => {
             }
 
             const retainedMembers = masterRoster.filter(m => finalAssignments[m.rosterId] && !acesAndCaptains.includes(m.rosterId));
+            // Exclude trainee group members from kennin cross-group moves
             const retainedMain = retainedMembers.filter(m => !m.isSisterMember);
-            const retainedSister = retainedMembers.filter(m => m.isSisterMember);
+            const retainedSister = retainedMembers.filter(m => m.isSisterMember && !isMemberInTraineeGroup(m));
 
             if (crossGroupMoves < MAX_CROSS_GROUP_MOVES && Math.random() < chanceOfMainToSisterKennin && retainedMain.length > 0) {
                 const memberToHold = retainedMain[Math.floor(Math.random() * retainedMain.length)];
-                const potentialTeams = teamsCopy.filter(t => t.groupId !== 'main');
+                const potentialTeams = teamsForCrossGroupMoves.filter(t => t.groupId !== 'main');
                 if (potentialTeams.length > 0) {
                     const targetTeam = potentialTeams[Math.floor(Math.random() * potentialTeams.length)];
                     finalAssignments[memberToHold.rosterId].kenninTeamId = targetTeam.id;
@@ -5333,7 +5473,7 @@ export const useIdolManager = () => {
 
             if (crossGroupMoves < MAX_CROSS_GROUP_MOVES && Math.random() < chanceOfSisterToMainKennin && retainedSister.length > 0) {
                 const memberToHold = retainedSister[Math.floor(Math.random() * retainedSister.length)];
-                const potentialTeams = teamsCopy.filter(t => t.groupId === 'main');
+                const potentialTeams = teamsForCrossGroupMoves.filter(t => t.groupId === 'main');
                 if (potentialTeams.length > 0) {
                     const targetTeam = potentialTeams[Math.floor(Math.random() * potentialTeams.length)];
                     finalAssignments[memberToHold.rosterId].kenninTeamId = targetTeam.id;
@@ -5345,11 +5485,16 @@ export const useIdolManager = () => {
 
             // --- START: New Group-by-Group Balanced Shuffle Logic ---
             const allPlayerGroups = [{ id: 'main', name: groupName }, ...sisterGroupsCopy.filter(sg => {
+                if (isNonShufflableGroup(sg)) return false;
                 if (shuffleType === 'world') return true;
                 return sg.type !== 'overseas';
             })];
 
-            const remainingUnassigned = [...unassignedMain, ...unassignedSister];
+            // Build the full remaining pool for group-by-group shuffle.
+            // This must include trainee group members too — they were excluded from cross-group
+            // pools but still need to be redistributed within their own group's teams.
+            const assignedRosterIds = new Set(Object.keys(finalAssignments));
+            const remainingUnassigned = unassignedMembers.filter(m => !assignedRosterIds.has(m.rosterId));
 
             allPlayerGroups.forEach(group => {
                 const groupId = group.id;
@@ -6566,7 +6711,7 @@ export const useIdolManager = () => {
                 cost = 1000000;
                 electionName = 'General Election';
                 const mainAndDomesticMembers = [
-                    ...members,
+                    ...members.map(m => getMemberById(m.rosterId || m.id) || m),
                     ...allSisterGroups.flatMap(sg => (sg.members || []).map(m => getMemberById(`sg-${sg.id}-${m.id}`)).filter(Boolean)),
                     ...exchangeStudents.map(ex => ex.member)
                 ];
@@ -6636,7 +6781,45 @@ export const useIdolManager = () => {
         if (money < 1000000) return;
         setMoney(prev => prev - 1000000);
 
-        const previousRankMap = new Map(participants.map(m => [m.rosterId || m.id, m.rank || 999]));
+        const lastElection = electionHistory && electionHistory.length > 0 ? electionHistory[electionHistory.length - 1] : null;
+
+        const previousRankMap = new Map();
+        participants.forEach(m => {
+            let prevRank = 999;
+            // 1. Check last election's results by rosterId, id, or name
+            if (lastElection && Array.isArray(lastElection.results)) {
+                const foundInLastElection = lastElection.results.find(r =>
+                    (m.rosterId && r.rosterId && String(m.rosterId) === String(r.rosterId)) ||
+                    (m.id !== undefined && r.id !== undefined && String(m.id) === String(r.id) && ((m.isSisterMember && r.isSisterMember) || (!m.isSisterMember && !r.isSisterMember))) ||
+                    ((m.name || '').trim() === (r.name || '').trim())
+                );
+                if (foundInLastElection && foundInLastElection.rank) {
+                    prevRank = foundInLastElection.rank;
+                }
+            }
+
+            // 2. Fallback to member's own electionHistory prior to this week
+            if (prevRank === 999 && m.electionHistory && m.electionHistory.length > 0) {
+                const priorEntries = m.electionHistory.filter(e => e.week < week);
+                if (priorEntries.length > 0) {
+                    const lastEntry = priorEntries[priorEntries.length - 1];
+                    if (lastEntry && lastEntry.rank) {
+                        prevRank = lastEntry.rank;
+                    }
+                }
+            }
+
+            // 3. Fallback to m.rank if valid
+            if (prevRank === 999 && m.rank && m.rank !== 999) {
+                prevRank = m.rank;
+            }
+
+            const mKey = String(m.rosterId || m.id);
+            previousRankMap.set(mKey, prevRank);
+            if (m.name) previousRankMap.set(`name:${m.name.trim()}`, prevRank);
+            if (m.id !== undefined) previousRankMap.set(String(m.id), prevRank);
+        });
+
         const totalFanWeight = participants.reduce((sum, member) => {
             return sum + ((member.fans?.hardcore || 0) * 3) + (member.fans?.casual || 0);
         }, 1);
@@ -6652,11 +6835,14 @@ export const useIdolManager = () => {
         }).sort((a, b) => b.votes - a.votes)
             .map((member, index) => {
                 const newRank = index + 1;
-                const oldRank = previousRankMap.get(member.rosterId || member.id);
+                const oldRank = previousRankMap.get(String(member.rosterId || member.id))
+                    || (member.name ? previousRankMap.get(`name:${member.name.trim()}`) : undefined)
+                    || (member.id !== undefined ? previousRankMap.get(String(member.id)) : undefined)
+                    || 999;
                 let speechType;
 
                 if (newRank === 1) speechType = 'center';
-                else if (oldRank === undefined || oldRank === 999) speechType = 'newRank';
+                else if (oldRank === undefined || oldRank === 999 || oldRank > numberOfSpots) speechType = 'newRank';
                 else if (newRank < oldRank) speechType = 'rankUp';
                 else if (newRank > oldRank) speechType = 'rankDown';
                 else speechType = 'holdRank';
@@ -6666,18 +6852,6 @@ export const useIdolManager = () => {
 
                 return { ...member, rank: newRank, previousRank: oldRank, speech: speech };
             });
-
-        const getUnitNameFromRank = (rank) => {
-            if (rank > numberOfSpots) return "Unranked";
-            if (rank === 1) return "Center";
-            if (rank <= 7) return "Kami 7";
-            if (rank <= 16) return "Senbatsu";
-            if (rank <= 32) return "Undergirls";
-            if (rank <= 48) return "Next Girls";
-            if (rank <= 64) return "Future Girls";
-            if (rank <= 80) return "Upcoming Girls";
-            return "Unranked";
-        };
 
         const relationshipNotifications = [];
 
@@ -6691,8 +6865,8 @@ export const useIdolManager = () => {
                 if (memberA.chemistry[memberB_id] === undefined) memberA.chemistry[memberB_id] = 0;
                 if (memberB.chemistry[memberA_id] === undefined) memberB.chemistry[memberA_id] = 0;
 
-                const unitA = getUnitNameFromRank(i + 1);
-                const unitB = getUnitNameFromRank(j + 1);
+                const unitA = getUnitNameFromRank(i + 1, numberOfSpots);
+                const unitB = getUnitNameFromRank(j + 1, numberOfSpots);
                 let chemistryChange = 0;
 
                 if (unitA !== 'Unranked' && unitA === unitB) {
@@ -6711,8 +6885,8 @@ export const useIdolManager = () => {
             }
         });
 
-        const resultMap = new Map(universallySortedMembers.map((member, index) => {
-            const id = String(member.rosterId || member.id);
+        const resultMap = new Map();
+        universallySortedMembers.forEach((member, index) => {
             const newRank = index + 1;
             const oldRank = member.previousRank;
 
@@ -6736,26 +6910,34 @@ export const useIdolManager = () => {
                 stressChange = 5;
             }
 
-            return [id, { newRank, moraleChange, stressChange, newChemistry: member.chemistry }];
-        }));
+            const data = { newRank, oldRank, moraleChange, stressChange, newChemistry: member.chemistry, memberName: member.name };
+            if (member.rosterId) resultMap.set(String(member.rosterId), data);
+            if (member.id !== undefined) resultMap.set(String(member.id), data);
+            if (member.name) resultMap.set(`name:${member.name.trim()}`, data);
+        });
 
         const updateMemberWithResults = (member, isSister = false, sgId = null) => {
-            const memberId = isSister ? `sg-${sgId}-${member.id}` : String(member.id);
-            const result = resultMap.get(memberId);
+            const sisterRosterId = isSister && sgId !== null ? `sg-${sgId}-${member.id}` : null;
+            const result = (sisterRosterId ? resultMap.get(sisterRosterId) : null)
+                || (member.rosterId ? resultMap.get(String(member.rosterId)) : null)
+                || resultMap.get(String(member.id))
+                || (member.name ? resultMap.get(`name:${member.name.trim()}`) : null);
 
             if (result) {
                 const { newRank, moraleChange, stressChange, newChemistry } = result;
-                const unitName = getUnitNameFromRank(newRank);
+                const unitName = getUnitNameFromRank(newRank, numberOfSpots);
                 const newHistoryEntry = { week: week, rank: newRank, unit: unitName, year: Math.floor(week / 52) + 1 };
 
                 let newPosition;
                 if (newRank === 1) newPosition = 'center'; else if (newRank <= 7) newPosition = 'front'; else if (newRank <= 16) newPosition = 'back'; else newPosition = 'under';
 
+                const existingHistory = (member.electionHistory || []).filter(e => e.week !== week);
+
                 return {
                     ...member,
                     rank: newRank,
                     position: isSister ? member.position : newPosition,
-                    electionHistory: [...(member.electionHistory || []), newHistoryEntry],
+                    electionHistory: [...existingHistory, newHistoryEntry],
                     morale: Math.max(0, Math.min(100, (member.morale || 80) + moraleChange)),
                     stress: Math.max(0, Math.min(100, (member.stress || 0) + stressChange)),
                     isCurrentCenter: newRank === 1,
@@ -6781,11 +6963,11 @@ export const useIdolManager = () => {
         if (exchangeStudents && exchangeStudents.length > 0) {
             setExchangeStudents(prevStudents => prevStudents.map(ex => {
                 const exchangeStudentId = String(ex.member.rosterId || ex.member.id);
-                const result = resultMap.get(exchangeStudentId);
+                const result = resultMap.get(exchangeStudentId) || (ex.member.name ? resultMap.get(`name:${ex.member.name.trim()}`) : null);
 
                 if (result) {
                     const { newRank, moraleChange, stressChange, newChemistry } = result;
-                    const unitName = getUnitNameFromRank(newRank);
+                    const unitName = getUnitNameFromRank(newRank, numberOfSpots);
                     const newHistoryEntry = { week: week, rank: newRank, unit: unitName, year: Math.floor(week / 52) + 1 };
 
                     let newPosition;
@@ -6794,13 +6976,15 @@ export const useIdolManager = () => {
                     else if (newRank <= 16) newPosition = 'back';
                     else newPosition = 'under';
 
+                    const existingHistory = (ex.member.electionHistory || []).filter(e => e.week !== week);
+
                     return {
                         ...ex,
                         member: {
                             ...ex.member,
                             rank: newRank,
                             position: newPosition,
-                            electionHistory: [...(ex.member.electionHistory || []), newHistoryEntry],
+                            electionHistory: [...existingHistory, newHistoryEntry],
                             morale: Math.max(0, Math.min(100, (ex.member.morale || 80) + moraleChange)),
                             stress: Math.max(0, Math.min(100, (ex.member.stress || 0) + stressChange)),
                             isCurrentCenter: newRank === 1,
@@ -6833,7 +7017,6 @@ export const useIdolManager = () => {
         const captainIds = Object.values(groupRoles);
         const rivalriesClimaxed = [];
 
-        const lastElection = electionHistory[electionHistory.length - 1]; // For history checks
         const rankedMembersThisYear = universallySortedMembers.slice(0, numberOfSpots);
 
         // --- NEW: Previous Rankers Not Participating & Group Representation ---
@@ -15476,6 +15659,12 @@ export const useIdolManager = () => {
             return;
         }
 
+        const targetSg = sisterGroups.find(sg => String(sg.id) === String(targetTeam.groupId));
+        if (targetSg && (targetSg.type === 'unit' || targetSg.type === 'subgroup' || targetSg.type === 'trainee' || targetSg.isTraineeGroup)) {
+            setMessage("Cannot assign concurrent positions to unit, subgroup, or trainee teams.");
+            return;
+        }
+
         // Add the member to the team's member list
         setTeams(prevTeams => prevTeams.map(t =>
             String(t.id) === String(targetTeamId)
@@ -15760,7 +15949,6 @@ export const useIdolManager = () => {
 
             if (oldRosterId !== newRosterId) {
                 idChangeMap.set(oldRosterId, newRosterId);
-                idChangeMap.set(oldId, newRosterId);
             }
 
             idsToRemoveFromTeams.add(oldId);
