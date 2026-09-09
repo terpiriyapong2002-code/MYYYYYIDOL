@@ -3111,13 +3111,23 @@ export const useIdolManager = () => {
                 const matchInElection = election.results.find(r =>
                     (r && m.name && (r.name || '').trim() === (m.name || '').trim()) ||
                     (correctedRosterId && r.rosterId && String(correctedRosterId) === String(r.rosterId)) ||
+                    (isSister && sgId && r.isSisterMember && String(r.groupId || r.rosterId) === String(sgId) && String(m.id) === String(r.id)) ||
                     (!isSister && !r.isSisterMember && String(m.id) === String(r.id))
                 );
 
                 if (matchInElection && matchInElection.rank) {
-                    const alreadyHasWeek = history.some(h => h.week === election.week);
-                    if (!alreadyHasWeek) {
-                        const unitName = getUnitNameFromRank(matchInElection.rank, election.spots || 80);
+                    const existingEntryIndex = history.findIndex(h => h.week === election.week);
+                    const unitName = getUnitNameFromRank(matchInElection.rank, election.spots || 80);
+                    if (existingEntryIndex >= 0) {
+                        if (history[existingEntryIndex].rank !== matchInElection.rank) {
+                            history[existingEntryIndex] = {
+                                ...history[existingEntryIndex],
+                                rank: matchInElection.rank,
+                                unit: unitName,
+                            };
+                            changed = true;
+                        }
+                    } else {
                         history.push({
                             week: election.week,
                             rank: matchInElection.rank,
@@ -3129,16 +3139,30 @@ export const useIdolManager = () => {
                 }
             });
 
+            // Restore current rank from the latest election if applicable
+            const lastElection = fullElectionHistory[fullElectionHistory.length - 1];
+            let currentRank = m.rank;
+            if (lastElection && Array.isArray(lastElection.results)) {
+                const lastMatch = lastElection.results.find(r =>
+                    (r && m.name && (r.name || '').trim() === (m.name || '').trim()) ||
+                    (correctedRosterId && r.rosterId && String(correctedRosterId) === String(r.rosterId)) ||
+                    (isSister && sgId && r.isSisterMember && String(r.groupId || r.rosterId) === String(sgId) && String(m.id) === String(r.id)) ||
+                    (!isSister && !r.isSisterMember && String(m.id) === String(r.id))
+                );
+                if (lastMatch && lastMatch.rank && currentRank !== lastMatch.rank) {
+                    currentRank = lastMatch.rank;
+                    changed = true;
+                }
+            } else if (history.length > 0) {
+                const latestHistory = history[history.length - 1];
+                if (latestHistory && lastElection && latestHistory.week === lastElection.week && currentRank !== latestHistory.rank) {
+                    currentRank = latestHistory.rank;
+                    changed = true;
+                }
+            }
+
             if (changed) {
                 history.sort((a, b) => a.week - b.week);
-                // Also restore latest rank if member was rank 999 but has history
-                const latestHistory = history[history.length - 1];
-                const lastElection = fullElectionHistory[fullElectionHistory.length - 1];
-                let currentRank = m.rank;
-                if (latestHistory && lastElection && latestHistory.week === lastElection.week) {
-                    currentRank = latestHistory.rank;
-                }
-
                 return {
                     ...m,
                     rosterId: correctedRosterId,
@@ -6777,6 +6801,23 @@ export const useIdolManager = () => {
         setShowModal('electionSummary');
     };
 
+    const getElectionMemberUniqueKey = (m, isSister = false, sgId = null) => {
+        if (!m) return '';
+        if (isSister && sgId !== null && sgId !== undefined) {
+            return `sg-${sgId}-${m.id}`;
+        }
+        if (m.rosterId && String(m.rosterId).startsWith('sg-')) {
+            return String(m.rosterId);
+        }
+        if (m.isSisterMember && m.groupId !== undefined && m.groupId !== null) {
+            return `sg-${m.groupId}-${m.id}`;
+        }
+        if (m.isExchangeStudent) {
+            return `ex-${m.homeGroup || 'rival'}-${m.id || m.name}`;
+        }
+        return `main-${m.id}`;
+    };
+
     const runElectionLogic = (participants, numberOfSpots = 80, type = 'main', nonParticipating = []) => {
         if (money < 1000000) return;
         setMoney(prev => prev - 1000000);
@@ -6786,13 +6827,20 @@ export const useIdolManager = () => {
         const previousRankMap = new Map();
         participants.forEach(m => {
             let prevRank = 999;
-            // 1. Check last election's results by rosterId, id, or name
+            const mUniqueKey = getElectionMemberUniqueKey(m);
+            const mName = (m.name || '').trim();
+
+            // 1. Check last election's results by unique key, rosterId, strict group-scoped id, or name
             if (lastElection && Array.isArray(lastElection.results)) {
-                const foundInLastElection = lastElection.results.find(r =>
-                    (m.rosterId && r.rosterId && String(m.rosterId) === String(r.rosterId)) ||
-                    (m.id !== undefined && r.id !== undefined && String(m.id) === String(r.id) && ((m.isSisterMember && r.isSisterMember) || (!m.isSisterMember && !r.isSisterMember))) ||
-                    ((m.name || '').trim() === (r.name || '').trim())
-                );
+                const foundInLastElection = lastElection.results.find(r => {
+                    const rUniqueKey = getElectionMemberUniqueKey(r);
+                    if (mUniqueKey && rUniqueKey && mUniqueKey === rUniqueKey) return true;
+                    if (m.rosterId && r.rosterId && String(m.rosterId) === String(r.rosterId)) return true;
+                    if (m.isSisterMember && r.isSisterMember && String(m.groupId) === String(r.groupId) && String(m.id) === String(r.id)) return true;
+                    if (!m.isSisterMember && !r.isSisterMember && !m.isExchangeStudent && !r.isExchangeStudent && String(m.id) === String(r.id)) return true;
+                    if (mName && (r.name || '').trim() === mName) return true;
+                    return false;
+                });
                 if (foundInLastElection && foundInLastElection.rank) {
                     prevRank = foundInLastElection.rank;
                 }
@@ -6814,10 +6862,9 @@ export const useIdolManager = () => {
                 prevRank = m.rank;
             }
 
-            const mKey = String(m.rosterId || m.id);
-            previousRankMap.set(mKey, prevRank);
-            if (m.name) previousRankMap.set(`name:${m.name.trim()}`, prevRank);
-            if (m.id !== undefined) previousRankMap.set(String(m.id), prevRank);
+            if (mUniqueKey) previousRankMap.set(mUniqueKey, prevRank);
+            if (m.rosterId) previousRankMap.set(String(m.rosterId), prevRank);
+            if (mName) previousRankMap.set(`name:${mName}`, prevRank);
         });
 
         const totalFanWeight = participants.reduce((sum, member) => {
@@ -6835,9 +6882,11 @@ export const useIdolManager = () => {
         }).sort((a, b) => b.votes - a.votes)
             .map((member, index) => {
                 const newRank = index + 1;
-                const oldRank = previousRankMap.get(String(member.rosterId || member.id))
-                    || (member.name ? previousRankMap.get(`name:${member.name.trim()}`) : undefined)
-                    || (member.id !== undefined ? previousRankMap.get(String(member.id)) : undefined)
+                const mUniqueKey = getElectionMemberUniqueKey(member);
+                const mName = (member.name || '').trim();
+                const oldRank = (mUniqueKey ? previousRankMap.get(mUniqueKey) : undefined)
+                    || (member.rosterId ? previousRankMap.get(String(member.rosterId)) : undefined)
+                    || (mName ? previousRankMap.get(`name:${mName}`) : undefined)
                     || 999;
                 let speechType;
 
@@ -6850,7 +6899,9 @@ export const useIdolManager = () => {
                 const speeches = electionSpeechTemplates[speechType];
                 const speech = speeches[Math.floor(Math.random() * speeches.length)];
 
-                return { ...member, rank: newRank, previousRank: oldRank, speech: speech };
+                const effectiveRosterId = member.rosterId || (member.isSisterMember ? `sg-${member.groupId}-${member.id}` : member.id);
+
+                return { ...member, rank: newRank, previousRank: oldRank, speech: speech, rosterId: effectiveRosterId };
             });
 
         const relationshipNotifications = [];
@@ -6911,16 +6962,18 @@ export const useIdolManager = () => {
             }
 
             const data = { newRank, oldRank, moraleChange, stressChange, newChemistry: member.chemistry, memberName: member.name };
+            const uniqueKey = getElectionMemberUniqueKey(member);
+            if (uniqueKey) resultMap.set(uniqueKey, data);
             if (member.rosterId) resultMap.set(String(member.rosterId), data);
-            if (member.id !== undefined) resultMap.set(String(member.id), data);
             if (member.name) resultMap.set(`name:${member.name.trim()}`, data);
         });
 
         const updateMemberWithResults = (member, isSister = false, sgId = null) => {
-            const sisterRosterId = isSister && sgId !== null ? `sg-${sgId}-${member.id}` : null;
-            const result = (sisterRosterId ? resultMap.get(sisterRosterId) : null)
+            const uniqueKey = getElectionMemberUniqueKey(member, isSister, sgId);
+            const sisterRosterId = isSister && sgId !== null && sgId !== undefined ? `sg-${sgId}-${member.id}` : null;
+            const result = (uniqueKey ? resultMap.get(uniqueKey) : null)
+                || (sisterRosterId ? resultMap.get(sisterRosterId) : null)
                 || (member.rosterId ? resultMap.get(String(member.rosterId)) : null)
-                || resultMap.get(String(member.id))
                 || (member.name ? resultMap.get(`name:${member.name.trim()}`) : null);
 
             if (result) {
@@ -6963,7 +7016,10 @@ export const useIdolManager = () => {
         if (exchangeStudents && exchangeStudents.length > 0) {
             setExchangeStudents(prevStudents => prevStudents.map(ex => {
                 const exchangeStudentId = String(ex.member.rosterId || ex.member.id);
-                const result = resultMap.get(exchangeStudentId) || (ex.member.name ? resultMap.get(`name:${ex.member.name.trim()}`) : null);
+                const uniqueKey = getElectionMemberUniqueKey(ex.member);
+                const result = (uniqueKey ? resultMap.get(uniqueKey) : null)
+                    || resultMap.get(exchangeStudentId) 
+                    || (ex.member.name ? resultMap.get(`name:${ex.member.name.trim()}`) : null);
 
                 if (result) {
                     const { newRank, moraleChange, stressChange, newChemistry } = result;
@@ -7133,7 +7189,7 @@ export const useIdolManager = () => {
         if (biggestJump.spots > 10) electionTrivia.push(`The Biggest Jump: ${biggestJump.name} jumped an incredible ${biggestJump.spots} spots to rank #${biggestJump.newRank}!`);
         if (biggestDrop.spots > 10) electionTrivia.push(`The Shocking Drop: In a stunning turn of events, last year's rank #${biggestDrop.oldRank} ${biggestDrop.name} has fallen to rank #${biggestDrop.newRank}.`);
 
-        const heldRankMembers = participants.filter(p => p.previousRank && p.rank === p.previousRank && p.rank <= numberOfSpots);
+        const heldRankMembers = universallySortedMembers.filter(p => p.previousRank && p.rank === p.previousRank && p.rank <= numberOfSpots);
         if (heldRankMembers.length === 1) {
             electionTrivia.push(`The Sole Anchor: ${heldRankMembers[0].name} is the only member in the entire election to keep their exact same rank from last year (#${heldRankMembers[0].rank}).`);
         }
@@ -7524,7 +7580,7 @@ export const useIdolManager = () => {
             electionFanPosts.push({ type: 'sad', text: dropReactions[Math.floor(Math.random() * dropReactions.length)] });
         }
 
-        const unrankedAce = participants.find(p => p.previousRank <= 16 && p.rank > (spots || 80));
+        const unrankedAce = universallySortedMembers.find(p => p.previousRank <= 16 && p.rank > (numberOfSpots || 80));
         if (unrankedAce) {
             const unrankedReactions = [
                 `I can't believe ${unrankedAce.name} didn't even rank this year. What happened?! She was in Senbatsu last year...`,

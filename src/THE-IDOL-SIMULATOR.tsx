@@ -1825,7 +1825,7 @@ const App = () => {
                         <div className="w-full flex-shrink-0 h-40 md:h-auto border-b md:border-b-0 md:border-r border-gray-200 dark:border-slate-700 bg-gray-100/50 dark:bg-slate-900/50 overflow-y-auto">
                             <div className="grid grid-cols-2 md:grid-cols-1 gap-2 p-2">
                                 {revealedRanks.slice().map(member => (
-                                    <div key={member.rosterId} className={`p-2 bg-white/80 dark:bg-slate-700/50 shadow-sm flex justify-between items-center border-l-4 rounded-md ${member.rank === 1 ? 'border-yellow-400' : member.rank <= 7 ? 'border-pink-400' : 'border-blue-400'}`}>
+                                    <div key={`${member.rosterId || member.id}-${member.rank}`} className={`p-2 bg-white/80 dark:bg-slate-700/50 shadow-sm flex justify-between items-center border-l-4 rounded-md ${member.rank === 1 ? 'border-yellow-400' : member.rank <= 7 ? 'border-pink-400' : 'border-blue-400'}`}>
                                         <div>
                                             <p className="font-black text-pink-500 dark:text-pink-400 text-sm">#{member.rank} <span className="text-xs font-normal text-gray-500 dark:text-gray-400">({(getMemberGroupStatus(member) || '').split(' | ')[0]})</span></p>
                                             <p className="font-semibold text-xs truncate text-gray-700 dark:text-gray-200">{member.name}</p>
@@ -14648,7 +14648,7 @@ const App = () => {
                     <h3 className="font-bold text-lg" style={{ textShadow: '1px 1px 2px rgba(255,255,255,0.7)' }}>{tierName}</h3>
                     <div className={`flex flex-wrap justify-center gap-1 mt-2`}>
                         {tierMembers.map((member) => (
-                            <div key={member.rosterId} className="text-xs p-1 bg-white/50 backdrop-blur-sm rounded-md flex-shrink-0" style={{ flexBasis: '80px' }}>
+                            <div key={`${member.rosterId || member.id || member.name}-${member.rank}`} className="text-xs p-1 bg-white/50 backdrop-blur-sm rounded-md flex-shrink-0" style={{ flexBasis: '80px' }}>
                                 <span className="font-bold block text-pink-500">#{member.rank}</span>
                                 <span className="truncate block font-semibold">{member.name}</span>
                             </div>
