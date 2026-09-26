@@ -8,8 +8,9 @@ import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } 
 import { CSS } from '@dnd-kit/utilities';
 
 import DailyChartModal from './DailyChartModal';
+import { BlockbusterModals } from './BlockbusterModals';
 
-import { useIdolManager, getTotalFansForMember, getFormattedDateForWeek, productionTiers, getGraduationRisk, songTitles, generateSongTitle, electionSpeechTemplates, performanceTypes, scandalResponseOptions, tiers, getTheaterCapacity, getTicketPrice, hometowns, generateRandomHometown, warehouseTiers, staffTiers, ambitions, varietyShowTypes, filmProjectScales, filmGenres, scriptTiers, directorTiers, filmPromotionTypes, varietyWriterTiers, varietyProducerTiers, sponsorshipTiers, livestreamTypes, musicShowTypes, annualFestivals, getOrdinalSuffix, getReleaseGroupSingleNumber, getGroupSingleNumberForHistory } from "./hooks/useIdolManager";
+import { useIdolManager, getTotalFansForMember, getFormattedDateForWeek, productionTiers, getGraduationRisk, songTitles, generateSongTitle, electionSpeechTemplates, performanceTypes, scandalResponseOptions, tiers, getTheaterCapacity, getTicketPrice, hometowns, generateRandomHometown, warehouseTiers, staffTiers, ambitions, varietyShowTypes, filmProjectScales, filmGenres, scriptTiers, directorTiers, filmPromotionTypes, varietyWriterTiers, varietyProducerTiers, sponsorshipTiers, livestreamTypes, musicShowTypes, annualFestivals, getOrdinalSuffix, getReleaseGroupSingleNumber, getGroupSingleNumberForHistory, blockbusterThemes, blockbusterScales, blockbusterDirectors, boxOfficeMilestones } from "./hooks/useIdolManager";
 
 import React, { useState, useEffect, useCallback, useRef, memo } from 'react';
 import {
@@ -162,7 +163,7 @@ const App = () => {
 
     // Destructure everything from the custom hook
     const {
-        activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm, setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, resolveSurvivalMission, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, setGroupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, theaterSchedule, setTheaterSchedule, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, activeUnderTour, setActiveUnderTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek, activeDrama, setActiveDrama, resolveDramaChoice,
+        activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm, setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, activeBlockbuster, blockbusterHistory, startBlockbusterProduction, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, resolveSurvivalMission, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, setGroupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, theaterSchedule, setTheaterSchedule, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, activeUnderTour, setActiveUnderTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek, activeDrama, setActiveDrama, resolveDramaChoice,
 
         // Firebase/Persistence
         getSavedGames, saveGame, loadGame,
@@ -16986,6 +16987,66 @@ const App = () => {
                                 )}
                             </div>
 
+                            {/* Annual Musical & Blockbuster Film Production */}
+                            <div className="md:col-span-2 p-4 rounded-xl shadow-lg bg-gradient-to-br from-purple-900 via-indigo-900 to-black text-white border border-purple-500/30">
+                                <div className="flex justify-between items-center mb-3">
+                                    <h3 className="text-lg font-bold flex items-center text-amber-400">
+                                        <Sparkles size={20} className="mr-2 text-yellow-300 animate-spin" /> 
+                                        Annual Musical & Blockbuster Production
+                                    </h3>
+                                    <button 
+                                        onClick={() => setShowModal('blockbusterHistory')}
+                                        className="px-3 py-1 text-xs bg-amber-500/20 hover:bg-amber-500/40 text-amber-300 border border-amber-500/40 rounded-lg font-semibold flex items-center transition"
+                                    >
+                                        <Trophy size={14} className="mr-1" /> Box Office & Trophies ({blockbusterHistory?.length || 0})
+                                    </button>
+                                </div>
+
+                                {activeBlockbuster && activeBlockbuster.status !== 'completed' ? (
+                                    <div className="bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/10 space-y-2">
+                                        <div className="flex justify-between items-start">
+                                            <div>
+                                                <span className="px-2 py-0.5 text-[10px] uppercase font-extrabold bg-amber-400 text-black rounded-full">
+                                                    {activeBlockbuster.status === 'rehearsal' ? '🎭 In Rehearsals' : '🎟️ Screening in Theaters'}
+                                                </span>
+                                                <h4 className="text-base font-extrabold text-yellow-200 mt-1">{activeBlockbuster.title}</h4>
+                                                <p className="text-xs text-purple-200">{activeBlockbuster.themeName} • Scale: {activeBlockbuster.scaleName}</p>
+                                            </div>
+                                            <button
+                                                onClick={() => setShowModal('blockbusterHistory')}
+                                                className="px-3 py-1.5 text-xs bg-gradient-to-r from-amber-500 to-yellow-500 text-black font-extrabold rounded-lg hover:brightness-110 shadow"
+                                            >
+                                                Details
+                                            </button>
+                                        </div>
+                                        {activeBlockbuster.status === 'rehearsal' ? (
+                                            <div className="text-xs text-purple-300 flex justify-between items-center bg-black/30 p-2 rounded-lg">
+                                                <span>Weeks until Premiere Gala: <strong>{activeBlockbuster.rehearsalWeeksLeft} weeks</strong></span>
+                                                <span className="text-emerald-400 font-semibold">Director: {activeBlockbuster.directorName}</span>
+                                            </div>
+                                        ) : (
+                                            <div className="text-xs text-purple-300 flex justify-between items-center bg-black/30 p-2 rounded-lg">
+                                                <span>Box Office Weeks Remaining: <strong>{activeBlockbuster.boxOfficeWeeksRemaining} weeks</strong></span>
+                                                <span className="text-amber-300 font-extrabold">Gross: ¥{(activeBlockbuster.totalGrossRevenue || 0).toLocaleString()}</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/5 p-3 rounded-xl border border-purple-500/20">
+                                        <div className="text-xs text-purple-200">
+                                            <p className="font-semibold text-purple-100">Greenlight a high-budget theatrical musical or blockbuster action film!</p>
+                                            <p className="text-[11px] text-purple-300 mt-0.5">Cast main idols, select director & OST, generate massive ticket sales & award trophies.</p>
+                                        </div>
+                                        <button
+                                            onClick={() => setShowModal('blockbusterProduction')}
+                                            className="w-full sm:w-auto px-4 py-2.5 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:from-amber-500 hover:to-yellow-500 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl shadow-lg transition-all transform hover:scale-105 shrink-0"
+                                        >
+                                            🎬 Launch Blockbuster
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+
                             {/* Film Industry */}
                             <div className="md:col-span-1 p-3 rounded-xl shadow-lg bg-gradient-to-br from-amber-50 to-yellow-100 dark:from-slate-800 dark:to-gray-900 border border-amber-100 dark:border-gray-700">
                                 <h3 className="text-lg font-bold mb-3 flex items-center text-amber-600 dark:text-amber-400"><Trophy size={20} className="mr-2" /> Film Industry</h3>
@@ -17972,6 +18033,23 @@ const App = () => {
             {showModal === 'electionResult' && <ElectionResultModal />}
             {showModal === 'annualAwardsResult' && <AnnualAwardsResultModal />}
             {showModal === 'dailyChart' && <DailyChartModal activeChart={activeChart} onHide={() => setShowModal(null)} groupName={groupName} songs={songs} sisterGroups={sisterGroups} />}
+            <BlockbusterModals
+                showModal={showModal}
+                setShowModal={setShowModal}
+                modalData={modalData}
+                activeBlockbuster={activeBlockbuster}
+                blockbusterHistory={blockbusterHistory}
+                blockbusterThemes={blockbusterThemes}
+                blockbusterScales={blockbusterScales}
+                blockbusterDirectors={blockbusterDirectors}
+                boxOfficeMilestones={boxOfficeMilestones}
+                startBlockbusterProduction={startBlockbusterProduction}
+                allMembers={getAllAvailableMembers(true)}
+                songs={songs}
+                money={money}
+                groupReputation={groupReputation}
+                getMemberById={getMemberById}
+            />
             {showModal === 'scandalDecision' && (
                 <ScandalDecisionModal
                     activeScandal={activeScandal}

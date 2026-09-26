@@ -2343,6 +2343,175 @@ export const filmGenres = {
     }
 };
 
+export const blockbusterThemes = {
+    'majisuka_musical': {
+        id: 'majisuka_musical',
+        name: 'Majisuka Gakuen: The Musical',
+        type: 'musical',
+        genre: 'Action Rock Musical',
+        tagline: 'Delinquent high school rivalries clash on the grand stage with hard-hitting rock anthems!',
+        coreStats: ['charisma', 'singing', 'dancing'],
+        leadRoleName: 'The Lone Yankee Leader',
+        deuteragonistRoleName: 'Rival Gang Captain',
+        villainRoleName: 'Top of Rappapa / School Ruler',
+        ensembleRoleName: 'Yankee Enforcers & Gang Members',
+        reputationReq: 0,
+        fanAppeal: 'Hardcore & Youth Fans'
+    },
+    'cyberpunk_odyssey': {
+        id: 'cyberpunk_odyssey',
+        name: 'Neo-Tokyo 2099: Cyber Idol Odyssey',
+        type: 'movie',
+        genre: 'Sci-Fi Cyberpunk Blockbuster',
+        tagline: 'In a neon metropolis ruled by AI corporations, an underground idol sparks a revolution.',
+        coreStats: ['visual', 'intelligence', 'charisma'],
+        leadRoleName: 'Rogue Android / Idol Hacker',
+        deuteragonistRoleName: 'Cyborg Mercenary Ally',
+        villainRoleName: 'Mega-Corp CEO / Corrupt Overlord',
+        ensembleRoleName: 'Underground Resistance Rebels',
+        reputationReq: 3,
+        fanAppeal: 'Mass Market & International'
+    },
+    'romeo_juliet_stage': {
+        id: 'romeo_juliet_stage',
+        name: 'Star-Crossed: Romeo & Juliet',
+        type: 'musical',
+        genre: 'Romantic Broadway Spectacle',
+        tagline: 'Two rival idol houses forbidden to love, told through sweeping orchestral ballads and dazzling choreography.',
+        coreStats: ['singing', 'visual', 'variety'],
+        leadRoleName: 'Juliet (Tragic Star)',
+        deuteragonistRoleName: 'Romeo (Star-Crossed Lover)',
+        villainRoleName: 'Tybalt (Prince of Cats / Rival Firebrand)',
+        ensembleRoleName: 'Verona Courtiers & Chorus',
+        reputationReq: 5,
+        fanAppeal: 'Theatre Connoisseurs & General Public'
+    },
+    'zombie_apocalypse': {
+        id: 'zombie_apocalypse',
+        name: 'School of the Dead: Idol Survival',
+        type: 'movie',
+        genre: 'Horror Survival Blockbuster',
+        tagline: 'Trapped in their concert dome during a zombie breakout, the idols must fight their way to dawn.',
+        coreStats: ['dancing', 'variety', 'charisma'],
+        leadRoleName: 'Fearless Survivor Center',
+        deuteragonistRoleName: 'Tactical Badass Sub-Leader',
+        villainRoleName: 'Mutated Alpha Zombie / Betrayer',
+        ensembleRoleName: 'Dome Survivors & Zombie Swarm',
+        reputationReq: 1,
+        fanAppeal: 'Viral Hit & Mainstream Hype'
+    },
+    'detective_noir': {
+        id: 'detective_noir',
+        name: 'Midnight Detective: The Crimson Diamond',
+        type: 'movie',
+        genre: 'Mystery Noir Thriller',
+        tagline: 'A sharp private eye investigates a high-society murder wrapped in deception, jazz, and stolen diamonds.',
+        coreStats: ['intelligence', 'visual', 'charisma'],
+        leadRoleName: 'Cynical Master Detective',
+        deuteragonistRoleName: 'Femme Fatale / Key Witness',
+        villainRoleName: 'Criminal Mastermind "The Phantom"',
+        ensembleRoleName: 'Detectives, Informants & Mobsters',
+        reputationReq: 4,
+        fanAppeal: 'Critics & Mystery Buffs'
+    },
+    'fantasy_isekai_musical': {
+        id: 'fantasy_isekai_musical',
+        name: 'Chronicles of the Grand Quest',
+        type: 'musical',
+        genre: 'Epic Fantasy Symphonic Stage',
+        tagline: 'Summoned across dimensions, brave idol heroines face ancient dragons with sword and song!',
+        coreStats: ['singing', 'dancing', 'intelligence'],
+        leadRoleName: 'The Chosen Heroine of Light',
+        deuteragonistRoleName: 'Elven High Mage / Princess',
+        villainRoleName: 'Dark Sovereign of the Abyss',
+        ensembleRoleName: 'Royal Knight Vanguard & Sages',
+        reputationReq: 2,
+        fanAppeal: 'Fantasy Lovers & All Ages'
+    },
+    'samurai_blade': {
+        id: 'samurai_blade',
+        name: 'Blade of the Cherry Blossom',
+        type: 'movie',
+        genre: 'Historical Samurai Epic (Jidaigeki)',
+        tagline: 'Honor, betrayal, and deadly steel under falling cherry blossoms in the tumultuous Bakumatsu era.',
+        coreStats: ['visual', 'dancing', 'charisma'],
+        leadRoleName: 'Legendary Swordswoman "Sakura"',
+        deuteragonistRoleName: 'Loyal Shinobi Companion',
+        villainRoleName: 'Corrupt Magistrate / Shogunate Assassin',
+        ensembleRoleName: 'Rebel Samurai Garrison',
+        reputationReq: 6,
+        fanAppeal: 'National Heritage & Prestige'
+    }
+};
+
+export const blockbusterScales = {
+    'flagship': {
+        id: 'flagship',
+        name: 'Flagship Event',
+        productionCost: 3500000,
+        rehearsalWeeks: 4,
+        theatricalWeeks: 6,
+        boxOfficePotential: { min: 120000000, max: 450000000 },
+        fanRewardMultiplier: 1.0,
+        description: 'A polished, high-profile event production with heavy promotions across Tokyo and Osaka.'
+    },
+    'grand_spectacle': {
+        id: 'grand_spectacle',
+        name: 'Grand Spectacle',
+        productionCost: 7500000,
+        rehearsalWeeks: 6,
+        theatricalWeeks: 8,
+        boxOfficePotential: { min: 350000000, max: 1200000000 },
+        fanRewardMultiplier: 2.2,
+        description: 'Major nationwide premiere with multiplex IMAX screenings, nationwide billboards, and full TV blitz.'
+    },
+    'mega_franchise': {
+        id: 'mega_franchise',
+        name: 'Mega-Franchise Odyssey',
+        productionCost: 15000000,
+        rehearsalWeeks: 8,
+        theatricalWeeks: 10,
+        boxOfficePotential: { min: 800000000, max: 3000000000 },
+        fanRewardMultiplier: 4.5,
+        description: 'An industry-defining cultural juggernaut. Global distribution, massive sets, world-class orchestra, and historic prestige.'
+    }
+};
+
+export const blockbusterDirectors = {
+    'indie_visionary': {
+        id: 'indie_visionary',
+        name: 'Avant-Garde Prodigy',
+        cost: 400000,
+        criticBoost: 12,
+        boxOfficeMultiplier: 0.95,
+        style: 'High critical praise, artistic depth, and passionate cult following.'
+    },
+    'hitmaker_director': {
+        id: 'hitmaker_director',
+        name: 'Commercial Hitmaker',
+        cost: 1000000,
+        criticBoost: 5,
+        boxOfficeMultiplier: 1.25,
+        style: 'Master of crowd-pleasing spectacle, viral set pieces, and explosive opening weekends.'
+    },
+    'legendary_master': {
+        id: 'legendary_master',
+        name: 'National Cinema / Stage Legend',
+        cost: 2500000,
+        criticBoost: 20,
+        boxOfficeMultiplier: 1.45,
+        style: 'World-renowned auteur. Brings peerless artistic excellence, massive media reverence, and guaranteed box office gold.'
+    }
+};
+
+export const boxOfficeMilestones = [
+    { target: 100000000, label: '¥100 Million (Hit Maker)', bonusMoney: 20000000, repBonus: 1, trophy: 'Bronze Box Office Plaque', color: 'text-amber-600' },
+    { target: 300000000, label: '¥300 Million (Smash Hit)', bonusMoney: 50000000, repBonus: 2, trophy: 'Silver Box Office Trophy', color: 'text-slate-400' },
+    { target: 600000000, label: '¥600 Million (Golden Blockbuster)', bonusMoney: 100000000, repBonus: 3, trophy: 'Gold Box Office Statue', color: 'text-yellow-400' },
+    { target: 1000000000, label: '¥1.0 Billion (National Phenomenon)', bonusMoney: 200000000, repBonus: 5, trophy: 'Platinum Crown Award', color: 'text-cyan-400' },
+    { target: 2000000000, label: '¥2.0 Billion (Legendary Masterpiece)', bonusMoney: 500000000, repBonus: 10, trophy: 'Diamond Grand Prix', color: 'text-purple-400' }
+];
+
 export const filmProjectScales = {
     'Indie Short Film': {
         duration: 6,
@@ -2944,6 +3113,8 @@ export const useIdolManager = () => {
 
     const [filmStudio, setFilmStudio] = useState({ level: 0 });
     const [filmProjects, setFilmProjects] = useState([]);
+    const [activeBlockbuster, setActiveBlockbuster] = useState(null);
+    const [blockbusterHistory, setBlockbusterHistory] = useState([]);
     const [varietyStudio, setVarietyStudio] = useState({ level: 0 }); const [photoBooks, setPhotoBooks] = useState([]);
     const [documentaries, setDocumentaries] = useState([]);
     const [scandals, setScandals] = useState([]);
@@ -3286,6 +3457,8 @@ export const useIdolManager = () => {
                 varietyShows,
                 varietyStudio,
                 filmProjects,
+                activeBlockbuster,
+                blockbusterHistory,
                 photoBooks,
                 documentaries,
                 collaborations,
@@ -3597,6 +3770,8 @@ export const useIdolManager = () => {
             setRequestHourHistory(data.requestHourHistory || []);
             setLastRequestHourResult(data.lastRequestHourResult || null);
             setFilmProjects(data.filmProjects || []);
+            setActiveBlockbuster(data.activeBlockbuster || null);
+            setBlockbusterHistory(data.blockbusterHistory || []);
             setEvents(data.events || []);
             setSponsorships(data.sponsorships || []);
             setDifficulty(data.difficulty || "normal");
@@ -14338,6 +14513,251 @@ export const useIdolManager = () => {
 
         setFilmProjects(updatedFilmProjects);
 
+        // --- ANNUAL MUSICAL / BLOCKBUSTER FILM PRODUCTION (BOX OFFICE EVENT) ---
+        if (activeBlockbuster && (activeBlockbuster.status === 'rehearsal' || activeBlockbuster.status === 'box_office')) {
+            let currentBb = { ...activeBlockbuster };
+
+            if (currentBb.status === 'rehearsal') {
+                const theme = blockbusterThemes[currentBb.themeKey];
+                const scale = blockbusterScales[currentBb.scaleKey] || blockbusterScales['flagship'];
+                const director = blockbusterDirectors[currentBb.directorKey] || blockbusterDirectors['indie_visionary'];
+                const weeksLeft = (currentBb.weeksLeftInPhase || scale.rehearsalWeeks) - 1;
+                currentBb.weeksLeftInPhase = weeksLeft;
+
+                // Rehearsal event (65% chance each week)
+                const leadMember = getMemberById(currentBb.cast.lead);
+                const rivalMember = getMemberById(currentBb.cast.deuteragonist);
+                const villainMember = getMemberById(currentBb.cast.villain);
+
+                if (Math.random() < 0.65) {
+                    const eventPool = [
+                        {
+                            text: `${leadMember ? leadMember.name : 'The Lead'} delivered an astonishing rehearsal performance that brought the crew to tears. (+5 Quality)`,
+                            qualityBonus: 5,
+                            moraleTarget: currentBb.cast.lead,
+                            moraleDelta: 10
+                        },
+                        {
+                            text: `The on-stage tension between ${leadMember ? leadMember.name : 'Lead'} and ${rivalMember ? rivalMember.name : 'Rival'} sparked intense viral hype during open rehearsals! (+6 Quality)`,
+                            qualityBonus: 6,
+                            moraleTarget: currentBb.cast.deuteragonist,
+                            moraleDelta: 8
+                        },
+                        {
+                            text: `${villainMember ? villainMember.name : 'The Villain'} immersed deeply into their antagonistic role, earning standing ovations in rehearsal runs. (+5 Quality)`,
+                            qualityBonus: 5,
+                            moraleTarget: currentBb.cast.villain,
+                            moraleDelta: 8
+                        },
+                        {
+                            text: `Director ${director.name} restructured the climactic scene into a masterpiece of lighting and choreography. (+7 Quality)`,
+                            qualityBonus: 7
+                        },
+                        {
+                            text: `A behind-the-scenes rehearsal snippet blew up on social media with millions of views! (+6 Quality, +20,000 Fans)`,
+                            qualityBonus: 6,
+                            fanGain: 20000
+                        }
+                    ];
+                    const ev = eventPool[Math.floor(Math.random() * eventPool.length)];
+                    currentBb.baseQuality = (currentBb.baseQuality || 60) + ev.qualityBonus;
+                    currentBb.rehearsalEvents = [...(currentBb.rehearsalEvents || []), { week, text: ev.text }];
+                    addNotificationInLoop({ type: 'Event', message: `🎬 [${currentBb.title}] ${ev.text}` });
+
+                    if (ev.moraleTarget) {
+                        localUpdateMemberState(ev.moraleTarget, m => ({ ...m, morale: Math.min(100, (m.morale || 70) + ev.moraleDelta) }));
+                    }
+                    if (ev.fanGain) {
+                        const allCast = [currentBb.cast.lead, currentBb.cast.deuteragonist, currentBb.cast.villain, ...(currentBb.cast.ensemble || [])];
+                        localDistributeFans(ev.fanGain, allCast);
+                    }
+                }
+
+                // Rehearsal complete -> Premiere Gala!
+                if (weeksLeft <= 0) {
+                    const allCastMembers = [currentBb.cast.lead, currentBb.cast.deuteragonist, currentBb.cast.villain, ...(currentBb.cast.ensemble || [])].map(id => getMemberById(id)).filter(Boolean);
+                    const coreStats = theme ? theme.coreStats : ['charisma', 'visual', 'singing'];
+
+                    let castAverageStat = 50;
+                    if (allCastMembers.length > 0) {
+                        const totalStats = allCastMembers.reduce((acc, m) => {
+                            return acc + coreStats.reduce((sAcc, st) => {
+                                const val = (st === 'singing') ? (m.vocal || 50) : (m[st] || 50);
+                                return sAcc + val;
+                            }, 0) / coreStats.length;
+                        }, 0);
+                        castAverageStat = totalStats / allCastMembers.length;
+                    }
+
+                    let leadBonus = 0;
+                    if (leadMember) {
+                        leadBonus = ((leadMember.charisma || 50) + (leadMember.visual || 50) + (leadMember.vocal || 50)) / 15;
+                    }
+
+                    let ostBonus = 0;
+                    if (currentBb.ostSongId) {
+                        const ost = songs.find(s => s.id === currentBb.ostSongId);
+                        if (ost) {
+                            ostBonus = Math.min(15, Math.floor((ost.sales || 50000) / 100000) + 5);
+                        }
+                    }
+
+                    const rawCritic = (currentBb.baseQuality || 60) * 0.35 + (castAverageStat * 0.35) + (director.criticBoost || 10) + leadBonus + (Math.random() * 8 - 4);
+                    const finalCriticScore = Math.max(50, Math.min(99, Math.round(rawCritic)));
+
+                    const rawAudience = (finalCriticScore * 0.5) + (groupReputation * 2.5) + ostBonus + (Math.random() * 12 - 6);
+                    const finalAudienceScore = Math.max(55, Math.min(99, Math.round(rawAudience)));
+
+                    let criticVerdict = 'Fresh & Acclaimed';
+                    let grade = 'A';
+                    if (finalCriticScore >= 90) { criticVerdict = 'Universal Masterpiece'; grade = 'A+'; }
+                    else if (finalCriticScore >= 80) { criticVerdict = 'Certified Must-Watch'; grade = 'A'; }
+                    else if (finalCriticScore >= 70) { criticVerdict = 'Solid Commercial Hit'; grade = 'B+'; }
+                    else if (finalCriticScore >= 60) { criticVerdict = 'Crowd Pleaser'; grade = 'B'; }
+                    else { criticVerdict = 'Divisive Spectacle'; grade = 'C+'; }
+
+                    const criticQuotes = [
+                        `"A breathtaking triumph! ${leadMember ? leadMember.name : 'The lead'} commands the stage with dazzling charisma." — Tokyo Entertainment Weekly`,
+                        `"The music and staging are nothing short of monumental. An unforgettable spectacle." — Stage & Screen Japan`,
+                        `"Director ${director.name} delivers a tour de force that sets a new gold standard." — Mainstream Arts Review`
+                    ];
+
+                    const scaleMin = scale.boxOfficePotential.min;
+                    const performanceRatio = ((finalCriticScore + finalAudienceScore) / 180) * (director.boxOfficeMultiplier || 1.0) * (1 + ostBonus / 100);
+                    const openingWeekend = Math.round(scaleMin * 0.38 * performanceRatio * (0.9 + Math.random() * 0.25));
+
+                    currentBb.status = 'box_office';
+                    currentBb.weeksLeftInPhase = currentBb.totalTheatricalWeeks;
+                    currentBb.theatricalWeeksLeft = currentBb.totalTheatricalWeeks;
+                    currentBb.criticScore = finalCriticScore;
+                    currentBb.audienceScore = finalAudienceScore;
+                    currentBb.audienceGrade = grade;
+                    currentBb.criticVerdict = criticVerdict;
+                    currentBb.criticQuotes = criticQuotes;
+                    currentBb.openingWeekendGross = openingWeekend;
+                    currentBb.totalGrossRevenue = openingWeekend;
+                    currentBb.weeklyGrossHistory = [{
+                        week,
+                        weekIndex: 1,
+                        gross: openingWeekend,
+                        totalSoFar: openingWeekend,
+                        rank: 1
+                    }];
+
+                    // Producer cut (35% net profit)
+                    const openingProfit = Math.floor(openingWeekend * 0.35);
+                    totalWeeklyIncome += openingProfit;
+                    incomeBreakdown.push(`Opening Weekend (${currentBb.title}): ¥${openingProfit.toLocaleString()}`);
+
+                    const premiereFans = Math.floor(openingWeekend / 2500) * (scale.fanRewardMultiplier || 1.0);
+                    const allCast = [currentBb.cast.lead, currentBb.cast.deuteragonist, currentBb.cast.villain, ...(currentBb.cast.ensemble || [])];
+                    localDistributeFans(premiereFans, allCast);
+
+                    if (finalCriticScore >= 80) {
+                        setGroupReputation(prev => prev + 2);
+                    }
+
+                    // Check Milestones for opening weekend
+                    boxOfficeMilestones.forEach(ms => {
+                        if (currentBb.totalGrossRevenue >= ms.target && !(currentBb.reachedMilestones || []).includes(ms.target)) {
+                            currentBb.reachedMilestones = [...(currentBb.reachedMilestones || []), ms.target];
+                            totalWeeklyIncome += ms.bonusMoney;
+                            setGroupReputation(prev => prev + ms.repBonus);
+                            addNotificationInLoop({
+                                type: 'Success',
+                                message: `🏆 BOX OFFICE MILESTONE REACHED: "${currentBb.title}" crossed ${ms.label}! (+¥${ms.bonusMoney.toLocaleString()}, +${ms.repBonus} Rep)`
+                            });
+                        }
+                    });
+
+                    setModalData({
+                        blockbuster: currentBb,
+                        openingWeekend,
+                        criticScore: finalCriticScore,
+                        audienceScore: finalAudienceScore,
+                        grade,
+                        criticVerdict,
+                        criticQuotes,
+                        premiereFans
+                    });
+                    setShowModal('blockbusterPremiere');
+                    priorityMessage = `🌟 RED CARPET PREMIERE: "${currentBb.title}" opened to ${criticVerdict} and ¥${openingWeekend.toLocaleString()} Opening Weekend!`;
+                }
+            } else if (currentBb.status === 'box_office') {
+                const scale = blockbusterScales[currentBb.scaleKey] || blockbusterScales['flagship'];
+                const currentRunWeek = (currentBb.totalTheatricalWeeks - (currentBb.theatricalWeeksLeft || 0)) + 1;
+                currentBb.theatricalWeeksLeft = (currentBb.theatricalWeeksLeft || 1) - 1;
+
+                const wordOfMouth = (currentBb.audienceScore || 75) / 75;
+                const decayCurves = [0.88, 0.75, 0.62, 0.52, 0.44, 0.36, 0.30, 0.25, 0.20, 0.18];
+                const curvePoint = decayCurves[currentRunWeek - 1] || 0.15;
+                const weeklyGross = Math.round((currentBb.openingWeekendGross || 50000000) * curvePoint * wordOfMouth * (0.85 + Math.random() * 0.3));
+
+                currentBb.totalGrossRevenue = (currentBb.totalGrossRevenue || 0) + weeklyGross;
+
+                const producerTake = Math.floor(weeklyGross * 0.35);
+                totalWeeklyIncome += producerTake;
+                incomeBreakdown.push(`Box Office Week ${currentRunWeek} (${currentBb.title}): ¥${producerTake.toLocaleString()}`);
+
+                const weeklyFans = Math.floor(weeklyGross / 5000) * (scale.fanRewardMultiplier || 1.0);
+                const allCast = [currentBb.cast.lead, currentBb.cast.deuteragonist, currentBb.cast.villain, ...(currentBb.cast.ensemble || [])];
+                localDistributeFans(weeklyFans, allCast);
+
+                let chartRank = 1;
+                if (weeklyGross < 25000000) chartRank = Math.min(10, Math.floor(Math.random() * 3) + 4);
+                else if (weeklyGross < 60000000) chartRank = Math.min(5, Math.floor(Math.random() * 3) + 2);
+                else chartRank = 1;
+
+                currentBb.weeklyGrossHistory = [...(currentBb.weeklyGrossHistory || []), {
+                    week,
+                    weekIndex: currentRunWeek,
+                    gross: weeklyGross,
+                    totalSoFar: currentBb.totalGrossRevenue,
+                    rank: chartRank
+                }];
+
+                addNotificationInLoop({
+                    type: 'Event',
+                    message: `🍿 Box Office (Week ${currentRunWeek}): "${currentBb.title}" earned ¥${weeklyGross.toLocaleString()} (Rank #${chartRank} | Total: ¥${currentBb.totalGrossRevenue.toLocaleString()})`
+                });
+
+                boxOfficeMilestones.forEach(ms => {
+                    if (currentBb.totalGrossRevenue >= ms.target && !(currentBb.reachedMilestones || []).includes(ms.target)) {
+                        currentBb.reachedMilestones = [...(currentBb.reachedMilestones || []), ms.target];
+                        totalWeeklyIncome += ms.bonusMoney;
+                        setGroupReputation(prev => prev + ms.repBonus);
+                        addNotificationInLoop({
+                            type: 'Success',
+                            message: `🏆 BOX OFFICE MILESTONE REACHED: "${currentBb.title}" crossed ${ms.label}! (+¥${ms.bonusMoney.toLocaleString()}, +${ms.repBonus} Rep)`
+                        });
+                    }
+                });
+
+                if (currentBb.theatricalWeeksLeft <= 0) {
+                    currentBb.status = 'completed';
+                    currentBb.completedWeek = week;
+                    setBlockbusterHistory(prev => [currentBb, ...prev]);
+
+                    allCast.forEach(id => {
+                        updateMemberState(id, m => ({
+                            ...m,
+                            teamHistory: [...(m.teamHistory || []), {
+                                week,
+                                event: `Completed Box Office run for "${currentBb.title}" (Final Gross: ¥${currentBb.totalGrossRevenue.toLocaleString()})`
+                            }]
+                        }));
+                    });
+
+                    addNotificationInLoop({
+                        type: 'Success',
+                        message: `🎉 Theatrical run completed for "${currentBb.title}"! Final Lifetime Box Office: ¥${currentBb.totalGrossRevenue.toLocaleString()}`
+                    });
+                }
+            }
+
+            setActiveBlockbuster(currentBb);
+        }
+
         // --- AWARDS SEASON ---
         const currentDate = getFormattedDateForWeek(week);
         if (currentDate.includes('December') && currentDate.includes('Week 4')) {
@@ -16457,6 +16877,118 @@ export const useIdolManager = () => {
 
         addNotification({ type: 'Production', message: `Started filming "${title}". It will be completed in ${projectType.duration} weeks.` });
         setShowModal(null);
+    };
+
+    const startBlockbusterProduction = (themeKey, scaleKey, directorKey, cast, ostSongId, customTitle) => {
+        const theme = blockbusterThemes[themeKey];
+        const scale = blockbusterScales[scaleKey];
+        const director = blockbusterDirectors[directorKey];
+
+        if (!theme || !scale || !director) {
+            setMessage("Invalid production settings.");
+            return false;
+        }
+
+        if (activeBlockbuster && activeBlockbuster.status !== 'completed') {
+            setMessage("You already have an active Annual Blockbuster / Musical in production or running at the box office!");
+            return false;
+        }
+
+        if (groupReputation < (theme.reputationReq || 0)) {
+            setMessage(`You need at least ${theme.reputationReq} Group Reputation to produce "${theme.name}".`);
+            return false;
+        }
+
+        const totalCost = scale.productionCost + director.cost;
+        if (money < totalCost) {
+            setMessage(`Insufficient funds! Total production budget needed: ¥${totalCost.toLocaleString()}.`);
+            return false;
+        }
+
+        if (!cast || !cast.lead || !cast.deuteragonist || !cast.villain || !cast.ensemble || cast.ensemble.length === 0) {
+            setMessage("Please assign all key roles (Lead, Rival/Deuteragonist, Villain, and at least one Ensemble member).");
+            return false;
+        }
+
+        const allCastIds = [cast.lead, cast.deuteragonist, cast.villain, ...cast.ensemble];
+        const uniqueIds = new Set(allCastIds);
+        if (uniqueIds.size !== allCastIds.length) {
+            setMessage("Each cast member can only be assigned to one role.");
+            return false;
+        }
+
+        const ostSong = ostSongId ? songs.find(s => s.id === ostSongId) : null;
+
+        setMoney(prev => prev - totalCost);
+
+        const title = (customTitle && customTitle.trim()) ? customTitle.trim() : theme.name;
+        const allMemberSnapshots = allCastIds.map(id => {
+            const m = getMemberById(id);
+            return m ? createMemberSnapshot(m) : null;
+        }).filter(Boolean);
+
+        const newBlockbuster = {
+            id: `blockbuster-${Date.now()}`,
+            year: Math.floor((week - 1) / 52) + 1,
+            title,
+            themeKey,
+            themeName: theme.name,
+            type: theme.type,
+            genre: theme.genre,
+            tagline: theme.tagline,
+            scaleKey,
+            scaleName: scale.name,
+            directorKey,
+            directorName: director.name,
+            ostSongId: ostSong ? ostSong.id : null,
+            ostSongName: ostSong ? ostSong.title || ostSong.name : null,
+            cast: {
+                lead: cast.lead,
+                deuteragonist: cast.deuteragonist,
+                villain: cast.villain,
+                ensemble: cast.ensemble
+            },
+            castSnapshots: allMemberSnapshots,
+            startWeek: week,
+            status: 'rehearsal',
+            totalRehearsalWeeks: scale.rehearsalWeeks,
+            weeksLeftInPhase: scale.rehearsalWeeks,
+            totalTheatricalWeeks: scale.theatricalWeeks,
+            theatricalWeeksLeft: scale.theatricalWeeks,
+            totalCost,
+            baseQuality: 60,
+            rehearsalEvents: [],
+            criticScore: 0,
+            audienceScore: 0,
+            criticVerdict: '',
+            criticQuotes: [],
+            openingWeekendGross: 0,
+            totalGrossRevenue: 0,
+            weeklyGrossHistory: [],
+            reachedMilestones: []
+        };
+
+        allCastIds.forEach(memberId => {
+            let roleTitle = 'Ensemble Cast';
+            if (memberId === cast.lead) roleTitle = `Lead Star (${theme.leadRoleName})`;
+            else if (memberId === cast.deuteragonist) roleTitle = `Co-Lead / Rival (${theme.deuteragonistRoleName})`;
+            else if (memberId === cast.villain) roleTitle = `Villain (${theme.villainRoleName})`;
+
+            updateMemberState(memberId, m => ({
+                ...m,
+                filmHistory: [...(m.filmHistory || []), { week, title, role: roleTitle, projectType: theme.type === 'musical' ? 'Stage Musical' : 'Blockbuster Film' }],
+                teamHistory: [...(m.teamHistory || []), { week, event: `Cast as ${roleTitle} in "${title}"` }]
+            }));
+        });
+
+        setActiveBlockbuster(newBlockbuster);
+        addNotification({
+            type: 'Production',
+            message: `🎬 Pre-production commenced for the Annual ${theme.type === 'musical' ? 'Stage Musical' : 'Blockbuster Film'}: "${title}"! (Budget: ¥${totalCost.toLocaleString()})`
+        });
+        setMessage(`🎬 Successfully launched production for "${title}"!`);
+        setShowModal(null);
+        return true;
     };
 
     const renewExchangeContract = (rosterId) => {
@@ -18896,7 +19428,7 @@ export const useIdolManager = () => {
 
     return {
         // State
-        inflationConfig, setInflationConfig, outstandingLoan, setOutstandingLoan, takeLoan, repayLoanIfPossible, activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm, setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, setGroupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, theaterSchedule, setTheaterSchedule, setWeek, setMoney, activeDrama, setActiveDrama, dramaHistory, setDramaHistory, resolveDramaChoice, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, activeUnderTour, setActiveUnderTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
+        inflationConfig, setInflationConfig, outstandingLoan, setOutstandingLoan, takeLoan, repayLoanIfPossible, activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm, setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, activeBlockbuster, blockbusterHistory, startBlockbusterProduction, blockbusterThemes, blockbusterScales, blockbusterDirectors, boxOfficeMilestones, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, setGroupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, theaterSchedule, setTheaterSchedule, setWeek, setMoney, activeDrama, setActiveDrama, dramaHistory, setDramaHistory, resolveDramaChoice, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, activeUnderTour, setActiveUnderTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
         // Firebase/Persistence
         getSavedGames, saveGame, loadGame,
         // Utilities
