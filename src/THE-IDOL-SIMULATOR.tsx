@@ -49,50 +49,27 @@ const isTraineeGroupNameOrGroup = (groupNameOrId, sisterGroups = []) => {
 const getOriginalHomeGroup = (member, sisterGroups = []) => {
     if (!member) return 'main';
 
-    const isCurrentlyTrainee = !!member.isTrainee || member.position === 'trainee';
-
-    // Check for a stored original home group first
-    if (member.originalHomeGroup) {
-        if (isTraineeGroupNameOrGroup(member.originalHomeGroup, sisterGroups)) {
-            // If they are still an unpromoted trainee in that trainee group, keep it
-            if (isCurrentlyTrainee && isTraineeGroupNameOrGroup(member.homeGroup, sisterGroups)) {
-                return member.originalHomeGroup;
-            }
-            // Otherwise they have been promoted to their official group, so their home group is their current group
-            return member.homeGroup || 'main';
-        }
-        return member.originalHomeGroup;
-    }
-
-    // Look at the first "Joined" event in team history to determine origin
-    const joinEvent = (member.teamHistory || []).find(e => e.event && e.event.includes('Joined'));
+    // 1. Look at the first "Joined" event in team history FIRST (immutable source of truth)
+    const joinEvent = (member.teamHistory || []).find(e => e && e.event && e.event.includes('Joined'));
     if (joinEvent) {
         const match = joinEvent.event.match(/Joined (.*?) as/);
         if (match && match[1]) {
-            const joinedGroupName = match[1];
-            if (isTraineeGroupNameOrGroup(joinedGroupName, sisterGroups)) {
-                if (isCurrentlyTrainee && isTraineeGroupNameOrGroup(member.homeGroup, sisterGroups)) {
-                    return joinedGroupName;
-                }
-                return member.homeGroup || 'main';
+            const trueOrigin = match[1];
+            // Repair originalHomeGroup in memory if it was corrupted or missing
+            if (!member.originalHomeGroup || member.originalHomeGroup === 'main' || member.originalHomeGroup === member.homeGroup) {
+                member.originalHomeGroup = trueOrigin;
             }
-            // Check if this group name matches any sister group
-            const sg = sisterGroups.find(sg => sg.name === joinedGroupName);
-            if (sg) {
-                if (isTraineeGroupNameOrGroup(sg, sisterGroups)) {
-                    if (isCurrentlyTrainee && isTraineeGroupNameOrGroup(member.homeGroup, sisterGroups)) {
-                        return joinedGroupName;
-                    }
-                    return member.homeGroup || 'main';
-                }
-                return joinedGroupName;
-            }
-            // Otherwise it's the main group
-            return 'main';
+            return trueOrigin;
         }
     }
-    // Fallback: use current homeGroup
-    return member.homeGroup || 'main';
+
+    // 2. Check for a stored original home group if non-default
+    if (member.originalHomeGroup && member.originalHomeGroup !== 'main') {
+        return member.originalHomeGroup;
+    }
+
+    // 3. Fallback: use stored originalHomeGroup or current homeGroup
+    return member.originalHomeGroup || member.homeGroup || 'main';
 };
 
 const applyMemberFilter = (member, filterKey, teams = [], sisterGroups = [], pushedMembers = []) => {
@@ -108,8 +85,8 @@ const applyMemberFilter = (member, filterKey, teams = [], sisterGroups = [], pus
     }
 
     if (filterKey.startsWith('team-')) {
-        const teamId = parseInt(filterKey.replace('team-', ''), 10);
-        const team = teams.find(t => t.id === teamId);
+        const teamIdStr = filterKey.replace('team-', '');
+        const team = teams.find(t => String(t.id) === String(teamIdStr));
         if (!team) return false;
         return (team.members || []).map(String).includes(String(member.rosterId || member.id));
     }
@@ -3016,13 +2993,16 @@ const App = () => {
                 return `${first[Math.floor(Math.random() * first.length)]} ${last[Math.floor(Math.random() * last.length)]}`;
             };
 
+            const aceName = (rivalPartner.ace && rivalPartner.ace.name) ? rivalPartner.ace.name : generateRandomRivalName();
+            const aceFans = (rivalPartner.ace && typeof rivalPartner.ace.fans === 'number') ? rivalPartner.ace.fans : 250000;
+
             const rivalAce = {
                 id: `rival-${rivalPartner.id}-ace`,
                 rosterId: `rival-${rivalPartner.id}-ace`,
-                name: `${rivalPartner.ace.name} (${rivalPartner.name})`,
+                name: `${aceName} (${rivalPartner.name})`,
                 age: 20,
                 singing: 95, dancing: 92, visual: 98, variety: 75, charisma: 90, intelligence: 80, morale: 100, isAvailable: true,
-                fans: { hardcore: Math.floor((rivalPartner.ace.fans || 250000) * 0.4), casual: Math.ceil((rivalPartner.ace.fans || 250000) * 0.6) },
+                fans: { hardcore: Math.floor(aceFans * 0.4), casual: Math.ceil(aceFans * 0.6) },
                 homeGroup: rivalPartner.name,
                 isSisterMember: true,
                 displayGroupName: rivalPartner.name,
@@ -5556,28 +5536,8 @@ const App = () => {
                 if (!member || !member.generation) return acc;
 
                 // --- START: Logic to find member's original group ---
-                let groupNameForGen;
-
-                // Check the stored originalHomeGroup first (set at recruitment time)
-                if (member.originalHomeGroup) {
-                    groupNameForGen = member.originalHomeGroup === 'main' ? groupName : member.originalHomeGroup;
-                }
-
-                // Fallback: Find the first "Joined" event in the member's history to determine their origin group.
-                if (!groupNameForGen) {
-                    const joinEvent = (member.teamHistory || []).find(e => e.event && e.event.includes('Joined'));
-                    if (joinEvent) {
-                        const match = joinEvent.event.match(/Joined (.*?) as/);
-                        if (match && match[1]) {
-                            groupNameForGen = match[1];
-                        }
-                    }
-                }
-
-                // Fallback for older data or members without a clear "Joined" event
-                if (!groupNameForGen) {
-                    groupNameForGen = member.homeGroup === 'main' ? groupName : (member.homeGroup || groupName);
-                }
+                let rawGroup = getOriginalHomeGroup(member, sisterGroups);
+                let groupNameForGen = rawGroup === 'main' ? groupName : rawGroup;
                 // --- END: Logic to find member's original group ---
 
                 const gen = member.generation;
@@ -14000,7 +13960,7 @@ const App = () => {
                                 <div>
                                     <p className="font-semibold text-sm">{member.name}</p>
                                     <p className="text-xs text-gray-500 dark:text-gray-400">
-                                        Vo: {Math.round(member.singing)} Da: {Math.round(member.dancing)} Vi: {Math.round(member.visual)} | Fans: {((member.fans.hardcore || 0) + (member.fans.casual || 0)).toLocaleString()}
+                                        Vo: {Math.round(member.singing || member.vocal || 70)} Da: {Math.round(member.dancing || member.dance || 70)} Vi: {Math.round(member.visual || 70)} | Fans: {(typeof member.fans === 'number' ? (isNaN(member.fans) ? 0 : member.fans) : ((member.fans?.hardcore || 0) + (member.fans?.casual || 0))).toLocaleString()}
                                     </p>
                                 </div>
                                 <input type="checkbox" checked={selectedRivalMembers.some(m => m.id === member.id)} readOnly className="form-checkbox h-4 w-4 text-blue-600" />
@@ -14702,22 +14662,8 @@ const App = () => {
 
         // 2. Group by generation, making a unique key for each group
         const membersByGeneration = allTimeMembers.reduce((acc, member) => {
-            let groupNameForGen;
-            // Find the first "Joined" event in the member's history
-            const joinEvent = (member.teamHistory || []).find(e => e.event && e.event.includes('Joined'));
-
-            if (joinEvent) {
-                // Parse the group name from an event string like "Joined AKB48 as..."
-                const match = joinEvent.event.match(/Joined (.*?) as/);
-                if (match && match[1]) {
-                    groupNameForGen = match[1];
-                }
-            }
-
-            // If we couldn't find the original group (for old data), use the current homeGroup as a fallback
-            if (!groupNameForGen) {
-                groupNameForGen = member.homeGroup === 'main' ? groupName : (member.homeGroup || groupName);
-            }
+            let rawGroup = getOriginalHomeGroup(member, sisterGroups);
+            let groupNameForGen = rawGroup === 'main' ? groupName : rawGroup;
 
             const gen = member.generation || 'Unknown';
             const generationKey = `${groupNameForGen} - ${gen}`;
@@ -14731,7 +14677,7 @@ const App = () => {
             }
             acc[generationKey].allMembers.push(member);
 
-            // Now use the already-declared joinEvent to find the join week
+            const joinEvent = (member.teamHistory || []).find(e => e && e.event && e.event.includes('Joined'));
             if (joinEvent && joinEvent.week < acc[generationKey].joinWeek) {
                 acc[generationKey].joinWeek = joinEvent.week;
             }

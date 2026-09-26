@@ -3849,12 +3849,10 @@ export const useIdolManager = () => {
             case 'Korea':
             case 'Seoul':
                 return generateKoreanMemberName();
-            default: // Fallback to Japanese names
+            default: {
                 let { first: shuffledFirst, last: shuffledLast } = shuffledNames;
-                let currentIndex = nameIndex + indexOffset;
 
-                // Check if lists are empty or if we've used all names
-                if (shuffledFirst.length === 0 || currentIndex >= shuffledFirst.length) {
+                if (!shuffledFirst || shuffledFirst.length === 0) {
                     const firstNames = [
                         'Yui', 'Sakura', 'Miku', 'Haruka', 'Rina', 'Nana', 'Akari', 'Yuki', 'Aoi', 'Hana',
                         'Karin', 'Miyu', 'Saki', 'Hinata', 'Riko', 'Ayaka', 'Mei', 'Eri', 'Mio', 'Yuna',
@@ -3965,15 +3963,14 @@ export const useIdolManager = () => {
 
                     shuffledFirst = [...firstNames].sort(() => 0.5 - Math.random());
                     shuffledLast = [...lastNames].sort(() => 0.5 - Math.random());
-
                     setShuffledNames({ first: shuffledFirst, last: shuffledLast });
-                    currentIndex = 0;
                 }
 
-                const firstName = shuffledFirst[currentIndex];
-                const lastName = shuffledLast[currentIndex % shuffledLast.length];
+                const randomFirst = shuffledFirst[Math.floor(Math.random() * shuffledFirst.length)];
+                const randomLast = shuffledLast[Math.floor(Math.random() * shuffledLast.length)];
 
-                return `${firstName} ${lastName}`;
+                return `${randomFirst} ${randomLast}`;
+            }
         }
     };
     const generateUnitCandidates = (count = 5) => {
@@ -4026,17 +4023,54 @@ export const useIdolManager = () => {
 
             const archetypes = ['Powerhouse', 'Visual Queens', 'Critical Darlings', 'Rising Stars'];
             const initialRivals = shuffledNames.slice(0, 3).map((name, index) => {
+                const rivalId = index + 1;
+                const membersCount = 8 + Math.floor(Math.random() * 8);
                 const aceName = generateRandomMemberName();
+                const aceFans = 30000 + Math.floor(Math.random() * 50000);
+
+                const members = Array.from({ length: membersCount }, (_, i) => {
+                    const isAce = i === 0;
+                    const memberName = isAce ? aceName : generateRandomMemberName('Japan', i);
+                    const memberFans = isAce ? aceFans : 80000 + Math.floor(Math.random() * 50000);
+                    const firstName = memberName.split(' ')[0] || memberName;
+                    const suffixes = ['rin', 'tan', 'chi', 'nyan', 'pyon', 'run', 'non', 'kyun'];
+                    const nickname = `${firstName}-${suffixes[Math.floor(Math.random() * suffixes.length)]}`;
+                    const personalities = ['Cheerful', 'Shy', 'Confident', 'Ambitious', 'Easygoing', 'Energetic', 'Quiet', 'Ice Queen', 'Lone Wolf', 'Rebellious', 'Natural Leader', 'Little Sister', 'Stage Genius'];
+
+                    return {
+                        id: `rival-mem-${rivalId}-${i}-${Date.now()}`,
+                        name: memberName,
+                        age: isAce ? 20 : 16 + Math.floor(Math.random() * 5),
+                        singing: 70 + Math.floor(Math.random() * 25),
+                        dancing: 70 + Math.floor(Math.random() * 25),
+                        visual: 70 + Math.floor(Math.random() * 25),
+                        variety: 50 + Math.floor(Math.random() * 25),
+                        charisma: 65 + Math.floor(Math.random() * 25),
+                        intelligence: 60 + Math.floor(Math.random() * 25),
+                        fans: { hardcore: Math.floor(memberFans * 0.5), casual: Math.ceil(memberFans * 0.5) },
+                        hometown: generateRandomHometown(),
+                        personality: personalities[Math.floor(Math.random() * personalities.length)],
+                        nickname: nickname,
+                        joinWeek: 1,
+                        isAce: isAce
+                    };
+                });
+
+                const totalFans = members.reduce((sum, m) => sum + (m.fans.hardcore + m.fans.casual), 0);
+                const aceMember = members[0];
+
                 return {
-                    id: index + 1,
+                    id: rivalId,
                     name: name,
-                    fans: 10000 + Math.floor(Math.random() * 15000),
-                    membersCount: 8 + Math.floor(Math.random() * 8),
+                    fans: totalFans,
+                    membersCount: members.length,
+                    members: members,
+                    aceId: aceMember.id,
                     songs: [],
                     archetype: archetypes[Math.floor(Math.random() * archetypes.length)],
                     ace: {
-                        name: aceName,
-                        fans: 3000 + Math.floor(Math.random() * 5000)
+                        name: aceMember.name,
+                        fans: aceMember.fans.hardcore + aceMember.fans.casual
                     },
                     aggression: Math.floor(Math.random() * 50) + 25, // 25-75
                     history: [{ week: 1, event: `Formed as a new rival group.` }]
@@ -7193,7 +7227,7 @@ export const useIdolManager = () => {
                 const exchangeStudentId = String(ex.member.rosterId || ex.member.id);
                 const uniqueKey = getElectionMemberUniqueKey(ex.member);
                 const result = (uniqueKey ? resultMap.get(uniqueKey) : null)
-                    || resultMap.get(exchangeStudentId) 
+                    || resultMap.get(exchangeStudentId)
                     || (ex.member.name ? resultMap.get(`name:${ex.member.name.trim()}`) : null);
 
                 if (result) {
@@ -16019,9 +16053,11 @@ export const useIdolManager = () => {
                 ...originalMember,
                 id: newId,
                 homeGroup: 'main',
-                originalHomeGroup: 'main',
+                originalHomeGroup: originalMember.originalHomeGroup || originalMember.homeGroup || 'main',
                 isSister: false,
-                groupId: undefined,
+                isSisterMember: false,
+                displayGroupName: groupName,
+                groupId: 'main',
                 kenninGroups: [],
                 concurrentTeams: [],
                 kennin: undefined,
@@ -16052,7 +16088,7 @@ export const useIdolManager = () => {
             const promotedMember = {
                 ...originalMember,
                 homeGroup: parentSg.name,
-                originalHomeGroup: parentSg.name,
+                originalHomeGroup: originalMember.originalHomeGroup || originalMember.homeGroup || parentSg.name,
                 isSister: true,
                 groupId: parentSg.id,
                 kenninGroups: [],
@@ -16412,15 +16448,46 @@ export const useIdolManager = () => {
             if (teamObj) targetTeamName = teamObj.name;
         }
 
-        const idsToPromote = memberIds.map(id => String(id));
+        const idsToPromote = new Set(memberIds.map(id => String(id)));
         const promotedNames = [];
         const idsToRemoveFromTeams = new Set();
         const idsToAddToTargetTeam = [];
         const idChangeMap = new Map();
 
-        const processMemberPromotion = (targetMember, location, sgIdx = -1) => {
+        let newMembers = [...members];
+        let newSisterGroups = sisterGroups.map(sg => ({ ...sg, members: [...(sg.members || [])] }));
+
+        idsToPromote.forEach(mId => {
+            let targetMember = null;
+            let sourceType = null; // 'main' or 'sister'
+            let sourceSgIdx = -1;
+            let sourceMemberIdx = -1;
+
+            // 1. Search in main group members
+            const mainIdx = newMembers.findIndex(m => String(m.id) === mId || String(m.rosterId) === mId);
+            if (mainIdx !== -1) {
+                targetMember = newMembers[mainIdx];
+                sourceType = 'main';
+                sourceMemberIdx = mainIdx;
+            } else {
+                // 2. Search in sister groups
+                for (let sIdx = 0; sIdx < newSisterGroups.length; sIdx++) {
+                    const sg = newSisterGroups[sIdx];
+                    const mIdx = (sg.members || []).findIndex(m => String(m.id) === mId || String(m.rosterId) === mId || `sg-${sg.id}-${m.id}` === mId);
+                    if (mIdx !== -1) {
+                        targetMember = sg.members[mIdx];
+                        sourceType = 'sister';
+                        sourceSgIdx = sIdx;
+                        sourceMemberIdx = mIdx;
+                        break;
+                    }
+                }
+            }
+
+            if (!targetMember) return;
+
             const oldId = String(targetMember.id);
-            const oldRosterId = targetMember.rosterId ? String(targetMember.rosterId) : (sgIdx !== -1 && sisterGroups[sgIdx] ? `sg-${sisterGroups[sgIdx].id}-${oldId}` : oldId);
+            const oldRosterId = targetMember.rosterId ? String(targetMember.rosterId) : (sourceType === 'sister' ? `sg-${newSisterGroups[sourceSgIdx].id}-${oldId}` : oldId);
             const newRosterId = isMainGroup ? oldId : (targetGroupObj ? `sg-${targetGroupObj.id}-${oldId}` : `sg-${targetGroupId}-${oldId}`);
 
             if (oldRosterId !== newRosterId) {
@@ -16429,8 +16496,9 @@ export const useIdolManager = () => {
 
             idsToRemoveFromTeams.add(oldId);
             if (oldRosterId) idsToRemoveFromTeams.add(oldRosterId);
-            if (sgIdx !== -1 && sisterGroups[sgIdx]) {
-                idsToRemoveFromTeams.add(`sg-${sisterGroups[sgIdx].id}-${oldId}`);
+            if (newRosterId) idsToRemoveFromTeams.add(newRosterId);
+            if (sourceType === 'sister' && sourceSgIdx !== -1) {
+                idsToRemoveFromTeams.add(`sg-${newSisterGroups[sourceSgIdx].id}-${oldId}`);
             }
 
             promotedNames.push(targetMember.name);
@@ -16440,15 +16508,23 @@ export const useIdolManager = () => {
                 event: `🌟 Promoted to official member of ${targetGroupName}${targetTeamName ? ' (Team ' + targetTeamName + ')' : ''}!`
             };
 
+            const origJoinMatch = (targetMember.teamHistory || []).find(e => e && e.event && e.event.includes('Joined'))?.event?.match(/Joined (.*?) as/);
+            const trueOriginalHomeGroup = (origJoinMatch && origJoinMatch[1]) || targetMember.originalHomeGroup || targetMember.homeGroup || (isMainGroup ? 'main' : targetGroupName);
+
             const updatedMember = {
                 ...targetMember,
+                id: targetMember.id,
                 rosterId: newRosterId,
                 isTrainee: false,
                 position: 'regular',
-                homeGroup: targetGroupName,
-                originalHomeGroup: isMainGroup ? 'main' : targetGroupName,
+                homeGroup: isMainGroup ? 'main' : targetGroupName,
+                originalHomeGroup: trueOriginalHomeGroup,
                 teamId: targetTeamId || null,
                 teamName: targetTeamName || null,
+                isSisterMember: !isMainGroup,
+                isSister: !isMainGroup,
+                groupId: isMainGroup ? 'main' : (targetGroupObj ? targetGroupObj.id : targetGroupId),
+                displayGroupName: isMainGroup ? groupName : targetGroupName,
                 promotedWeek: week,
                 morale: Math.min(100, (targetMember.morale || 80) + 20),
                 stamina: Math.min(100, (targetMember.stamina || 80) + 10),
@@ -16460,75 +16536,35 @@ export const useIdolManager = () => {
             };
 
             if (targetTeamId) {
-                if (isMainGroup) {
-                    idsToAddToTargetTeam.push(String(updatedMember.id));
-                } else {
-                    const sgId = targetGroupObj ? targetGroupObj.id : targetGroupId;
-                    idsToAddToTargetTeam.push(`sg-${sgId}-${updatedMember.id}`);
-                }
+                idsToAddToTargetTeam.push(String(newRosterId));
             }
 
-            return updatedMember;
-        };
+            // Remove from source location
+            if (sourceType === 'main') {
+                newMembers = newMembers.filter((_, i) => i !== sourceMemberIdx);
+            } else if (sourceType === 'sister' && sourceSgIdx !== -1) {
+                newSisterGroups[sourceSgIdx].members = newSisterGroups[sourceSgIdx].members.filter((_, i) => i !== sourceMemberIdx);
+            }
 
-        let newMembers = [...members];
-        let newSisterGroups = [...sisterGroups];
-
-        idsToPromote.forEach(mId => {
-            let memberIdx = newMembers.findIndex(m => String(m.id) === mId || String(m.rosterId) === mId);
-            if (memberIdx !== -1) {
-                const targetMember = newMembers[memberIdx];
-                if (!targetMember.isTrainee) return;
-                const updated = processMemberPromotion(targetMember, 'main');
-                if (isMainGroup) {
-                    newMembers[memberIdx] = updated;
-                } else {
-                    newMembers.splice(memberIdx, 1);
-                    newSisterGroups = newSisterGroups.map(sg => (String(sg.id) === String(targetGroupId) || sg.name === targetGroupId) ? {
-                        ...sg,
-                        members: [...(sg.members || []), updated]
-                    } : sg);
-                }
+            // Add to destination location
+            if (isMainGroup) {
+                newMembers.push(updatedMember);
             } else {
-                newSisterGroups.forEach((sg, idx) => {
-                    const sgMemberIdx = (sg.members || []).findIndex(m => String(m.id) === mId || String(m.rosterId) === mId || `sg-${sg.id}-${m.id}` === mId);
-                    if (sgMemberIdx !== -1) {
-                        const targetMember = sg.members[sgMemberIdx];
-                        if (!targetMember.isTrainee) return;
-                        const updated = processMemberPromotion(targetMember, 'sister', idx);
-                        if (isMainGroup) {
-                            newSisterGroups[idx] = {
-                                ...sg,
-                                members: sg.members.filter((_, i) => i !== sgMemberIdx)
-                            };
-                            newMembers.push(updated);
-                        } else if (String(sg.id) === String(targetGroupId) || sg.name === targetGroupId) {
-                            const updatedMembers = [...sg.members];
-                            updatedMembers[sgMemberIdx] = updated;
-                            newSisterGroups[idx] = { ...sg, members: updatedMembers };
-                        } else {
-                            newSisterGroups[idx] = {
-                                ...sg,
-                                members: sg.members.filter((_, i) => i !== sgMemberIdx)
-                            };
-                            newSisterGroups = newSisterGroups.map((otherSg) => (String(otherSg.id) === String(targetGroupId) || otherSg.name === targetGroupId) ? {
-                                ...otherSg,
-                                members: [...(otherSg.members || []), updated]
-                            } : otherSg);
-                        }
-                    }
-                });
+                const destSgIdx = newSisterGroups.findIndex(sg => String(sg.id) === String(targetGroupId) || sg.name === targetGroupId);
+                if (destSgIdx !== -1) {
+                    newSisterGroups[destSgIdx].members.push(updatedMember);
+                }
             }
         });
 
         setMembers(newMembers);
         setSisterGroups(newSisterGroups);
 
-        if (idsToRemoveFromTeams.size > 0) {
+        if (idsToRemoveFromTeams.size > 0 || targetTeamId) {
             setTeams(prevTeams => prevTeams.map(t => {
                 const cleanedMembers = (t.members || []).filter(id => !idsToRemoveFromTeams.has(String(id)));
                 if (targetTeamId && String(t.id) === String(targetTeamId)) {
-                    const uniqueNewIds = idsToAddToTargetTeam.filter(id => !cleanedMembers.includes(id));
+                    const uniqueNewIds = idsToAddToTargetTeam.filter(id => !cleanedMembers.includes(String(id)));
                     return {
                         ...t,
                         members: [...cleanedMembers, ...uniqueNewIds],
@@ -18600,16 +18636,88 @@ export const useIdolManager = () => {
         });
     };
 
+    const getMemberTotalFans = (m) => {
+        if (!m || m.fans === undefined || m.fans === null) return 0;
+        if (typeof m.fans === 'number') return isNaN(m.fans) ? 0 : m.fans;
+        const hardcore = typeof m.fans.hardcore === 'number' && !isNaN(m.fans.hardcore) ? m.fans.hardcore : 0;
+        const casual = typeof m.fans.casual === 'number' && !isNaN(m.fans.casual) ? m.fans.casual : 0;
+        return hardcore + casual;
+    };
+
+    const addFansToMember = (m, amount) => {
+        if (!m || isNaN(amount) || amount <= 0) return;
+        if (typeof m.fans === 'object' && m.fans !== null && !Array.isArray(m.fans)) {
+            const hardcoreAdd = Math.floor(amount * 0.5);
+            const casualAdd = Math.ceil(amount * 0.5);
+            m.fans.hardcore = (typeof m.fans.hardcore === 'number' && !isNaN(m.fans.hardcore) ? m.fans.hardcore : 0) + hardcoreAdd;
+            m.fans.casual = (typeof m.fans.casual === 'number' && !isNaN(m.fans.casual) ? m.fans.casual : 0) + casualAdd;
+        } else {
+            const current = typeof m.fans === 'number' && !isNaN(m.fans) ? m.fans : 0;
+            const total = current + amount;
+            m.fans = { hardcore: Math.floor(total * 0.5), casual: Math.ceil(total * 0.5) };
+        }
+    };
+
     const simulateRivalActions = (currentRivals, currentWeek, addNotificationInLoop) => {
         let updatedRivals = currentRivals.map(rival => {
             let newRival = { ...rival, history: rival.history || [], members: rival.members || [] };
+
+            if (!newRival.members || newRival.members.length === 0) {
+                const count = newRival.membersCount || 12;
+                const aceName = (newRival.ace && newRival.ace.name) ? newRival.ace.name : generateRandomMemberName();
+                const aceFans = (newRival.ace && newRival.ace.fans) ? newRival.ace.fans : 100000;
+
+                newRival.members = Array.from({ length: count }, (_, i) => {
+                    const isAce = i === 0;
+                    const memberName = isAce ? aceName : generateRandomMemberName('Japan', i);
+                    const memberFans = isAce ? aceFans : 80000 + Math.floor(Math.random() * 50000);
+                    const firstName = memberName.split(' ')[0] || memberName;
+                    const suffixes = ['rin', 'tan', 'chi', 'nyan', 'pyon', 'run', 'non', 'kyun'];
+                    const nickname = `${firstName}-${suffixes[Math.floor(Math.random() * suffixes.length)]}`;
+                    const personalities = ['Cheerful', 'Shy', 'Confident', 'Ambitious', 'Easygoing', 'Energetic', 'Quiet', 'Ice Queen', 'Lone Wolf', 'Rebellious', 'Natural Leader', 'Little Sister', 'Stage Genius'];
+
+                    return {
+                        id: `rival-mem-${newRival.id}-${i}-${Date.now()}`,
+                        name: memberName,
+                        age: isAce ? 20 : 16 + Math.floor(Math.random() * 5),
+                        singing: 70 + Math.floor(Math.random() * 25),
+                        dancing: 70 + Math.floor(Math.random() * 25),
+                        visual: 70 + Math.floor(Math.random() * 25),
+                        variety: 50 + Math.floor(Math.random() * 25),
+                        charisma: 65 + Math.floor(Math.random() * 25),
+                        intelligence: 60 + Math.floor(Math.random() * 25),
+                        fans: typeof memberFans === 'number' ? { hardcore: Math.floor(memberFans * 0.5), casual: Math.ceil(memberFans * 0.5) } : memberFans,
+                        hometown: generateRandomHometown(),
+                        personality: personalities[Math.floor(Math.random() * personalities.length)],
+                        nickname: nickname,
+                        joinWeek: currentWeek,
+                        isAce: isAce
+                    };
+                });
+                newRival.aceId = newRival.members[0].id;
+                newRival.membersCount = newRival.members.length;
+            }
+
+            // Ensure all existing members have stats and proper fans object
+            newRival.members.forEach(member => {
+                if (typeof member.singing !== 'number' || isNaN(member.singing)) member.singing = 70 + Math.floor(Math.random() * 20);
+                if (typeof member.dancing !== 'number' || isNaN(member.dancing)) member.dancing = 70 + Math.floor(Math.random() * 20);
+                if (typeof member.visual !== 'number' || isNaN(member.visual)) member.visual = 70 + Math.floor(Math.random() * 20);
+                if (typeof member.variety !== 'number' || isNaN(member.variety)) member.variety = 50 + Math.floor(Math.random() * 20);
+                if (typeof member.charisma !== 'number' || isNaN(member.charisma)) member.charisma = 60 + Math.floor(Math.random() * 20);
+                if (typeof member.intelligence !== 'number' || isNaN(member.intelligence)) member.intelligence = 60 + Math.floor(Math.random() * 20);
+                if (typeof member.fans !== 'object' || member.fans === null) {
+                    const total = typeof member.fans === 'number' && !isNaN(member.fans) ? member.fans : 80000;
+                    member.fans = { hardcore: Math.floor(total * 0.5), casual: Math.ceil(total * 0.5) };
+                }
+            });
 
             // --- Yearly Aging and Graduation Check ---
             if (currentWeek > 1 && currentWeek % 52 === 0) {
                 let graduatedThisYear = [];
                 newRival.members.forEach(member => {
                     member.age += 1;
-                    const careerLength = Math.floor((currentWeek - member.joinWeek) / 52);
+                    const careerLength = Math.floor((currentWeek - (member.joinWeek || 1)) / 52);
                     let gradChance = 0;
                     if (member.age > 24 || careerLength > 6) {
                         gradChance = (member.age - 24) * 0.05 + (careerLength - 6) * 0.1;
@@ -18635,8 +18743,9 @@ export const useIdolManager = () => {
 
                     // Check for Ace graduation
                     if (graduatedThisYear.some(g => g.id === newRival.aceId) && newRival.members.length > 0) {
-                        const newAce = newRival.members.sort((a, b) => b.fans - a.fans)[0];
+                        const newAce = [...newRival.members].sort((a, b) => getMemberTotalFans(b) - getMemberTotalFans(a))[0];
                         newRival.aceId = newAce.id;
+                        newRival.ace = { name: newAce.name, fans: getMemberTotalFans(newAce) };
                         const aceEvent = { week: currentWeek, event: `${newAce.name} has been promoted to the new Ace.` };
                         newRival.history.push(aceEvent);
                         addNotificationInLoop({
@@ -18652,12 +18761,27 @@ export const useIdolManager = () => {
             if (rival.archetype === 'Rising Stars') recruitmentChance = 0.08;
             if (Math.random() < recruitmentChance && newRival.members.length < 25) {
                 const newMemberName = generateRandomMemberName();
+                const firstName = newMemberName.split(' ')[0] || newMemberName;
+                const suffixes = ['rin', 'tan', 'chi', 'nyan', 'pyon', 'run', 'non', 'kyun'];
+                const nickname = `${firstName}-${suffixes[Math.floor(Math.random() * suffixes.length)]}`;
+                const personalities = ['Cheerful', 'Shy', 'Confident', 'Ambitious', 'Easygoing', 'Energetic', 'Quiet', 'Ice Queen', 'Lone Wolf', 'Rebellious', 'Natural Leader', 'Little Sister', 'Stage Genius'];
+                const memberFans = 1000 + Math.floor(Math.random() * 4000);
+
                 const newMember = {
-                    id: `rival-${rival.id}-${currentWeek}`,
+                    id: `rival-${rival.id}-${currentWeek}-${Date.now()}`,
                     name: newMemberName,
                     age: 15 + Math.floor(Math.random() * 3),
-                    joinWeek: currentWeek,
-                    fans: 500 + Math.floor(Math.random() * 1000)
+                    singing: 65 + Math.floor(Math.random() * 25),
+                    dancing: 65 + Math.floor(Math.random() * 25),
+                    visual: 65 + Math.floor(Math.random() * 25),
+                    variety: 50 + Math.floor(Math.random() * 25),
+                    charisma: 55 + Math.floor(Math.random() * 25),
+                    intelligence: 55 + Math.floor(Math.random() * 25),
+                    fans: { hardcore: Math.floor(memberFans * 0.5), casual: Math.ceil(memberFans * 0.5) },
+                    hometown: generateRandomHometown(),
+                    personality: personalities[Math.floor(Math.random() * personalities.length)],
+                    nickname: nickname,
+                    joinWeek: currentWeek
                 };
                 newRival.members.push(newMember);
                 const event = { week: currentWeek, event: `Recruited new member: ${newMemberName}` };
@@ -18669,7 +18793,7 @@ export const useIdolManager = () => {
             if (rival.archetype === 'Powerhouse') baseFanGrowth = 0.015;
 
             // Market Saturation to prevent infinite growth
-            let totalFans = newRival.members.reduce((sum, m) => sum + m.fans, 0);
+            let totalFans = newRival.members.reduce((sum, m) => sum + getMemberTotalFans(m), 0);
             if (totalFans > 20000000) {
                 baseFanGrowth *= 0.1; // 90% reduction
             } else if (totalFans > 5000000) {
@@ -18677,13 +18801,12 @@ export const useIdolManager = () => {
             }
 
             // Distribute new fans among members
-            let newFansTotal = 0;
             newRival.members.forEach(member => {
-                const fansForMember = Math.floor(member.fans * baseFanGrowth * (0.5 + Math.random()));
-                member.fans += fansForMember;
-                newFansTotal += fansForMember;
+                const currentFans = getMemberTotalFans(member);
+                const fansForMember = Math.floor(currentFans * baseFanGrowth * (0.5 + Math.random()));
+                addFansToMember(member, fansForMember);
             });
-            newRival.fans = newRival.members.reduce((sum, m) => sum + m.fans, 0);
+            newRival.fans = newRival.members.reduce((sum, m) => sum + getMemberTotalFans(m), 0);
 
 
             // --- Other actions (Song release, etc.) ---
@@ -18723,7 +18846,6 @@ export const useIdolManager = () => {
         });
 
         // Handle new rival group appearance
-        // (This part remains the same)
         const rivalNames = [
             'Lunar Princesses', 'Project Nova', 'Sapphire Kiss', 'Onyx7', 'Solstice',
             'Equinox', 'Galaxy Girls', 'Cosmic Charm', 'Nebula Stars', 'Pixel Pop',
@@ -18751,15 +18873,36 @@ export const useIdolManager = () => {
             if (newRivalName) {
                 const archetypes = ['Powerhouse', 'Visual Queens', 'Critical Darlings', 'Rising Stars'];
                 const membersCount = 8 + Math.floor(Math.random() * 8);
-                const members = Array.from({ length: membersCount }, (_, i) => ({
-                    id: `rival-${updatedRivals.length}-${i}`,
-                    name: generateRandomMemberName(),
-                    age: 16 + Math.floor(Math.random() * 5),
-                    joinWeek: currentWeek,
-                    fans: 1000 + Math.floor(Math.random() * 4000),
-                }));
-                const ace = members.sort((a, b) => b.fans - a.fans)[0];
-                const totalFans = members.reduce((sum, m) => sum + m.fans, 0);
+                const personalities = ['Cheerful', 'Shy', 'Confident', 'Ambitious', 'Easygoing', 'Energetic', 'Quiet', 'Ice Queen', 'Lone Wolf', 'Rebellious', 'Natural Leader', 'Little Sister', 'Stage Genius'];
+
+                const members = Array.from({ length: membersCount }, (_, i) => {
+                    const isAce = i === 0;
+                    const memberName = generateRandomMemberName();
+                    const memberFans = isAce ? 40000 : 1000 + Math.floor(Math.random() * 4000);
+                    const firstName = memberName.split(' ')[0] || memberName;
+                    const suffixes = ['rin', 'tan', 'chi', 'nyan', 'pyon', 'run', 'non', 'kyun'];
+                    const nickname = `${firstName}-${suffixes[Math.floor(Math.random() * suffixes.length)]}`;
+
+                    return {
+                        id: `rival-${updatedRivals.length}-${i}-${Date.now()}`,
+                        name: memberName,
+                        age: 16 + Math.floor(Math.random() * 5),
+                        singing: 70 + Math.floor(Math.random() * 20),
+                        dancing: 70 + Math.floor(Math.random() * 20),
+                        visual: 70 + Math.floor(Math.random() * 20),
+                        variety: 50 + Math.floor(Math.random() * 20),
+                        charisma: 60 + Math.floor(Math.random() * 20),
+                        intelligence: 60 + Math.floor(Math.random() * 20),
+                        fans: { hardcore: Math.floor(memberFans * 0.5), casual: Math.ceil(memberFans * 0.5) },
+                        hometown: generateRandomHometown(),
+                        personality: personalities[Math.floor(Math.random() * personalities.length)],
+                        nickname: nickname,
+                        joinWeek: currentWeek,
+                        isAce: isAce
+                    };
+                });
+                const ace = [...members].sort((a, b) => getMemberTotalFans(b) - getMemberTotalFans(a))[0];
+                const totalFans = members.reduce((sum, m) => sum + getMemberTotalFans(m), 0);
 
                 updatedRivals.push({
                     id: Date.now(),
@@ -18768,6 +18911,7 @@ export const useIdolManager = () => {
                     membersCount: members.length,
                     members: members,
                     aceId: ace.id,
+                    ace: { name: ace.name, fans: getMemberTotalFans(ace) },
                     songs: [],
                     archetype: archetypes[Math.floor(Math.random() * archetypes.length)],
                     aggression: Math.floor(Math.random() * 50) + 25,
@@ -18885,41 +19029,101 @@ export const useIdolManager = () => {
     };
 
 
-    const startExchangeProgram = (rivalId) => {
-        const rival = rivalGroups.find(r => r.id === parseInt(rivalId, 10));
-        if (!rival) return;
+    const ensureUniqueRivalRoster = (roster, location = 'Japan') => {
+        if (!roster || !Array.isArray(roster)) return { roster: [], hasDuplicates: false };
+        const seenNames = new Set();
+        let hasDuplicates = false;
 
-        // --- REQUIREMENTS DISABLED FOR TESTING ---
-
-        // --- GENERATE A TEMPORARY ROSTER FOR THE RIVAL ---
-        const rivalRoster = Array.from({ length: rival.membersCount || 16 }, (_, i) => {
-            const isAce = i === 0;
-            const memberName = isAce ? rival.ace.name : generateRandomMemberName();
-            const memberFans = isAce ? rival.ace.fans : 100000 + Math.floor(Math.random() * 50000);
-
-            const firstName = memberName.split(' ')[0];
-            const suffixes = ['rin', 'tan', 'chi', 'nyan', 'pyon', 'run', 'non', 'kyun'];
-            const nickname = `${firstName}-${suffixes[Math.floor(Math.random() * suffixes.length)]}`;
-            const personalities = ['Cheerful', 'Shy', 'Confident', 'Ambitious', 'Easygoing', 'Energetic', 'Quiet', 'Ice Queen', 'Lone Wolf', 'Rebellious', 'Natural Leader', 'Little Sister', 'Stage Genius'];
-
-            return {
-                id: `rival-temp-${rival.id}-${i}`,
-                name: memberName,
-                age: 18 + Math.floor(Math.random() * 5),
-                singing: 70 + Math.floor(Math.random() * 25),
-                dancing: 70 + Math.floor(Math.random() * 25),
-                visual: 70 + Math.floor(Math.random() * 25),
-                variety: 50 + Math.floor(Math.random() * 25),
-                charisma: 65 + Math.floor(Math.random() * 25),
-                intelligence: 60 + Math.floor(Math.random() * 25),
-                fans: { hardcore: Math.floor(memberFans * 0.5), casual: Math.floor(memberFans * 0.5) },
-                hometown: generateRandomHometown(),
-                personality: personalities[Math.floor(Math.random() * personalities.length)],
-                nickname: nickname
-            };
+        const newRoster = roster.map((member, index) => {
+            if (!member.name || seenNames.has(member.name)) {
+                hasDuplicates = true;
+                let newName = generateRandomMemberName(location, index);
+                let attempts = 0;
+                while (seenNames.has(newName) && attempts < 100) {
+                    attempts++;
+                    newName = generateRandomMemberName(location, index + attempts);
+                }
+                seenNames.add(newName);
+                const firstName = newName.split(' ')[0] || newName;
+                const suffixes = ['rin', 'tan', 'chi', 'nyan', 'pyon', 'run', 'non', 'kyun'];
+                const nickname = `${firstName}-${suffixes[Math.floor(Math.random() * suffixes.length)]}`;
+                return {
+                    ...member,
+                    name: newName,
+                    nickname: member.nickname || nickname
+                };
+            }
+            seenNames.add(member.name);
+            return member;
         });
 
-        // --- OPEN THE MODAL WITH THE GENERATED DATA ---
+        return { roster: newRoster, hasDuplicates };
+    };
+
+    const startExchangeProgram = (rivalId) => {
+        const rival = rivalGroups.find(r => String(r.id) === String(rivalId));
+        if (!rival) return;
+
+        let rivalRoster = rival.members || [];
+
+        if (rivalRoster.length === 0) {
+            const count = rival.membersCount || 12;
+            const aceName = (rival.ace && rival.ace.name) ? rival.ace.name : generateRandomMemberName();
+            const aceFans = (rival.ace && (rival.ace.fans !== undefined)) ? rival.ace.fans : 100000;
+
+            rivalRoster = Array.from({ length: count }, (_, i) => {
+                const isAce = i === 0;
+                const memberName = isAce ? aceName : generateRandomMemberName('Japan', i);
+                const memberFans = isAce ? aceFans : 80000 + Math.floor(Math.random() * 50000);
+
+                const firstName = memberName.split(' ')[0] || memberName;
+                const suffixes = ['rin', 'tan', 'chi', 'nyan', 'pyon', 'run', 'non', 'kyun'];
+                const nickname = `${firstName}-${suffixes[Math.floor(Math.random() * suffixes.length)]}`;
+                const personalities = ['Cheerful', 'Shy', 'Confident', 'Ambitious', 'Easygoing', 'Energetic', 'Quiet', 'Ice Queen', 'Lone Wolf', 'Rebellious', 'Natural Leader', 'Little Sister', 'Stage Genius'];
+
+                return {
+                    id: `rival-mem-${rival.id}-${i}-${Date.now()}`,
+                    name: memberName,
+                    age: isAce ? 20 : 16 + Math.floor(Math.random() * 5),
+                    singing: 70 + Math.floor(Math.random() * 25),
+                    dancing: 70 + Math.floor(Math.random() * 25),
+                    visual: 70 + Math.floor(Math.random() * 25),
+                    variety: 50 + Math.floor(Math.random() * 25),
+                    charisma: 65 + Math.floor(Math.random() * 25),
+                    intelligence: 60 + Math.floor(Math.random() * 25),
+                    fans: typeof memberFans === 'number' ? { hardcore: Math.floor(memberFans * 0.5), casual: Math.ceil(memberFans * 0.5) } : memberFans,
+                    hometown: generateRandomHometown(),
+                    personality: personalities[Math.floor(Math.random() * personalities.length)],
+                    nickname: nickname,
+                    joinWeek: 1,
+                    isAce: isAce
+                };
+            });
+        }
+
+        // Deduplicate any repeated names from loaded save data
+        const { roster: cleanedRoster, hasDuplicates } = ensureUniqueRivalRoster(rivalRoster);
+        rivalRoster = cleanedRoster;
+
+        const updatedAce = {
+            name: rivalRoster[0].name,
+            fans: typeof rivalRoster[0].fans === 'number' ? rivalRoster[0].fans : ((rivalRoster[0].fans?.hardcore || 0) + (rivalRoster[0].fans?.casual || 0))
+        };
+
+        setRivalGroups(prev => prev.map(r => String(r.id) === String(rival.id) ? {
+            ...r,
+            members: rivalRoster,
+            membersCount: rivalRoster.length,
+            ace: updatedAce,
+            aceId: rivalRoster[0].id
+        } : r));
+
+        rival.members = rivalRoster;
+        rival.membersCount = rivalRoster.length;
+        rival.ace = updatedAce;
+        rival.aceId = rivalRoster[0].id;
+
+        // --- OPEN THE MODAL WITH THE PERSISTENT UNIQUE ROSTER ---
         setModalData({ rival, rivalRoster });
         setShowModal('exchangeStudent');
     };
