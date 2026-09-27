@@ -19,7 +19,8 @@ import {
     Film, Plane, GraduationCap, Shirt, Shield, Camera, BarChart3, Bell, X, Edit, Plus, Shuffle,
     User, Check, ChevronDown, ChevronUp, ShoppingBag, Mic, Hand, Lock, Brain, Package,
     Minimize2, Maximize2, Trash2, MapPin, Smile, LogIn, CalendarCheck, Home,
-    ClipboardCheck, Clapperboard, Clock, Moon, BarChart2, FileText, Scissors, Wrench, Layers, Clipboard, Coffee, Bus, PhoneCall, PenTool, Store
+    ClipboardCheck, Clapperboard, Clock, Moon, BarChart2, FileText, Scissors, Wrench, Layers, Clipboard, Coffee, Bus, PhoneCall, PenTool, Store,
+    GitBranch, Flame, Building2
 } from 'lucide-react';
 
 
@@ -147,9 +148,7 @@ const App = () => {
         // Utilities
         startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
         // Logic
-        holdTitleTrackPerformance, holdUnitPerformance, unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, getUnderMembersPool, startUnderTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, executeFanEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek: nextWeekHook, confirmExchangeStudent, confirmCreateSisterGroup, promoteSubgroupMember, promoteTrainee, promoteMultipleTrainees, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining, inflationConfig, outstandingLoan, takeLoan, repayLoanIfPossible,
-
-
+        holdTitleTrackPerformance, holdUnitPerformance, unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, getUnderMembersPool, startUnderTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, executeFanEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek: nextWeekHook, confirmExchangeStudent, confirmCreateSisterGroup, promoteSubgroupMember, promoteTrainee, promoteMultipleTrainees, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, holdFranchiseRivalBattle, holdCrossFranchiseConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining, inflationConfig, outstandingLoan, takeLoan, repayLoanIfPossible,
     } = useIdolManager();
 
     // Local state for start screen inputs (not part of the main game state in the hook)
@@ -1246,12 +1245,19 @@ const App = () => {
         if (!member) return null;
 
         const isMain = targetGroupId === 'main';
-        const availableTeams = isMain
+        const targetGroupObj = isMain ? null : (sisterGroups || []).find(sg => String(sg.id) === String(targetGroupId));
+        const isTargetIndependentOrNoTeams = targetGroupObj && (
+            targetGroupObj.isFranchiseMain ||
+            targetGroupObj.type === 'franchise_main' ||
+            (targetGroupObj.franchiseId && targetGroupObj.franchiseId !== 'main')
+        );
+
+        const availableTeams = isTargetIndependentOrNoTeams ? [] : (isMain
             ? teams
-            : (teams || []).filter(t => String(t.groupId) === String(targetGroupId));
+            : (teams || []).filter(t => String(t.groupId) === String(targetGroupId)));
 
         const handleConfirm = () => {
-            promoteTrainee(member.id, targetGroupId, targetTeamId || null);
+            promoteTrainee(member.id, targetGroupId, isTargetIndependentOrNoTeams ? null : (targetTeamId || null));
             setShowModal(null);
         };
 
@@ -1260,7 +1266,7 @@ const App = () => {
                 <div className="space-y-4">
                     <div className="p-3 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950/40 dark:to-yellow-950/40 border border-amber-200 dark:border-amber-800 rounded-lg text-sm">
                         <p className="text-amber-900 dark:text-amber-200">
-                            Promoting <strong>{member.name}</strong> will grant them official member status, boost morale (+20), recover stamina (+10), increase fans (+1,000), and unlock team assignment, transfers, and kennin!
+                            Promoting <strong>{member.name}</strong> will grant them official regular member status, boost morale (+20), recover stamina (+10), increase fans (+1,000), and unlock full promotion benefits!
                         </p>
                     </div>
 
@@ -1272,28 +1278,45 @@ const App = () => {
                                 setTargetGroupId(e.target.value);
                                 setTargetTeamId('');
                             }}
-                            className="w-full p-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200"
+                            className="w-full p-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 font-semibold"
                         >
-                            <option value="main">{groupName} (Main Group)</option>
-                            {(sisterGroups || []).filter(sg => !sg.isDisbanded).map(sg => (
-                                <option key={sg.id} value={sg.id}>{sg.name}</option>
-                            ))}
+                            <option value="main">👑 {groupName} (Starting Main)</option>
+                            {(sisterGroups || []).filter(sg => !sg.isDisbanded).map(sg => {
+                                const isInd = sg.isFranchiseMain || sg.type === 'franchise_main';
+                                const isChildInd = sg.franchiseId && sg.franchiseId !== 'main';
+                                return (
+                                    <option key={sg.id} value={sg.id}>
+                                        {isInd ? `🏛️ ${sg.name} (Independent Franchise)` : isChildInd ? `🌸 ${sg.name} (Franchise Lineage)` : `🌸 ${sg.name} (${sg.location})`}
+                                    </option>
+                                );
+                            })}
                         </select>
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-semibold mb-1 dark:text-gray-200">Assign to Team (Optional)</label>
-                        <select
-                            value={targetTeamId}
-                            onChange={(e) => setTargetTeamId(e.target.value)}
-                            className="w-full p-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200"
-                        >
-                            <option value="">No Team (Under Member)</option>
-                            {(availableTeams || []).map(team => (
-                                <option key={team.id} value={team.id}>Team {team.name}</option>
-                            ))}
-                        </select>
-                    </div>
+                    {isTargetIndependentOrNoTeams ? (
+                        <div className="p-3 rounded-lg bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 text-xs">
+                            <span className="font-bold text-purple-700 dark:text-purple-300 block mb-0.5">
+                                ✨ Promoted to Official Regular Member
+                            </span>
+                            <p className="text-purple-600 dark:text-purple-400">
+                                This group uses the <strong>Generation System</strong> (No Teams). Idol will be promoted directly as a <strong>Full Official Member</strong> of {targetGroupObj?.name}.
+                            </p>
+                        </div>
+                    ) : (
+                        <div>
+                            <label className="block text-sm font-semibold mb-1 dark:text-gray-200">Assign to Team (Optional)</label>
+                            <select
+                                value={targetTeamId}
+                                onChange={(e) => setTargetTeamId(e.target.value)}
+                                className="w-full p-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200"
+                            >
+                                <option value="">No Team (Under Member)</option>
+                                {(availableTeams || []).map(team => (
+                                    <option key={team.id} value={team.id}>Team {team.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
 
                     <div className="flex justify-end gap-2 pt-3 border-t dark:border-gray-700">
                         <button
@@ -1357,7 +1380,13 @@ const App = () => {
         const targetGroupObj = isMainTarget ? null : sisterGroups.find(g => String(g.id) === String(targetGroupId));
         const targetGroupName = isMainTarget ? groupName : (targetGroupObj ? targetGroupObj.name : 'Selected Group');
 
-        const availableTeamsForTargetGroup = teams.filter(t => {
+        const isTargetIndependentOrNoTeams = targetGroupObj && (
+            targetGroupObj.isFranchiseMain ||
+            targetGroupObj.type === 'franchise_main' ||
+            (targetGroupObj.franchiseId && targetGroupObj.franchiseId !== 'main')
+        );
+
+        const availableTeamsForTargetGroup = isTargetIndependentOrNoTeams ? [] : teams.filter(t => {
             if (isMainTarget) return !t.groupId || String(t.groupId) === 'main';
             return String(t.groupId) === String(targetGroupId);
         });
@@ -1395,7 +1424,7 @@ const App = () => {
 
         const handleConfirmBulkPromotion = () => {
             if (selectedMemberIds.length === 0) return;
-            promoteMultipleTrainees(selectedMemberIds, targetGroupId, targetTeamId || null);
+            promoteMultipleTrainees(selectedMemberIds, targetGroupId, isTargetIndependentOrNoTeams ? null : (targetTeamId || null));
             setShowModal(null);
         };
 
@@ -1403,7 +1432,7 @@ const App = () => {
             <ModalWrapper title="🌟 Trainee Promotion Center" maxWidth="max-w-4xl">
                 <div className="space-y-4 text-gray-800 dark:text-gray-200">
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Batch promote trainees into official groups and teams. Select your destination group and team below, then choose the trainees you wish to promote.
+                        Batch promote trainees into official regular members and teams. Independent franchises and their domestic branches promote directly to Full Official Regular Members (Generation System).
                     </p>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gradient-to-r from-amber-50 to-pink-50 dark:from-slate-800 dark:to-slate-900 p-4 rounded-xl border border-amber-200 dark:border-amber-800/40">
@@ -1419,10 +1448,16 @@ const App = () => {
                                 }}
                                 className="w-full p-2 text-sm border rounded-lg bg-white dark:bg-gray-800 dark:border-gray-600 font-semibold"
                             >
-                                <option value="main">⭐ {groupName} (Main Group)</option>
-                                {sisterGroups.filter(sg => !sg.isDisbanded).map(sg => (
-                                    <option key={sg.id} value={sg.id}>🌸 {sg.name} ({sg.location})</option>
-                                ))}
+                                <option value="main">👑 {groupName} (Starting Main Group)</option>
+                                {sisterGroups.filter(sg => !sg.isDisbanded).map(sg => {
+                                    const isInd = sg.isFranchiseMain || sg.type === 'franchise_main';
+                                    const isChildInd = sg.franchiseId && sg.franchiseId !== 'main';
+                                    return (
+                                        <option key={sg.id} value={sg.id}>
+                                            {isInd ? `🏛️ ${sg.name} (Independent Franchise)` : isChildInd ? `🌸 ${sg.name} (Franchise Lineage)` : `🌸 ${sg.name} (${sg.location})`}
+                                        </option>
+                                    );
+                                })}
                             </select>
                             <div className="mt-2 text-xs flex gap-3 text-gray-600 dark:text-gray-400">
                                 <span>Group Regulars: <strong className="text-green-600 dark:text-green-400">{regularCountInTargetGroup}</strong></span>
@@ -1431,23 +1466,39 @@ const App = () => {
                         </div>
 
                         <div>
-                            <label className="block text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-300 mb-1">
-                                Destination Team
-                            </label>
-                            <select
-                                value={targetTeamId}
-                                onChange={(e) => setTargetTeamId(e.target.value)}
-                                className="w-full p-2 text-sm border rounded-lg bg-white dark:bg-gray-800 dark:border-gray-600 font-semibold"
-                            >
-                                <option value="">-- No Specific Team (Under Member) --</option>
-                                {availableTeamsForTargetGroup.map(team => (
-                                    <option key={team.id} value={team.id}>Team {team.name} ({(team.members || []).length} members)</option>
-                                ))}
-                            </select>
-                            {targetTeamObj && (
-                                <div className="mt-2 text-xs text-gray-600 dark:text-gray-400">
-                                    Current Roster in Team {targetTeamName}: <strong className="text-blue-600 dark:text-blue-400">{membersInTargetTeamCount} members</strong>
+                            {isTargetIndependentOrNoTeams ? (
+                                <div className="p-3 bg-purple-100/70 dark:bg-purple-950/40 rounded-lg border border-purple-300 dark:border-purple-800">
+                                    <label className="block text-xs font-bold uppercase tracking-wider text-purple-700 dark:text-purple-300 mb-1 flex items-center gap-1.5">
+                                        <Sparkles size={14} /> Regular Member Promotion
+                                    </label>
+                                    <p className="text-xs text-purple-900 dark:text-purple-200 font-medium">
+                                        <strong>{targetGroupName}</strong> operates on the <strong>Generation System</strong> without teams.
+                                    </p>
+                                    <p className="text-[11px] text-purple-700 dark:text-purple-300 mt-0.5">
+                                        Selected trainees will be promoted directly to <strong>Full Official Regular Members</strong>.
+                                    </p>
                                 </div>
+                            ) : (
+                                <>
+                                    <label className="block text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-300 mb-1">
+                                        Destination Team
+                                    </label>
+                                    <select
+                                        value={targetTeamId}
+                                        onChange={(e) => setTargetTeamId(e.target.value)}
+                                        className="w-full p-2 text-sm border rounded-lg bg-white dark:bg-gray-800 dark:border-gray-600 font-semibold"
+                                    >
+                                        <option value="">-- No Specific Team (Under Member) --</option>
+                                        {availableTeamsForTargetGroup.map(team => (
+                                            <option key={team.id} value={team.id}>Team {team.name} ({(team.members || []).length} members)</option>
+                                        ))}
+                                    </select>
+                                    {targetTeamObj && (
+                                        <div className="mt-2 text-xs text-gray-600 dark:text-gray-400">
+                                            Current Roster in Team {targetTeamName}: <strong className="text-blue-600 dark:text-blue-400">{membersInTargetTeamCount} members</strong>
+                                        </div>
+                                    )}
+                                </>
                             )}
                         </div>
                     </div>
@@ -2011,6 +2062,7 @@ const App = () => {
         // --- UI/Filter State ---
         const [filterKey, setFilterKey] = useState('All');
         const [showOnlyUnchosen, setShowOnlyUnchosen] = useState(false);
+        const [isSpecialCollabSingle, setIsSpecialCollabSingle] = useState(false);
         // --- Production and Scheduling State ---
         const [step, setStep] = useState('type'); // 'type', 'selection', or 'production'
         const [releaseType, setReleaseType] = useState(null); // 'single' or 'album'
@@ -3041,8 +3093,8 @@ const App = () => {
         // First, get the single source of truth for all members, which now includes exchange students.
         const allAvailableForSong = getAllAvailableMembers(true);
 
-        if (targetGroup === 'main') {
-            // For a main group song, ALL available members from ALL groups are selectable.
+        if (targetGroup === 'main' || isSpecialCollabSingle) {
+            // For a main group song OR a special collab single, ALL available members from ALL groups/franchises are selectable.
             selectableMembers = allAvailableForSong;
         } else {
             const sg = sisterGroups.find(s => s.name === targetGroup);
@@ -3247,6 +3299,7 @@ const App = () => {
                 graduatingMemberIds: graduatingMemberIds,
                 isElectionSingle: isElectionSingle,
                 isCollaboration: isCollaboration,
+                isSpecialCollab: isSpecialCollabSingle,
                 rivalPartner: rivalPartner,
                 genre: songGenre,
                 theme: songTheme,
@@ -3474,7 +3527,7 @@ const App = () => {
 
         const getSelectableMembersPool = () => {
             const allAvailableForSong = getAllAvailableMembers(true);
-            if (targetGroup === 'main') {
+            if (targetGroup === 'main' || isSpecialCollabSingle) {
                 return allAvailableForSong;
             } else {
                 const sg = sisterGroups.find(s => s.name === targetGroup);
@@ -4133,6 +4186,32 @@ const App = () => {
                                     <option key="main" value="main">{groupName} (Main)</option>
                                     {(sisterGroups || []).filter(g => !g.isDisbanded).map(sg => <option key={sg.id} value={sg.name}>{sg.name}</option>)}
                                 </select>
+                            </div>
+
+                            {/* Special Cross-Group / All Franchises Collab Single Toggle */}
+                            <div className="p-2.5 rounded-xl border border-purple-200 dark:border-purple-800 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-950/30 dark:to-indigo-950/30">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-1.5">
+                                        <Sparkles size={16} className={isSpecialCollabSingle ? "text-yellow-400 animate-spin" : "text-purple-500"} />
+                                        <span className="text-xs font-bold text-purple-900 dark:text-purple-200">Special Collab Single</span>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsSpecialCollabSingle(!isSpecialCollabSingle)}
+                                        className={`px-2.5 py-1 rounded-lg text-xs font-bold transition shadow-sm ${
+                                            isSpecialCollabSingle
+                                                ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white ring-2 ring-purple-300'
+                                                : 'bg-white dark:bg-slate-800 text-purple-700 dark:text-purple-300 border border-purple-300 dark:border-purple-700 hover:bg-purple-100'
+                                        }`}
+                                    >
+                                        {isSpecialCollabSingle ? '✨ ACTIVE' : 'ENABLE'}
+                                    </button>
+                                </div>
+                                <p className="text-[10px] text-purple-700 dark:text-purple-300 mt-1">
+                                    {isSpecialCollabSingle
+                                        ? '🌟 All idols from every group and independent franchise are selectable in Senbatsu & B-Sides!'
+                                        : 'Enable to allow all idols across all groups/franchises to be selected for this release.'}
+                                </p>
                             </div>
                             <div>
                                 <h4 className="font-semibold mb-1 dark:text-gray-200">Single Name</h4>
@@ -5279,9 +5358,14 @@ const App = () => {
                                 // Exchange students are a special case, always grouped by their home (rival) group.
                                 groupKey = `${member.homeGroup}`;
                             } else {
-                                groupKey = member.teamName
-                                    ? `${groupNameForDisplay} Team ${member.teamName}`
-                                    : `${groupNameForDisplay} Kenkyuusei`;
+                                const isTrueTrainee = member.isTrainee || member.position === 'trainee';
+                                if (member.teamName) {
+                                    groupKey = `${groupNameForDisplay} Team ${member.teamName}`;
+                                } else if (isTrueTrainee) {
+                                    groupKey = `${groupNameForDisplay} Kenkyuusei`;
+                                } else {
+                                    groupKey = `${groupNameForDisplay} Regular Member`;
+                                }
                             }
 
                             if (!acc[groupKey]) {
@@ -5423,18 +5507,19 @@ const App = () => {
                 if (member.isExchangeStudent) {
                     // ALWAYS group exchange students by their home group to separate them visually.
                     groupKey = `${member.homeGroup}`;
-                }
-                else if (member.isSisterMember) {
-                    const sgName = member.displayGroupName || 'Sister Group';
-                    // If a sister member has a team, show the team name. Otherwise, they are a trainee.
-                    groupKey = member.teamName
-                        ? `${sgName} Team ${member.teamName}`
-                        : `${sgName} Kenkyuusei`;
                 } else {
-                    // If a main group member has a team, show the team name. Otherwise, they are a trainee.
-                    groupKey = member.teamName
-                        ? `${mainGroupName} Team ${member.teamName}`
-                        : `${mainGroupName} Kenkyuusei`;
+                    const isTrueTrainee = member.isTrainee || member.position === 'trainee';
+                    const displayName = member.isSisterMember
+                        ? (member.displayGroupName || member.homeGroup || 'Sister Group')
+                        : mainGroupName;
+
+                    if (member.teamName) {
+                        groupKey = `${displayName} Team ${member.teamName}`;
+                    } else if (isTrueTrainee) {
+                        groupKey = `${displayName} Kenkyuusei`;
+                    } else {
+                        groupKey = `${displayName} Regular Member`;
+                    }
                 }
 
                 if (!acc[groupKey]) {
@@ -5456,9 +5541,9 @@ const App = () => {
                                 const isMain = key.startsWith(mainGroupName);
                                 const isKKS = key.includes('Kenkyuusei');
 
-                                if (isMain && !isKKS) return 1;  // Main Group Team
+                                if (isMain && !isKKS) return 1;  // Main Group Team or Regular Member
                                 if (isMain && isKKS) return 2;   // Main Group KKS
-                                if (!isMain && !isKKS) return 3; // Sister Group Team
+                                if (!isMain && !isKKS) return 3; // Sister Group Team or Regular Member
                                 if (!isMain && isKKS) return 4;  // Sister Group KKS
                                 return 5; // Fallback for any other cases
                             };
@@ -10987,7 +11072,12 @@ const App = () => {
                 } else {
                     primaryGroup = member.displayGroupName || groupName;
                 }
-                const primaryTeam = member.teamName ? `Team ${member.teamName}` : 'Kenkyuusei';
+                const isTrueTrainee = member.isTrainee || member.position === 'trainee';
+                const primaryTeam = member.teamName
+                    ? `Team ${member.teamName}`
+                    : isTrueTrainee
+                        ? 'Kenkyuusei'
+                        : 'Regular Member';
                 const primaryPart = `${primaryGroup} | ${primaryTeam}`;
 
                 // 2. Collect all Concurrent Assignments from historical data
@@ -13512,23 +13602,41 @@ const App = () => {
         );
     };
 
-    const CreateSisterGroupModal = ({ currentGroups, onConfirm }) => {
+    const CreateSisterGroupModal = ({ currentGroups, onConfirm, defaultFranchiseId = 'main' }) => {
         const [groupData, setGroupData] = useState({
             groupName: '',
             location: '',
             type: 'domestic',
-            parentGroupId: 'main'
+            franchiseId: defaultFranchiseId || 'main',
+            parentGroupId: 'main',
+            concept: 'Standard J-Pop & Idol'
         });
+
+        const establishedFranchises = [
+            { id: 'main', name: `${groupName} (Starting Franchise)` },
+            ...(sisterGroups || []).filter(sg => (sg.type === 'franchise_main' || sg.isFranchiseMain) && !sg.isDisbanded).map(sg => ({
+                id: sg.id,
+                name: `${sg.name} (Independent Franchise)`
+            }))
+        ];
 
         const handleChange = (e) => {
             const { name, value } = e.target;
 
             setGroupData(prev => {
                 const newState = { ...prev, [name]: value };
-                // If the type changes, reset the location and parentGroupId
                 if (name === 'type') {
-                    newState.location = value === 'subgroup' ? 'Tokyo' : '';
-                    newState.parentGroupId = value === 'subgroup' ? 'main' : undefined;
+                    if (value === 'subgroup') {
+                        newState.location = 'Tokyo';
+                        newState.parentGroupId = 'main';
+                    } else if (value === 'franchise_main') {
+                        newState.location = 'Tokyo';
+                        newState.franchiseId = 'self';
+                        newState.parentGroupId = null;
+                    } else {
+                        newState.location = '';
+                        if (newState.franchiseId === 'self') newState.franchiseId = 'main';
+                    }
                 }
                 return newState;
             });
@@ -13550,55 +13658,116 @@ const App = () => {
             onConfirm(groupData);
         };
 
-        const cost = groupData.type === 'subgroup' ? 100000 : (groupData.type === 'domestic' ? 200000 : 500000);
+        let cost = 200000;
+        if (groupData.type === 'subgroup' || groupData.type === 'trainee') cost = 100000;
+        else if (groupData.type === 'overseas') cost = 500000;
+        else if (groupData.type === 'franchise_main') cost = 400000;
+
         const overseasLocations = {
             'Shanghai': 'China',
             'Bangkok': 'Thailand',
-            'Seoul': 'Korea'
+            'Seoul': 'Korea',
+            'Taipei': 'Taiwan',
+            'Jakarta': 'Indonesia',
+            'Manila': 'Philippines'
         };
 
         return (
-            <ModalWrapper title="Found New Sister Group" maxWidth="max-w-lg">
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Establish a new sister group to expand your idol empire. Domestic groups focus on synergy, overseas groups operate autonomously, and sub-groups feed talent into their parent groups.</p>
-
-                {/* Group Name */}
-                <div className="mb-4">
-                    <label className="block text-sm font-bold mb-1">Group Name</label>
-                    <input type="text" name="groupName" value={groupData.groupName} onChange={handleChange} className="w-full p-2 border rounded dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100" placeholder="e.g. Hiragana Keyaki" />
-                </div>
+            <ModalWrapper title={<span className="flex items-center gap-2"><Globe className="text-pink-500" size={22} /> Found New Group / Franchise</span>} maxWidth="max-w-xl">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                    Establish an independent rival franchise brand or expand an existing franchise tree with domestic, overseas, or trainee sister groups.
+                </p>
 
                 {/* Group Type */}
                 <div className="mb-4">
-                    <label className="block text-sm font-bold mb-1">Group Type</label>
-                    <div className="flex flex-wrap gap-4 text-sm">
-                        <label className="flex items-center">
-                            <input type="radio" name="type" value="domestic" checked={groupData.type === 'domestic'} onChange={handleChange} className="mr-2" />
-                            Domestic (¥200,000)
+                    <label className="block text-sm font-bold mb-1.5 text-gray-800 dark:text-gray-200">Group Category & Type</label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+                        <label className={`p-2.5 rounded-lg border cursor-pointer transition flex items-start gap-2 ${groupData.type === 'franchise_main' ? 'bg-purple-100 dark:bg-purple-950/40 border-purple-500 ring-2 ring-purple-400/40' : 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700'}`}>
+                            <input type="radio" name="type" value="franchise_main" checked={groupData.type === 'franchise_main'} onChange={handleChange} className="mt-1" />
+                            <div>
+                                <span className="font-bold text-purple-700 dark:text-purple-300 flex items-center gap-1">🏛️ Independent Franchise</span>
+                                <span className="text-xs text-purple-600 dark:text-purple-400 font-semibold block">¥400,000</span>
+                                <span className="text-[11px] text-gray-500 dark:text-gray-400 block mt-0.5">New main brand with its own sister group tree. Uses Generation system (No theater/teams).</span>
+                            </div>
                         </label>
-                        <label className="flex items-center">
-                            <input type="radio" name="type" value="overseas" checked={groupData.type === 'overseas'} onChange={handleChange} className="mr-2" />
-                            Overseas (¥500,000)
+
+                        <label className={`p-2.5 rounded-lg border cursor-pointer transition flex items-start gap-2 ${groupData.type === 'domestic' ? 'bg-pink-100 dark:bg-pink-950/40 border-pink-500 ring-2 ring-pink-400/40' : 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700'}`}>
+                            <input type="radio" name="type" value="domestic" checked={groupData.type === 'domestic'} onChange={handleChange} className="mt-1" />
+                            <div>
+                                <span className="font-bold text-pink-700 dark:text-pink-300 flex items-center gap-1">🌸 Domestic Sister Group</span>
+                                <span className="text-xs text-pink-600 dark:text-pink-400 font-semibold block">¥200,000</span>
+                                <span className="text-[11px] text-gray-500 dark:text-gray-400 block mt-0.5">Regional branch operating in Japan under selected franchise tree.</span>
+                            </div>
                         </label>
-                        <label className="flex items-center">
-                            <input type="radio" name="type" value="subgroup" checked={groupData.type === 'subgroup'} onChange={handleChange} className="mr-2" />
-                            Sub-group (¥100,000)
+
+                        <label className={`p-2.5 rounded-lg border cursor-pointer transition flex items-start gap-2 ${groupData.type === 'overseas' ? 'bg-blue-100 dark:bg-blue-950/40 border-blue-500 ring-2 ring-blue-400/40' : 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700'}`}>
+                            <input type="radio" name="type" value="overseas" checked={groupData.type === 'overseas'} onChange={handleChange} className="mt-1" />
+                            <div>
+                                <span className="font-bold text-blue-700 dark:text-blue-300 flex items-center gap-1">🌏 Overseas Sister Group</span>
+                                <span className="text-xs text-blue-600 dark:text-blue-400 font-semibold block">¥500,000</span>
+                                <span className="text-[11px] text-gray-500 dark:text-gray-400 block mt-0.5">Autonomous global group in Asia with local idol language and fandom.</span>
+                            </div>
                         </label>
-                        <label className="flex items-center">
-                            <input type="radio" name="type" value="trainee" checked={groupData.type === 'trainee'} onChange={handleChange} className="mr-2" />
-                            🌱 Trainee Group (¥100,000)
+
+                        <label className={`p-2.5 rounded-lg border cursor-pointer transition flex items-start gap-2 ${groupData.type === 'subgroup' ? 'bg-indigo-100 dark:bg-indigo-950/40 border-indigo-500 ring-2 ring-indigo-400/40' : 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700'}`}>
+                            <input type="radio" name="type" value="subgroup" checked={groupData.type === 'subgroup'} onChange={handleChange} className="mt-1" />
+                            <div>
+                                <span className="font-bold text-indigo-700 dark:text-indigo-300 flex items-center gap-1">🌿 Sub-group</span>
+                                <span className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold block">¥100,000</span>
+                                <span className="text-[11px] text-gray-500 dark:text-gray-400 block mt-0.5">Secondary team feeding talent into its parent group.</span>
+                            </div>
+                        </label>
+
+                        <label className={`p-2.5 rounded-lg border cursor-pointer transition flex items-start gap-2 col-span-1 sm:col-span-2 ${groupData.type === 'trainee' ? 'bg-amber-100 dark:bg-amber-950/40 border-amber-500 ring-2 ring-amber-400/40' : 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700'}`}>
+                            <input type="radio" name="type" value="trainee" checked={groupData.type === 'trainee'} onChange={handleChange} className="mt-1" />
+                            <div>
+                                <span className="font-bold text-amber-700 dark:text-amber-300 flex items-center gap-1">🌱 Trainee / Kenkyuusei Group</span>
+                                <span className="text-xs text-amber-600 dark:text-amber-400 font-semibold block">¥100,000</span>
+                                <span className="text-[11px] text-gray-500 dark:text-gray-400 block mt-0.5">Dedicated training branch for fresh recruits to hone skills before promotion.</span>
+                            </div>
                         </label>
                     </div>
-                    {groupData.type === 'trainee' && (
-                        <p className="text-xs text-amber-600 dark:text-amber-400 mt-2 bg-amber-50 dark:bg-amber-950/30 p-2 rounded border border-amber-200 dark:border-amber-800">
-                            A Trainee (Kenkyuusei) group for new recruits. Trainees participate in SSK and shuffles within their own group, but cannot be transferred or given kennin until promoted.
-                        </p>
-                    )}
                 </div>
+
+                {/* Group Name */}
+                <div className="mb-4">
+                    <label className="block text-sm font-bold mb-1 text-gray-800 dark:text-gray-200">Group / Franchise Name</label>
+                    <input
+                        type="text"
+                        name="groupName"
+                        value={groupData.groupName}
+                        onChange={handleChange}
+                        className="w-full p-2.5 border rounded-lg dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100 focus:ring-2 focus:ring-pink-500 outline-none"
+                        placeholder={groupData.type === 'franchise_main' ? "e.g. Nogizaka46, Stardust Girls, Star-L" : "e.g. NMB48, Sakurazaka46, Keyaki"}
+                    />
+                </div>
+
+                {/* Franchise Tree Selection (for sister groups) */}
+                {groupData.type !== 'franchise_main' && (
+                    <div className="mb-4 p-3 rounded-lg bg-purple-50/50 dark:bg-purple-950/20 border border-purple-200/60 dark:border-purple-800/40">
+                        <label className="block text-sm font-bold mb-1 text-purple-900 dark:text-purple-300 flex items-center gap-1.5">
+                            <GitBranch size={16} /> Belongs to Franchise Lineage
+                        </label>
+                        <select
+                            name="franchiseId"
+                            value={groupData.franchiseId || 'main'}
+                            onChange={handleChange}
+                            className="w-full p-2 border rounded-lg bg-white dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100 font-semibold"
+                        >
+                            {establishedFranchises.map(f => (
+                                <option key={f.id} value={f.id}>{f.name}</option>
+                            ))}
+                        </select>
+                        <p className="text-xs text-purple-600 dark:text-purple-400 mt-1">
+                            This groups the new sister group under the selected Franchise in the Group Tree and shares franchise-level mechanics.
+                        </p>
+                    </div>
+                )}
 
                 {/* Parent Group (Sub-group only) */}
                 {groupData.type === 'subgroup' && (
                     <div className="mb-4">
-                        <label className="block text-sm font-bold mb-1">Parent Group</label>
+                        <label className="block text-sm font-bold mb-1 text-gray-800 dark:text-gray-200">Parent Group to Feed</label>
                         <select
                             name="parentGroupId"
                             value={groupData.parentGroupId || 'main'}
@@ -13626,32 +13795,590 @@ const App = () => {
                     </div>
                 )}
 
-                {/* Location - Conditional Input */}
+                {/* Location */}
                 <div className="mb-4">
-                    <label className="block text-sm font-bold mb-1">Base of Operations</label>
+                    <label className="block text-sm font-bold mb-1 text-gray-800 dark:text-gray-200">Base of Operations / Headquarters</label>
                     {groupData.type === 'overseas' ? (
                         <>
                             <select name="location" value={groupData.location} onChange={handleChange} className="w-full p-2 border rounded bg-white dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100">
-                                <option value="">-- Select a Country --</option>
+                                <option value="">-- Select a Country & City --</option>
                                 {Object.entries(overseasLocations).map(([city, country]) => (
                                     <option key={city} value={city}>{country} ({city})</option>
                                 ))}
                             </select>
-                            <p className="text-xs text-gray-500 mt-1">This determines the group's country and the language for new member names.</p>
+                            <p className="text-xs text-gray-500 mt-1">Determines local regional identity, language, and fandom characteristics.</p>
                         </>
                     ) : (
                         <>
-                            <input type="text" name="location" value={groupData.location} onChange={handleChange} className="w-full p-2 border rounded dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100" placeholder="e.g. Namba, Osaka" />
-                            <p className="text-xs text-gray-500 mt-1">For domestic and sub-groups, this determines regional identity.</p>
+                            <input
+                                type="text"
+                                name="location"
+                                value={groupData.location}
+                                onChange={handleChange}
+                                className="w-full p-2 border rounded dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
+                                placeholder={groupData.type === 'franchise_main' ? "e.g. Nogizaka, Roppongi, Shibuya" : "e.g. Namba (Osaka), Sakae (Nagoya), Hakata (Fukuoka)"}
+                            />
+                            <p className="text-xs text-gray-500 mt-1">Defines the regional headquarters for live events and local promotions.</p>
                         </>
                     )}
                 </div>
 
-                {/* Confirmation */}
-                <div className="flex justify-end items-center mt-6 pt-4 border-t dark:border-gray-600 gap-3">
-                    <button onClick={() => setShowModal(null)} className="px-4 py-2 bg-gray-300 dark:bg-gray-600 rounded">Cancel</button>
-                    <button onClick={handleSubmit} disabled={money < cost || !groupData.location} className="px-4 py-2 bg-green-600 text-white rounded font-bold disabled:bg-gray-400">
-                        Establish (¥{cost.toLocaleString()})
+                {/* Confirmation Footer */}
+                <div className="flex justify-end items-center mt-6 pt-4 border-t dark:border-gray-700 gap-3">
+                    <button onClick={() => setShowModal(null)} className="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg font-semibold transition">
+                        Cancel
+                    </button>
+                    <button
+                        onClick={handleSubmit}
+                        disabled={money < cost || !groupData.location || !groupData.groupName.trim()}
+                        className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white rounded-lg font-bold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
+                    >
+                        Establish Group (¥{cost.toLocaleString()})
+                    </button>
+                </div>
+            </ModalWrapper>
+        );
+    };
+
+    const GroupTreeModal = () => {
+        const [activeFranchiseFilter, setActiveFranchiseFilter] = useState('all');
+
+        // Identify all Franchises:
+        // 1. Starting Franchise
+        // 2. Independent Franchise Main groups
+        const mainFranchise = {
+            id: 'main',
+            name: groupName,
+            isStarting: true,
+            type: 'Starting Main Agency',
+            color: '#ec4899',
+            location: 'Akihabara, Tokyo',
+            usesTheaters: true,
+            usesTeams: true,
+            system: 'Theater & Team System',
+            membersCount: members.length,
+            fans: totalFans,
+            songsCount: songs.length,
+            sisterGroups: (sisterGroups || []).filter(sg => (!sg.franchiseId || sg.franchiseId === 'main') && !sg.isFranchiseMain && sg.type !== 'franchise_main' && !sg.isDisbanded)
+        };
+
+        const independentFranchises = (sisterGroups || []).filter(sg => (sg.type === 'franchise_main' || sg.isFranchiseMain) && !sg.isDisbanded).map(f => {
+            const fMembers = getAllAvailableMembers(true).filter(m => String(m.groupId) === String(f.id) || m.homeGroup === f.name);
+            const childGroups = (sisterGroups || []).filter(sg => String(sg.franchiseId) === String(f.id) && sg.id !== f.id && !sg.isDisbanded);
+            return {
+                id: f.id,
+                name: f.name,
+                isStarting: false,
+                type: 'Independent Franchise Brand',
+                color: f.color || '#8b5cf6',
+                location: f.location || 'Tokyo',
+                usesTheaters: false,
+                usesTeams: false,
+                system: 'Generation System (No Theater / No Teams)',
+                membersCount: fMembers.length,
+                fans: f.fans || 1000,
+                songsCount: (f.songs || []).length,
+                sisterGroups: childGroups
+            };
+        });
+
+        const allFranchises = [mainFranchise, ...independentFranchises];
+        const displayedFranchises = activeFranchiseFilter === 'all'
+            ? allFranchises
+            : allFranchises.filter(f => String(f.id) === String(activeFranchiseFilter));
+
+        return (
+            <ModalWrapper title={<span className="flex items-center gap-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500"><GitBranch size={24} className="text-purple-500" /> Idol Empire Franchise & Group Tree</span>} maxWidth="max-w-4xl">
+                <div className="space-y-4">
+                    {/* Header Controls */}
+                    <div className="flex flex-wrap justify-between items-center gap-3 p-3 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/20 rounded-xl border border-purple-200/60 dark:border-purple-800/40">
+                        <div>
+                            <p className="text-sm font-bold text-purple-900 dark:text-purple-200">
+                                Total Franchises: <span className="text-pink-600 dark:text-pink-400">{allFranchises.length}</span> | Total Groups: <span className="text-pink-600 dark:text-pink-400">{1 + (sisterGroups || []).filter(sg => !sg.isDisbanded).length}</span>
+                            </p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                                View group lineage trees, sister group branches, and launch inter-franchise battles or joint concerts.
+                            </p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <button
+                                onClick={() => { setShowModal('createSisterGroup'); }}
+                                className="px-3 py-1.5 text-xs bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg shadow flex items-center gap-1 transition"
+                            >
+                                <Plus size={14} /> Found Group / Franchise
+                            </button>
+                            {allFranchises.length > 1 && (
+                                <button
+                                    onClick={() => { setShowModal('franchiseRivalBattle'); }}
+                                    className="px-3 py-1.5 text-xs bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white font-bold rounded-lg shadow flex items-center gap-1 transition"
+                                >
+                                    <Flame size={14} /> Rival Battle
+                                </button>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Franchise Filter Tabs */}
+                    <div className="flex gap-2 overflow-x-auto pb-1 border-b dark:border-gray-700">
+                        <button
+                            onClick={() => setActiveFranchiseFilter('all')}
+                            className={`px-3 py-1.5 text-xs font-bold rounded-lg transition ${activeFranchiseFilter === 'all' ? 'bg-purple-600 text-white shadow' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'}`}
+                        >
+                            All Franchises ({allFranchises.length})
+                        </button>
+                        {allFranchises.map(f => (
+                            <button
+                                key={f.id}
+                                onClick={() => setActiveFranchiseFilter(f.id)}
+                                className={`px-3 py-1.5 text-xs font-bold rounded-lg transition flex items-center gap-1 ${String(activeFranchiseFilter) === String(f.id) ? 'bg-purple-600 text-white shadow' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'}`}
+                            >
+                                {f.isStarting ? '👑' : '🌟'} {f.name}
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* Franchise Trees Container */}
+                    <div className="space-y-6 max-h-[60vh] overflow-y-auto pr-1">
+                        {displayedFranchises.map(franchise => (
+                            <div key={franchise.id} className="p-4 rounded-2xl bg-white dark:bg-gray-800/90 border-2 border-purple-200/80 dark:border-purple-900/60 shadow-md">
+                                {/* Franchise Main Header Card */}
+                                <div className="flex flex-wrap justify-between items-center gap-3 p-3.5 rounded-xl bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-indigo-500/10 border border-purple-200 dark:border-purple-800/50">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-purple-600 to-pink-500 flex items-center justify-center text-white font-extrabold text-xl shadow-lg">
+                                            {franchise.isStarting ? '👑' : '🌟'}
+                                        </div>
+                                        <div>
+                                            <div className="flex items-center gap-2">
+                                                <h3 className="text-lg font-black text-gray-900 dark:text-white">{franchise.name}</h3>
+                                                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${franchise.isStarting ? 'bg-pink-100 text-pink-700 dark:bg-pink-950 dark:text-pink-300' : 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300'}`}>
+                                                    {franchise.type}
+                                                </span>
+                                            </div>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 flex items-center gap-3">
+                                                <span><MapPin size={12} className="inline mr-0.5" /> {franchise.location}</span>
+                                                <span><Users size={12} className="inline mr-0.5" /> {franchise.membersCount} Idols</span>
+                                                <span><Heart size={12} className="inline mr-0.5 text-red-400" /> {typeof franchise.fans === 'number' ? franchise.fans.toLocaleString() : (franchise.fans?.casual || 0) + (franchise.fans?.hardcore || 0)} Fans</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <span className={`text-xs px-2.5 py-1 rounded-lg font-semibold ${franchise.usesTheaters ? 'bg-green-100 text-green-800 dark:bg-green-950/60 dark:text-green-300' : 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950/60 dark:text-indigo-300'}`}>
+                                            {franchise.system}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {/* Sister Group Branches Tree */}
+                                <div className="mt-4 pl-4 sm:pl-8 border-l-2 border-dashed border-purple-300 dark:border-purple-800 space-y-3">
+                                    <div className="flex justify-between items-center text-xs font-bold text-gray-500 dark:text-gray-400 pt-1">
+                                        <span>Branches & Sister Groups ({franchise.sisterGroups.length}):</span>
+                                    </div>
+
+                                    {franchise.sisterGroups.length === 0 ? (
+                                        <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-dashed border-gray-300 dark:border-gray-700 text-center">
+                                            <p className="text-xs text-gray-400 italic">No sister groups established under this franchise yet.</p>
+                                        </div>
+                                    ) : (
+                                        franchise.sisterGroups.map(branch => {
+                                            const branchMembers = getAllAvailableMembers(true).filter(m => String(m.groupId) === String(branch.id) || m.homeGroup === branch.name);
+                                            const isUnit = branch.type === 'unit';
+                                            const isSubgroup = branch.type === 'subgroup';
+                                            const isTrainee = branch.type === 'trainee';
+                                            const isOverseas = branch.type === 'overseas';
+
+                                            return (
+                                                <div key={branch.id} className="relative flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-700/60 border border-gray-200 dark:border-gray-600 hover:border-purple-400 transition">
+                                                    {/* Tree Line Connector */}
+                                                    <div className="absolute -left-4 sm:-left-8 top-1/2 w-4 sm:w-8 h-0.5 bg-purple-300 dark:border-purple-800"></div>
+
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300 flex items-center justify-center font-bold text-xs">
+                                                            {isUnit ? '✨' : isTrainee ? '🌱' : isSubgroup ? '🌿' : isOverseas ? '🌏' : '🌸'}
+                                                        </div>
+                                                        <div>
+                                                            <div className="flex items-center gap-2">
+                                                                <h4 className="font-bold text-sm text-gray-900 dark:text-gray-100">{branch.name}</h4>
+                                                                <span className="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-200">
+                                                                    {branch.type}
+                                                                </span>
+                                                            </div>
+                                                            <p className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-2">
+                                                                <span><MapPin size={11} className="inline mr-0.5" /> {branch.location}</span>
+                                                                <span><Users size={11} className="inline mr-0.5" /> {branchMembers.length} Members</span>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="flex items-center gap-1.5">
+                                                        <button
+                                                            onClick={() => { setModalData(branch); setShowModal('sisterGroupDisband'); }}
+                                                            className="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500 rounded font-semibold transition"
+                                                        >
+                                                            Manage
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="flex justify-end pt-3 border-t dark:border-gray-700">
+                        <button onClick={() => setShowModal(null)} className="px-5 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg font-bold transition">
+                            Close Tree View
+                        </button>
+                    </div>
+                </div>
+            </ModalWrapper>
+        );
+    };
+
+    const FranchiseRivalBattleModal = () => {
+        const establishedFranchises = [
+            { id: 'main', name: groupName, isStarting: true, color: '#ec4899' },
+            ...(sisterGroups || []).filter(sg => (sg.type === 'franchise_main' || sg.isFranchiseMain) && !sg.isDisbanded).map(sg => ({
+                id: sg.id,
+                name: sg.name,
+                isStarting: false,
+                color: sg.color || '#8b5cf6'
+            }))
+        ];
+
+        const [franchiseAId, setFranchiseAId] = useState('main');
+        const [franchiseBId, setFranchiseBId] = useState(establishedFranchises.length > 1 ? establishedFranchises[1].id : 'main');
+
+        const handleStartBattle = () => {
+            if (franchiseAId === franchiseBId) {
+                return setMessage("Please select two different franchises to face off!");
+            }
+            holdFranchiseRivalBattle({ franchiseAId, franchiseBId });
+        };
+
+        const getFranchiseRepresentativeAces = (fId) => {
+            const isMain = fId === 'main';
+            const fGroup = isMain ? { name: groupName } : sisterGroups.find(sg => sg.id === fId);
+            const pool = getAllAvailableMembers(true).filter(m => {
+                if (isMain) return !m.groupId || m.groupId === 'main' || m.homeGroup === 'main' || !m.isSisterMember;
+                return String(m.groupId) === String(fId) || m.homeGroup === fGroup?.name;
+            });
+            return pool.sort((a, b) => (b.singing + b.dancing + b.charisma) - (a.singing + a.dancing + a.charisma)).slice(0, 3);
+        };
+
+        const acesA = getFranchiseRepresentativeAces(franchiseAId);
+        const acesB = getFranchiseRepresentativeAces(franchiseBId);
+
+        return (
+            <ModalWrapper title={<span className="flex items-center gap-2 text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-rose-600"><Flame size={24} className="text-red-500" /> Inter-Franchise Rival Battle</span>} maxWidth="max-w-3xl">
+                <div className="space-y-4">
+                    <p className="text-sm text-gray-600 dark:text-gray-400 text-center">
+                        Pit your agency's powerhouse franchises against each other in a sensational 3-round live duel (Vocals, Dance, and Star Appeal) for massive fan buzz, prize money, and bragging rights!
+                    </p>
+
+                    {/* Franchise Selectors & Faceoff Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                        {/* Franchise A Card */}
+                        <div className="p-4 rounded-2xl bg-gradient-to-b from-blue-50 to-indigo-50/30 dark:from-blue-950/40 dark:to-slate-800 border-2 border-blue-300 dark:border-blue-800 shadow-md">
+                            <label className="block text-xs font-bold uppercase text-blue-600 dark:text-blue-400 mb-1">Challenger 1 (Franchise A)</label>
+                            <select
+                                value={franchiseAId}
+                                onChange={(e) => setFranchiseAId(e.target.value === 'main' ? 'main' : parseInt(e.target.value, 10))}
+                                className="w-full p-2.5 border rounded-xl font-bold bg-white dark:bg-gray-800 dark:border-gray-700 text-gray-900 dark:text-gray-100"
+                            >
+                                {establishedFranchises.map(f => (
+                                    <option key={`fa-${f.id}`} value={f.id}>{f.name} {f.isStarting ? '(Starting Main)' : '(Franchise)'}</option>
+                                ))}
+                            </select>
+
+                            <div className="mt-3">
+                                <p className="text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5">Top Representative Aces:</p>
+                                <div className="space-y-1.5">
+                                    {acesA.length === 0 ? (
+                                        <p className="text-xs text-gray-400 italic">No available idols in this franchise.</p>
+                                    ) : (
+                                        acesA.map(ace => (
+                                            <div key={ace.rosterId || ace.id} className="p-1.5 rounded-lg bg-white/80 dark:bg-gray-800/80 border border-blue-200 dark:border-blue-900/50 flex justify-between items-center text-xs">
+                                                <span className="font-bold text-gray-800 dark:text-gray-200">{ace.name}</span>
+                                                <span className="text-blue-600 dark:text-blue-400 font-semibold">
+                                                    Vo: {Math.round(ace.singing || 0)} | Da: {Math.round(ace.dancing || 0)} | Ch: {Math.round(ace.charisma || 0)}
+                                                </span>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Franchise B Card */}
+                        <div className="p-4 rounded-2xl bg-gradient-to-b from-rose-50 to-pink-50/30 dark:from-rose-950/40 dark:to-slate-800 border-2 border-rose-300 dark:border-rose-800 shadow-md">
+                            <label className="block text-xs font-bold uppercase text-rose-600 dark:text-rose-400 mb-1">Challenger 2 (Franchise B)</label>
+                            <select
+                                value={franchiseBId}
+                                onChange={(e) => setFranchiseBId(e.target.value === 'main' ? 'main' : parseInt(e.target.value, 10))}
+                                className="w-full p-2.5 border rounded-xl font-bold bg-white dark:bg-gray-800 dark:border-gray-700 text-gray-900 dark:text-gray-100"
+                            >
+                                {establishedFranchises.map(f => (
+                                    <option key={`fb-${f.id}`} value={f.id}>{f.name} {f.isStarting ? '(Starting Main)' : '(Franchise)'}</option>
+                                ))}
+                            </select>
+
+                            <div className="mt-3">
+                                <p className="text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5">Top Representative Aces:</p>
+                                <div className="space-y-1.5">
+                                    {acesB.length === 0 ? (
+                                        <p className="text-xs text-gray-400 italic">No available idols in this franchise.</p>
+                                    ) : (
+                                        acesB.map(ace => (
+                                            <div key={ace.rosterId || ace.id} className="p-1.5 rounded-lg bg-white/80 dark:bg-gray-800/80 border border-rose-200 dark:border-rose-900/50 flex justify-between items-center text-xs">
+                                                <span className="font-bold text-gray-800 dark:text-gray-200">{ace.name}</span>
+                                                <span className="text-rose-600 dark:text-rose-400 font-semibold">
+                                                    Vo: {Math.round(ace.singing || 0)} | Da: {Math.round(ace.dancing || 0)} | Ch: {Math.round(ace.charisma || 0)}
+                                                </span>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Battle Stakes & Rewards Box */}
+                    <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 text-xs">
+                        <p className="font-bold text-amber-900 dark:text-amber-300 flex items-center gap-1.5 mb-1">
+                            <Trophy size={16} /> Battle Format & Rewards:
+                        </p>
+                        <p className="text-amber-800 dark:text-amber-200">
+                            • 3 Rounds: 🎵 Round 1 (Vocal Duel), 💃 Round 2 (Dance Clash), ✨ Round 3 (Star Appeal & Charisma).
+                            <br />• <strong>Winner:</strong> +¥250,000 Prize Money, +35,000~55,000 Fans, +20 Morale boost!
+                            <br />• <strong>Runner-up:</strong> +18,000~28,000 Fans, +5 Morale boost.
+                        </p>
+                    </div>
+
+                    <div className="flex justify-end gap-3 pt-3 border-t dark:border-gray-700">
+                        <button onClick={() => setShowModal(null)} className="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg font-semibold transition">
+                            Cancel
+                        </button>
+                        <button
+                            onClick={handleStartBattle}
+                            disabled={franchiseAId === franchiseBId || acesA.length === 0 || acesB.length === 0}
+                            className="px-6 py-2 bg-gradient-to-r from-red-600 via-rose-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white rounded-lg font-extrabold shadow-lg shadow-red-500/30 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                        >
+                            <Flame size={18} /> Launch Franchise Showdown!
+                        </button>
+                    </div>
+                </div>
+            </ModalWrapper>
+        );
+    };
+
+    const FranchiseBattleResultModal = ({ result, onClose }) => {
+        if (!result) return null;
+
+        return (
+            <ModalWrapper title={<span className="flex items-center gap-2 text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-red-500"><Trophy size={24} className="text-yellow-500" /> Franchise Rival Battle Results</span>} maxWidth="max-w-2xl">
+                <div className="space-y-4 text-center">
+                    {/* Winner Banner */}
+                    <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500 via-rose-500 to-purple-600 text-white shadow-xl">
+                        <span className="text-xs uppercase tracking-widest font-black opacity-90">Overall Victorious Franchise</span>
+                        <h2 className="text-3xl font-black mt-1">🏆 {result.overallWinner} 🏆</h2>
+                        <p className="text-sm font-semibold mt-1 opacity-95">
+                            Secured victory across 3 showdown rounds!
+                        </p>
+                    </div>
+
+                    {/* Rounds Summary */}
+                    <div className="space-y-2.5 text-left">
+                        {result.rounds.map((r, idx) => {
+                            const isAWinner = r.winner === 'A';
+                            return (
+                                <div key={idx} className="p-3 rounded-xl bg-gray-50 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                                    <div>
+                                        <span className="text-xs font-bold uppercase text-gray-500 dark:text-gray-400">Round {idx + 1}</span>
+                                        <h4 className="font-bold text-sm text-gray-900 dark:text-gray-100">{r.name}</h4>
+                                    </div>
+                                    <div className="flex items-center gap-4 text-sm font-black">
+                                        <span className={isAWinner ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400'}>
+                                            {result.groupA.name}: {r.scoreA}
+                                        </span>
+                                        <span className="text-xs text-gray-400">vs</span>
+                                        <span className={!isAWinner ? 'text-rose-600 dark:text-rose-400' : 'text-gray-400'}>
+                                            {result.groupB.name}: {r.scoreB}
+                                        </span>
+                                        <span className="text-xs px-2 py-0.5 rounded-full font-bold uppercase bg-yellow-100 text-yellow-800 dark:bg-yellow-950 dark:text-yellow-300">
+                                            {isAWinner ? result.groupA.name : result.groupB.name} Win
+                                        </span>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    {/* Spoils / Gains */}
+                    <div className="grid grid-cols-2 gap-3 p-3.5 rounded-xl bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 border border-emerald-200 dark:border-emerald-800/50 text-xs">
+                        <div className="text-center">
+                            <span className="text-gray-500 dark:text-gray-400 font-bold block">Prize Money Earned</span>
+                            <span className="text-lg font-black text-emerald-600 dark:text-emerald-400">+¥{result.prizeMoney.toLocaleString()}</span>
+                        </div>
+                        <div className="text-center">
+                            <span className="text-gray-500 dark:text-gray-400 font-bold block">Combined Fan Surge</span>
+                            <span className="text-lg font-black text-teal-600 dark:text-teal-400">+{(result.winnerFanGain + result.loserFanGain).toLocaleString()} Fans</span>
+                        </div>
+                    </div>
+
+                    <button onClick={onClose} className="w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl shadow-lg transition">
+                        Celebrate Victory & Close
+                    </button>
+                </div>
+            </ModalWrapper>
+        );
+    };
+
+    const CrossFranchiseConcertModal = () => {
+        const establishedFranchises = [
+            { id: 'main', name: groupName, isStarting: true },
+            ...(sisterGroups || []).filter(sg => (sg.type === 'franchise_main' || sg.isFranchiseMain) && !sg.isDisbanded).map(sg => ({
+                id: sg.id,
+                name: sg.name,
+                isStarting: false
+            }))
+        ];
+
+        const [selectedFranchiseIds, setSelectedFranchiseIds] = useState(['main', ...(establishedFranchises.length > 1 ? [establishedFranchises[1].id] : [])]);
+        const [venueName, setVenueName] = useState("Tokyo Dome");
+        const [ticketPrice, setTicketPrice] = useState(8500);
+
+        const toggleFranchise = (id) => {
+            if (selectedFranchiseIds.includes(id)) {
+                if (selectedFranchiseIds.length <= 2) {
+                    return setMessage("Must have at least 2 franchises for a joint concert!");
+                }
+                setSelectedFranchiseIds(prev => prev.filter(f => f !== id));
+            } else {
+                setSelectedFranchiseIds(prev => [...prev, id]);
+            }
+        };
+
+        const handleHoldConcert = () => {
+            holdCrossFranchiseConcert({
+                franchiseIds: selectedFranchiseIds,
+                venueName,
+                ticketPrice
+            });
+        };
+
+        return (
+            <ModalWrapper title={<span className="flex items-center gap-2 text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-pink-500"><Music size={24} className="text-indigo-500" /> Cross-Franchise Mega Joint Concert</span>} maxWidth="max-w-2xl">
+                <div className="space-y-4">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                        Unite your franchises for an all-star joint arena concert. Multi-franchise synergy produces massive ticket sales and expands cross-over fandoms!
+                    </p>
+
+                    {/* Participating Franchises */}
+                    <div>
+                        <label className="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-2">Select Participating Franchises</label>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            {establishedFranchises.map(f => {
+                                const isSelected = selectedFranchiseIds.includes(f.id);
+                                return (
+                                    <div
+                                        key={f.id}
+                                        onClick={() => toggleFranchise(f.id)}
+                                        className={`p-3 rounded-xl border cursor-pointer flex items-center justify-between transition ${isSelected ? 'bg-indigo-100 dark:bg-indigo-950/50 border-indigo-500 ring-2 ring-indigo-400/40' : 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700'}`}
+                                    >
+                                        <div className="flex items-center gap-2">
+                                            <span>{f.isStarting ? '👑' : '🌟'}</span>
+                                            <span className="font-bold text-sm text-gray-900 dark:text-gray-100">{f.name}</span>
+                                        </div>
+                                        <input type="checkbox" checked={isSelected} readOnly className="rounded text-indigo-600" />
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    {/* Venue & Pricing */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label className="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Concert Venue</label>
+                            <select
+                                value={venueName}
+                                onChange={(e) => setVenueName(e.target.value)}
+                                className="w-full p-2.5 border rounded-xl font-bold bg-white dark:bg-gray-800 dark:border-gray-700 text-gray-900 dark:text-gray-100"
+                            >
+                                <option value="Yokohama Arena">Yokohama Arena (17,000 cap)</option>
+                                <option value="Saitama Super Arena">Saitama Super Arena (37,000 cap)</option>
+                                <option value="Tokyo Dome">Tokyo Dome (55,000 cap)</option>
+                                <option value="Nissan Stadium">Nissan Stadium (72,000 cap)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Ticket Price Tier</label>
+                            <select
+                                value={ticketPrice}
+                                onChange={(e) => setTicketPrice(parseInt(e.target.value, 10))}
+                                className="w-full p-2.5 border rounded-xl font-bold bg-white dark:bg-gray-800 dark:border-gray-700 text-gray-900 dark:text-gray-100"
+                            >
+                                <option value={6500}>Standard Seat (¥6,500)</option>
+                                <option value={8500}>Premium Arena Seat (¥8,500)</option>
+                                <option value={12000}>VIP Fan Club Package (¥12,000)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className="flex justify-end gap-3 pt-3 border-t dark:border-gray-700">
+                        <button onClick={() => setShowModal(null)} className="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg font-semibold transition">
+                            Cancel
+                        </button>
+                        <button
+                            onClick={handleHoldConcert}
+                            disabled={selectedFranchiseIds.length < 2}
+                            className="px-6 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-lg font-extrabold shadow-lg flex items-center gap-2 transition"
+                        >
+                            <Music size={18} /> Hold Joint Mega Live!
+                        </button>
+                    </div>
+                </div>
+            </ModalWrapper>
+        );
+    };
+
+    const CrossConcertResultModal = ({ result, onClose }) => {
+        if (!result) return null;
+
+        return (
+            <ModalWrapper title={<span className="flex items-center gap-2 text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-pink-500"><Sparkles size={24} className="text-indigo-500" /> Joint Concert Success!</span>} maxWidth="max-w-lg">
+                <div className="space-y-4 text-center">
+                    <div className="p-4 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white shadow-xl">
+                        <span className="text-xs uppercase font-black opacity-90">Mega Joint Live</span>
+                        <h2 className="text-2xl font-black mt-1">{result.franchiseNames}</h2>
+                        <p className="text-sm font-semibold opacity-95 mt-1">{result.venueName}</p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 text-left">
+                        <div className="p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border dark:border-gray-700">
+                            <span className="text-xs text-gray-400 font-bold block">Attendance</span>
+                            <span className="text-lg font-black text-gray-900 dark:text-gray-100">{result.attendance.toLocaleString()} Fans</span>
+                        </div>
+                        <div className="p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border dark:border-gray-700">
+                            <span className="text-xs text-gray-400 font-bold block">Performing Idols</span>
+                            <span className="text-lg font-black text-gray-900 dark:text-gray-100">{result.memberCount} Members</span>
+                        </div>
+                        <div className="p-3 rounded-xl bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 col-span-2 flex justify-between items-center">
+                            <div>
+                                <span className="text-xs text-green-700 dark:text-green-300 font-bold block">Net Profit</span>
+                                <span className="text-xl font-black text-green-600 dark:text-green-400">+¥{result.profit.toLocaleString()}</span>
+                            </div>
+                            <div className="text-right">
+                                <span className="text-xs text-green-700 dark:text-green-300 font-bold block">Fan Growth</span>
+                                <span className="text-xl font-black text-green-600 dark:text-green-400">+{result.fanGain.toLocaleString()}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onClick={onClose} className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow transition">
+                        Collect Profits & Return
                     </button>
                 </div>
             </ModalWrapper>
@@ -15610,7 +16337,7 @@ const App = () => {
                                         </button>
                                     )}
 
-                                    {sisterGroups.filter(sg => !theaters.some(t => t.owner === sg.id)).map(sg => (
+                                    {sisterGroups.filter(sg => sg.type !== 'franchise_main' && !sg.isFranchiseMain && (!sg.franchiseId || sg.franchiseId === 'main') && !theaters.some(t => t.owner === sg.id)).map(sg => (
                                         <button key={`build-th-${sg.id}`} onClick={() => buildSisterTheater(sg.id)} className="w-full p-1.5 text-sm bg-gray-600 text-white rounded font-semibold">
                                             Build Theater for {sg.name} (¥150k)
                                         </button>
@@ -15639,6 +16366,9 @@ const App = () => {
                             {/* Teams & Setlists */}
                             <div className="p-2 rounded-lg shadow-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
                                 <h3 className="text-sm font-bold mb-2 flex items-center"><Users size={18} className="mr-2" /> Theater Teams & Setlists</h3>
+                                <p className="text-[11px] text-gray-500 dark:text-gray-400 mb-2 italic">
+                                    Teams are used by the starting franchise. Independent franchises use the Generation system.
+                                </p>
                                 <div className="grid grid-cols-1 gap-1.5 max-h-40 overflow-y-auto mb-1.5">
                                     {(teams || []).slice().sort((a, b) => {
                                         // 1. Get the actual group name for each team
@@ -15765,61 +16495,87 @@ const App = () => {
                                         ))}
                                     </div>
                                 </div>
-
-
                             </div>
-                            {/* Groups Panel */}
-                            <div className="p-2 rounded-lg shadow-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
-                                <h3 className="text-sm font-bold mb-2 flex items-center"><Globe size={18} className="mr-2" /> Groups ({1 + (sisterGroups || []).filter(sg => !sg.isDisbanded).length})</h3>
-                                <div className="grid grid-cols-1 gap-1.5 max-h-40 overflow-y-auto mb-1.5">
-                                    {/* Main Group Card */}
-                                    <div className="p-1.5 border rounded bg-gray-50 dark:bg-gray-700 flex justify-between items-center">
+
+                            {/* Groups & Franchises Panel */}
+                            <div className="p-3 rounded-xl shadow-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+                                <div className="flex justify-between items-center mb-2">
+                                    <h3 className="text-sm font-bold flex items-center"><Globe size={18} className="mr-2 text-pink-500" /> Groups & Franchises ({1 + (sisterGroups || []).filter(sg => !sg.isDisbanded).length})</h3>
+                                    <button
+                                        onClick={() => setShowModal('groupTree')}
+                                        className="px-2.5 py-1 text-xs bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold rounded-lg shadow flex items-center gap-1 transition"
+                                    >
+                                        <GitBranch size={13} /> View Group Tree
+                                    </button>
+                                </div>
+
+                                <div className="grid grid-cols-1 gap-1.5 max-h-44 overflow-y-auto mb-2">
+                                    {/* Main Starting Franchise Card */}
+                                    <div className="p-2 border rounded-xl bg-pink-50/50 dark:bg-pink-950/20 border-pink-200 dark:border-pink-900/50 flex justify-between items-center">
                                         <div>
-                                            <span className="font-semibold text-sm">{groupName} (Main)</span>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400">Members: {members.length}</p>
+                                            <div className="flex items-center gap-1.5">
+                                                <span className="font-bold text-sm text-pink-900 dark:text-pink-200">👑 {groupName}</span>
+                                                <span className="text-[10px] px-1.5 py-0.2 rounded font-bold uppercase bg-pink-200 text-pink-800 dark:bg-pink-900 dark:text-pink-200">Starting Franchise</span>
+                                            </div>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                                                Members: {members.length} | Theaters & Teams Active
+                                            </p>
                                         </div>
-                                        <button onClick={() => { setModalData({ id: 'main', name: groupName }); setShowModal('editGroupName'); }} className="p-1 bg-yellow-400 text-white rounded text-xs hover:bg-yellow-500">
+                                        <button onClick={() => { setModalData({ id: 'main', name: groupName }); setShowModal('editGroupName'); }} className="p-1 px-2 bg-yellow-400 text-gray-900 font-bold rounded text-xs hover:bg-yellow-500">
                                             Edit
                                         </button>
                                     </div>
 
-                                    {/* Sister Group & Unit Cards */}
+                                    {/* Sister Group & Franchise Cards */}
                                     {(sisterGroups || []).filter(sg => !sg.isDisbanded).map(sg => {
+                                        const isFranchiseMain = sg.type === 'franchise_main' || sg.isFranchiseMain;
                                         const isUnit = sg.type === 'unit';
                                         const isSubgroup = sg.type === 'subgroup';
+                                        const isTrainee = sg.type === 'trainee';
 
                                         const getGroupTypeLabel = (group) => {
-                                            if (group.type === 'unit') return 'Special Unit';
+                                            if (isFranchiseMain) return '🏛️ Independent Franchise';
+                                            if (group.type === 'unit') return '✨ Special Unit';
+                                            if (group.type === 'trainee') return '🌱 Trainee Group';
                                             if (group.type === 'subgroup') {
                                                 const parentName = group.parentGroupId === 'main' ? groupName : (sisterGroups.find(g => String(g.id) === String(group.parentGroupId))?.name || 'Unknown');
-                                                return `Sub-group of ${parentName}`;
+                                                return `🌿 Sub-group of ${parentName}`;
                                             }
-                                            return group.type === 'overseas' ? 'Overseas' : 'Domestic';
+                                            return group.type === 'overseas' ? '🌏 Overseas' : '🌸 Domestic';
                                         };
 
                                         return (
-                                            <div key={sg.id} className={`p-1.5 border rounded flex justify-between items-center ${isUnit ? 'bg-purple-50 dark:bg-purple-900/40' :
-                                                    isSubgroup ? 'bg-indigo-50/50 dark:bg-indigo-950/20 border-indigo-200 dark:border-indigo-900/50' :
-                                                        'bg-gray-50 dark:bg-gray-700'
+                                            <div key={sg.id} className={`p-2 border rounded-xl flex justify-between items-center transition ${isFranchiseMain ? 'bg-purple-50/60 dark:bg-purple-950/30 border-purple-300 dark:border-purple-800' :
+                                                    isUnit ? 'bg-purple-50/30 dark:bg-purple-900/20' :
+                                                        isSubgroup ? 'bg-indigo-50/40 dark:bg-indigo-950/20' :
+                                                            isTrainee ? 'bg-amber-50/40 dark:bg-amber-950/20' :
+                                                                'bg-gray-50 dark:bg-gray-700/60'
                                                 }`}>
                                                 <div>
-                                                    <span className={`font-semibold text-sm ${isUnit ? 'text-purple-600 dark:text-purple-300' :
-                                                            isSubgroup ? 'text-indigo-600 dark:text-indigo-300' : ''
-                                                        }`}>{sg.name}</span>
-                                                    <p className="text-xs text-gray-500 dark:text-gray-400 flex items-center">
-                                                        {isUnit ? <Sparkles size={12} className='mr-1 text-purple-400' /> : <MapPin size={12} className='mr-1' />}
-                                                        {isUnit ? `Special Unit | ${(sg.members || []).length} Members` : `${sg.location} | ${(sg.members || []).length} Members | ${getGroupTypeLabel(sg)}`}
+                                                    <div className="flex items-center gap-1.5">
+                                                        <span className={`font-bold text-sm ${isFranchiseMain ? 'text-purple-700 dark:text-purple-300' :
+                                                                isUnit ? 'text-purple-600 dark:text-purple-300' :
+                                                                    isSubgroup ? 'text-indigo-600 dark:text-indigo-300' : ''
+                                                            }`}>{isFranchiseMain ? '🌟 ' : ''}{sg.name}</span>
+                                                        <span className={`text-[10px] px-1.5 py-0.2 rounded font-bold uppercase ${isFranchiseMain ? 'bg-purple-200 text-purple-800 dark:bg-purple-900 dark:text-purple-200' : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-200'}`}>
+                                                            {getGroupTypeLabel(sg)}
+                                                        </span>
+                                                    </div>
+                                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 flex items-center gap-2">
+                                                        <span><MapPin size={11} className="inline mr-0.5" /> {sg.location || 'Tokyo'}</span>
+                                                        <span>• {(sg.members || []).length} Members</span>
+                                                        {isFranchiseMain && <span className="text-purple-600 dark:text-purple-400 font-semibold">• Generation-based</span>}
                                                     </p>
                                                 </div>
                                                 <div className="flex gap-1">
-                                                    <button onClick={() => { setModalData(sg); setShowModal('editGroupName'); }} className="p-1 bg-yellow-400 text-white rounded text-xs hover:bg-yellow-500">
+                                                    <button onClick={() => { setModalData(sg); setShowModal('editGroupName'); }} className="p-1 px-2 bg-yellow-400 text-gray-900 font-semibold rounded text-xs hover:bg-yellow-500">
                                                         Edit
                                                     </button>
-                                                    <button onClick={() => { setModalData(sg); setShowModal('sisterGroupDisband'); }} className="p-1 bg-red-500 text-white rounded text-xs hover:bg-red-600">
+                                                    <button onClick={() => { setModalData(sg); setShowModal('sisterGroupDisband'); }} className="p-1 px-2 bg-red-500 text-white font-semibold rounded text-xs hover:bg-red-600">
                                                         Manage
                                                     </button>
                                                     {sg.type === 'overseas' && (
-                                                        <button onClick={() => holdElection('overseas', { groupId: sg.id })} className="p-1 bg-green-500 text-white rounded text-xs hover:bg-green-600" title={`Hold election for ${sg.name}`}>
+                                                        <button onClick={() => holdElection('overseas', { groupId: sg.id })} className="p-1 px-2 bg-green-500 text-white font-semibold rounded text-xs hover:bg-green-600" title={`Hold election for ${sg.name}`}>
                                                             Election
                                                         </button>
                                                     )}
@@ -15828,17 +16584,37 @@ const App = () => {
                                         );
                                     })}
                                 </div>
-                                <div className="flex gap-1.5 mt-1.5">
-                                    <button onClick={() => setShowModal('createUnit')} className="flex-1 p-1.5 text-sm bg-purple-500 text-white rounded font-semibold">
+
+                                {/* Action Buttons */}
+                                <div className="flex flex-wrap gap-1.5 mt-2">
+                                    <button onClick={() => setShowModal('createSisterGroup')} className="flex-1 min-w-[130px] p-2 text-xs bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white rounded-lg font-bold shadow flex items-center justify-center gap-1 transition">
+                                        <Plus size={14} /> Establish Group / Franchise
+                                    </button>
+                                    <button onClick={() => setShowModal('createUnit')} className="p-2 px-3 text-xs bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition">
                                         Form Unit
                                     </button>
-                                    <button onClick={() => setShowModal('createSisterGroup')} className="flex-1 p-1.5 text-sm bg-red-500 text-white rounded font-semibold">
-                                        Establish Group
-                                    </button>
-                                    <button onClick={() => setShowModal('promotionCenter')} className="flex-1 p-1.5 text-sm bg-gradient-to-r from-amber-500 to-pink-500 text-white rounded font-semibold flex items-center justify-center gap-1">
-                                        <Sparkles size={14} /> Promote Trainees
+                                    <button onClick={() => setShowModal('promotionCenter')} className="p-2 px-3 text-xs bg-gradient-to-r from-amber-500 to-pink-500 text-white rounded-lg font-semibold flex items-center justify-center gap-1">
+                                        <Sparkles size={13} /> Promote Trainees
                                     </button>
                                 </div>
+
+                                {/* Cross-Franchise Events Shortcut (if >= 2 franchises) */}
+                                {(sisterGroups || []).some(sg => sg.type === 'franchise_main' || sg.isFranchiseMain) && (
+                                    <div className="mt-2.5 pt-2.5 border-t border-purple-200 dark:border-purple-800/50 flex gap-2">
+                                        <button
+                                            onClick={() => setShowModal('franchiseRivalBattle')}
+                                            className="flex-1 p-1.5 text-xs bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white rounded-lg font-bold shadow flex items-center justify-center gap-1 transition"
+                                        >
+                                            <Flame size={13} /> ⚔️ Inter-Franchise Rival Battle
+                                        </button>
+                                        <button
+                                            onClick={() => setShowModal('crossFranchiseConcert')}
+                                            className="flex-1 p-1.5 text-xs bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-lg font-bold shadow flex items-center justify-center gap-1 transition"
+                                        >
+                                            <Music size={13} /> 🎤 Joint Mega Concert
+                                        </button>
+                                    </div>
+                                )}
                             </div>
 
 
@@ -17935,6 +18711,11 @@ const App = () => {
             {showModal === 'groupMediaJob' && <GroupMediaModal />}
             {showModal === 'trainingCamp' && <TrainingCampModal />}
             {showModal === 'createSisterGroup' && <CreateSisterGroupModal currentGroups={[{ name: groupName, id: 'main' }, ...sisterGroups]} onConfirm={confirmCreateSisterGroup} />}
+            {showModal === 'groupTree' && <GroupTreeModal />}
+            {showModal === 'franchiseRivalBattle' && <FranchiseRivalBattleModal />}
+            {showModal === 'franchiseBattleResult' && modalData && <FranchiseBattleResultModal result={modalData} onClose={() => setShowModal(null)} />}
+            {showModal === 'crossFranchiseConcert' && <CrossFranchiseConcertModal />}
+            {showModal === 'crossConcertResult' && modalData && <CrossConcertResultModal result={modalData} onClose={() => setShowModal(null)} />}
             {showModal === 'promoteSubgroupMember' && <PromoteSubgroupMemberModal />}
             {showModal === 'promoteTrainee' && modalData && <PromoteTraineeModal member={modalData} groupName={groupName} sisterGroups={sisterGroups} teams={teams} promoteTrainee={promoteTrainee} setShowModal={setShowModal} />}
             {showModal === 'promotionCenter' && <PromotionCenterModal />}

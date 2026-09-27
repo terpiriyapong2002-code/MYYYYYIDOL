@@ -893,6 +893,211 @@ export const songTitles = {
         "Mada Minu Sekai", "Ima Koko Kara", "Hashiridasu Omoi", "Bokura no Ashioto", "Mirai ga Ugoku",
         "Start no Aizu", "Kono Shunkan", "Issho ni Ikou", "Bokura no Flag", "Hajimaru Yo Ima",
         "Kibou no Direction", "Kimi to Start", "Asu e no Count", "Bokura ga Saita", "Mirai no Tobira"
+    ],
+
+    GrowingUp: [
+        "Otona e no Tobira", "Mada Kodomo Datta", "Growing Pains Waltz", "Jibun Sagashi", "Kawaru Jibun",
+        "Otona ni Naru Hi", "Between Child and Grown", "Yesterday's Shoes Don't Fit", "Jibun no Katachi", "Half-Formed Heart",
+        "Otona no Kaidan", "Not a Kid Anymore, Not Yet Grown", "Growing Up Signal", "Mirror Doesn't Lie", "Kawaritai Kimochi",
+        "The Space Between Ages", "Mada Osanai Kokoro", "Learning to Stand Alone", "Jibun no Michi wo Sagashite", "Changing Skin",
+        "Otona no Nyuu Guchi", "Outgrowing Old Dreams", "Seifuku ga Kyuukutsu ni Naru", "Kawaru Sekai wo Miru", "First Bill I Ever Paid",
+        "Mada Shiranai Kimochi", "The Weight of Choosing", "Jibun no Kotae wo Sagashite", "Shrinking Bedroom, Growing World", "Otona ni Naritakunai Yoru",
+        "Leaving the Nest Slowly", "Kawaru Yuuki ga Hoshii", "Somewhere Between Then and Now", "Jibun no Ashi de Tatsu", "Growing Pains Diary",
+        "Mada Michi no Tochuu", "Learning My Own Name", "Otona no Kado wo Aketa", "Finding My Own Compass", "Kawaru Watashi wo Yurusu",
+        "The Last Day of Being a Kid", "Jibun no Hikari wo Sagashite", "Mada Wakaranai Koto Darake", "Stepping Out of the Frame", "Otona ni Naru Junbi",
+        "Kodomo no Mama de Irarenai", "Changing Without Noticing", "Jibun no Iro wo Mitsukeru", "New Shoes, Same Fear", "Mada Osanaku Ite Hoshii to Iwareta",
+        "Learning to Say No", "Otona no Ippo Mae", "The Weight of Growing Taller", "Kawaru Kokoro no Katachi", "Jibun no Basho wo Sagashite",
+        "Between Curfew and Freedom", "Mada Naiteta Koro no Watashi", "Otona ni Naru to Iu Koto", "Finding Ground Beneath Me", "Kawaru Sugata wo Mite",
+        "The Bravery of Uncertainty", "Jibun no Yume ni Mukau", "Mada Tomadotteru Kedo", "Stepping Into My Own Shoes", "Otona no Sekai wo Nozoku",
+        "Learning to Carry Myself", "Kawaru Kanjou wo Dakishimete", "The Kid I Used to Be", "Jibun no Kotoba wo Mitsukeru", "Mada Kizukanai Mama de",
+        "Growing Into My Name", "Otona e no Michi wa Nagai", "The Weight of New Freedom", "Kawaru Ashita wo Shinjite", "Jibun no Sora wo Miageru",
+        "Leaving Childhood Behind Slowly", "Mada Osanai Namida", "Learning to Trust Myself", "Otona no Sugata ni Chikazuku", "Kawaru Mune no Oto",
+        "The In-Between Years", "Jibun no Chikara de", "Mada Tochuu no Yume", "Growing Roots of My Own", "Otona ni Naru Kisetsu",
+        "Kawaru Katachi wo Uketomete", "The Courage to Change", "Jibun no Sugata wo Sagashite", "Mada Wakaranai Mama Demo Ii", "Stepping Into Tomorrow Alone",
+        "Otona no Tobira wo Nokku Suru", "Growing Up Isn't a Straight Line", "Kawaru Jibun wo Mitomeru", "Jibun no Namida wo Fuite", "Mada Osanai Yume wo Daite",
+        "Learning to Let Go Slowly", "Otona ni Naru Yuuki", "The Last Stretch of Childhood", "Kawaru Sekai no Naka de", "Growing Up, Finally"
+    ],
+
+    NichijouShiawase: [
+        "Chiisana Shiawase", "Ordinary Sunshine", "Ii Hi Datta", "Nandemonai Hi", "Small Happy Things",
+        "Futsuu no Asa", "Sunny Side of Today", "Breakfast Table Bliss", "Warm Blanket Morning", "Ii Nioi no Suru Ie",
+        "Slow Sunday Diary", "Nemuke Zamashi no Coffee", "Little Things Add Up", "Kyou mo Ii Hi", "Cozy Corner Song",
+        "Simple Life, Big Smile", "Hidamari de Hirune", "The Comfort of Routine", "Nandemonai Kaiwa", "Sunday Morning Playlist",
+        "Chiisana Yorokobi", "Home Sweet Everyday", "Ii Tenki Datta ne", "Laundry Day Lullaby", "Warm Cup, Warm Heart",
+        "Everyday's a Little Gift", "Shiawase wa Koko ni Aru", "Kitchen Window Sunshine", "Quiet Contentment", "Ii Kimochi no Hi",
+        "Morning Stretch Song", "Kyou mo Genki", "Little Moments Playlist", "Content Little Life", "Sunbeam on the Floor",
+        "Nandemonai Sanpo", "Weekend Slippers", "Cozy Blanket Waltz", "Ii Nemuri no Yoru", "Everyday's Enough",
+        "Shiawase na Nichijou", "Grateful for Nothing Special", "Kyou no Bentou", "Warm Socks Weather", "Simple Joys Diary",
+        "Favorite Mug Morning", "Ii Kaori no Coffee Time", "Little Wins Today", "Home is This Feeling", "Nandemonai Shashin",
+        "Everyday's Melody", "Kyou datta Hi", "Cozy House Rules", "Ii Nichi ni Shiyou", "Content in the Ordinary",
+        "Slippers and Sunlight", "Nandemonai Oshaberi", "This is Enough", "Kyou no Gohan wa Oishii", "Warmth Without Words",
+        "Happy for No Reason", "Ii Otenki Diary", "Balcony Coffee Break", "Quiet Kitchen Sounds", "Nandemonai Yasuragi",
+        "Peaceful Little Everyday", "Kyou mo Otsukaresama", "Weekend Sunshine Nap", "Simple Days, Full Heart", "Ii Kanji no Nichijou",
+        "The Small Stuff Matters", "Nandemonai Denwa", "Sunny Window Seat", "Kyou no Sanpo-michi", "Comfortable Silence",
+        "Everyday Warmth Diary", "Ii Hi ni Kansha", "Tea Time Peace", "Ordinary Days, Extraordinary Warmth", "Nandemonai Yume",
+        "Kyou wa Yukkuri", "Home Fills My Heart", "Little Rituals Song", "Warm Light Through Curtains", "Ii Nemuke ga Suru",
+        "Nothing Special, Everything Good", "Nandemonai Time", "Kyou no Tanoshimi", "Cozy Season Diary", "Slow Living Anthem",
+        "Happiness in Small Doses", "Ii Otenki Sanpo", "Kyou no Osusowake", "Everyday Sweetness", "Nandemonai Lunch",
+        "This Ordinary Life", "Kyou datta Koto", "Comfort Zone Song", "Ii Hi ga Tsuzukimasu Youni", "Simply Content"
+    ],
+
+    Kokuhaku: [
+        "Kokuhaku Zenya", "Say It Now", "Juu-byou Mae no Yuuki", "Confession Corner", "Kimi ni Ienai Koto ga Ienai",
+        "Ato Sanbyou de Ieru Kana", "Speak Before Sunset", "Yuuki no Ippo", "Suki to Iu Kotoba", "Right Before the Bell",
+        "Kokuhaku Biyori", "Tell Her Tonight", "Doushitemo Ienai", "First Words, Last Chance", "Mune no Naka no Kotae",
+        "Under the Sakura, I'll Say It", "Heart on My Sleeve", "Ienakatta Ichigo", "Rooftop Whisper", "Suki datte Bareteru Kana",
+        "Confession at the Crosswalk", "Kotoba ga Denai", "Three Words, One Chance", "Yuudachi no Mae ni", "Shy Girl's Courage",
+        "Kimi ni Todoku Made", "Letter I'll Never Send", "Ato Hitokoto de Ii Kara", "Nervous Countdown", "Suki wo Kakushita Mama",
+        "Before the Train Leaves", "Kokuhaku Rehearsal", "Tsutaetai Kimochi", "Say Yes to Me", "Densha ga Kuru Mae ni",
+        "Almost Said It", "Yuuki ga Denai Yoru", "Confession Under Streetlights", "Kotae wo Machinagara", "Practicing My Words",
+        "Shinzou ga Urusai", "I Can't Hold It In", "Kokuhaku no Kaerimichi", "Say It Like You Practiced", "Kanojo ni Naritai Kara",
+        "Locker Note Confession", "Ienai Namida", "Three Seconds of Courage", "Suki ni Natte Ii Desu ka", "Blurted Out Love",
+        "Kotoba ni Dekinai Suki", "Hold My Breath and Say It", "Kimi ni Suki to Ienai", "Written on a Napkin", "Ato de Kokai Suru Kurai Nara",
+        "Tremble Before Truth", "Kaban no Naka no Tegami", "The Moment Before Yes", "Kanashiku Naru Mae ni Ienai", "Whispered at the Gate",
+        "Fumikitte Mo Ii Kana", "One Line Confession", "Kotae ga Kowai Kedo", "Texting My Confession", "Nigeru Nara Ima Shika Nai",
+        "Half-said Sentence", "Suki na no ni Ienai", "Confession Practice Run", "Kuchi ni Dasu Yuuki", "The Words I Swallowed",
+        "Junbi wa Dekiteinai Kedo", "Say It Anyway", "Shinken na Kokuhaku", "Mienai Kotae wo Sagashite", "Standing at the Doorway",
+        "Ienai kara Utau", "Confession by Text", "Yappari Ienakatta", "First and Only Chance", "Suki to Iu Made no Michi",
+        "Palms Sweating Confession", "Kimi ga Kizuku Mae ni", "Whisper It to the Wind", "Kotoba ga Karamaru", "Saying It Without Words",
+        "Kokuhaku no Kyori", "Last Bell Before I Speak", "Iu Shika Nai", "Finally Said It", "Kokuhaku no Ato de",
+        "Would You Say Yes", "Osoreru Kimochi", "Turning Red Confession", "Kotoba yori Kodou de", "Say It Like a Prayer",
+        "Nando mo Renshuu Shita", "Confession in the Rain", "Ima Nara Ieru Kamo", "One Deep Breath First", "Yuuki wo Kudasai"
+    ],
+
+    Rivalry: [
+        "Makenai Kara", "Rival no Yakusoku", "Second Place Heart", "Kimi ni wa Makenai", "Burning Rivalry",
+        "Zettai Makenai", "Ichi-i no Zaseki", "Kimi wo Koete", "Competition Heartbeat", "Makezugirai Diary",
+        "Top Spot Fever", "Fire in the Standings", "Blazing Ambition", "Kachi ni Kodawaru", "Neck and Neck",
+        "Never Back Down", "Rival's Shadow", "Winner Takes the Stage", "Kimi ga Iru Kara Maketakunai", "Rank One Dream",
+        "Fighting Spirit Bloom", "Rival no Senaka", "Sudden Death Heartbeat", "Kimi ni Oitsuke", "Score to Settle",
+        "Ambition on Fire", "Maketa Mama de wa Owaranai", "Rival's Playlist", "Head to Head", "Kimi wo Mitsumete",
+        "Champion's Countdown", "Rival no Egao", "Undefeated Diary", "Kimi to no Shoubu", "Provocation Anthem",
+        "Full Throttle Ambition", "Rival's Signature Move", "Podium Dream", "Kimi ni Oikosarenai", "Sparring Partner",
+        "Underdog's Roar", "Rival no Kage", "Match Point Heart", "Kimi wo Nerau", "Silver Medal Fire",
+        "Crossfire Ambition", "Rival's Playbook", "Standing Ovation Battle", "Kimi ni Chikazuku", "Chasing First Place",
+        "One Step Ahead", "Rival no Kizuna", "Overtime Determination", "Kimi to Kisou", "Stopwatch Rivalry",
+        "Comeback Kid Anthem", "Rival's Reflection", "Final Round Fire", "Kimi ni Makenai Hi", "Trophy Case Dream",
+        "Sudden Rise", "Rival no Hikari", "Scoreboard Heartbeat", "Kimi to no Kyousou", "Fierce Competitor",
+        "Beat My Best", "Rival's Warm-up", "Lap Record Ambition", "Kimi wo Koeru Hi", "Photo Finish Heart",
+        "Rank Climber", "Rival no Chikara", "Podium Countdown", "Kimi ni Oitsuku Made", "Relentless Drive",
+        "Tiebreaker Fire", "Rival's Signal", "Grudge Match Anthem", "Kimi to no Battle", "Top Seed Dream",
+        "Never Settle Heart", "Rival no Yume", "Championship Fever", "Kimi ni Makenai Uta", "Race to the Crown",
+        "Blistering Pace", "Rival's Echo", "Undefeated Streak", "Kimi wo Oikosu Hi", "Battle-tested Ambition",
+        "Last Lap Fire", "Rival no Senaka Two Beat", "Scoreboard Dream", "Kimi to Kisoi Aou", "Winner's Circle",
+        "Personal Best Rivalry", "Rival's Silhouette", "Podium Finish Heart", "Kimi ni Oikosarete mo", "Rivalry Never Sleeps"
+    ],
+
+    Yuujou: [
+        "Yuujou no Kakera", "Team no Chikara", "Bokura no Promise", "Side by Side", "Nakama no Uta",
+        "Onaji Yume wo Mite", "Kizuna Bond", "Te wo Tsunaide", "Sasaeau Kimochi", "Best Friend Forever",
+        "Unbreakable Formation", "Egao no Riレー", "Nakama ga Iru Kara", "Together We Rise", "Kizuna no Melody",
+        "Bokura no Hoshi", "One for All Anthem", "Sorezore no Iro de", "Handshake at Dawn", "Nakama no Chikai",
+        "Yuujou no Speed", "Tomo yo", "Bokura no Backstage", "Support Each Other", "Kono Nakama to Nara",
+        "Team Color Rainbow", "Yesterday's Rival, Today's Friend", "Onaji Basho ni Iru Kara", "Chikai no Ring", "Nakama no Shashin",
+        "We Got This", "Bokura no Warm-up", "Egao Tsunagaru Riレー Two", "Kizuna no Iro", "Friendship Radio",
+        "Tsuyoku Naru Riyuu", "Kimi ga Ite Kureta Kara", "Nakama Constellation", "United We Shine", "Bokura no Undou-kai",
+        "Team no Fuurin", "Onaji Yunifomu", "Backstage Whisper Two", "Chikara wo Awasete", "Nakama no Moon",
+        "Together Till the End", "Bokura no Sunao", "Tomo no Sunlight", "Kizuna Overdrive", "United Colors",
+        "Nakama no Basho", "Friendship Compass Rose", "Bokura wa Ohanashi", "Team no Message", "Sasaeau Kata to Kata",
+        "Egao no Nakama-tachi", "One Team, One Heart", "Bokura no Recess", "Kizuna no Handshake Two", "Tomo yo Mata Ashita",
+        "Nakama no Fun-iki", "United We Grow", "Bokura no Chiisana Yakusoku", "Team no Blueprint", "Friendship Beacon",
+        "Kizuna no Kaidan", "Onaji Hata no Shita", "Bokura no Cheer Squad", "Nakama Ensemble Two", "Together No Matter What",
+        "Team no Roster", "Chikai wo Kawasu", "Bokura no Group Chat", "Friendship Harbor", "Kizuna no Anchor",
+        "Nakama no Yakusoku Note", "United Front", "Bokura no Practice Room", "Team no High-five", "Sasaeau Riyuu",
+        "Friendship Signal Flare", "Kizuna no Roadmap", "Onaji Kimochi Datta", "Bokura no Class Photo", "Nakama no Toban",
+        "Team no Locker Room", "Together in Formation", "Kizuna no Passcode", "Bokura no Umbrella", "Friendship Skyline",
+        "Nakama no Encore", "United We Practice", "Bokura no Cheer Song", "Team no Shortcut", "Kizuna no Whistle",
+        "Onaji Group ni Iru", "Friendship Milestone", "Bokura no Handoff", "Nakama no Chime", "Yuujou Never Ends"
+    ],
+
+    FruitsParlor: [
+        "Fruit Parlor Fantasy", "Meron Cream Soda", "Kissaten no Mado-seki", "Parfait Glass Dreams", "Showa Kissaten Waltz",
+        "Ichigo Parfait Kioku", "Purin a la Mode", "Momo no Konpoto", "Fruit Sando Bijin", "Nama Cream Symphony",
+        "Kissaten no Gogo San-ji", "Melon Soda Furafura", "Anmitsu Twilight", "Cream Soda Rocket", "Suika Float Days",
+        "Kissaten no BGM", "Furutsu Punch Parade", "Nostalgia Naporitan", "Momo Zerii Kiss", "Kajitsu Sunday",
+        "Retro Kissaten Girl", "Cherry on Top Love", "Banana Juice Bench", "Furafura Cream Soda", "Parfait no Ichiban Ue",
+        "Kissaten Mokei Densha", "Orange Float Afternoon", "Furutsu Basket Yume", "Ringo Parfait Waltz", "Nama Fruit Sandwich",
+        "Kissaten no Beru", "Momo Soda Sunset", "Kajitsu no Ame", "Cream Soda Ribbon", "Kohii Zerii Hitorigoto",
+        "Retro Menu Card Kiss", "Parfait Spoon Duet", "Anzu no Konpoto Diary", "Fruit Parlor no Doa", "Suika Sherbet Summer",
+        "Melon Pan to Soda", "Kissaten no Mahjong Table", "Ichigo Milk Serenade", "Parfait Layer Love", "Momo Zerii Afternoon",
+        "Nama Cream Cloud", "Kissaten Mado no Sunlight", "Furutsu Tart Whisper", "Kajitsu Panchi Waltz", "Retro Straw Confession",
+        "Banana Split Ballad", "Cream Soda Hanabi", "Kissaten no Chime", "Momo Parfait Kiss", "Nostalgia Sundae",
+        "Ichigo Shortcake Diary", "Kissaten no Vinyl Chair", "Furutsu Zerii Secret", "Melon Soda Star", "Anmitsu no Yume",
+        "Parlor Window Sunbeam", "Kajitsu no Waltz", "Kissaten Doorbell Kiss", "Cream Soda Constellation", "Momo no Sherbet Vow",
+        "Ichijiku Konpoto Love", "Parfait Cherry Promise", "Kissaten no Retro Radio", "Furutsu Sando Sunrise", "Melon Float Mystery",
+        "Nama Cream Confession", "Kajitsu Basket Farewell", "Kissaten no Table Cloth", "Suika Punch Parade", "Anzu Parfait Twilight",
+        "Cream Soda Constellation Two", "Momo no Mado-giwa", "Ichigo Zerii Afternoon", "Kissaten no Menu Bell", "Furutsu Konpoto Waltz",
+        "Retro Parlor Serenade", "Kajitsu no Straw", "Parfait Spoon Secret", "Melon Soda Constellation", "Kissaten no Coaster",
+        "Momo Sando Dream", "Cream Soda Reflection", "Nama Cream Waltz", "Ichigo Konpoto Vow", "Kissaten Sunlight Diary",
+        "Furutsu Basket Serenade", "Anmitsu Moonlight", "Kajitsu Sherbet Farewell", "Parfait Glass Reflection", "Kissaten Retro Clock",
+        "Momo Zerii Constellation", "Melon Soda Diary", "Suika Float Farewell", "Kissaten no Last Order", "Fruit Parlor Finale"
+    ],
+    OnsenYukata: [
+        "Yukata no Obi Musubi", "Onsen Machi Yoru", "Geta no Karakoro", "Rotenburo Starlight", "Ramune to Yukata",
+        "Onsen Tamago Kiss", "Yukata Gara Diary", "Ashiyu no Shizuku", "Onsen Machi no Chochin", "Geta Oto Serenade",
+        "Yukata no Hanabi", "Rotenburo no Tsuki", "Onsen Tamago Waltz", "Yukagata no Obi", "Onsen Yoichi no Kaze",
+        "Tenugui Ribbon Kiss", "Yukata Sugata Vow", "Onsen Machi no Uta", "Yukata no Suzushisa", "Geta de Aruku Yoru",
+        "Rotenburo Hoshizora", "Onsen no Yumoto", "Yukata no Sode", "Kanzashi to Yukata", "Onsen Machi Serenade",
+        "Yu-kemuri no Yakusoku", "Tenugui Wataboshi", "Onsen Ryokan no Yoru", "Yukata Matsuri Vow", "Geta no Sound Kiss",
+        "Ashiyu Confession", "Onsen no Kaki-gori", "Yukata Obi Waltz", "Rotenburo Milky Way", "Onsen Machi no Lantern",
+        "Yukata de Odoru", "Ramune Bin no Bii-dama", "Onsen Tamago Sunset", "Yukagata Namida", "Geta no Bochi-bochi",
+        "Yu-kemuri Serenade", "Onsen Machi no Yatai", "Yukata Sleeve Secret", "Tenugui Firefly", "Rotenburo Reflection",
+        "Onsen no Yubune", "Yukata Kanzashi Waltz", "Geta de Hanabi Miru", "Onsen Machi Fuurin", "Yukagata Obi Musubi Two",
+        "Ashiyu no Yakusoku", "Onsen Tamago Diary", "Yukata Matsuri Chime", "Rotenburo no Kumo", "Onsen Ryokan Serenade",
+        "Yu-kemuri Silhouette", "Tenugui Wind Chime", "Onsen Machi no Star", "Yukata no Suzu", "Geta Karankoron",
+        "Onsen no Momiji", "Yukata Yatai Kiss", "Rotenburo Starfall", "Onsen Machi Confession", "Yukagata no Aki",
+        "Ashiyu Moonlight", "Onsen Tamago Farewell", "Yukata Obi Serenade", "Geta no Yoru Michi", "Rotenburo Aurora",
+        "Onsen Machi Fireflies", "Yukata Sode no Kaze", "Tenugui Ribbon Waltz", "Onsen Yumoto Vow", "Yukagata Kanzashi Two",
+        "Geta de Odoru Yoru", "Onsen no Chochin Bi", "Yukata Matsuri Waltz", "Rotenburo Kagayaki", "Onsen Machi Lullaby",
+        "Yu-kemuri no Kiss", "Ashiyu Serenade", "Onsen Tamago Reflection", "Yukata Obi no Uta", "Geta Oto no Yakusoku",
+        "Rotenburo Hoshi Matsuri", "Onsen Machi no Yume", "Yukagata Sode Waltz", "Tenugui Firefly Two", "Onsen Ryokan Vow",
+        "Yukata Kanzashi Farewell", "Geta de Aruku Michi", "Onsen no Gekkou", "Yukata Matsuri Reflection", "Rotenburo Diary",
+        "Onsen Machi Chime", "Yu-kemuri Waltz", "Ashiyu no Hoshizora", "Yukata Sugata Serenade", "Onsen Machi Finale"
+    ],
+    NekoCafe: [
+        "Nyanko Sensei Love", "Paw Print Promise", "Neko Mimi Mode ON", "Cat Cafe Afternoon", "Shippo Furifuri",
+        "Neko Jarashi Kiss", "Nyaa Nyaa Serenade", "Cat Cafe no Mado-giwa", "Nikukyuu Touch", "Neko no Hirune Time",
+        "Kagi Shippo Diary", "Cat Cafe Chime", "Neko Mimi Kanzashi", "Goro Goro Lullaby", "Nyanko no Himitsu",
+        "Cat Cafe no Sofa", "Neko Jarashi Waltz", "Shippo no Kage", "Nyaa to Naku Yoru", "Cat Cafe Afternoon Tea",
+        "Neko no Ashiato", "Nikukyuu Stamp Love", "Cat Cafe no Beru", "Neko Mimi Headband Kiss", "Goro Goro Serenade",
+        "Nyanko Basket Dream", "Cat Cafe Sunbeam", "Neko no Hitomi", "Shippo Furifuri Waltz", "Nyaa Nyaa Confession",
+        "Cat Cafe no Menu", "Neko Jarashi Diary", "Nikukyuu Marshmallow", "Cat Cafe Window Nap", "Neko no Gohan Time",
+        "Kagi Shippo Waltz", "Nyanko Basket Secret", "Cat Cafe Chime Two", "Neko Mimi Ribbon", "Goro Goro Afternoon",
+        "Nyaa to Iu Kimochi", "Cat Cafe no Sunlight", "Neko no Hirune Kiss", "Shippo no Yakusoku", "Nikukyuu Touch Two",
+        "Cat Cafe Serenade", "Neko Jarashi Confession", "Nyanko no Toy Box", "Cat Cafe no Table", "Neko Mimi Kiss",
+        "Goro Goro Waltz", "Nyaa Nyaa Diary", "Cat Cafe Sunbeam Two", "Neko no Ashioto", "Shippo Furifuri Two",
+        "Nikukyuu Stamp Waltz", "Cat Cafe no Beru Two", "Neko Jarashi Serenade", "Nyanko Basket Waltz", "Cat Cafe Afternoon Nap",
+        "Neko no Hitomi Waltz", "Kagi Shippo Confession", "Cat Cafe Chime Three", "Neko Mimi Headband Two", "Goro Goro Confession",
+        "Nyaa to Naku Kisetsu", "Cat Cafe no Menu Two", "Neko no Gohan Waltz", "Shippo no Kage Two", "Nikukyuu Marshmallow Two",
+        "Cat Cafe Window Sunset", "Neko Jarashi Kiss Two", "Nyanko no Himitsu Two", "Cat Cafe no Sofa Two", "Neko Mimi Ribbon Two",
+        "Goro Goro Afternoon Two", "Nyaa Nyaa Serenade Two", "Cat Cafe Sunbeam Three", "Neko no Hirune Diary", "Shippo Furifuri Three",
+        "Nikukyuu Touch Three", "Cat Cafe no Table Two", "Neko Jarashi Waltz Two", "Nyanko Basket Dream Two", "Cat Cafe Chime Four",
+        "Neko Mimi Kanzashi Two", "Goro Goro Lullaby Two", "Nyaa to Iu Kimochi Two", "Cat Cafe no Beru Three", "Neko no Ashiato Two",
+        "Shippo no Yakusoku Two", "Nikukyuu Stamp Love Two", "Cat Cafe Afternoon Tea Two", "Neko Jarashi Diary Two", "Nyanko no Toy Box Two",
+        "Cat Cafe no Sunlight Two", "Neko Mimi Kiss Two", "Goro Goro Serenade Two", "Nyaa Nyaa Confession Two", "Cat Cafe Finale"
+    ],
+
+    Tsuyu: [
+        "Tsuyu no Tegami", "Ajisai Iro no Kokoro", "Mado no Soto wa Ame", "Humid Heartbeat", "Kasa no Shita de Matsu",
+        "Nagai Ame no Kisetsu", "Grey Sky Longing", "Shizuku ga Ochiru Oto", "Rain-heavy Air", "Ajisai no Iro ga Kawaru Koro",
+        "Tsuyu-zora no Shita", "Waiting Out the Downpour", "Kaeru no Koe ga Kikoeru", "Damp Window Diary", "Amayadori no Jikan",
+        "The Sky Won't Clear", "Nureta Michi wo Aruku", "Humidity and Heartache", "Kasa Wasureta Hi", "Tsuyu no Naka no Kimi",
+        "Fogged-up Glass", "Shizukana Ame no Yoru", "Grey Days in a Row", "Ajisai no Shita de Kimi wo Matsu", "Rain That Won't Stop",
+        "Kutsu ga Nurete Iru", "Longing in the Humidity", "Tsuyu-zoki no Kokoro", "Puddle Reflections", "Mado Garasu no Kumori",
+        "The Season That Won't End", "Amagumo no Shita", "Damp Sheets, Heavy Heart", "Furitsuzuku Ame", "Rain on the Bus Window",
+        "Ajisai Blue", "Waiting for the Sun Again", "Nureta Kami no Mama", "The Weight of Grey Skies", "Kasa no Naka no Futari",
+        "Tsuyu no Owari ga Mienai", "Sticky Air, Slow Days", "Shizuku no Rhythm", "Rainy Season Lullaby", "Kumo no Sukima wo Sagashite",
+        "Mado ni Utsuru Ame", "Longing Between Raindrops", "Ajisai no Namida", "Grey Clouds Overhead", "Nagagutsu no Oto",
+        "The Rain Keeps Secrets", "Shimeppoi Kaze", "Tsuyu-doki no Tameiki", "Puddle Jumping Alone", "Furu Ame wo Mite Iru",
+        "Humid Nights, Quiet Thoughts", "Ajisai no Tsubomi", "Rain-streaked Memory", "Mado no Mukou no Kimi", "Damp Umbrella Stand",
+        "The Sky's Been Crying All Week", "Nureta Kutsu-shita", "Tsuyu no Shizukesa", "Waiting Room for Sunshine", "Kasa wo Wasurete Kaeru",
+        "Grey Sky, Grey Thoughts", "Ajisai-dera no Michi", "Rain That Blurs the Streetlights", "Shimeru Kuuki", "The Sound of Gutters Overflowing",
+        "Tsuyu-zora no Tameiki", "Foggy Morning Commute", "Nureta Kasa no Oto", "Longing Under Grey Clouds", "Ame ga Yamanai Riyuu",
+        "Wet Pavement Reflection", "Ajisai no Yakusoku", "The Rain Remembers Everything", "Kumotta Mado", "Tsuyu-doki no Namida",
+        "Slow Drip Melancholy", "Shizuku ga Tomaranai", "Grey Season, Grey Heart", "Furikaeru Ame no Hi", "The Umbrella We Shared",
+        "Ajisai no Nioi", "Damp Air, Distant Thoughts", "Mado wo Tataku Ame", "Tsuyu no Naka de Mieta Mono", "Rain-soaked Recollection",
+        "Nureta Sekai no Iro", "Waiting for a Break in the Clouds", "Shimeppoi Yoru no Uta", "Ajisai-iro no Kioku", "The Sky Cried First",
+        "Furitsuzuku Kimochi", "Grey Morning, Grey Mind", "Tsuyu ga Akeru Made", "Nureta Michi no Saki ni", "Rainy Season Farewell"
     ]
 
 
@@ -4315,7 +4520,8 @@ export const useIdolManager = () => {
         } else {
             primaryGroup = member.displayGroupName || (member.isSisterMember ? member.homeGroup : groupName) || 'Unknown Group';
         }
-        const primaryTeam = member.teamName ? `Team ${member.teamName}` : 'Kenkyuusei';
+        const isTraineeMember = member.isTrainee || member.position === 'trainee' || member.homeGroup === 'Trainees (Kenkyuusei)';
+        const primaryTeam = member.teamName ? `Team ${member.teamName}` : (isTraineeMember ? 'Kenkyuusei' : 'Regular Member');
         const primaryPart = `${primaryGroup} | ${primaryTeam}`;
 
         // 2. Collect all Concurrent Assignments
@@ -15949,33 +16155,46 @@ export const useIdolManager = () => {
             cost = 50000; // Special low cost for forming a unit
         } else if (newGroupType === 'subgroup') {
             cost = 100000; // Cost for establishing a subgroup
+        } else if (newGroupType === 'trainee') {
+            cost = 100000;
+        } else if (newGroupType === 'franchise_main') {
+            cost = 400000; // Cost for founding a new main franchise
         } else {
             cost = newGroupType === 'domestic' ? 200000 : 500000;
         }
 
         if (money < cost) {
             setMessage(`Need ¥${cost.toLocaleString()} to establish this group.`);
-            // **FIX 1 of 2: Explicitly return on failure**
             return;
         }
 
         const newId = Math.max(0, ...(sisterGroups || []).map(sg => sg.id || 0)) + 1;
+        const isFranchiseMain = newGroupType === 'franchise_main';
+        const franchiseId = isFranchiseMain ? newId : (groupData.franchiseId || 'main');
 
         const newSisterGroup = {
             id: newId,
             name: groupData.groupName,
-            location: groupData.location || 'Special Project',
+            location: groupData.location || (isFranchiseMain ? 'Tokyo' : 'Special Project'),
             type: newGroupType,
-            parentGroupId: groupData.parentGroupId,
+            isFranchiseMain: isFranchiseMain,
+            franchiseId: franchiseId,
+            parentGroupId: isFranchiseMain ? null : (groupData.parentGroupId || 'main'),
+            concept: groupData.concept || (isFranchiseMain ? 'Independent Rival Franchise' : 'Idol Group'),
+            color: groupData.color || (isFranchiseMain ? '#8b5cf6' : '#ec4899'),
             members: initialMemberIds,
-            fans: 100, songs: [], income: 0, isAutonomous: newGroupType === 'overseas', money: 0, licensedSongs: []
+            fans: isFranchiseMain ? 1000 : 100,
+            songs: [],
+            income: 0,
+            isAutonomous: newGroupType === 'overseas' || isFranchiseMain,
+            money: isFranchiseMain ? 100000 : 0,
+            licensedSongs: []
         };
 
         if (newGroupType === 'unit' && initialMemberIds.length > 0) {
             initialMemberIds.forEach(memberId => {
                 updateMemberState(memberId, m => ({
                     ...m,
-                    // Use the name for matching with group filter
                     kenninGroups: [...(m.kenninGroups || []), newSisterGroup.name],
                     teamHistory: [...(m.teamHistory || []), { week: week, event: `Joined special unit "${newSisterGroup.name}"` }]
                 }));
@@ -15984,11 +16203,14 @@ export const useIdolManager = () => {
 
         setSisterGroups(prev => [...(prev || []), newSisterGroup]);
         setMoney(prev => prev - cost);
-        setMessage(`Successfully established ${groupData.groupName}!`);
+        const successMsg = isFranchiseMain
+            ? `🎉 Successfully established the new independent franchise "${groupData.groupName}"! It uses the Generation system.`
+            : `Successfully established ${groupData.groupName}!`;
+        setMessage(successMsg);
+        addNotification({ type: 'Group', message: successMsg });
         setShowModal(null);
         setGroupRoles(prev => ({ ...prev, [newId]: null }));
 
-        // **FIX 2 of 2: Return the new ID on success**
         return newId;
     };
 
@@ -16624,6 +16846,9 @@ export const useIdolManager = () => {
     const buildSisterTheater = (sgId) => {
         const sg = sisterGroups.find(g => g.id === sgId);
         if (!sg) return setMessage("Sister group not found.");
+        if (sg.isFranchiseMain || sg.type === 'franchise_main' || (sg.franchiseId && sg.franchiseId !== 'main')) {
+            return setMessage("Independent Franchise groups operate on a Generation & Concert model and do not use Theaters.");
+        }
         if (theaters.some(t => t.owner === sgId)) return setMessage(`${sg.name} already has a theater.`);
 
         const cost = 150000;
@@ -16642,6 +16867,198 @@ export const useIdolManager = () => {
         const successMessage = `Theater built for ${sg.name}!`;
         setMessage(successMessage);
         addNotification({ type: 'Facility', message: successMessage });
+    };
+
+    const holdFranchiseRivalBattle = ({ franchiseAId = 'main', franchiseBId }) => {
+        const isAMain = franchiseAId === 'main';
+        const isBMain = franchiseBId === 'main';
+
+        const groupA = isAMain ? { id: 'main', name: groupName, color: '#ec4899' } : sisterGroups.find(g => g.id === franchiseAId);
+        const groupB = isBMain ? { id: 'main', name: groupName, color: '#ec4899' } : sisterGroups.find(g => g.id === franchiseBId);
+
+        if (!groupA || !groupB) {
+            return setMessage("One of the selected franchise groups could not be found.");
+        }
+
+        // Get members for each franchise tree
+        const getFranchiseMembers = (fId, isMain) => {
+            if (isMain) {
+                return getAllAvailableMembers(true).filter(m => (!m.groupId || m.groupId === 'main' || m.homeGroup === 'main' || !m.isSisterMember || (sisterGroups.find(sg => sg.id === m.groupId)?.franchiseId === 'main')));
+            }
+            return getAllAvailableMembers(true).filter(m => String(m.groupId) === String(fId) || (sisterGroups.find(sg => sg.id === m.groupId)?.franchiseId === fId) || m.homeGroup === groupB.name);
+        };
+
+        const membersA = getFranchiseMembers(franchiseAId, isAMain).slice(0, 16);
+        const membersB = getFranchiseMembers(franchiseBId, isBMain).slice(0, 16);
+
+        if (membersA.length === 0 || membersB.length === 0) {
+            return setMessage("Both franchises must have at least 1 active idol to battle!");
+        }
+
+        const calcAvg = (list, key) => list.length > 0 ? list.reduce((acc, m) => acc + (m[key] || 50), 0) / list.length : 50;
+
+        const vocalA = calcAvg(membersA, 'singing') + (Math.random() * 20 - 10);
+        const vocalB = calcAvg(membersB, 'singing') + (Math.random() * 20 - 10);
+
+        const danceA = calcAvg(membersA, 'dancing') + (Math.random() * 20 - 10);
+        const danceB = calcAvg(membersB, 'dancing') + (Math.random() * 20 - 10);
+
+        const charismaA = (calcAvg(membersA, 'charisma') * 0.6 + calcAvg(membersA, 'visual') * 0.4) + (Math.random() * 20 - 10);
+        const charismaB = (calcAvg(membersB, 'charisma') * 0.6 + calcAvg(membersB, 'visual') * 0.4) + (Math.random() * 20 - 10);
+
+        const r1Winner = vocalA >= vocalB ? 'A' : 'B';
+        const r2Winner = danceA >= danceB ? 'A' : 'B';
+        const r3Winner = charismaA >= charismaB ? 'A' : 'B';
+
+        const winsA = [r1Winner, r2Winner, r3Winner].filter(w => w === 'A').length;
+        const winsB = 3 - winsA;
+        const overallWinner = winsA >= 2 ? 'A' : 'B';
+
+        const winnerGroup = overallWinner === 'A' ? groupA : groupB;
+        const loserGroup = overallWinner === 'A' ? groupB : groupA;
+
+        const winnerMembers = overallWinner === 'A' ? membersA : membersB;
+        const loserMembers = overallWinner === 'A' ? membersB : membersA;
+
+        const winnerFanGain = 35000 + Math.floor(Math.random() * 20000);
+        const loserFanGain = 18000 + Math.floor(Math.random() * 10000);
+        const prizeMoney = 250000;
+
+        setMoney(prev => prev + prizeMoney);
+        setTotalFans(prev => prev + winnerFanGain + loserFanGain);
+
+        // Boost morale
+        winnerMembers.forEach(m => {
+            updateMemberState(m.rosterId || m.id, old => ({
+                ...old,
+                morale: Math.min(100, (old.morale || 70) + 20),
+                fans: {
+                    hardcore: (old.fans?.hardcore || 0) + Math.floor(winnerFanGain / (winnerMembers.length * 2)),
+                    casual: (old.fans?.casual || 0) + Math.floor(winnerFanGain / (winnerMembers.length * 2))
+                }
+            }));
+        });
+
+        loserMembers.forEach(m => {
+            updateMemberState(m.rosterId || m.id, old => ({
+                ...old,
+                morale: Math.min(100, (old.morale || 70) + 5),
+                fans: {
+                    hardcore: (old.fans?.hardcore || 0) + Math.floor(loserFanGain / (loserMembers.length * 2)),
+                    casual: (old.fans?.casual || 0) + Math.floor(loserFanGain / (loserMembers.length * 2))
+                }
+            }));
+        });
+
+        const battleResult = {
+            groupA: { name: groupA.name, id: franchiseAId, wins: winsA, members: membersA },
+            groupB: { name: groupB.name, id: franchiseBId, wins: winsB, members: membersB },
+            rounds: [
+                { name: "Vocal Duel", scoreA: Math.round(vocalA), scoreB: Math.round(vocalB), winner: r1Winner },
+                { name: "Dance Battle", scoreA: Math.round(danceA), scoreB: Math.round(danceB), winner: r2Winner },
+                { name: "Visual & Star Charisma Appeal", scoreA: Math.round(charismaA), scoreB: Math.round(charismaB), winner: r3Winner }
+            ],
+            overallWinner: winnerGroup.name,
+            winnerFanGain,
+            loserFanGain,
+            prizeMoney,
+            week
+        };
+
+        const battleMsg = `⚔️ Franchise Battle: ${winnerGroup.name} defeated ${loserGroup.name} (${winsA > winsB ? `${winsA}-${winsB}` : `${winsB}-${winsA}`})! Earned ¥${prizeMoney.toLocaleString()} and massive fan buzz!`;
+        setMessage(battleMsg);
+        addNotification({ type: 'Event', message: battleMsg });
+
+        setPerformanceHistory(prev => [{
+            id: Date.now(),
+            name: `Franchise Showdown: ${groupA.name} vs ${groupB.name}`,
+            category: "Franchise Rival Battle",
+            venueName: "Tokyo Dome Arena",
+            week,
+            cost: 0,
+            revenue: prizeMoney,
+            profit: prizeMoney,
+            fansGained: winnerFanGain + loserFanGain,
+            members: [...membersA, ...membersB].map(m => ({ id: m.id, name: m.name, homeGroup: m.homeGroup })),
+            tracks: []
+        }, ...prev]);
+
+        setModalData(battleResult);
+        setShowModal('franchiseBattleResult');
+        return battleResult;
+    };
+
+    const holdCrossFranchiseConcert = ({ franchiseIds = ['main'], venueName = "Super Arena", ticketPrice = 8500 }) => {
+        if (!franchiseIds || franchiseIds.length < 2) {
+            return setMessage("Please select at least 2 franchises to hold a cross-franchise concert!");
+        }
+
+        const selectedGroups = franchiseIds.map(fId => {
+            if (fId === 'main') return { id: 'main', name: groupName };
+            return sisterGroups.find(sg => sg.id === fId) || { id: fId, name: 'Unknown' };
+        });
+
+        const participatingMembers = getAllAvailableMembers(true).filter(m => {
+            if (franchiseIds.includes('main') && (!m.isSisterMember || m.groupId === 'main' || m.homeGroup === 'main')) return true;
+            return franchiseIds.some(fId => String(m.groupId) === String(fId) || sisterGroups.find(sg => sg.id === m.groupId)?.franchiseId === fId);
+        });
+
+        if (participatingMembers.length === 0) {
+            return setMessage("No available idols found across the selected franchises.");
+        }
+
+        const baseCapacity = 35000 + (franchiseIds.length * 15000);
+        const attendance = Math.min(baseCapacity, Math.floor(baseCapacity * (0.8 + Math.random() * 0.2)));
+        const revenue = attendance * ticketPrice;
+        const cost = Math.floor(revenue * 0.35);
+        const profit = revenue - cost;
+        const totalFanGain = 45000 * franchiseIds.length;
+
+        setMoney(prev => prev + profit);
+        setTotalFans(prev => prev + totalFanGain);
+
+        // Morale boost for all members
+        participatingMembers.forEach(m => {
+            updateMemberState(m.rosterId || m.id, old => ({
+                ...old,
+                morale: Math.min(100, (old.morale || 75) + 15),
+                stamina: Math.max(10, (old.stamina || 100) - 15)
+            }));
+        });
+
+        const concertResult = {
+            franchiseNames: selectedGroups.map(g => g.name).join(' × '),
+            venueName,
+            attendance,
+            ticketPrice,
+            revenue,
+            profit,
+            fanGain: totalFanGain,
+            memberCount: participatingMembers.length,
+            week
+        };
+
+        const concertMsg = `🎤 Cross-Franchise Mega-Concert (${concertResult.franchiseNames}) drew ${attendance.toLocaleString()} fans! Net profit: ¥${profit.toLocaleString()}`;
+        setMessage(concertMsg);
+        addNotification({ type: 'Concert', message: concertMsg });
+
+        setPerformanceHistory(prev => [{
+            id: Date.now(),
+            name: `Cross-Franchise Live: ${concertResult.franchiseNames}`,
+            category: "Cross-Franchise Concert",
+            venueName,
+            week,
+            cost,
+            revenue,
+            profit,
+            fansGained: totalFanGain,
+            members: participatingMembers.slice(0, 32).map(m => ({ id: m.id, name: m.name, homeGroup: m.homeGroup })),
+            tracks: []
+        }, ...prev]);
+
+        setModalData(concertResult);
+        setShowModal('crossConcertResult');
+        return concertResult;
     };
 
     const renameTheater = (ownerId, newName) => {
@@ -19637,7 +20054,6 @@ export const useIdolManager = () => {
         getSavedGames, saveGame, loadGame,
         // Utilities
         startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
-        // Logic
-        holdTitleTrackPerformance, holdUnitPerformance, unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, resolveSurvivalMission, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, getUnderMembersPool, startUnderTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, executeFanEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, promoteSubgroupMember, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, promoteTrainee, promoteMultipleTrainees, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
+        holdTitleTrackPerformance, holdUnitPerformance, unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, resolveSurvivalMission, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, getUnderMembersPool, startUnderTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, executeFanEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, promoteSubgroupMember, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, holdFranchiseRivalBattle, holdCrossFranchiseConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, promoteTrainee, promoteMultipleTrainees, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
     };
 };
