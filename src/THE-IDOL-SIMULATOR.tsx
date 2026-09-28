@@ -1038,10 +1038,10 @@ const App = () => {
         };
 
         const tiers = [
-            { id: 1, name: 'Local Casting', cost: 25000 },
-            { id: 2, name: 'Regional Audition', cost: 100000 },
-            { id: 3, name: 'National Audition', cost: 500000 },
-            { id: 4, name: 'Elite Scouting', cost: 1500000 },
+            { id: 1, name: 'Local Casting', cost: 150000 },
+            { id: 2, name: 'Regional Audition', cost: 600000 },
+            { id: 3, name: 'National Audition', cost: 2500000 },
+            { id: 4, name: 'Elite Scouting', cost: 6000000 },
         ];
 
         return (
@@ -2320,13 +2320,13 @@ const App = () => {
         };
 
 
-        const baseCostPerVersion = 100000;
-        const baseCostAlbum = 800000; // Base cost for producing a full album
-        const electionBallotCost = 200000;
-        const handshakeTicketCost = 300000;
-        const albumPhysicalSurcharge = 200000; // Fixed additional cost for physical albums
+        const baseCostPerVersion = 400000;
+        const baseCostAlbum = 2000000; // Base cost for producing a full album
+        const electionBallotCost = 500000;
+        const handshakeTicketCost = 1500000;
+        const albumPhysicalSurcharge = 600000; // Fixed additional cost for physical albums
 
-        const productionChoicesCost = Object.keys(productionChoices).reduce((total, key) => total + productionTiers[key][productionChoices[key]].cost, 10000);
+        const productionChoicesCost = Object.keys(productionChoices).reduce((total, key) => total + (productionTiers[key]?.[productionChoices[key]]?.cost || 0), 50000);
 
         let costMultiplier = 1.0;
         if (releaseType === 'single') {
@@ -3980,7 +3980,7 @@ const App = () => {
                 if (customUnitMembers.length < 2 || customUnitMembers.length > 5) {
                     return setMessage("Please select between 2 and 5 members for your Sub-Unit!");
                 }
-                const cost = 50000;
+                const cost = 300000;
                 if (money < cost) {
                     return setMessage(`Need ¥${cost.toLocaleString()} to establish this Sub-Unit.`);
                 }
@@ -4027,7 +4027,7 @@ const App = () => {
                         <Users className="text-indigo-500" /> Create New Legit Sub-Unit
                     </h3>
                     <p className="text-center text-gray-600 dark:text-gray-400 mb-6 text-sm">
-                        Enter the name and select 2 to 5 members to form a permanent sub-unit (Establishment Cost: ¥50,000).
+                        Enter the name and select 2 to 5 members to form a permanent sub-unit (Establishment Cost: ¥300,000).
                     </p>
                     {/* Name Input */}
                     <div className="mb-5 max-w-md mx-auto">
@@ -4155,10 +4155,10 @@ const App = () => {
                         </button>
                         <button
                             onClick={handleConfirmCreateUnit}
-                            disabled={customUnitMembers.length < 2 || !customUnitName.trim() || money < 50000}
+                            disabled={customUnitMembers.length < 2 || !customUnitName.trim() || money < 300000}
                             className="p-2 bg-indigo-600 text-white rounded px-6 font-bold disabled:bg-gray-400 hover:bg-indigo-700 transition-colors shadow-md hover:shadow-indigo-500/20"
                         >
-                            Create Unit & Proceed (¥50,000)
+                            Create Unit & Proceed (¥300,000)
                         </button>
                     </div>
                 </div>
@@ -5143,7 +5143,7 @@ const App = () => {
                             <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
                                 Calculated automatically based on the number of "Type-Exclusive" B-sides.
                                 <br />
-                                Base Cost: ¥100,000 per version.
+                                Base Cost: ¥400,000 per physical CD version.
                             </p>
                         </div>
                     )}
@@ -5168,7 +5168,7 @@ const App = () => {
                                         onChange={(e) => setIsElectionSingle(e.target.checked)}
                                         className="form-checkbox h-5 w-5 text-yellow-600 mr-3 focus:ring-yellow-500"
                                     />
-                                    Include General Election Ballots
+                                    Include General Election Ballots (+¥500,000)
                                 </label>
                                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
                                     This will turn this single into an Election Single. Final sales will determine the vote pool for the next election. Production costs will increase.
@@ -5182,10 +5182,10 @@ const App = () => {
                                             onChange={(e) => setIncludeHandshakeTickets(e.target.checked)}
                                             className="form-checkbox h-5 w-5 text-green-600 mr-3 focus:ring-green-500"
                                         />
-                                        Include Handshake Event Tickets
+                                        Include Handshake Event Tickets (+¥1,500,000)
                                     </label>
                                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                                        This will schedule a post-release handshake event. Production costs will increase by ¥300,000.
+                                        This will schedule a post-release handshake event. Production costs will increase by ¥1,500,000 (Makuhari Messe exhibition hall booking & security).
                                     </p>
                                 </div>
 
@@ -11442,7 +11442,7 @@ const App = () => {
     const UnitVoteStartModal = () => {
         const [unitName, setUnitName] = useState('');
         const [memberCount, setMemberCount] = useState(7);
-        const UNIT_VOTE_COST = 150000;
+        const UNIT_VOTE_COST = 500000;
 
         const handleConfirm = () => {
             if (unitName.trim()) {
@@ -13594,7 +13594,7 @@ const App = () => {
                     <div className="flex justify-end gap-2 pt-4 border-t border-purple-200/50">
                         <button onClick={() => setShowModal(null)} className="px-6 py-2 bg-gray-200/80 dark:bg-gray-600 text-gray-800 dark:text-gray-100 font-semibold rounded-lg hover:bg-gray-300">Cancel</button>
                         <button onClick={handleConfirm} disabled={!unitName.trim()} className="px-6 py-2 bg-purple-400 text-white font-bold rounded-lg hover:bg-purple-500 transition-shadow shadow-lg shadow-purple-500/20 disabled:bg-gray-400">
-                            Form Unit (¥50,000)
+                            Form Unit (¥300,000)
                         </button>
                     </div>
                 </div>
@@ -13686,7 +13686,7 @@ const App = () => {
                             <input type="radio" name="type" value="franchise_main" checked={groupData.type === 'franchise_main'} onChange={handleChange} className="mt-1" />
                             <div>
                                 <span className="font-bold text-purple-700 dark:text-purple-300 flex items-center gap-1">🏛️ Independent Franchise</span>
-                                <span className="text-xs text-purple-600 dark:text-purple-400 font-semibold block">¥400,000</span>
+                                <span className="text-xs text-purple-600 dark:text-purple-400 font-semibold block">¥8,000,000</span>
                                 <span className="text-[11px] text-gray-500 dark:text-gray-400 block mt-0.5">New main brand with its own sister group tree. Uses Generation system (No theater/teams).</span>
                             </div>
                         </label>
@@ -13695,7 +13695,7 @@ const App = () => {
                             <input type="radio" name="type" value="domestic" checked={groupData.type === 'domestic'} onChange={handleChange} className="mt-1" />
                             <div>
                                 <span className="font-bold text-pink-700 dark:text-pink-300 flex items-center gap-1">🌸 Domestic Sister Group</span>
-                                <span className="text-xs text-pink-600 dark:text-pink-400 font-semibold block">¥200,000</span>
+                                <span className="text-xs text-pink-600 dark:text-pink-400 font-semibold block">¥5,000,000</span>
                                 <span className="text-[11px] text-gray-500 dark:text-gray-400 block mt-0.5">Regional branch operating in Japan under selected franchise tree.</span>
                             </div>
                         </label>
@@ -13704,7 +13704,7 @@ const App = () => {
                             <input type="radio" name="type" value="overseas" checked={groupData.type === 'overseas'} onChange={handleChange} className="mt-1" />
                             <div>
                                 <span className="font-bold text-blue-700 dark:text-blue-300 flex items-center gap-1">🌏 Overseas Sister Group</span>
-                                <span className="text-xs text-blue-600 dark:text-blue-400 font-semibold block">¥500,000</span>
+                                <span className="text-xs text-blue-600 dark:text-blue-400 font-semibold block">¥10,000,000</span>
                                 <span className="text-[11px] text-gray-500 dark:text-gray-400 block mt-0.5">Autonomous global group in Asia with local idol language and fandom.</span>
                             </div>
                         </label>
@@ -13713,7 +13713,7 @@ const App = () => {
                             <input type="radio" name="type" value="subgroup" checked={groupData.type === 'subgroup'} onChange={handleChange} className="mt-1" />
                             <div>
                                 <span className="font-bold text-indigo-700 dark:text-indigo-300 flex items-center gap-1">🌿 Sub-group</span>
-                                <span className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold block">¥100,000</span>
+                                <span className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold block">¥800,000</span>
                                 <span className="text-[11px] text-gray-500 dark:text-gray-400 block mt-0.5">Secondary team feeding talent into its parent group.</span>
                             </div>
                         </label>
@@ -13722,7 +13722,7 @@ const App = () => {
                             <input type="radio" name="type" value="trainee" checked={groupData.type === 'trainee'} onChange={handleChange} className="mt-1" />
                             <div>
                                 <span className="font-bold text-amber-700 dark:text-amber-300 flex items-center gap-1">🌱 Trainee / Kenkyuusei Group</span>
-                                <span className="text-xs text-amber-600 dark:text-amber-400 font-semibold block">¥100,000</span>
+                                <span className="text-xs text-amber-600 dark:text-amber-400 font-semibold block">¥500,000</span>
                                 <span className="text-[11px] text-gray-500 dark:text-gray-400 block mt-0.5">Dedicated training branch for fresh recruits to hone skills before promotion.</span>
                             </div>
                         </label>
@@ -16163,7 +16163,7 @@ const App = () => {
                                     </div>}
 
                                     <button onClick={() => setShowModal('unitVote')} className="w-full p-1.5 text-sm bg-cyan-600 text-white rounded font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed">
-                                        Create Unit via Fan Vote (¥150k)
+                                        Create Unit via Fan Vote (¥500,000)
                                     </button>
 
 
@@ -16333,13 +16333,13 @@ const App = () => {
 
                                     {!theaters.some(t => t.owner === 'main') && (
                                         <button onClick={buildTheater} className="w-full p-1.5 text-sm bg-gray-700 text-white rounded font-semibold">
-                                            Build Main Theater (¥100k)
+                                            Build Main Theater (¥1,500,000)
                                         </button>
                                     )}
 
                                     {sisterGroups.filter(sg => sg.type !== 'franchise_main' && !sg.isFranchiseMain && (!sg.franchiseId || sg.franchiseId === 'main') && !theaters.some(t => t.owner === sg.id)).map(sg => (
                                         <button key={`build-th-${sg.id}`} onClick={() => buildSisterTheater(sg.id)} className="w-full p-1.5 text-sm bg-gray-600 text-white rounded font-semibold">
-                                            Build Theater for {sg.name} (¥150k)
+                                            Build Theater for {sg.name} (¥1,500,000)
                                         </button>
                                     ))}
 

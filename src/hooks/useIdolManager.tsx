@@ -106,19 +106,55 @@ export const staffTiers = {
 
 
 export const productionTiers = {
-    training: { standard: { name: 'Standard Practice', cost: 0, effect: 'Base skill gain from facilities.' }, workshop: { name: 'Specialized Workshop', cost: 50000, effect: '+5 Sing/Dance for Senbatsu.' }, overseas: { name: 'Intensive Camp', cost: 250000, effect: '+15 Sing/Dance for Senbatsu.' }, bootcamp: { name: 'Idol Bootcamp', cost: 400000, effect: '+20 Sing/Dance for Senbatsu, slight morale strain.' }, elite: { name: 'Elite Trainer Program', cost: 650000, effect: '+25 Sing/Dance & improved consistency.' }, oneOnOne: { name: '1-on-1 Master Coaching', cost: 900000, effect: '+30 Sing/Dance for selected members, very high efficiency.' } },
-    song: { inHouse: { name: 'In-house Team', cost: 0, effect: 'Standard song quality.' }, rookie: { name: 'Rookie Producer', cost: 50000, effect: '+5% Sales Potential.' }, external: { name: 'External Songwriter', cost: 100000, effect: '+10% Sales Potential.' }, trend: { name: 'Trend-focused Producer', cost: 180000, effect: '+15% Sales Potential, short-term hype boost.' }, famous: { name: 'Famous Producer', cost: 400000, effect: '+25% Sales & +10% Hype.' }, hitmaker: { name: 'Top-tier Hitmaker', cost: 750000, effect: '+40% Sales, strong chart performance.' } },
-    mv: { none: { name: 'No Music Video', cost: 0, effect: 'Minimal promotion.' }, practice: { name: 'Practice Room MV', cost: 20000, effect: '+5% Fan Gain.' }, performance: { name: 'Performance MV', cost: 60000, effect: '+8% Fan Gain & Performance Appeal.' }, location: { name: 'On-Location MV', cost: 150000, effect: '+15% Fan Gain & Hype.' }, storyline: { name: 'Storyline MV', cost: 300000, effect: '+20% Fan Gain, Emotional Impact.' }, cinematic: { name: 'Cinematic MV', cost: 600000, effect: '+30% Fan Gain, High Hype, Viral Chance.' }, blockbuster: { name: 'Blockbuster MV', cost: 1000000, effect: '+45% Fan Gain, Massive Hype, Guaranteed Media Buzz.' } },
-    outfits: { existing: { name: 'Use Existing Outfits', cost: 0, effect: 'No visual bonus.' }, recolor: { name: 'Reworked Outfits', cost: 40000, effect: 'Minor visual refresh.' }, custom: { name: 'New Custom Outfits', cost: 120000, effect: 'Boosts Morale & Visuals.' }, concept: { name: 'Concept-Specific Styling', cost: 200000, effect: '+10% Concept Immersion & Hype.' }, luxury: { name: 'Luxury Designer Outfits', cost: 450000, effect: 'Major visual boost, attracts brand deals.' } },
-    promo: { none: { name: 'Word of Mouth', cost: 0, effect: 'Base pre-release buzz.' }, social: { name: 'Social Media Ads', cost: 30000, effect: '+10% Pre-release Fans.' }, teaser: { name: 'Teaser Rollout', cost: 60000, effect: '+15% Pre-release Fans & Hype.' }, variety: { name: 'Variety Show Appearances', cost: 120000, effect: '+20% General Public Awareness.' }, blitz: { name: 'Full Media Blitz', cost: 200000, effect: '+25% Pre-release Fans & Chart Rank.' }, global: { name: 'Global Promotion Campaign', cost: 400000, effect: '+35% Pre-release Fans, Strong Overseas Charts.' } }
+    training: {
+        standard: { name: 'Standard Practice', cost: 0, effect: 'Base skill gain from facilities.' },
+        workshop: { name: 'Specialized Workshop', cost: 150000, effect: '+5 Sing/Dance for Senbatsu.' },
+        overseas: { name: 'Intensive Camp', cost: 600000, effect: '+15 Sing/Dance for Senbatsu.' },
+        bootcamp: { name: 'Idol Bootcamp', cost: 1200000, effect: '+20 Sing/Dance for Senbatsu, slight morale strain.' },
+        elite: { name: 'Elite Trainer Program', cost: 2500000, effect: '+25 Sing/Dance & improved consistency.' },
+        oneOnOne: { name: '1-on-1 Master Coaching', cost: 4000000, effect: '+30 Sing/Dance for selected members, very high efficiency.' }
+    },
+    song: {
+        inHouse: { name: 'In-house Team', cost: 0, effect: 'Standard song quality.' },
+        rookie: { name: 'Rookie Producer', cost: 150000, effect: '+5% Sales Potential.' },
+        external: { name: 'External Songwriter', cost: 450000, effect: '+10% Sales Potential.' },
+        trend: { name: 'Trend-focused Producer', cost: 900000, effect: '+15% Sales Potential, short-term hype boost.' },
+        famous: { name: 'Famous Producer', cost: 2000000, effect: '+25% Sales & +10% Hype.' },
+        hitmaker: { name: 'Top-tier Hitmaker', cost: 4500000, effect: '+40% Sales, strong chart performance.' }
+    },
+    mv: {
+        none: { name: 'No Music Video', cost: 0, effect: 'Minimal promotion.' },
+        practice: { name: 'Practice Room MV', cost: 100000, effect: '+5% Fan Gain.' },
+        performance: { name: 'Performance MV', cost: 350000, effect: '+8% Fan Gain & Performance Appeal.' },
+        location: { name: 'On-Location MV', cost: 1000000, effect: '+15% Fan Gain & Hype.' },
+        storyline: { name: 'Storyline MV', cost: 2500000, effect: '+20% Fan Gain, Emotional Impact.' },
+        cinematic: { name: 'Cinematic MV', cost: 5500000, effect: '+30% Fan Gain, High Hype, Viral Chance.' },
+        blockbuster: { name: 'Blockbuster MV', cost: 12000000, effect: '+45% Fan Gain, Massive Hype, Guaranteed Media Buzz.' }
+    },
+    outfits: {
+        existing: { name: 'Use Existing Outfits', cost: 0, effect: 'No visual bonus.' },
+        recolor: { name: 'Reworked Outfits', cost: 150000, effect: 'Minor visual refresh.' },
+        custom: { name: 'New Custom Outfits', cost: 600000, effect: 'Boosts Morale & Visuals.' },
+        concept: { name: 'Concept-Specific Styling', cost: 1500000, effect: '+10% Concept Immersion & Hype.' },
+        luxury: { name: 'Luxury Designer Outfits', cost: 3500000, effect: 'Major visual boost, attracts brand deals.' }
+    },
+    promo: {
+        none: { name: 'Word of Mouth', cost: 0, effect: 'Base pre-release buzz.' },
+        social: { name: 'Social Media Ads', cost: 150000, effect: '+10% Pre-release Fans.' },
+        teaser: { name: 'Teaser Rollout', cost: 400000, effect: '+15% Pre-release Fans & Hype.' },
+        variety: { name: 'Variety Show Appearances', cost: 1000000, effect: '+20% General Public Awareness.' },
+        blitz: { name: 'Full Media Blitz', cost: 2500000, effect: '+25% Pre-release Fans & Chart Rank.' },
+        global: { name: 'Global Promotion Campaign', cost: 6000000, effect: '+35% Pre-release Fans, Strong Overseas Charts.' }
+    }
 };
 
 export const inflationConfigDefault = {
-    globalInflation: 0.25,
+    globalInflation: 0.15,
     perMemberPenalty: 0.02,
     prestigeStep: 0.10,
-    loanInterestRate: 0.12,
-    maxLoanAmount: 5000000
+    loanInterestRate: 0.08,
+    weeklyInterestRate: 0.005,
+    maxLoanAmount: 10000000
 };
 
 
@@ -1555,10 +1591,10 @@ export const scandalResponseOptions = {
 };
 
 export const tiers = [
-    { id: 1, name: 'Local Casting', cost: 25000, contractFee: 5000, statMin: 10, statMax: 30, potentialMin: 20, potentialMax: 60 },
-    { id: 2, name: 'Regional Audition', cost: 100000, contractFee: 15000, statMin: 20, statMax: 50, potentialMin: 40, potentialMax: 80 },
-    { id: 3, name: 'National Audition', cost: 500000, contractFee: 50000, statMin: 40, statMax: 70, potentialMin: 60, potentialMax: 95 },
-    { id: 4, name: 'Elite Scouting', cost: 1500000, contractFee: 200000, statMin: 60, statMax: 85, potentialMin: 85, potentialMax: 100 },
+    { id: 1, name: 'Local Casting', cost: 150000, contractFee: 30000, statMin: 10, statMax: 30, potentialMin: 20, potentialMax: 60 },
+    { id: 2, name: 'Regional Audition', cost: 600000, contractFee: 100000, statMin: 20, statMax: 50, potentialMin: 40, potentialMax: 80 },
+    { id: 3, name: 'National Audition', cost: 2500000, contractFee: 350000, statMin: 40, statMax: 70, potentialMin: 60, potentialMax: 95 },
+    { id: 4, name: 'Elite Scouting', cost: 6000000, contractFee: 1200000, statMin: 60, statMax: 85, potentialMin: 85, potentialMax: 100 },
 ];
 
 export const filmPromotionTypes = {
@@ -2653,7 +2689,7 @@ export const blockbusterScales = {
     'flagship': {
         id: 'flagship',
         name: 'Flagship Event',
-        productionCost: 3500000,
+        productionCost: 10000000,
         rehearsalWeeks: 4,
         theatricalWeeks: 6,
         boxOfficePotential: { min: 120000000, max: 450000000 },
@@ -2663,7 +2699,7 @@ export const blockbusterScales = {
     'grand_spectacle': {
         id: 'grand_spectacle',
         name: 'Grand Spectacle',
-        productionCost: 7500000,
+        productionCost: 25000000,
         rehearsalWeeks: 6,
         theatricalWeeks: 8,
         boxOfficePotential: { min: 350000000, max: 1200000000 },
@@ -2673,7 +2709,7 @@ export const blockbusterScales = {
     'mega_franchise': {
         id: 'mega_franchise',
         name: 'Mega-Franchise Odyssey',
-        productionCost: 15000000,
+        productionCost: 60000000,
         rehearsalWeeks: 8,
         theatricalWeeks: 10,
         boxOfficePotential: { min: 800000000, max: 3000000000 },
@@ -2686,7 +2722,7 @@ export const blockbusterDirectors = {
     'indie_visionary': {
         id: 'indie_visionary',
         name: 'Avant-Garde Prodigy',
-        cost: 400000,
+        cost: 2000000,
         criticBoost: 12,
         boxOfficeMultiplier: 0.95,
         style: 'High critical praise, artistic depth, and passionate cult following.'
@@ -2694,7 +2730,7 @@ export const blockbusterDirectors = {
     'hitmaker_director': {
         id: 'hitmaker_director',
         name: 'Commercial Hitmaker',
-        cost: 1000000,
+        cost: 5000000,
         criticBoost: 5,
         boxOfficeMultiplier: 1.25,
         style: 'Master of crowd-pleasing spectacle, viral set pieces, and explosive opening weekends.'
@@ -2702,7 +2738,7 @@ export const blockbusterDirectors = {
     'legendary_master': {
         id: 'legendary_master',
         name: 'National Cinema / Stage Legend',
-        cost: 2500000,
+        cost: 12000000,
         criticBoost: 20,
         boxOfficeMultiplier: 1.45,
         style: 'World-renowned auteur. Brings peerless artistic excellence, massive media reverence, and guaranteed box office gold.'
@@ -2710,11 +2746,11 @@ export const blockbusterDirectors = {
 };
 
 export const boxOfficeMilestones = [
-    { target: 100000000, label: '¥100 Million (Hit Maker)', bonusMoney: 20000000, repBonus: 1, trophy: 'Bronze Box Office Plaque', color: 'text-amber-600' },
-    { target: 300000000, label: '¥300 Million (Smash Hit)', bonusMoney: 50000000, repBonus: 2, trophy: 'Silver Box Office Trophy', color: 'text-slate-400' },
-    { target: 600000000, label: '¥600 Million (Golden Blockbuster)', bonusMoney: 100000000, repBonus: 3, trophy: 'Gold Box Office Statue', color: 'text-yellow-400' },
-    { target: 1000000000, label: '¥1.0 Billion (National Phenomenon)', bonusMoney: 200000000, repBonus: 5, trophy: 'Platinum Crown Award', color: 'text-cyan-400' },
-    { target: 2000000000, label: '¥2.0 Billion (Legendary Masterpiece)', bonusMoney: 500000000, repBonus: 10, trophy: 'Diamond Grand Prix', color: 'text-purple-400' }
+    { target: 100000000, label: '¥100 Million (Hit Maker)', bonusMoney: 5000000, repBonus: 1, trophy: 'Bronze Box Office Plaque', color: 'text-amber-600' },
+    { target: 300000000, label: '¥300 Million (Smash Hit)', bonusMoney: 12000000, repBonus: 2, trophy: 'Silver Box Office Trophy', color: 'text-slate-400' },
+    { target: 600000000, label: '¥600 Million (Golden Blockbuster)', bonusMoney: 25000000, repBonus: 3, trophy: 'Gold Box Office Statue', color: 'text-yellow-400' },
+    { target: 1000000000, label: '¥1.0 Billion (National Phenomenon)', bonusMoney: 45000000, repBonus: 5, trophy: 'Platinum Crown Award', color: 'text-cyan-400' },
+    { target: 2000000000, label: '¥2.0 Billion (Legendary Masterpiece)', bonusMoney: 80000000, repBonus: 10, trophy: 'Diamond Grand Prix', color: 'text-purple-400' }
 ];
 
 export const filmProjectScales = {
@@ -2929,7 +2965,7 @@ export const useIdolManager = () => {
     // --- GAME STATE ---
     const [gameStarted, setGameStarted] = useState(false);
     const [groupName, setGroupName] = useState('');
-    const [money, setMoney] = useState(250000);
+    const [money, setMoney] = useState(2500000);
     const [inflationConfig, setInflationConfig] = useState(inflationConfigDefault);
     const [outstandingLoan, setOutstandingLoan] = useState(0);
 
@@ -4849,8 +4885,8 @@ export const useIdolManager = () => {
         if (theaters.some(t => t.owner === 'main')) {
             return setMessage("You already own a theater for your main group.");
         }
-        const cost = 100000;
-        if (money < cost) return setMessage('Need ¥100,000 to build the theater!');
+        const cost = 1500000;
+        if (money < cost) return setMessage('Need ¥1,500,000 to build the theater!');
 
         setMoney(prev => prev - cost);
 
@@ -8067,7 +8103,7 @@ export const useIdolManager = () => {
 
 
     const startUnitVote = (unitName, memberCount) => {
-        const UNIT_VOTE_COST = 150000;
+        const UNIT_VOTE_COST = 500000;
         if (money < UNIT_VOTE_COST) {
             return setMessage(`A Unit Vote costs ¥${UNIT_VOTE_COST.toLocaleString()}!`);
         }
@@ -8264,13 +8300,12 @@ export const useIdolManager = () => {
     };
     const scheduleNewSingle = ({ songData, productionData, releaseWeek, physicalVersions, includeHandshakeTickets }) => {
         // ---- START: Inflation & Senbatsu Cost Scaling Logic ----
-        const baseCostPerVersion = 100000;
+        const baseCostPerVersion = 400000;
         const productionTierCost = Object.keys(productionData).reduce((total, key) => {
             if (key === 'prestigeLevel') return total;
             const choice = productionData[key];
-            const tiers = { training: { standard: { cost: 0 }, workshop: { cost: 50000 }, overseas: { cost: 250000 }, bootcamp: { cost: 400000 }, elite: { cost: 650000 }, oneOnOne: { cost: 900000 } }, song: { inHouse: { cost: 0 }, rookie: { cost: 50000 }, external: { cost: 100000 }, trend: { cost: 180000 }, famous: { cost: 400000 }, hitmaker: { cost: 750000 } }, mv: { none: { cost: 0 }, practice: { cost: 20000 }, performance: { cost: 60000 }, location: { cost: 150000 }, storyline: { cost: 300000 }, cinematic: { cost: 600000 }, blockbuster: { cost: 1000000 } }, outfits: { existing: { cost: 0 }, recolor: { cost: 40000 }, custom: { cost: 120000 }, concept: { cost: 200000 }, luxury: { cost: 450000 } }, promo: { none: { cost: 0 }, social: { cost: 30000 }, teaser: { cost: 60000 }, variety: { cost: 120000 }, blitz: { cost: 200000 }, global: { cost: 400000 } } };
-            return total + (tiers[key]?.[choice]?.cost || 0);
-        }, 10000);
+            return total + (productionTiers[key]?.[choice]?.cost || 0);
+        }, 50000);
 
         const { globalInflation, perMemberPenalty, prestigeStep } = inflationConfig;
         let inflatedBaseCost = productionTierCost * (1 + globalInflation);
@@ -8287,8 +8322,8 @@ export const useIdolManager = () => {
 
         const scaledProductionCost = inflatedBaseCost * senbatsuMultiplier * prestigeMultiplier;
 
-        const physicalCost = songData.releaseFormat === 'physical' ? baseCostPerVersion * physicalVersions * (1 + globalInflation) : 0;
-        const handshakeTicketCost = includeHandshakeTickets ? 300000 * (1 + globalInflation) : 0;
+        const physicalCost = songData.releaseFormat === 'physical' ? baseCostPerVersion * (physicalVersions || 1) * (1 + globalInflation) : 0;
+        const handshakeTicketCost = includeHandshakeTickets ? 1500000 * (1 + globalInflation) : 0;
 
         let costMultiplier = 1.0;
         if (songData.singleSubType === 'solo') {
@@ -10357,12 +10392,11 @@ export const useIdolManager = () => {
         const fanGain = Math.floor(baseFanGain);
         const skillImprovement = typeData.skillImpact * 10;
 
-        const totalRevenue = typeData.cost * (typeData.category === 'Internal' ? 1.0 : 1.5) * (1 + avgSkill * 0.5);
+        const totalRevenue = Math.floor(typeData.cost * (typeData.category === 'Internal' ? 0.9 : 1.3) * (0.6 + avgSkill * 0.7));
         const netProfit = totalRevenue - cost;
-        const agencyProfit = Math.floor(netProfit * 0.6);
-        const idolShare = netProfit - agencyProfit;
+        const finalAgencyOutcome = netProfit >= 0 ? Math.floor(netProfit * 0.6) : netProfit;
 
-        setMoney(prev => prev + agencyProfit);
+        setMoney(prev => prev + finalAgencyOutcome);
         setStatistics(prev => ({ ...prev, totalRevenue: (prev.totalRevenue || 0) + totalRevenue, totalConcerts: (prev.totalConcerts || 0) + 1 }));
 
         const performingMemberIds = performingMembers.map(m => m.rosterId || m.id);
@@ -14247,7 +14281,15 @@ export const useIdolManager = () => {
                 if (chartWeekIndex >= 0 && chartWeekIndex < weeklySalesCurve.length) {
                     const salesMultiplier = song.type === 'album' ? 1 : (salesMultipliers[song.production?.song] || 1);
                     const salesThisWeek = Math.floor((song.baseSalesPotential || 0) * weeklySalesCurve[chartWeekIndex] * salesMultiplier * (0.85 + Math.random() * 0.3));
-                    const revenueThisWeek = salesThisWeek * 15;
+                    
+                    // Realistic JPY Music Industry Unit Economics:
+                    // Physical Single: ¥1,200 retail, ¥480 pressing/distributor, ¥720 net to agency
+                    // Physical Album: ¥3,200 retail, ¥1,400 pressing/distributor, ¥1,800 net to agency
+                    // Digital Release: ¥250 retail, ¥75 platform cut, ¥175 net
+                    const isAlbum = song.type === 'album';
+                    const isDigital = song.releaseFormat === 'digital';
+                    const netPerUnit = isAlbum ? 1800 : (isDigital ? 175 : 720);
+                    const revenueThisWeek = salesThisWeek * netPerUnit;
 
                     let netPlayerRevenue = 0;
                     let sisterGroupLogMsg = '';
@@ -14270,9 +14312,8 @@ export const useIdolManager = () => {
 
                         sisterGroupLogMsg = ` (20% Royalty: ¥${royaltyRevenue.toLocaleString()})`;
                     } else {
-                        // Player Group: Player gets 100% of revenue minus ¥3 per CD manufacturing cost
-                        const manufacturingExpense = salesThisWeek * 3;
-                        netPlayerRevenue = revenueThisWeek - manufacturingExpense;
+                        // Player Group: Player gets full net agency revenue
+                        netPlayerRevenue = revenueThisWeek;
                         weeklyChartRevenue += netPlayerRevenue;
                     }
 
@@ -14492,11 +14533,11 @@ export const useIdolManager = () => {
         const weeklyTheaterUpkeep = (theaters || []).reduce((sum, t) => {
             let levelCost = 0;
             switch (t.level) {
-                case 1: levelCost = 2500; break;
-                case 2: levelCost = 12500; break;
-                case 3: levelCost = 50000; break;
-                case 4: levelCost = 125000; break;
-                case 5: levelCost = 250000; break;
+                case 1: levelCost = 60000; break;
+                case 2: levelCost = 150000; break;
+                case 3: levelCost = 300000; break;
+                case 4: levelCost = 550000; break;
+                case 5: levelCost = 900000; break;
                 default: levelCost = 0;
             }
             return sum + levelCost;
@@ -14504,6 +14545,15 @@ export const useIdolManager = () => {
         if (weeklyTheaterUpkeep > 0) {
             incomeBreakdown.push(`Theater Upkeep: -¥${weeklyTheaterUpkeep.toLocaleString()}`);
             totalWeeklyIncome -= weeklyTheaterUpkeep;
+        }
+
+        // --- WEEKLY LOAN DEBT SERVICE ---
+        if (outstandingLoan > 0) {
+            const weeklyLoanInterest = Math.round(outstandingLoan * (inflationConfig?.weeklyInterestRate || 0.005));
+            if (weeklyLoanInterest > 0) {
+                incomeBreakdown.push(`Loan Interest: -¥${weeklyLoanInterest.toLocaleString()}`);
+                totalWeeklyIncome -= weeklyLoanInterest;
+            }
         }
 
         // --- OTHER INCOME STREAMS ---
@@ -15103,18 +15153,21 @@ export const useIdolManager = () => {
             const totalSalaries = allMembersForSalary.reduce((sum, member) => {
                 const memberFans = getTotalFansForMember(member);
                 let baseSalary;
-                if (memberFans < 5000) { baseSalary = 2000; }
-                else if (memberFans < 25000) { baseSalary = 5000; }
-                else if (memberFans < 100000) { baseSalary = 15000; }
-                else if (memberFans < 500000) { baseSalary = 40000; }
-                else { baseSalary = 100000; }
-                const skillBonus = Math.floor(((member.singing || 0) + (member.dancing || 0) + (member.variety || 0)) * 5);
-                const fanBonus = Math.floor(memberFans / 50);
+                if (memberFans < 5000) { baseSalary = 40000; }
+                else if (memberFans < 25000) { baseSalary = 120000; }
+                else if (memberFans < 100000) { baseSalary = 250000; }
+                else if (memberFans < 500000) { baseSalary = 500000; }
+                else { baseSalary = 1200000; }
+                
+                const totalStats = (member.singing || 0) + (member.dancing || 0) + (member.variety || 0) + (member.visual || 0);
+                const skillBonus = Math.floor(totalStats * 250);
+                const fanBonus = Math.floor(memberFans * 0.5);
                 return sum + baseSalary + skillBonus + fanBonus;
             }, 0);
 
-            const practiceRoomUpkeep = Object.values(buildings.practiceRooms || {}).reduce((sum, level) => sum + level, 0) * 1000;
-            const monthlyExpenses = totalSalaries + practiceRoomUpkeep;
+            const practiceRoomUpkeep = Object.values(buildings.practiceRooms || {}).reduce((sum, level) => sum + level, 0) * 25000;
+            const agencyAdminOverhead = 150000;
+            const monthlyExpenses = totalSalaries + practiceRoomUpkeep + agencyAdminOverhead;
 
             // Subtract from our draft money variable
             moneyForUpdate -= monthlyExpenses;
@@ -15131,8 +15184,21 @@ export const useIdolManager = () => {
             membersForUpdate = membersForUpdate.map(updateMemberFansForChurn);
             sisterGroupsForUpdate = sisterGroupsForUpdate.map(sg => ({ ...sg, members: (sg.members || []).map(updateMemberFansForChurn) }));
 
-            expenseNotification = `Monthly Report: Expenses ¥${monthlyExpenses.toLocaleString()}. Lost ${totalFansActuallyLost.toLocaleString()} fans.`;
+            expenseNotification = `Monthly Report: Total Operational Expenses ¥${monthlyExpenses.toLocaleString()} (Salaries: ¥${totalSalaries.toLocaleString()}, Studios: ¥${practiceRoomUpkeep.toLocaleString()}, Admin: ¥${agencyAdminOverhead.toLocaleString()}). Lost ${totalFansActuallyLost.toLocaleString()} inactive fans.`;
             addNotificationInLoop({ type: 'info', message: expenseNotification });
+
+            if (moneyForUpdate < 0) {
+                // Financial insolvency penalty: Idols get anxious about unpaid wages
+                membersForUpdate = membersForUpdate.map(m => ({
+                    ...m,
+                    morale: Math.max(10, (m.morale || 70) - 10),
+                    stress: Math.min(100, (m.stress || 0) + 15)
+                }));
+                addNotificationInLoop({
+                    type: 'Alert',
+                    message: `🚨 FINANCIAL CRISIS: Agency account is in debt (¥${moneyForUpdate.toLocaleString()})! Members are anxious about missed payments (Morale -10, Stress +15). Consider taking a loan or holding profitable events.`
+                });
+            }
         }
 
 
@@ -15855,12 +15921,15 @@ export const useIdolManager = () => {
             const demandMultiplier = (0.5 + (avgCharisma / 200)) * (isBirthdayStage ? 1.5 : 1.0);
             const venue = theaters[0]; // Assuming main theater
             const capacity = venue ? venue.capacity : 250;
-            const attendance = Math.min(capacity, Math.floor(fanDemandHype * 0.05 * demandMultiplier * setlistMultiplier));
-            const ticketPrice = venue ? (venue.level === 1 ? 3000 : venue.level === 2 ? 4000 : 5000) : 3000;
+            const attendance = Math.min(capacity, Math.max(10, Math.floor(fanDemandHype * 0.05 * demandMultiplier * setlistMultiplier)));
+            const ticketPrice = venue ? (venue.level === 1 ? 3000 : venue.level === 2 ? 3500 : venue.level === 3 ? 4000 : venue.level === 4 ? 4500 : 5000) : 3000;
             const ticketRevenue = Math.floor(attendance * ticketPrice);
 
             let merchRevenue = Math.floor(attendance * (0.1 + (avgCharisma / 500)) * 1500 * (isBirthdayStage ? 1.5 : 1.0));
-            const agencyProfit = Math.floor((ticketRevenue + merchRevenue) * 0.6);
+            const stagingCost = 25000 + (venue ? venue.level * 10000 : 10000); // Stage technicians, lighting, security
+            const grossShowRevenue = ticketRevenue + merchRevenue;
+            const netShowProfit = grossShowRevenue - stagingCost;
+            const agencyProfit = netShowProfit >= 0 ? Math.floor(netShowProfit * 0.65) : netShowProfit;
 
             const newFans = Math.floor(((attendance / 10) + (performance / 10)) * 1.0 * (isBirthdayStage ? 1.2 : 1.0) * setlistMultiplier);
 
@@ -16152,15 +16221,15 @@ export const useIdolManager = () => {
         const newGroupType = groupData.type;
 
         if (newGroupType === 'unit') {
-            cost = 50000; // Special low cost for forming a unit
+            cost = 300000; // Special low cost for forming an internal unit
         } else if (newGroupType === 'subgroup') {
-            cost = 100000; // Cost for establishing a subgroup
+            cost = 800000; // Cost for establishing a dedicated subgroup
         } else if (newGroupType === 'trainee') {
-            cost = 100000;
+            cost = 500000;
         } else if (newGroupType === 'franchise_main') {
-            cost = 400000; // Cost for founding a new main franchise
+            cost = 8000000; // Cost for founding a new main franchise
         } else {
-            cost = newGroupType === 'domestic' ? 200000 : 500000;
+            cost = newGroupType === 'domestic' ? 5000000 : 10000000;
         }
 
         if (money < cost) {
@@ -16851,7 +16920,7 @@ export const useIdolManager = () => {
         }
         if (theaters.some(t => t.owner === sgId)) return setMessage(`${sg.name} already has a theater.`);
 
-        const cost = 150000;
+        const cost = 1500000;
         if (money < cost) return setMessage(`Need ¥${cost.toLocaleString()} to build a theater for ${sg.name}!`);
 
         setMoney(prev => prev - cost);
