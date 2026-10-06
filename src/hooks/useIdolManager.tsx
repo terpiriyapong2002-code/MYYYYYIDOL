@@ -2897,7 +2897,7 @@ const getJoinWeek = (m) => {
     return joinEvent && joinEvent.week !== undefined ? joinEvent.week : 0;
 };
 const generateSpecializedStats = (statMin, statMax, varietyBonus = 0, danceBonus = 0, visualBonus = 0) => {
-    const archetypes = ['Vocalist', 'Dancer', 'Visual/Ace', 'Variety Star', 'All-Rounder'];
+    const archetypes = ['Vocalist', 'Dancer', 'Visual/Ace', 'Variety Star', 'All-Rounder', 'Rapper'];
     const archetype = archetypes[Math.floor(Math.random() * archetypes.length)];
 
     const generateStat = (min, max, bonus = 0) => {
@@ -2910,6 +2910,8 @@ const generateSpecializedStats = (statMin, statMax, varietyBonus = 0, danceBonus
     let charisma = generateStat(statMin, statMax);
     let intelligence = generateStat(statMin, statMax);
     let variety = generateStat(statMin, statMax, varietyBonus);
+    let rapping = generateStat(statMin, statMax);
+
     // Apply Archetype spikes and nerfs
     if (archetype === 'Vocalist') {
         vocal = generateStat(statMax - 5, statMax + 15);
@@ -2931,8 +2933,12 @@ const generateSpecializedStats = (statMin, statMax, varietyBonus = 0, danceBonus
         vocal = generateStat(statMin - 15, statMin + 5);
         dance = generateStat(statMin - 15, statMin + 5);
         visual = generateStat(statMin - 15, statMin + 5);
+    } else if (archetype === 'Rapper') {
+        rapping = generateStat(statMax - 5, statMax + 15);
+        charisma = generateStat(statMin + 5, statMax + 10);
+        dance = generateStat(statMin, statMax + 5);
     }
-    return { vocal, dance, visual, charisma, intelligence, variety, archetype };
+    return { vocal, dance, visual, charisma, intelligence, variety, rapping, archetype };
 };
 const getRookieAdjustment = (member, nextState, currentWeek) => {
     const oldFans = member.fans || { casual: 0, hardcore: 0 };
@@ -3332,6 +3338,13 @@ export const useIdolManager = () => {
     const [sponsorships, setSponsorships] = useState([]);
     const [activeStream, setActiveStream] = useState(null);
     const [pendingGraduationAnnouncement, setPendingGraduationAnnouncement] = useState(null);
+    // K-POP STATE
+    const [kpopTrainees, setKpopTrainees] = useState([]);
+    const [kpopComebacks, setKpopComebacks] = useState([]);
+    const [melonChart, setMelonChart] = useState([]);
+    const [pendingContractRenewal, setPendingContractRenewal] = useState(null);
+    const [kpopAuditionCandidates, setKpopAuditionCandidates] = useState([]);
+
     const [showModal, setShowModal] = useState(null);
     const [mediaJobDoneThisWeek, setMediaJobDoneThisWeek] = useState(false);
     const [groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek] = useState(false);
@@ -3411,44 +3424,67 @@ export const useIdolManager = () => {
     const [warehouse, setWarehouse] = useState({ level: 1 });
     const [onlineStore, setOnlineStore] = useState({ level: 0 }); // Level 0 means it's not built yet
     const [pendingMerch, setPendingMerch] = useState([]);
+    const [groupLightsticks, setGroupLightsticks] = useState({});
+    const [activeWorldTour, setActiveWorldTour] = useState(null);
+    const [worldTourHistory, setWorldTourHistory] = useState([]);
 
     const [activeTrainingCamp, setActiveTrainingCamp] = useState(null);
     const [venues, setVenues] = useState([
-        { id: 1, name: 'Local Theater (Own)', capacity: 250, cost: 0, maintenance: 5000 },
+        { id: 1, name: 'Local Theater (Own)', capacity: 250, cost: 0, maintenance: 5000, region: 'Domestic', country: 'Japan' },
         // --- LEVEL 1: THEATER & LIVE HOUSE (Capacity 250 - 500) ---
-        { id: 2, name: 'Dedicated Idol Theater', capacity: 250, cost: 0, maintenance: 5000 }, // General name for the 48G HQ
-        { id: 3, name: 'Akihabara Cultures Theater', capacity: 300, cost: 15000, maintenance: 6000 },
-        { id: 4, name: 'Shibuya Eggman', capacity: 350, cost: 20000, maintenance: 7000 },
-        { id: 5, name: 'Shinjuku Loft', capacity: 400, cost: 25000, maintenance: 7500 },
-        { id: 6, name: 'Aoyama RizM', capacity: 500, cost: 30000, maintenance: 8000 },
+        { id: 2, name: 'Dedicated Idol Theater', capacity: 250, cost: 0, maintenance: 5000, region: 'Domestic', country: 'Japan' },
+        { id: 3, name: 'Akihabara Cultures Theater', capacity: 300, cost: 15000, maintenance: 6000, region: 'Domestic', country: 'Japan' },
+        { id: 4, name: 'Shibuya Eggman', capacity: 350, cost: 20000, maintenance: 7000, region: 'Domestic', country: 'Japan' },
+        { id: 5, name: 'Shinjuku Loft', capacity: 400, cost: 25000, maintenance: 7500, region: 'Domestic', country: 'Japan' },
+        { id: 6, name: 'Aoyama RizM', capacity: 500, cost: 30000, maintenance: 8000, region: 'Domestic', country: 'Japan' },
 
         // --- LEVEL 2: MAJOR HALLS & ZEPPS (Capacity 1K - 3K) ---
-        { id: 7, name: 'Spotify O-EAST', capacity: 1300, cost: 80000, maintenance: 15000 },
-        { id: 8, name: 'Zepp Haneda', capacity: 2900, cost: 120000, maintenance: 20000 },
-        { id: 9, name: 'LINE CUBE SHIBUYA', capacity: 2000, cost: 150000, maintenance: 25000 },
-        { id: 10, name: 'NHK Hall', capacity: 3000, cost: 180000, maintenance: 30000 },
-        { id: 11, name: 'TDC Hall (Tokyo Dome City)', capacity: 3000, cost: 200000, maintenance: 35000 },
+        { id: 7, name: 'Spotify O-EAST', capacity: 1300, cost: 80000, maintenance: 15000, region: 'Domestic', country: 'Japan' },
+        { id: 8, name: 'Zepp Haneda', capacity: 2900, cost: 120000, maintenance: 20000, region: 'Domestic', country: 'Japan' },
+        { id: 9, name: 'LINE CUBE SHIBUYA', capacity: 2000, cost: 150000, maintenance: 25000, region: 'Domestic', country: 'Japan' },
+        { id: 10, name: 'NHK Hall', capacity: 3000, cost: 180000, maintenance: 30000, region: 'Domestic', country: 'Japan' },
+        { id: 11, name: 'TDC Hall (Tokyo Dome City)', capacity: 3000, cost: 200000, maintenance: 35000, region: 'Domestic', country: 'Japan' },
 
         // --- LEVEL 3: PRESTIGE ARENAS (Capacity 5K - 15K) ---
-        { id: 12, name: 'Pacifico Yokohama', capacity: 5000, cost: 500000, maintenance: 60000 },
-        { id: 13, name: 'Tokyo International Forum', capacity: 5000, cost: 650000, maintenance: 70000 },
-        { id: 14, name: 'Ariake Arena', capacity: 12000, cost: 800000, maintenance: 85000 },
-        { id: 15, name: 'Yoyogi National Gymnasium', capacity: 13000, cost: 1000000, maintenance: 95000 },
-        { id: 16, name: 'Nippon Budokan', capacity: 14500, cost: 1500000, maintenance: 110000 },
+        { id: 12, name: 'Pacifico Yokohama', capacity: 5000, cost: 500000, maintenance: 60000, region: 'Domestic', country: 'Japan' },
+        { id: 13, name: 'Tokyo International Forum', capacity: 5000, cost: 650000, maintenance: 70000, region: 'Domestic', country: 'Japan' },
+        { id: 14, name: 'Ariake Arena', capacity: 12000, cost: 800000, maintenance: 85000, region: 'Domestic', country: 'Japan' },
+        { id: 15, name: 'Yoyogi National Gymnasium', capacity: 13000, cost: 1000000, maintenance: 95000, region: 'Domestic', country: 'Japan' },
+        { id: 16, name: 'Nippon Budokan', capacity: 14500, cost: 1500000, maintenance: 110000, region: 'Domestic', country: 'Japan' },
 
         // --- LEVEL 4: STADIUMS & GRAND ARENAS (Capacity 17K - 37K) ---
-        { id: 17, name: 'Yokohama Arena', capacity: 17000, cost: 2500000, maintenance: 150000 },
-        { id: 18, name: 'Osaka-jo Hall', capacity: 16000, cost: 2200000, maintenance: 140000 },
-        { id: 19, name: 'K-Arena Yokohama', capacity: 20000, cost: 3000000, maintenance: 180000 },
-        { id: 20, name: 'Saitama Super Arena', capacity: 37000, cost: 4500000, maintenance: 300000 },
-        { id: 21, name: 'Belluna Dome (Seibu Dome)', capacity: 33000, cost: 4000000, maintenance: 280000 },
+        { id: 17, name: 'Yokohama Arena', capacity: 17000, cost: 2500000, maintenance: 150000, region: 'Domestic', country: 'Japan' },
+        { id: 18, name: 'Osaka-jo Hall', capacity: 16000, cost: 2200000, maintenance: 140000, region: 'Domestic', country: 'Japan' },
+        { id: 19, name: 'K-Arena Yokohama', capacity: 20000, cost: 3000000, maintenance: 180000, region: 'Domestic', country: 'Japan' },
+        { id: 20, name: 'Saitama Super Arena', capacity: 37000, cost: 4500000, maintenance: 300000, region: 'Domestic', country: 'Japan' },
+        { id: 21, name: 'Belluna Dome (Seibu Dome)', capacity: 33000, cost: 4000000, maintenance: 280000, region: 'Domestic', country: 'Japan' },
 
         // --- LEVEL 5: THE FIVE DOMES & NATIONAL STADIUM (Capacity 40K - 75K) ---
-        { id: 22, name: 'Vantelin Dome Nagoya', capacity: 40000, cost: 6000000, maintenance: 450000 },
-        { id: 23, name: 'Kyocera Dome Osaka', capacity: 45000, cost: 6500000, maintenance: 480000 },
-        { id: 24, name: 'Mizuho PayPay Dome Fukuoka', capacity: 40000, cost: 6000000, maintenance: 450000 },
-        { id: 25, name: 'Tokyo Dome', capacity: 55000, cost: 10000000, maintenance: 600000 },
-        { id: 26, name: 'Japan National Stadium', capacity: 75000, cost: 20000000, maintenance: 1200000 }
+        { id: 22, name: 'Vantelin Dome Nagoya', capacity: 40000, cost: 6000000, maintenance: 450000, region: 'Domestic', country: 'Japan' },
+        { id: 23, name: 'Kyocera Dome Osaka', capacity: 45000, cost: 6500000, maintenance: 480000, region: 'Domestic', country: 'Japan' },
+        { id: 24, name: 'Mizuho PayPay Dome Fukuoka', capacity: 40000, cost: 6000000, maintenance: 450000, region: 'Domestic', country: 'Japan' },
+        { id: 25, name: 'Tokyo Dome', capacity: 55000, cost: 10000000, maintenance: 600000, region: 'Domestic', country: 'Japan' },
+        { id: 26, name: 'Japan National Stadium', capacity: 75000, cost: 20000000, maintenance: 1200000, region: 'Domestic', country: 'Japan' },
+
+        // --- LEVEL 6: ASIA & GLOBAL PRESTIGE ARENAS (Capacity 12K - 25K) ---
+        { id: 27, name: 'Seoul KSPO Dome (Olympic Arena)', capacity: 15000, cost: 2000000, maintenance: 120000, region: 'Asia', country: 'South Korea' },
+        { id: 28, name: 'Impact Arena (Bangkok)', capacity: 12000, cost: 1800000, maintenance: 100000, region: 'Asia', country: 'Thailand' },
+        { id: 29, name: 'Mall of Asia Arena (Manila)', capacity: 15000, cost: 2000000, maintenance: 110000, region: 'Asia', country: 'Philippines' },
+        { id: 30, name: 'Singapore Indoor Stadium', capacity: 12000, cost: 2200000, maintenance: 130000, region: 'Asia', country: 'Singapore' },
+        { id: 31, name: 'The Forum (Los Angeles)', capacity: 17500, cost: 3500000, maintenance: 200000, region: 'North America', country: 'USA' },
+        { id: 32, name: 'Madison Square Garden (New York)', capacity: 20000, cost: 4500000, maintenance: 250000, region: 'North America', country: 'USA' },
+        { id: 33, name: 'The O2 Arena (London)', capacity: 20000, cost: 4000000, maintenance: 220000, region: 'Europe', country: 'UK' },
+        { id: 34, name: 'Accor Arena (Paris)', capacity: 17000, cost: 3800000, maintenance: 210000, region: 'Europe', country: 'France' },
+        { id: 35, name: 'Mercedes-Benz Arena (Berlin)', capacity: 17000, cost: 3500000, maintenance: 200000, region: 'Europe', country: 'Germany' },
+
+        // --- LEVEL 7: GLOBAL MEGA STADIUMS (Capacity 45K - 90K) ---
+        { id: 36, name: 'Seoul Olympic Stadium', capacity: 65000, cost: 15000000, maintenance: 900000, region: 'Asia', country: 'South Korea' },
+        { id: 37, name: 'Rajamangala National Stadium (Bangkok)', capacity: 50000, cost: 8000000, maintenance: 500000, region: 'Asia', country: 'Thailand' },
+        { id: 38, name: 'SoFi Stadium (Los Angeles)', capacity: 70000, cost: 18000000, maintenance: 1100000, region: 'North America', country: 'USA' },
+        { id: 39, name: 'MetLife Stadium (New York)', capacity: 80000, cost: 22000000, maintenance: 1300000, region: 'North America', country: 'USA' },
+        { id: 40, name: 'Wembley Stadium (London)', capacity: 90000, cost: 25000000, maintenance: 1500000, region: 'Europe', country: 'UK' },
+        { id: 41, name: 'Foro Sol (Mexico City)', capacity: 65000, cost: 12000000, maintenance: 750000, region: 'Latin America', country: 'Mexico' },
+        { id: 42, name: 'Allianz Parque (São Paulo)', capacity: 45000, cost: 9000000, maintenance: 600000, region: 'Latin America', country: 'Brazil' },
     ]);
     const [performanceHistory, setPerformanceHistory] = useState([]);
     const [scheduledSingles, setScheduledSingles] = useState([]);
@@ -3694,6 +3730,9 @@ export const useIdolManager = () => {
                 tours,
                 activeTour,
                 activeUnderTour,
+                groupLightsticks,
+                activeWorldTour,
+                worldTourHistory,
                 musicVideos,
                 varietyShows,
                 varietyStudio,
@@ -3714,6 +3753,10 @@ export const useIdolManager = () => {
                 performanceHistory,
                 scheduledSingles,
                 groupRoles,
+                kpopTrainees,
+                kpopComebacks,
+                melonChart,
+                pendingContractRenewal,
                 timestamp: Date.now(),
             };
 
@@ -3769,7 +3812,7 @@ export const useIdolManager = () => {
             setMoney(data.money || 0);
             setWeek(data.week || 1);
             const loadedMembers = (data.members || []).map(rawMember => {
-                const member = { ...rawMember };
+                const member = { ...rawMember, rapping: rawMember.rapping || 0 };
                 if (member.relationships && !member.chemistry) {
                     member.chemistry = {};
                     (member.relationships.friends || []).forEach(friendId => {
@@ -3845,7 +3888,7 @@ export const useIdolManager = () => {
                 let migratedMembers = sg.members || [];
                 if (sg.members) {
                     migratedMembers = sg.members.map(rawMember => {
-                        const member = { ...rawMember, rosterId: `sg-${sg.id}-${rawMember.id}` };
+                        const member = { ...rawMember, rosterId: `sg-${sg.id}-${rawMember.id}`, rapping: rawMember.rapping || 0 };
 
                         // --- NEW MIGRATION ---
                         if (member.relationships && !member.chemistry) {
@@ -4047,6 +4090,20 @@ export const useIdolManager = () => {
                 loadedRoles = { 'main': loadedRoles.captain };
             }
             setGroupRoles(loadedRoles);
+
+            // Restore K-Pop State
+            setKpopTrainees((data.kpopTrainees || []).map(t => ({
+                ...t,
+                rapping: t.rapping || 0,
+                trainingCostPerWeek: t.trainingCostPerWeek || 300000,
+                trainingFocus: t.trainingFocus || 'balanced'
+            })));
+            setKpopComebacks(data.kpopComebacks || []);
+            setMelonChart(data.melonChart || []);
+            setPendingContractRenewal(data.pendingContractRenewal || null);
+            setGroupLightsticks(data.groupLightsticks || {});
+            setActiveWorldTour(data.activeWorldTour || null);
+            setWorldTourHistory(data.worldTourHistory || []);
 
             setMessage(`🎮 Game loaded successfully from file!`);
             setShowModal(null);
@@ -4774,7 +4831,8 @@ export const useIdolManager = () => {
                 variety: member.variety || 0,
                 visual: member.visual || 0,
                 charisma: member.charisma || 0,
-                intelligence: member.intelligence || 0
+                intelligence: member.intelligence || 0,
+                rapping: member.rapping || 0,
             };
 
             const lowestSkill = Object.keys(skills).reduce((lowest, skill) => {
@@ -4794,8 +4852,9 @@ export const useIdolManager = () => {
             visual: 'visual',
             charisma: 'charisma',
             intelligence: 'intelligence',
+            rapping: 'vocal',
         };
-        return mapping[skill];
+        return mapping[skill] || 'vocal';
     };
 
 
@@ -4967,50 +5026,317 @@ export const useIdolManager = () => {
         setMessage(message);
     };
 
-    const startTour = () => {
-        const cost = 30000;
-        if (!buildings.theater) return setMessage("You need a theater to organize tours.");
-        if (members.length < 5) return setMessage("Need at least 5 members for a tour.");
-        if (money < cost) return setMessage(`Tours cost ¥${cost.toLocaleString()}.`);
+    // ========================================================
+    // UNIVERSAL LIGHTSTICK & WORLD TOUR SYSTEM
+    // ========================================================
+
+    const designGroupLightstick = ({ groupId = 'main', name, primaryColor = '#ec4899', accentColor = '#a855f7', tier = 'standard' }) => {
+        let cost = 1000000;
+        if (tier === 'acrylic') cost = 2500000;
+        if (tier === 'bluetooth') cost = 5000000;
+
+        if (money < cost) {
+            setMessage(`Designing a ${tier === 'bluetooth' ? 'Bluetooth Sync' : tier === 'acrylic' ? 'Custom Acrylic' : 'Classic'} Lightstick costs ¥${cost.toLocaleString()}.`);
+            return false;
+        }
 
         setMoney(prev => prev - cost);
-        setActiveTour({ name: `${groupName} National Tour`, weeksLeft: 4, cities: 4, revenue: 0 });
-        setMessage("Tour started! It will run for 4 weeks. Use 'Advance Tour' to progress the tour.");
+
+        const isMain = !groupId || groupId === 'main';
+        const groupObj = isMain ? null : sisterGroups.find(sg => String(sg.id) === String(groupId) || sg.name === groupId);
+        const targetGroupName = isMain ? groupName : (groupObj?.name || 'Idol Group');
+        const finalKey = String(groupId || 'main');
+
+        const newLightstick = {
+            id: `ls-${finalKey}`,
+            groupId: finalKey,
+            groupName: targetGroupName,
+            name: name || `${targetGroupName} Official Lightstick`,
+            primaryColor,
+            accentColor,
+            tier,
+            stock: 2500, // Initial promotional batch included!
+            unitCost: tier === 'bluetooth' ? 4000 : tier === 'acrylic' ? 2000 : 1000,
+            unitPrice: tier === 'bluetooth' ? 10000 : tier === 'acrylic' ? 5500 : 3000,
+            totalSold: 0,
+            totalRevenue: 0,
+            createdWeek: week
+        };
+
+        setGroupLightsticks(prev => ({
+            ...prev,
+            [finalKey]: newLightstick
+        }));
+
+        const successMsg = `✨ Lightstick Launched! "${newLightstick.name}" is now manufactured with 2,500 units in stock!`;
+        setMessage(successMsg);
+        addNotification({ type: 'Merch', message: successMsg });
+        setShowModal(null);
+        return true;
+    };
+
+    const produceGroupLightstick = (groupId = 'main', quantity = 5000) => {
+        const key = String(groupId || 'main');
+        const lightstick = groupLightsticks[key];
+        if (!lightstick) {
+            setMessage("Please design an official group lightstick first.");
+            return false;
+        }
+
+        const totalCost = (lightstick.unitCost || 2000) * quantity;
+        if (money < totalCost) {
+            setMessage(`Need ¥${totalCost.toLocaleString()} to produce ${quantity.toLocaleString()} lightsticks.`);
+            return false;
+        }
+
+        setMoney(prev => prev - totalCost);
+        setGroupLightsticks(prev => ({
+            ...prev,
+            [key]: {
+                ...prev[key],
+                stock: (prev[key]?.stock || 0) + quantity
+            }
+        }));
+
+        const msg = `📦 Produced ${quantity.toLocaleString()} units of "${lightstick.name}"! Available stock: ${((lightstick.stock || 0) + quantity).toLocaleString()}.`;
+        setMessage(msg);
+        addNotification({ type: 'Merch', message: msg });
+        return true;
+    };
+
+    const startUniversalWorldTour = ({ groupId = 'main', tourName, venueIds = [], stageTier = 'advanced', vipEnabled = true }) => {
+        const isMain = !groupId || groupId === 'main';
+        const groupObj = isMain ? null : sisterGroups.find(sg => String(sg.id) === String(groupId) || sg.name === groupId);
+        const tourGroupName = isMain ? groupName : (groupObj?.name || 'Idol Group');
+        const finalGroupId = isMain ? 'main' : String(groupObj?.id || groupId);
+
+        const groupMembers = isMain ? members.filter(m => m.isAvailable && !m.graduated) : (groupObj?.members || []).filter(m => m.isAvailable && !m.graduated);
+
+        if (groupMembers.length < 3) {
+            setMessage("Group needs at least 3 available members for a World Tour.");
+            return false;
+        }
+
+        if (activeWorldTour) {
+            setMessage("A World Tour is already in progress!");
+            return false;
+        }
+
+        const selectedVenues = venueIds.map(vId => venues.find(v => v.id === vId)).filter(Boolean);
+        if (selectedVenues.length === 0) {
+            setMessage("Please select at least 1 tour stop venue.");
+            return false;
+        }
+
+        let stageCost = 5000000;
+        let stageMultiplier = 1.0;
+        if (stageTier === 'advanced') { stageCost = 15000000; stageMultiplier = 1.25; }
+        if (stageTier === 'mega') { stageCost = 35000000; stageMultiplier = 1.50; }
+
+        const initialCost = stageCost + selectedVenues.reduce((s, v) => s + (v.cost || 0), 0);
+
+        if (money < initialCost) {
+            setMessage(`Need ¥${initialCost.toLocaleString()} for venue deposits & stage production.`);
+            return false;
+        }
+
+        setMoney(prev => prev - initialCost);
+
+        const lightstick = groupLightsticks[finalGroupId];
+        const hasBluetooth = lightstick && lightstick.tier === 'bluetooth';
+
+        const tourObj = {
+            id: `tour-${Date.now()}`,
+            groupId: finalGroupId,
+            groupName: tourGroupName,
+            tourName: tourName || `${tourGroupName} WORLD TOUR: ECLIPSE`,
+            legs: selectedVenues.map((v, i) => ({
+                legNumber: i + 1,
+                venueId: v.id,
+                venueName: v.name,
+                country: v.country || 'Japan',
+                region: v.region || 'Domestic',
+                capacity: v.capacity,
+                completed: false,
+                attendance: 0,
+                ticketRevenue: 0,
+                merchRevenue: 0,
+                lightstickSales: 0,
+                fanGain: 0
+            })),
+            currentLegIndex: 0,
+            stageTier,
+            stageMultiplier,
+            vipEnabled,
+            lightstickTier: lightstick?.tier || 'none',
+            hasBluetoothLightstick: hasBluetooth,
+            totalRevenue: 0,
+            totalAttendance: 0,
+            totalTicketRevenue: 0,
+            totalMerchRevenue: 0,
+            totalFansGained: 0,
+            startWeek: week,
+            weeksRemaining: selectedVenues.length,
+            status: 'active'
+        };
+
+        setActiveWorldTour(tourObj);
+        setActiveTour({ name: tourObj.tourName, weeksLeft: selectedVenues.length, cities: selectedVenues.length, revenue: 0 });
+
+        const startMsg = `🌍 WORLD TOUR COMMENCED! "${tourObj.tourName}" has embarked with ${selectedVenues.length} tour stops! (Stage: ${stageTier.toUpperCase()})`;
+        setMessage(startMsg);
+        addNotification({ type: 'Performance', message: startMsg });
+        setShowModal(null);
+        return true;
+    };
+
+    const progressWorldTourLeg = () => {
+        if (!activeWorldTour) return;
+
+        const tour = activeWorldTour;
+        const currentLeg = tour.legs[tour.currentLegIndex];
+        if (!currentLeg) return;
+
+        const isMain = tour.groupId === 'main';
+        const groupObj = isMain ? null : sisterGroups.find(sg => String(sg.id) === String(tour.groupId) || sg.name === tour.groupId);
+        const groupMembers = isMain ? members.filter(m => m.isAvailable && !m.graduated) : (groupObj?.members || []).filter(m => m.isAvailable && !m.graduated);
+
+        const groupFans = isMain ? (totalFans || 0) : (groupObj?.fans || 5000);
+        const avgSinging = groupMembers.reduce((s, m) => s + (m.singing || 0), 0) / (groupMembers.length || 1);
+        const avgDancing = groupMembers.reduce((s, m) => s + (m.dancing || 0), 0) / (groupMembers.length || 1);
+        const avgVisual = groupMembers.reduce((s, m) => s + (m.visual || 0), 0) / (groupMembers.length || 1);
+        const avgRap = groupMembers.reduce((s, m) => s + (m.rapping || 0), 0) / (groupMembers.length || 1);
+        const avgCharisma = groupMembers.reduce((s, m) => s + (m.charisma || 0), 0) / (groupMembers.length || 1);
+
+        const groupPower = (avgSinging * 0.25) + (avgDancing * 0.25) + (avgVisual * 0.2) + (avgRap * 0.15) + (avgCharisma * 0.15);
+
+        const baseDemand = (groupFans * 0.15) + (groupPower * 250);
+        const venueCap = currentLeg.capacity;
+        const stageBonus = tour.stageMultiplier || 1.0;
+        const lightstickBonus = tour.hasBluetoothLightstick ? 1.25 : tour.lightstickTier === 'acrylic' ? 1.15 : 1.05;
+
+        const fillRatio = Math.min(1.0, Math.max(0.4, (baseDemand * stageBonus) / venueCap + (Math.random() * 0.15 - 0.05)));
+        const actualAttendance = Math.floor(venueCap * fillRatio);
+
+        const baseTicketPrice = 12000;
+        const vipBonusPerTicket = tour.vipEnabled ? 2500 : 0;
+        const legTicketRevenue = actualAttendance * (baseTicketPrice + vipBonusPerTicket);
+
+        const lightstickKey = String(tour.groupId);
+        const lightstick = groupLightsticks[lightstickKey];
+        let legLightstickSales = 0;
+        let legLightstickRevenue = 0;
+
+        if (lightstick && lightstick.stock > 0) {
+            const buyingRatio = tour.hasBluetoothLightstick ? 0.45 : 0.25;
+            const desiredCount = Math.floor(actualAttendance * buyingRatio);
+            legLightstickSales = Math.min(lightstick.stock, desiredCount);
+            legLightstickRevenue = legLightstickSales * (lightstick.unitPrice || 6000);
+
+            setGroupLightsticks(prev => ({
+                ...prev,
+                [lightstickKey]: {
+                    ...prev[lightstickKey],
+                    stock: Math.max(0, (prev[lightstickKey]?.stock || 0) - legLightstickSales),
+                    totalSold: (prev[lightstickKey]?.totalSold || 0) + legLightstickSales,
+                    totalRevenue: (prev[lightstickKey]?.totalRevenue || 0) + legLightstickRevenue
+                }
+            }));
+        }
+
+        const generalMerchRevenue = Math.floor(actualAttendance * 3500);
+        const totalLegGross = legTicketRevenue + legLightstickRevenue + generalMerchRevenue;
+        const newFanGain = Math.floor(actualAttendance * 0.25 * lightstickBonus);
+
+        setMoney(prev => prev + totalLegGross);
+        if (isMain) {
+            setTotalFans(prev => prev + newFanGain);
+        } else if (groupObj) {
+            setSisterGroups(prev => prev.map(sg => sg.id === groupObj.id ? { ...sg, fans: (sg.fans || 0) + newFanGain } : sg));
+        }
+
+        const updateMemberFatigue = (m) => ({
+            ...m,
+            stamina: Math.max(0, (m.stamina || 100) - 25),
+            stress: Math.min(100, (m.stress || 0) + 15),
+            morale: Math.min(100, (m.morale || 70) + 10)
+        });
+
+        if (isMain) {
+            setMembers(prev => prev.map(updateMemberFatigue));
+        } else if (groupObj) {
+            setSisterGroups(prev => prev.map(sg => sg.id === groupObj.id ? { ...sg, members: (sg.members || []).map(updateMemberFatigue) } : sg));
+        }
+
+        const updatedLeg = {
+            ...currentLeg,
+            completed: true,
+            attendance: actualAttendance,
+            ticketRevenue: legTicketRevenue,
+            merchRevenue: generalMerchRevenue + legLightstickRevenue,
+            lightstickSales: legLightstickSales,
+            fanGain: newFanGain
+        };
+
+        const nextIndex = tour.currentLegIndex + 1;
+        const isTourFinished = nextIndex >= tour.legs.length;
+
+        const updatedTour = {
+            ...tour,
+            legs: tour.legs.map((l, i) => i === tour.currentLegIndex ? updatedLeg : l),
+            currentLegIndex: nextIndex,
+            totalRevenue: tour.totalRevenue + totalLegGross,
+            totalTicketRevenue: tour.totalTicketRevenue + legTicketRevenue,
+            totalMerchRevenue: tour.totalMerchRevenue + generalMerchRevenue + legLightstickRevenue,
+            totalAttendance: tour.totalAttendance + actualAttendance,
+            totalFansGained: tour.totalFansGained + newFanGain,
+            weeksRemaining: tour.legs.length - nextIndex,
+            status: isTourFinished ? 'completed' : 'active'
+        };
+
+        if (isTourFinished) {
+            setActiveWorldTour(null);
+            setActiveTour(null);
+            const liveAlbumRevenue = Math.floor(updatedTour.totalRevenue * 0.15);
+            setMoney(prev => prev + liveAlbumRevenue);
+            setWorldTourHistory(prev => [updatedTour, ...prev]);
+
+            const finishMsg = `🎉 WORLD TOUR TRIUMPH! "${tour.tourName}" concluded with ${updatedTour.totalAttendance.toLocaleString()} attendees worldwide! Total Gross: ¥${(updatedTour.totalRevenue + liveAlbumRevenue).toLocaleString()} (incl. ¥${liveAlbumRevenue.toLocaleString()} Live DVD royalties).`;
+            setMessage(finishMsg);
+            addNotification({ type: 'Special', message: finishMsg });
+        } else {
+            setActiveWorldTour(updatedTour);
+            setActiveTour({ name: tour.tourName, weeksLeft: updatedTour.weeksRemaining, cities: tour.legs.length, revenue: updatedTour.totalRevenue });
+            const legMsg = `🌟 Tour Stop Completed! "${currentLeg.venueName}" (${currentLeg.country}) was ${(fillRatio * 100).toFixed(0)}% full! Attendance: ${actualAttendance.toLocaleString()}. Gross: ¥${totalLegGross.toLocaleString()}.`;
+            setMessage(legMsg);
+            addNotification({ type: 'Performance', message: legMsg });
+        }
+
+        setModalData({ leg: updatedLeg, tour: updatedTour, isFinished: isTourFinished });
+        setShowModal('tourLegResultModal');
+    };
+
+    const cancelWorldTour = () => {
+        if (!activeWorldTour) return;
+        setActiveWorldTour(null);
+        setActiveTour(null);
+        setMessage("World Tour itinerary cancelled.");
+    };
+
+    // Backward compatibility aliases
+    const startTour = () => {
+        if (venues.length === 0) return;
+        startUniversalWorldTour({
+            groupId: 'main',
+            tourName: `${groupName} 5-Dome Tour`,
+            venueIds: [22, 23, 24, 25, 26],
+            stageTier: 'advanced',
+            vipEnabled: true
+        });
     };
 
     const progressTour = () => {
-        if (!activeTour) return;
-
-        const tour = activeTour;
-        const membersAvailable = members.filter(m => m.isAvailable).length;
-
-        const performance = members.reduce((sum, m) => sum + ((m.singing || 0) + (m.dancing || 0)), 0) / 2;
-        const weekRevenue = Math.floor(performance * membersAvailable * 5);
-        const fanGain = Math.floor(performance * membersAvailable / 100);
-
-        setMoney(prev => (prev || 0) + weekRevenue);
-        setTotalFans(prev => (prev || 0) + fanGain);
-
-        setMembers(prev => prev.map(m => m.isAvailable ? {
-            ...m,
-            stamina: Math.max(0, (m.stamina || 100) - 40),
-            stress: Math.min(100, (m.stress || 0) + 25),
-            morale: Math.max(0, (m.morale || 0) - 10)
-        } : m));
-
-        const weeksRemaining = tour.weeksLeft - 1;
-
-        if (weeksRemaining <= 0) {
-            setMessage(`Tour concluded! Total Revenue: ¥${(tour.revenue + weekRevenue).toLocaleString()}.`);
-            setActiveTour(null);
-        } else {
-            setActiveTour(prev => ({
-                ...prev,
-                weeksLeft: weeksRemaining,
-                revenue: (prev.revenue || 0) + weekRevenue
-            }));
-            setMessage(`Tour week ${tour.weeksLeft} finished. Revenue: ¥${weekRevenue.toLocaleString()}. Remaining: ${weeksRemaining} weeks.`);
-        }
+        progressWorldTourLeg();
     };
 
     const getUnderMembersPool = (targetGroup = 'main') => {
@@ -16004,6 +16330,209 @@ export const useIdolManager = () => {
             addNotificationInLoop({ type: 'info', message: campMessage });
         }
 
+        // --- K-POP TRAINEE ACADEMY WEEKLY UPDATE ---
+        if (kpopTrainees && kpopTrainees.length > 0) {
+            const activeTrainees = kpopTrainees.filter(t => t.contractStatus === 'active');
+            const totalTraineeWeeklyUpkeep = activeTrainees.length * 300000;
+            moneyForUpdate -= totalTraineeWeeklyUpkeep;
+
+            const updatedTrainees = kpopTrainees.map(t => {
+                if (t.contractStatus !== 'active') return t;
+
+                let baseGain = 0.8;
+                if (t.potential === 'S') baseGain = 2.5;
+                else if (t.potential === 'A') baseGain = 1.8;
+                else if (t.potential === 'B') baseGain = 1.2;
+
+                const focus = t.trainingFocus || 'balanced';
+                let vocalGain = baseGain * (focus === 'singing' || focus === 'vocal' ? 2.2 : 1.0);
+                let danceGain = baseGain * (focus === 'dancing' || focus === 'dance' ? 2.2 : 1.0);
+                let rapGain = baseGain * (focus === 'rapping' ? 2.2 : 1.0);
+                let visualGain = baseGain * (focus === 'visual' ? 2.2 : 1.0);
+                let varietyGain = baseGain * (focus === 'variety' ? 2.2 : 1.0);
+
+                let newEvents = [...(t.events || [])];
+                if (Math.random() < 0.04) {
+                    vocalGain += 3; danceGain += 3; rapGain += 3;
+                    newEvents.push(`Wk ${newWeek}: Breakthrough during monthly evaluation!`);
+                    addNotificationInLoop({ type: 'Promotion', message: `🌟 Trainee ${t.name} had a major monthly evaluation breakthrough! (+3 to stats)` });
+                }
+
+                return {
+                    ...t,
+                    singing: Math.min(100, (t.singing || 0) + Math.round(vocalGain)),
+                    dancing: Math.min(100, (t.dancing || 0) + Math.round(danceGain)),
+                    rapping: Math.min(100, (t.rapping || 0) + Math.round(rapGain)),
+                    visual: Math.min(100, (t.visual || 0) + Math.round(visualGain)),
+                    variety: Math.min(100, (t.variety || 0) + Math.round(varietyGain)),
+                    trainingWeeksCompleted: (t.trainingWeeksCompleted || 0) + 1,
+                    events: newEvents.slice(-5)
+                };
+            });
+            setKpopTrainees(updatedTrainees);
+        }
+
+        // --- K-POP ACTIVE COMEBACKS & MELON STREAMING UPDATE ---
+        if (kpopComebacks && kpopComebacks.length > 0) {
+            let totalWeeklyStreamingIncome = 0;
+            const updatedComebacks = kpopComebacks.map(cb => {
+                if (cb.promoWeeksLeft <= 0) return cb;
+
+                const rank = cb.melonScore || 50;
+                const weeklyStreams = Math.floor((101 - rank) * 120000);
+                const weeklyRevenue = Math.floor((101 - rank) * 180000);
+
+                totalWeeklyStreamingIncome += weeklyRevenue;
+                const newRank = Math.min(100, rank + Math.floor(Math.random() * 3));
+
+                return {
+                    ...cb,
+                    promoWeeksLeft: cb.promoWeeksLeft - 1,
+                    totalStreams: (cb.totalStreams || 0) + weeklyStreams,
+                    streamingRevenue: (cb.streamingRevenue || 0) + weeklyRevenue,
+                    melonScore: newRank
+                };
+            });
+
+            if (totalWeeklyStreamingIncome > 0) {
+                moneyForUpdate += totalWeeklyStreamingIncome;
+                addNotificationInLoop({ type: 'Finance', message: `🎧 Digital Streaming Revenue: ¥${totalWeeklyStreamingIncome.toLocaleString()} earned from active Melon chart releases.` });
+            }
+            setKpopComebacks(updatedComebacks);
+        }
+
+        // --- K-POP CONTRACT EXPIRATION TRACKER ---
+        const allKpopMembers = [...membersForUpdate, ...sisterGroupsForUpdate.flatMap(sg => sg.members || [])].filter(m => m.isKpop);
+        allKpopMembers.forEach(kMem => {
+            const contractEndWeek = (kMem.contractStartWeek || 1) + (kMem.contractDurationWeeks || 156);
+            const weeksLeft = contractEndWeek - newWeek;
+
+            if (weeksLeft === 8 && kMem.contractStatus === 'active') {
+                localUpdateMemberState(kMem.rosterId, m => ({ ...m, contractStatus: 'expiring' }));
+                addNotificationInLoop({
+                    type: 'Alert',
+                    message: `⚠️ [Contract Expiring] ${kMem.name}'s K-Pop exclusive contract expires in 8 weeks! Prepare for contract renegotiation.`
+                });
+            } else if (weeksLeft <= 0 && kMem.contractStatus !== 'renegotiating') {
+                localUpdateMemberState(kMem.rosterId, m => ({ ...m, contractStatus: 'expired' }));
+                setPendingContractRenewal(kMem);
+                addNotificationInLoop({
+                    type: 'Alert',
+                    message: `🚨 [Contract Expired] ${kMem.name}'s contract has officially reached its term! Open Contract Management to renew or release.`
+                });
+            }
+        });
+
+        // --- UNIVERSAL WORLD TOUR ACTIVE PROGRESSION ---
+        if (activeWorldTour && activeWorldTour.status === 'active') {
+            const tour = activeWorldTour;
+            const currentLeg = tour.legs[tour.currentLegIndex];
+            if (currentLeg) {
+                const isMain = tour.groupId === 'main';
+                const groupObj = isMain ? null : sisterGroupsForUpdate.find(sg => String(sg.id) === String(tour.groupId) || sg.name === tour.groupId);
+                const groupMembers = isMain ? membersForUpdate.filter(m => m.isAvailable && !m.graduated) : (groupObj?.members || []).filter(m => m.isAvailable && !m.graduated);
+
+                const groupFans = isMain ? (totalFans || 0) : (groupObj?.fans || 5000);
+                const avgSinging = groupMembers.reduce((s, m) => s + (m.singing || 0), 0) / (groupMembers.length || 1);
+                const avgDancing = groupMembers.reduce((s, m) => s + (m.dancing || 0), 0) / (groupMembers.length || 1);
+                const avgVisual = groupMembers.reduce((s, m) => s + (m.visual || 0), 0) / (groupMembers.length || 1);
+                const avgRap = groupMembers.reduce((s, m) => s + (m.rapping || 0), 0) / (groupMembers.length || 1);
+                const avgCharisma = groupMembers.reduce((s, m) => s + (m.charisma || 0), 0) / (groupMembers.length || 1);
+
+                const groupPower = (avgSinging * 0.25) + (avgDancing * 0.25) + (avgVisual * 0.2) + (avgRap * 0.15) + (avgCharisma * 0.15);
+
+                const baseDemand = (groupFans * 0.15) + (groupPower * 250);
+                const venueCap = currentLeg.capacity;
+                const stageBonus = tour.stageMultiplier || 1.0;
+                const lightstickBonus = tour.hasBluetoothLightstick ? 1.25 : tour.lightstickTier === 'acrylic' ? 1.15 : 1.05;
+
+                const fillRatio = Math.min(1.0, Math.max(0.4, (baseDemand * stageBonus) / venueCap + (Math.random() * 0.15 - 0.05)));
+                const actualAttendance = Math.floor(venueCap * fillRatio);
+
+                const baseTicketPrice = 12000;
+                const vipBonusPerTicket = tour.vipEnabled ? 2500 : 0;
+                const legTicketRevenue = actualAttendance * (baseTicketPrice + vipBonusPerTicket);
+
+                const lightstickKey = String(tour.groupId);
+                const lightstick = groupLightsticks[lightstickKey];
+                let legLightstickSales = 0;
+                let legLightstickRevenue = 0;
+
+                if (lightstick && lightstick.stock > 0) {
+                    const buyingRatio = tour.hasBluetoothLightstick ? 0.45 : 0.25;
+                    const desiredCount = Math.floor(actualAttendance * buyingRatio);
+                    legLightstickSales = Math.min(lightstick.stock, desiredCount);
+                    legLightstickRevenue = legLightstickSales * (lightstick.unitPrice || 6000);
+
+                    setGroupLightsticks(prev => ({
+                        ...prev,
+                        [lightstickKey]: {
+                            ...prev[lightstickKey],
+                            stock: Math.max(0, (prev[lightstickKey]?.stock || 0) - legLightstickSales),
+                            totalSold: (prev[lightstickKey]?.totalSold || 0) + legLightstickSales,
+                            totalRevenue: (prev[lightstickKey]?.totalRevenue || 0) + legLightstickRevenue
+                        }
+                    }));
+                }
+
+                const generalMerchRevenue = Math.floor(actualAttendance * 3500);
+                const totalLegGross = legTicketRevenue + legLightstickRevenue + generalMerchRevenue;
+                const newFanGain = Math.floor(actualAttendance * 0.25 * lightstickBonus);
+
+                moneyForUpdate += totalLegGross;
+                if (isMain) {
+                    setTotalFans(prev => prev + newFanGain);
+                } else if (groupObj) {
+                    groupObj.fans = (groupObj.fans || 0) + newFanGain;
+                }
+
+                const updatedLeg = {
+                    ...currentLeg,
+                    completed: true,
+                    attendance: actualAttendance,
+                    ticketRevenue: legTicketRevenue,
+                    merchRevenue: generalMerchRevenue + legLightstickRevenue,
+                    lightstickSales: legLightstickSales,
+                    fanGain: newFanGain
+                };
+
+                const nextIndex = tour.currentLegIndex + 1;
+                const isTourFinished = nextIndex >= tour.legs.length;
+
+                const updatedTour = {
+                    ...tour,
+                    legs: tour.legs.map((l, i) => i === tour.currentLegIndex ? updatedLeg : l),
+                    currentLegIndex: nextIndex,
+                    totalRevenue: tour.totalRevenue + totalLegGross,
+                    totalTicketRevenue: tour.totalTicketRevenue + legTicketRevenue,
+                    totalMerchRevenue: tour.totalMerchRevenue + generalMerchRevenue + legLightstickRevenue,
+                    totalAttendance: tour.totalAttendance + actualAttendance,
+                    totalFansGained: tour.totalFansGained + newFanGain,
+                    weeksRemaining: tour.legs.length - nextIndex,
+                    status: isTourFinished ? 'completed' : 'active'
+                };
+
+                if (isTourFinished) {
+                    setActiveWorldTour(null);
+                    setActiveTour(null);
+                    const liveAlbumRevenue = Math.floor(updatedTour.totalRevenue * 0.15);
+                    moneyForUpdate += liveAlbumRevenue;
+                    setWorldTourHistory(prev => [updatedTour, ...prev]);
+                    addNotificationInLoop({
+                        type: 'Special',
+                        message: `🎉 [World Tour Finale] "${tour.tourName}" concluded with ${updatedTour.totalAttendance.toLocaleString()} attendees worldwide! Gross: ¥${(updatedTour.totalRevenue + liveAlbumRevenue).toLocaleString()} (incl. ¥${liveAlbumRevenue.toLocaleString()} Live DVD broadcast royalties).`
+                    });
+                } else {
+                    setActiveWorldTour(updatedTour);
+                    setActiveTour({ name: tour.tourName, weeksLeft: updatedTour.weeksRemaining, cities: tour.legs.length, revenue: updatedTour.totalRevenue });
+                    addNotificationInLoop({
+                        type: 'Performance',
+                        message: `🌍 [World Tour Stop] ${tour.groupName} performed at ${currentLeg.venueName} (${currentLeg.country})! Attendance: ${actualAttendance.toLocaleString()} (${(fillRatio * 100).toFixed(0)}% full). Gross: ¥${totalLegGross.toLocaleString()}.`
+                    });
+                }
+            }
+        }
+
         const allUpdatedMembers = [...membersForUpdate, ...sisterGroupsForUpdate.flatMap(sg => sg.members || [])];
         // --- THE GRAND FINALE: COMMIT ALL DRAFT VARIABLES TO THE REAL STATE ---
         setWeek(newWeek);
@@ -16228,6 +16757,8 @@ export const useIdolManager = () => {
             cost = 500000;
         } else if (newGroupType === 'franchise_main') {
             cost = 8000000; // Cost for founding a new main franchise
+        } else if (newGroupType === 'kpop_gg') {
+            cost = 6000000; // Cost for founding a K-Pop Girl Group
         } else {
             cost = newGroupType === 'domestic' ? 5000000 : 10000000;
         }
@@ -16239,24 +16770,26 @@ export const useIdolManager = () => {
 
         const newId = Math.max(0, ...(sisterGroups || []).map(sg => sg.id || 0)) + 1;
         const isFranchiseMain = newGroupType === 'franchise_main';
+        const isKpopGroup = newGroupType === 'kpop_gg' || groupData.isKpop;
         const franchiseId = isFranchiseMain ? newId : (groupData.franchiseId || 'main');
 
         const newSisterGroup = {
             id: newId,
             name: groupData.groupName,
-            location: groupData.location || (isFranchiseMain ? 'Tokyo' : 'Special Project'),
+            location: groupData.location || (isFranchiseMain ? 'Tokyo' : (isKpopGroup ? 'Seoul' : 'Special Project')),
             type: newGroupType,
             isFranchiseMain: isFranchiseMain,
+            isKpop: isKpopGroup,
             franchiseId: franchiseId,
             parentGroupId: isFranchiseMain ? null : (groupData.parentGroupId || 'main'),
-            concept: groupData.concept || (isFranchiseMain ? 'Independent Rival Franchise' : 'Idol Group'),
-            color: groupData.color || (isFranchiseMain ? '#8b5cf6' : '#ec4899'),
+            concept: groupData.concept || (isFranchiseMain ? 'Independent Rival Franchise' : (isKpopGroup ? 'Girl Crush' : 'Idol Group')),
+            color: groupData.color || (isKpopGroup ? '#d946ef' : (isFranchiseMain ? '#8b5cf6' : '#ec4899')),
             members: initialMemberIds,
-            fans: isFranchiseMain ? 1000 : 100,
+            fans: isFranchiseMain ? 1000 : (isKpopGroup ? 3000 : 100),
             songs: [],
             income: 0,
             isAutonomous: newGroupType === 'overseas' || isFranchiseMain,
-            money: isFranchiseMain ? 100000 : 0,
+            money: isFranchiseMain ? 100000 : (isKpopGroup ? 500000 : 0),
             licensedSongs: []
         };
 
@@ -16600,6 +17133,7 @@ export const useIdolManager = () => {
                 archetype: specStats.archetype,
                 potential: generateStat(selectedTier.potentialMin, selectedTier.potentialMax),
                 personality: personalities[Math.floor(Math.random() * personalities.length)],
+                rapping: specStats.rapping || 0,
             };
         });
 
@@ -16662,6 +17196,8 @@ export const useIdolManager = () => {
                 charisma: c.charisma, // <-- THE FIX
                 intelligence: c.intelligence, // <-- THE FIX
                 variety: c.variety,
+                rapping: c.rapping || 0,
+                archetype: c.archetype || 'All-Rounder',
                 stamina: 100,
                 morale: 100,
                 stress: 0,
@@ -16881,6 +17417,489 @@ export const useIdolManager = () => {
             setMessage(successMsg);
             addNotification({ type: 'Promotion', message: successMsg });
         }
+    };
+
+    // ==========================================
+    // K-POP TRAINEE & LABEL MANAGEMENT SYSTEM
+    // ==========================================
+
+    const startKpopAudition = (location = 'Seoul', poolSize = 8) => {
+        const cost = 500000;
+        if (money < cost) {
+            setMessage(`Need ¥${cost.toLocaleString()} to host K-Pop Global Auditions.`);
+            return;
+        }
+
+        setMoney(prev => prev - cost);
+
+        const nationalities = [
+            { nat: 'Korean', loc: 'Seoul', weight: 0.55 },
+            { nat: 'Japanese', loc: 'Japan', weight: 0.20 },
+            { nat: 'Thai', loc: 'Bangkok', weight: 0.10 },
+            { nat: 'Chinese', loc: 'Shanghai', weight: 0.08 },
+            { nat: 'Global', loc: 'Los Angeles', weight: 0.07 },
+        ];
+
+        const specialities = ['vocal', 'dancer', 'rapper', 'visual', 'all-rounder'];
+        const potentialTiers = [
+            { tier: 'S', weight: 0.10, minStat: 55, maxStat: 85 },
+            { tier: 'A', weight: 0.30, minStat: 45, maxStat: 75 },
+            { tier: 'B', weight: 0.40, minStat: 35, maxStat: 65 },
+            { tier: 'C', weight: 0.20, minStat: 25, maxStat: 50 },
+        ];
+
+        const candidates = Array.from({ length: poolSize }, (_, i) => {
+            const rNat = Math.random();
+            let accumulated = 0;
+            let pickedNat = nationalities[0];
+            for (const n of nationalities) {
+                accumulated += n.weight;
+                if (rNat <= accumulated) {
+                    pickedNat = n;
+                    break;
+                }
+            }
+
+            const rPot = Math.random();
+            let accumulatedPot = 0;
+            let pickedPot = potentialTiers[2];
+            for (const p of potentialTiers) {
+                accumulatedPot += p.weight;
+                if (rPot <= accumulatedPot) {
+                    pickedPot = p;
+                    break;
+                }
+            }
+
+            const spec = specialities[Math.floor(Math.random() * specialities.length)];
+            const genStat = (baseMin, baseMax, bonus = 0) => Math.min(100, Math.max(10, Math.floor(Math.random() * (baseMax - baseMin + 1)) + baseMin + bonus));
+
+            let singing = genStat(pickedPot.minStat, pickedPot.maxStat);
+            let dancing = genStat(pickedPot.minStat, pickedPot.maxStat);
+            let visual = genStat(pickedPot.minStat, pickedPot.maxStat);
+            let charisma = genStat(pickedPot.minStat, pickedPot.maxStat);
+            let rapping = genStat(pickedPot.minStat, pickedPot.maxStat);
+            let intelligence = genStat(pickedPot.minStat, pickedPot.maxStat);
+            let variety = genStat(pickedPot.minStat, pickedPot.maxStat);
+
+            if (spec === 'vocal') singing = genStat(pickedPot.maxStat - 5, pickedPot.maxStat + 12);
+            else if (spec === 'dancer') dancing = genStat(pickedPot.maxStat - 5, pickedPot.maxStat + 12);
+            else if (spec === 'rapper') rapping = genStat(pickedPot.maxStat - 5, pickedPot.maxStat + 12);
+            else if (spec === 'visual') visual = genStat(pickedPot.maxStat - 5, pickedPot.maxStat + 12);
+            else if (spec === 'all-rounder') {
+                singing += 5; dancing += 5; rapping += 5; visual += 5;
+            }
+
+            const memberName = generateRandomMemberName(pickedNat.loc, i);
+
+            return {
+                id: `kpop-trainee-cand-${Date.now()}-${i}`,
+                name: memberName,
+                age: 14 + Math.floor(Math.random() * 6),
+                nationality: pickedNat.nat,
+                location: pickedNat.loc,
+                potential: pickedPot.tier,
+                speciality: spec,
+                singing,
+                dancing,
+                visual,
+                charisma,
+                rapping,
+                intelligence,
+                variety,
+                trainingFocus: spec === 'vocal' ? 'singing' : spec === 'dancer' ? 'dancing' : spec === 'rapper' ? 'rapping' : 'balanced',
+                stress: 0,
+                stamina: 100,
+                isInjured: false,
+                trainingCostPerWeek: 300000,
+                contractStatus: 'active',
+                contractDurationWeeks: 156,
+                contractStartWeek: week,
+                trainingWeeksCompleted: 0,
+                events: []
+            };
+        });
+
+        setKpopAuditionCandidates(candidates);
+        setModalData({ candidates, location });
+        setShowModal('kpopTraineeDraft');
+        setMessage(`🌟 K-Pop Auditions held in ${location}! Review candidate profiles.`);
+    };
+
+    const confirmKpopTraineeRecruitment = (selectedCandidateIds) => {
+        if (!selectedCandidateIds || selectedCandidateIds.length === 0) {
+            setShowModal(null);
+            return;
+        }
+
+        const selected = kpopAuditionCandidates.filter(c => selectedCandidateIds.includes(c.id));
+        if (selected.length === 0) return;
+
+        setKpopTrainees(prev => [...prev, ...selected]);
+        setKpopAuditionCandidates([]);
+        setShowModal(null);
+
+        const msg = `🎉 Successfully scouted ${selected.length} K-Pop trainee(s) into the Agency Academy!`;
+        setMessage(msg);
+        addNotification({ type: 'Promotion', message: msg });
+    };
+
+    const setTraineeFocus = (traineeId, focus) => {
+        setKpopTrainees(prev => prev.map(t => t.id === traineeId ? { ...t, trainingFocus: focus } : t));
+        setMessage(`Training focus updated to ${focus}.`);
+    };
+
+    const releaseTrainee = (traineeId) => {
+        const trainee = kpopTrainees.find(t => t.id === traineeId);
+        if (!trainee) return;
+        setKpopTrainees(prev => prev.filter(t => t.id !== traineeId));
+        const msg = `Trainee contract with ${trainee.name} has been terminated.`;
+        setMessage(msg);
+        addNotification({ type: 'Info', message: msg });
+    };
+
+    const finishKpopDebut = (selectedTraineeIds, debutGroupName, debutConcept, targetGroupId = null) => {
+        if (!selectedTraineeIds || selectedTraineeIds.length === 0) return;
+
+        const traineesToDebut = kpopTrainees.filter(t => selectedTraineeIds.includes(t.id));
+        if (traineesToDebut.length === 0) return;
+
+        const allMemberIds = [
+            ...members.map(m => m.id),
+            ...sisterGroups.flatMap(sg => (sg.members || []).map(m => m.id))
+        ];
+        const numericIds = allMemberIds.map(id => parseInt(id, 10)).filter(id => !isNaN(id));
+        let startingId = numericIds.length > 0 ? Math.max(0, ...numericIds) : 0;
+
+        let targetGroupObj = null;
+        let finalGroupId = targetGroupId;
+
+        if (targetGroupId) {
+            targetGroupObj = sisterGroups.find(sg => String(sg.id) === String(targetGroupId) || sg.name === targetGroupId);
+        }
+
+        const finalGroupName = targetGroupObj ? targetGroupObj.name : (debutGroupName || "Nova-X");
+        const finalConcept = debutConcept || "Girl Crush";
+
+        const newKpopMembers = traineesToDebut.map((t, idx) => {
+            const newId = startingId + 1 + idx;
+            const statsSum = (t.singing || 50) + (t.dancing || 50) + (t.visual || 50) + (t.charisma || 50) + (t.rapping || 50);
+            const calculatedSalary = 1500000 + Math.floor(statsSum * 1000);
+
+            return {
+                id: newId,
+                name: t.name,
+                hometown: t.location || t.nationality || 'Seoul',
+                nickname: t.name.split(' ')[0] || t.name,
+                singing: t.singing,
+                dancing: t.dancing,
+                visual: t.visual,
+                charisma: t.charisma,
+                intelligence: t.intelligence,
+                variety: t.variety,
+                rapping: t.rapping || 0,
+                archetype: t.speciality === 'vocal' ? 'Vocalist' : t.speciality === 'dancer' ? 'Dancer' : t.speciality === 'rapper' ? 'Rapper' : t.speciality === 'visual' ? 'Visual/Ace' : 'All-Rounder',
+                stamina: 100,
+                morale: 100,
+                stress: 0,
+                fans: { hardcore: 4000 + Math.floor(Math.random() * 4000), casual: 12000 + Math.floor(Math.random() * 8000) },
+                potential: t.potential === 'S' ? 95 : t.potential === 'A' ? 85 : t.potential === 'B' ? 70 : 55,
+                personality: 'Stage Genius',
+                position: 'member',
+                isTrainee: false,
+                birthday: Math.floor(Math.random() * 52) + 1,
+                age: t.age || 18,
+                yearsActive: 0,
+                graduated: false,
+                isGraduating: false,
+                generation: '1st Generation',
+                isAvailable: true,
+                rank: 999,
+                trainingFocus: 'none',
+                teamHistory: [{ week: week, event: `🌟 Officially debuted as a member of K-Pop group "${finalGroupName}"!` }],
+                homeGroup: finalGroupName,
+                originalHomeGroup: finalGroupName,
+                kenninGroups: [],
+                chemistry: {},
+                filmHistory: [],
+                // K-POP CONTRACT SYSTEM FIELDS
+                isKpop: true,
+                contractStartWeek: week,
+                contractDurationWeeks: 156, // 3 Years
+                contractStatus: 'active',
+                salary: calculatedSalary,
+            };
+        });
+
+        if (!targetGroupObj) {
+            const newGroupId = Math.max(0, ...(sisterGroups || []).map(sg => sg.id || 0)) + 1;
+            finalGroupId = newGroupId;
+            const newGroup = {
+                id: newGroupId,
+                name: finalGroupName,
+                location: 'Seoul / Global',
+                type: 'kpop_gg',
+                isKpop: true,
+                franchiseId: 'main',
+                parentGroupId: 'main',
+                concept: finalConcept,
+                color: '#d946ef',
+                members: newKpopMembers,
+                fans: 5000,
+                songs: [],
+                income: 0,
+                isAutonomous: false,
+                money: 500000,
+                licensedSongs: []
+            };
+            setSisterGroups(prev => [...prev, newGroup]);
+        } else {
+            setSisterGroups(prev => prev.map(sg => {
+                if (String(sg.id) === String(targetGroupId) || sg.name === targetGroupId) {
+                    return {
+                        ...sg,
+                        members: [...(sg.members || []), ...newKpopMembers]
+                    };
+                }
+                return sg;
+            }));
+        }
+
+        setKpopTrainees(prev => prev.map(t => selectedTraineeIds.includes(t.id) ? { ...t, contractStatus: 'debuted' } : t));
+
+        const debutMsg = `🎉 SPECTACULAR DEBUT! "${finalGroupName}" has officially debuted with ${newKpopMembers.length} member(s)! Concept: ${finalConcept}.`;
+        setMessage(debutMsg);
+        addNotification({ type: 'Special', message: debutMsg });
+        setShowModal(null);
+    };
+
+    const renegotiateKpopContract = (memberId, action) => {
+        let member = null;
+        let isSister = false;
+        let targetSgId = null;
+
+        const mainMem = members.find(m => String(m.id) === String(memberId) || String(m.rosterId) === String(memberId));
+        if (mainMem) {
+            member = mainMem;
+        } else {
+            for (const sg of sisterGroups) {
+                const sMem = (sg.members || []).find(m => String(m.id) === String(memberId) || String(m.rosterId) === String(memberId) || `sg-${sg.id}-${m.id}` === String(memberId));
+                if (sMem) {
+                    member = sMem;
+                    isSister = true;
+                    targetSgId = sg.id;
+                    break;
+                }
+            }
+        }
+
+        if (!member) {
+            setMessage("Member not found for contract renegotiation.");
+            return;
+        }
+
+        if (action === 'release') {
+            if (isSister && targetSgId) {
+                setSisterGroups(prev => prev.map(sg => sg.id === targetSgId ? { ...sg, members: (sg.members || []).filter(m => String(m.id) !== String(member.id)) } : sg));
+            } else {
+                setMembers(prev => prev.filter(m => String(m.id) !== String(member.id)));
+            }
+            const releaseMsg = `Press Release: ${member.name} has concluded their contract with the agency and departed on friendly terms.`;
+            setMessage(releaseMsg);
+            addNotification({ type: 'Info', message: releaseMsg });
+            setPendingContractRenewal(null);
+            setShowModal(null);
+            return;
+        }
+
+        let extraWeeks = 52;
+        let salaryMult = 1.25;
+        let durationLabel = '1 Year';
+        if (action === 'renew_2yr') { extraWeeks = 104; salaryMult = 1.35; durationLabel = '2 Years'; }
+        if (action === 'renew_3yr') { extraWeeks = 156; salaryMult = 1.50; durationLabel = '3 Years'; }
+
+        const newSalary = Math.floor((member.salary || 1500000) * salaryMult);
+        const updateContractFn = (m) => ({
+            ...m,
+            contractDurationWeeks: (m.contractDurationWeeks || 156) + extraWeeks,
+            contractStatus: 'active',
+            salary: newSalary,
+            morale: Math.min(100, (m.morale || 70) + 20),
+            stress: Math.max(0, (m.stress || 0) - 15),
+            teamHistory: [...(m.teamHistory || []), { week: week, event: `📝 Extended K-Pop exclusive contract by ${durationLabel} (New salary: ¥${newSalary.toLocaleString()}/month)` }]
+        });
+
+        if (isSister && targetSgId) {
+            setSisterGroups(prev => prev.map(sg => sg.id === targetSgId ? { ...sg, members: (sg.members || []).map(m => String(m.id) === String(member.id) ? updateContractFn(m) : m) } : sg));
+        } else {
+            setMembers(prev => prev.map(m => String(m.id) === String(member.id) ? updateContractFn(m) : m));
+        }
+
+        const successMsg = `✨ Contract Renewed! ${member.name} signed a ${durationLabel} extension (Salary: ¥${newSalary.toLocaleString()}).`;
+        setMessage(successMsg);
+        addNotification({ type: 'Promotion', message: successMsg });
+        setPendingContractRenewal(null);
+        setShowModal(null);
+    };
+
+    const releaseKpopComeback = ({ groupId, titleSongName, bSides = [], concept = 'Girl Crush', mvTier = 'standard', promoWeeks = 4 }) => {
+        const group = sisterGroups.find(sg => String(sg.id) === String(groupId));
+        if (!group) {
+            setMessage("K-Pop group not found.");
+            return;
+        }
+
+        const groupMembers = group.members || [];
+        if (groupMembers.length === 0) {
+            setMessage("Group has no members for a comeback.");
+            return;
+        }
+
+        let mvCost = 3000000;
+        if (mvTier === 'budget') mvCost = 1000000;
+        if (mvTier === 'blockbuster') mvCost = 8000000;
+        const bSidesCost = (bSides.length) * 500000;
+        const titleCost = 2500000;
+        const totalProductionCost = titleCost + bSidesCost + mvCost;
+
+        if (money < totalProductionCost) {
+            setMessage(`Need ¥${totalProductionCost.toLocaleString()} for this Comeback production.`);
+            return;
+        }
+
+        setMoney(prev => prev - totalProductionCost);
+
+        const avgDance = groupMembers.reduce((s, m) => s + (m.dancing || 0), 0) / groupMembers.length;
+        const avgVocal = groupMembers.reduce((s, m) => s + (m.singing || 0), 0) / groupMembers.length;
+        const avgRap = groupMembers.reduce((s, m) => s + (m.rapping || 0), 0) / groupMembers.length;
+        const avgVisual = groupMembers.reduce((s, m) => s + (m.visual || 0), 0) / groupMembers.length;
+        const avgVariety = groupMembers.reduce((s, m) => s + (m.variety || 0), 0) / groupMembers.length;
+
+        let conceptSynergyMultiplier = 1.0;
+        let conceptBonusLog = '';
+
+        if (concept.includes('Hip-Hop') || concept.includes('Street')) {
+            if (avgRap >= 60) {
+                conceptSynergyMultiplier = 1.35;
+                conceptBonusLog = '🔥 Peak Hip-Hop Synergy (+35% Streaming Power & Intl Boost)';
+            }
+        } else if (concept.includes('Girl Crush') || concept.includes('Fierce')) {
+            if (avgDance >= 65) {
+                conceptSynergyMultiplier = 1.30;
+                conceptBonusLog = '⚡ Intense Dance Synchronization (+30% Hype & Fan Surge)';
+            }
+        } else if (concept.includes('Cute') || concept.includes('Bubblegum')) {
+            if (avgVisual >= 65) {
+                conceptSynergyMultiplier = 1.25;
+                conceptBonusLog = '✨ Supreme Visual Charm (+25% Casual Fan Growth)';
+            }
+        } else if (concept.includes('Dark') || concept.includes('Teen Crush')) {
+            if (avgVocal >= 65) {
+                conceptSynergyMultiplier = 1.30;
+                conceptBonusLog = '🖤 Powerful Vocal Execution (+30% Hardcore Fan Conversion)';
+            }
+        } else if (concept.includes('Retro') || concept.includes('Y2K')) {
+            if (avgVariety >= 60) {
+                conceptSynergyMultiplier = 1.25;
+                conceptBonusLog = '📼 Viral Nostalgia Craze (+25% Chart Longevity)';
+            }
+        } else if (concept.includes('Elegant') || concept.includes('High-Teen')) {
+            if (avgVocal >= 70 && avgVisual >= 70) {
+                conceptSynergyMultiplier = 1.35;
+                conceptBonusLog = '👑 High-Fashion Prestige (+35% Reputation & Streaming)';
+            }
+        }
+
+        const mvMultiplier = mvTier === 'blockbuster' ? 1.3 : mvTier === 'standard' ? 1.1 : 1.0;
+        const overallSkill = (avgDance * 0.25) + (avgVocal * 0.25) + (avgRap * 0.25) + (avgVisual * 0.25);
+        const powerScore = (overallSkill * conceptSynergyMultiplier * mvMultiplier) + (group.fans ? Math.min(30, Math.log10(group.fans + 1) * 6) : 5);
+        
+        let melonRank = Math.max(1, Math.min(100, Math.floor(105 - (powerScore * 0.8) + (Math.random() * 12 - 6))));
+
+        const initialDigitalRevenue = (101 - melonRank) * 450000;
+        const fanGain = Math.floor((101 - melonRank) * 2500 * conceptSynergyMultiplier);
+        const intlGain = Math.floor((101 - melonRank) * 3500 * (concept.includes('Hip-Hop') || concept.includes('Girl Crush') ? 1.5 : 1.0));
+
+        setMoney(prev => prev + initialDigitalRevenue);
+        setGroupReputation(prev => prev + (melonRank <= 10 ? 3 : melonRank <= 30 ? 2 : 1));
+
+        const trackList = [
+            { id: `kpop-track-${Date.now()}-0`, name: titleSongName, isTitle: true, popularity: (101 - melonRank) / 100 },
+            ...bSides.map((bName, bIdx) => ({
+                id: `kpop-track-${Date.now()}-${bIdx + 1}`,
+                name: bName,
+                isTitle: false,
+                popularity: Math.max(0.2, (101 - melonRank) / 150)
+            }))
+        ];
+
+        const comebackEntry = {
+            id: `kpop-cb-${Date.now()}`,
+            groupId: group.id,
+            groupName: group.name,
+            titleTrack: titleSongName,
+            bSides: bSides,
+            tracks: trackList,
+            concept: concept,
+            mvTier: mvTier,
+            releaseWeek: week,
+            promoWeeksLeft: promoWeeks,
+            melonScore: melonRank,
+            streamingRevenue: initialDigitalRevenue,
+            totalStreams: (101 - melonRank) * 150000,
+            fanGain: fanGain,
+            intlGain: intlGain,
+            conceptBonus: conceptBonusLog,
+            members: groupMembers.map(m => ({ id: m.id, name: m.name, visual: m.visual, singing: m.singing, dancing: m.dancing, rapping: m.rapping }))
+        };
+
+        setKpopComebacks(prev => [comebackEntry, ...prev]);
+
+        const chartEntry = {
+            rank: melonRank,
+            title: titleSongName,
+            artist: group.name,
+            streams: (101 - melonRank) * 240000,
+            peak: melonRank,
+            weeksOnChart: 1,
+            concept: concept,
+            releaseWeek: week,
+        };
+        setMelonChart(prev => {
+            const filtered = prev.filter(c => c.title !== titleSongName);
+            return [chartEntry, ...filtered].sort((a, b) => a.rank - b.rank).slice(0, 100);
+        });
+
+        const newSongRelease = {
+            id: `kpop-rel-${Date.now()}`,
+            name: `${titleSongName} (Comeback EP)`,
+            type: 'comeback',
+            artist: group.name,
+            releaseWeek: week,
+            tracks: trackList,
+            sales: Math.floor(fanGain * 1.5),
+            revenue: initialDigitalRevenue,
+            melonScore: melonRank,
+            concept: concept,
+            targetGroup: group.name
+        };
+
+        setSisterGroups(prev => prev.map(sg => {
+            if (sg.id === group.id) {
+                return {
+                    ...sg,
+                    fans: (sg.fans || 0) + fanGain + intlGain,
+                    songs: [newSongRelease, ...(sg.songs || [])]
+                };
+            }
+            return sg;
+        }));
+
+        const resultSummary = `🔥 COMEBACK RELEASED! "${group.name} - ${titleSongName}" entered the Melon Global Top 100 at #${melonRank}! Concept: ${concept}. Initial Streams Revenue: ¥${initialDigitalRevenue.toLocaleString()} (+${(fanGain + intlGain).toLocaleString()} fans). ${conceptBonusLog}`;
+        setMessage(resultSummary);
+        addNotification({ type: 'Special', message: resultSummary });
+        setModalData(comebackEntry);
+        setShowModal('kpopComebackResult');
     };
 
     const upgradeTheater = (ownerId) => {
@@ -20119,10 +21138,18 @@ export const useIdolManager = () => {
     return {
         // State
         inflationConfig, setInflationConfig, outstandingLoan, setOutstandingLoan, takeLoan, repayLoanIfPossible, activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm, setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, activeBlockbuster, blockbusterHistory, startBlockbusterProduction, blockbusterThemes, blockbusterScales, blockbusterDirectors, boxOfficeMilestones, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, setGroupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, theaterSchedule, setTheaterSchedule, setWeek, setMoney, activeDrama, setActiveDrama, dramaHistory, setDramaHistory, resolveDramaChoice, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, activeUnderTour, setActiveUnderTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
+        // K-Pop State
+        kpopTrainees, setKpopTrainees, kpopComebacks, setKpopComebacks, melonChart, setMelonChart, pendingContractRenewal, setPendingContractRenewal, kpopAuditionCandidates, setKpopAuditionCandidates,
+        // World Tour & Lightstick State
+        groupLightsticks, setGroupLightsticks, activeWorldTour, setActiveWorldTour, worldTourHistory, setWorldTourHistory,
         // Firebase/Persistence
         getSavedGames, saveGame, loadGame,
         // Utilities
         startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
         holdTitleTrackPerformance, holdUnitPerformance, unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, resolveSurvivalMission, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, onlineStore, upgradeOnlineStore, staff, hireStaff, trainMember, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, getUnderMembersPool, startUnderTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, executeFanEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek, confirmExchangeStudent, confirmCreateSisterGroup, promoteSubgroupMember, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, holdFranchiseRivalBattle, holdCrossFranchiseConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, promoteTrainee, promoteMultipleTrainees, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining,
+        // K-Pop Functions
+        startKpopAudition, confirmKpopTraineeRecruitment, setTraineeFocus, releaseTrainee, finishKpopDebut, renegotiateKpopContract, releaseKpopComeback,
+        // World Tour & Lightstick Functions
+        designGroupLightstick, produceGroupLightstick, startUniversalWorldTour, progressWorldTourLeg, cancelWorldTour,
     };
 };

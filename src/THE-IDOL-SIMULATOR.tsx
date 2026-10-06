@@ -25,6 +25,8 @@ import {
 
 
 import { MerchTab } from './MerchTab';
+import { KpopLabelTab } from './KpopLabelTab';
+import { WorldTourTab } from './WorldTourTab';
 
 // Helper to check if a group name or object is a trainee group / subgroup
 const isTraineeGroupNameOrGroup = (groupNameOrId, sisterGroups = []) => {
@@ -149,6 +151,12 @@ const App = () => {
         startGame, getAllAvailableMembers, getFormattedDateForWeek, getMemberById, updateMemberState, getMemberGroupStatus, getMemberRank, addNotification, getMainGroupRoster,
         // Logic
         holdTitleTrackPerformance, holdUnitPerformance, unitVote, lastUnitVoteResult, startUnitVote, confirmUnitFromVote, executeFestivalPerformance, availableFestivals, startFestivalPerformance, startAllMusicShowAppearances, musicShowTypes, startMusicShowAppearance, startAllEligibleBsidePromotions, startAllEligiblePromotions, pendingGraduationAnnouncement, setPendingGraduationAnnouncement, confirmDisbandAndTransferMembers, startStudyAbroad, assignConcurrentPosition, licenseSongToGroup, startExchangeProgram, startCollaboration, executeShuffle, initiateShuffle, completedPromotions, runAnnualAwards, annualAwardsHistory, groupRoles, appointCaptain, handleAiDraftPick, finishDraft, handlePlayerDraftPick, advanceDraftStage, startDraftKaigi, pendingMerch, warehouse, upgradeWarehouse, trainMember, onlineStore, upgradeOnlineStore, staff, hireStaff, restMember, restAllTired, buildTheater, upgradePracticeRoom, upgradeTheater, buildSisterTheater, renameTheater, handleCheatCode, startTour, progressTour, getUnderMembersPool, startUnderTour, createTeam, editTeam, saveTeam, deleteTeam, showTeamDetails, startTheaterShowPrep, graduateMember, askAboutGraduation, handleScandalResponse, holdTheaterShow, holdSisterGroupShow, holdElection, createSong, createCustomSetlist, confirmCreateSetlist, scheduleNewSingle, scheduleNewAlbum, executeAlbumRelease, handleDisbandSisterGroup, handleConfirmEditGroupName, produceMerch, openHandshakeModal, executeHandshakeEvent, executeFanEvent, startTrainingCamp, startMediaJob, startGroupMediaJob, nextWeek: nextWeekHook, confirmExchangeStudent, confirmCreateSisterGroup, promoteSubgroupMember, promoteTrainee, promoteMultipleTrainees, handleSisterMemberTransfer, recordPerformance, startPerformancePrep, holdMajorConcert, holdFranchiseRivalBattle, holdCrossFranchiseConcert, runElectionLogic, startSenbatsuPromotion, holdPressConference, completedBsidePromos, setCompletedBsidePromos, startBsidePromotion, startElectionCampaign, createElectionPoster, createElectionPosterForAll, createAppealVideoForAll, startAudition, confirmRecruitment, handleSetTrainingFocus, assignRandomTraining, assignLowestSkillTraining, assignLowestVocalDanceTraining, inflationConfig, outstandingLoan, takeLoan, repayLoanIfPossible,
+        // K-Pop State & Functions
+        kpopTrainees, setKpopTrainees, kpopComebacks, setKpopComebacks, melonChart, setMelonChart, pendingContractRenewal, setPendingContractRenewal, kpopAuditionCandidates, setKpopAuditionCandidates,
+        startKpopAudition, confirmKpopTraineeRecruitment, setTraineeFocus, releaseTrainee, finishKpopDebut, renegotiateKpopContract, releaseKpopComeback,
+        // World Tour & Lightstick State & Functions
+        groupLightsticks, setGroupLightsticks, activeWorldTour, setActiveWorldTour, worldTourHistory, setWorldTourHistory,
+        designGroupLightstick, produceGroupLightstick, startUniversalWorldTour, progressWorldTourLeg, cancelWorldTour,
     } = useIdolManager();
 
     // Local state for start screen inputs (not part of the main game state in the hook)
@@ -18027,11 +18035,63 @@ const App = () => {
                         />
                     )}
 
+                    {/* ----- K-POP LABEL & ACADEMY TAB ----- */}
+                    {currentTab === 'kpop' && (
+                        <KpopLabelTab
+                            kpopTrainees={kpopTrainees}
+                            kpopComebacks={kpopComebacks}
+                            melonChart={melonChart}
+                            sisterGroups={sisterGroups}
+                            money={money}
+                            week={week}
+                            startKpopAudition={startKpopAudition}
+                            confirmKpopTraineeRecruitment={confirmKpopTraineeRecruitment}
+                            setTraineeFocus={setTraineeFocus}
+                            releaseTrainee={releaseTrainee}
+                            finishKpopDebut={finishKpopDebut}
+                            renegotiateKpopContract={renegotiateKpopContract}
+                            releaseKpopComeback={releaseKpopComeback}
+                            setMessage={setMessage}
+                            addNotification={addNotification}
+                            showModal={showModal}
+                            setShowModal={setShowModal}
+                            modalData={modalData}
+                            setModalData={setModalData}
+                            pendingContractRenewal={pendingContractRenewal}
+                            setPendingContractRenewal={setPendingContractRenewal}
+                        />
+                    )}
+
+                    {/* ----- WORLD TOURS & LIGHTSTICKS TAB ----- */}
+                    {currentTab === 'worldtour' && (
+                        <WorldTourTab
+                            groupName={groupName}
+                            sisterGroups={sisterGroups}
+                            venues={venues}
+                            money={money}
+                            week={week}
+                            activeWorldTour={activeWorldTour}
+                            worldTourHistory={worldTourHistory}
+                            groupLightsticks={groupLightsticks}
+                            designGroupLightstick={designGroupLightstick}
+                            produceGroupLightstick={produceGroupLightstick}
+                            startUniversalWorldTour={startUniversalWorldTour}
+                            progressWorldTourLeg={progressWorldTourLeg}
+                            cancelWorldTour={cancelWorldTour}
+                            showModal={showModal}
+                            setShowModal={setShowModal}
+                            modalData={modalData}
+                            setModalData={setModalData}
+                        />
+                    )}
+
                 </main>
 
                 {/* Bottom Nav (Mobile) */}
                 <nav className="lg:hidden flex bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-inner border-t border-gray-200 dark:border-gray-700">
                     <TabButton id="members" label="Members" icon={Users} />
+                    <TabButton id="kpop" label="K-Pop" icon={Sparkles} />
+                    <TabButton id="worldtour" label="Tours" icon={Globe} />
                     <TabButton id="discography" label="Songs" icon={Music} />
                     <TabButton id="management" label="Manage" icon={Building} />
                     <TabButton id="history" label="History" icon={Clipboard} />
@@ -18233,6 +18293,7 @@ const App = () => {
                         <div className="mb-4">
                             <StatBar label="Singing" value={selectedMember.singing} color="bg-blue-500" />
                             <StatBar label="Dancing" value={selectedMember.dancing} color="bg-green-500" />
+                            <StatBar label="Rapping" value={selectedMember.rapping || 0} color="bg-rose-500" />
                             <StatBar label="Variety" value={selectedMember.variety} color="bg-pink-500" />
                             <StatBar label="Visual" value={selectedMember.visual} color="bg-cyan-500" />
                             <StatBar label="Charisma" value={selectedMember.charisma} color="bg-rose-500" />
@@ -18271,6 +18332,14 @@ const App = () => {
                                 disabled={!selectedMember.isAvailable}
                             >
                                 Train Dance (¥500)
+                            </button>
+
+                            <button
+                                onClick={() => trainMember(selectedMember.rosterId, "rapping")}
+                                className="p-2 bg-rose-100 text-rose-700 rounded text-sm font-bold"
+                                disabled={!selectedMember.isAvailable}
+                            >
+                                Train Rap (¥500)
                             </button>
 
                             <button
@@ -18625,6 +18694,8 @@ const App = () => {
                         <nav className="flex border-b border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-900">
                             {[
                                 { id: 'members', label: 'Members' },
+                                { id: 'kpop', label: '🎤 K-Pop Label' },
+                                { id: 'worldtour', label: '🌍 World Tours' },
                                 { id: 'management', label: 'Manage' },
                                 { id: 'activities', label: 'Activities' },
                                 { id: 'training', label: 'Training' },
