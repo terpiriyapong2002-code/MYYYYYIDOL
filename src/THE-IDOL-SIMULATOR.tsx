@@ -20,7 +20,7 @@ import {
     User, Check, ChevronDown, ChevronUp, ShoppingBag, Mic, Hand, Lock, Brain, Package,
     Minimize2, Maximize2, Trash2, MapPin, Smile, LogIn, CalendarCheck, Home,
     ClipboardCheck, Clapperboard, Clock, Moon, BarChart2, FileText, Scissors, Wrench, Layers, Clipboard, Coffee, Bus, PhoneCall, PenTool, Store,
-    GitBranch, Flame, Building2
+    GitBranch, Flame, Building2, Sliders, RotateCcw
 } from 'lucide-react';
 
 
@@ -144,7 +144,7 @@ const App = () => {
 
     // Destructure everything from the custom hook
     const {
-        activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm, setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, activeBlockbuster, blockbusterHistory, startBlockbusterProduction, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, resolveSurvivalMission, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, setGroupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, theaterSchedule, setTheaterSchedule, setWeek, setMoney, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, activeUnderTour, setActiveUnderTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek, activeDrama, setActiveDrama, resolveDramaChoice,
+        activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm, setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, activeBlockbuster, blockbusterHistory, startBlockbusterProduction, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, resolveSurvivalMission, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, setGroupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, theaterSchedule, setTheaterSchedule, setWeek, setMoney, sisterGroups, scheduledSingles, setScheduledSingles, setSisterGroups, pendingSisterGroupPrompts, setPendingSisterGroupPrompts, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, activeUnderTour, setActiveUnderTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek, activeDrama, setActiveDrama, resolveDramaChoice,
 
         // Firebase/Persistence
         getSavedGames, saveGame, loadGame,
@@ -163,6 +163,9 @@ const App = () => {
     // Local state for start screen inputs (not part of the main game state in the hook)
     const [startUsername, setStartUsername] = useState('');
     const [startGroupName, setStartGroupName] = useState('');
+    // ── Turn-Event Queue ──────────────────────────────────────────────────────
+    // Each item: { type: 'graduation'|'sisterGroup'|'dilemma', data: any }
+    const [weeklyEventQueue, setWeeklyEventQueue] = useState([]);
     const [savedGames, setSavedGames] = useState([]);
     const fileInputRef = useRef(null);
     const mainContentRef = useRef(null);
@@ -328,11 +331,16 @@ const App = () => {
         }
     }, [gameStarted, showModal]);
 
+    // Enqueue graduation announcements instead of showing them directly
     useEffect(() => {
         if (pendingGraduationAnnouncement) {
-            setModalData(pendingGraduationAnnouncement);
-            setShowModal('graduationAnnouncement');
-            // Clear the pending state so it doesn't trigger again on the next re-render
+            setWeeklyEventQueue(prev => {
+                const alreadyQueued = prev.some(
+                    e => e.type === 'graduation' && (e.data?.id === pendingGraduationAnnouncement.id || e.data?.name === pendingGraduationAnnouncement.name)
+                );
+                if (alreadyQueued) return prev;
+                return [...prev, { type: 'graduation', data: pendingGraduationAnnouncement }];
+            });
             setPendingGraduationAnnouncement(null);
         }
     }, [pendingGraduationAnnouncement]);
@@ -690,11 +698,15 @@ const App = () => {
     const nextWeek = () => {
         if (members.length > 0 && Math.random() < 0.20 && !activeTour) {
             const randomDilemma = weeklyDilemmas[Math.floor(Math.random() * weeklyDilemmas.length)];
-            setActiveDilemma(randomDilemma);
-            setShowModal('weeklyDilemma');
-        } else {
-            nextWeekHook();
+            // Enqueue so dilemma never overwrites a graduation / sister-group modal
+            setWeeklyEventQueue(prev => {
+                const hasDilemma = prev.some(e => e.type === 'dilemma');
+                if (hasDilemma) return prev;
+                return [...prev, { type: 'dilemma', data: randomDilemma }];
+            });
         }
+        // Always advance the week so graduation/sister-group events can also queue
+        nextWeekHook();
     };
     const handleSelectChoice = (choice) => {
         choice.effect(setMoney, updateMemberState, addNotification, members, setGroupReputation, setTotalFans);
@@ -704,12 +716,97 @@ const App = () => {
         });
     };
     const handleClose = () => {
+        // Dilemma resolved (or dismissed without choosing) — clear and let the queue take over
         setActiveDilemma(null);
         setDilemmaResult(null);
         setShowModal(null);
-        nextWeekHook();
+        // Queue processor will auto-fire after showModal clears
     };
 
+
+    // Enqueue sister-group quick-produce prompts when they arrive from the hook
+    useEffect(() => {
+        if (pendingSisterGroupPrompts && pendingSisterGroupPrompts.length > 0) {
+            setWeeklyEventQueue(prev => {
+                const existingIds = new Set(
+                    prev.filter(e => e.type === 'sisterGroup').map(e => String(e.data))
+                );
+                const newEvents = pendingSisterGroupPrompts
+                    .filter(id => !existingIds.has(String(id)))
+                    .map(id => ({ type: 'sisterGroup', data: id }));
+                return [...prev, ...newEvents];
+            });
+            setPendingSisterGroupPrompts([]);
+        }
+    }, [pendingSisterGroupPrompts]);
+
+    // --- CENTRAL QUEUE PROCESSOR ---
+    // Fires the next queued event only when no other modal / conflict is active
+    useEffect(() => {
+        if (
+            weeklyEventQueue.length === 0 ||
+            showModal ||
+            activeScandal ||
+            activeDrama ||
+            activeDilemma
+        ) return;
+
+        const [next, ...rest] = weeklyEventQueue;
+        setWeeklyEventQueue(rest);
+
+        if (next.type === 'graduation') {
+            setModalData(next.data);
+            setShowModal('graduationAnnouncement');
+        } else if (next.type === 'sisterGroup') {
+            const targetSg = sisterGroups.find(
+                sg => String(sg.id) === String(next.data) || sg.name === next.data || String(sg.name).toLowerCase() === String(next.data).toLowerCase()
+            );
+            if (targetSg) {
+                setModalData({ sisterGroup: targetSg });
+                setShowModal('quickSisterSingle');
+            }
+            // If group was disbanded / not found, just skip (rest already excludes it)
+        } else if (next.type === 'dilemma') {
+            setActiveDilemma(next.data);
+            setShowModal('weeklyDilemma');
+        }
+    }, [weeklyEventQueue, showModal, activeScandal, activeDrama, activeDilemma, sisterGroups]);
+
+    const launchQueuedEvent = (index) => {
+        if (index < 0 || index >= weeklyEventQueue.length) return;
+        const targetEvent = weeklyEventQueue[index];
+        setWeeklyEventQueue(prev => prev.filter((_, i) => i !== index));
+
+        if (targetEvent.type === 'graduation') {
+            setModalData(targetEvent.data);
+            setShowModal('graduationAnnouncement');
+        } else if (targetEvent.type === 'sisterGroup') {
+            const targetSg = sisterGroups.find(
+                sg => String(sg.id) === String(targetEvent.data) || sg.name === targetEvent.data || String(sg.name).toLowerCase() === String(targetEvent.data).toLowerCase()
+            );
+            if (targetSg) {
+                setModalData({ sisterGroup: targetSg });
+                setShowModal('quickSisterSingle');
+            }
+        } else if (targetEvent.type === 'dilemma') {
+            setActiveDilemma(targetEvent.data);
+            setShowModal('weeklyDilemma');
+        }
+    };
+
+    const removeQueuedEvent = (index) => {
+        setWeeklyEventQueue(prev => prev.filter((_, i) => i !== index));
+    };
+
+    const clearEventQueue = () => {
+        setWeeklyEventQueue([]);
+    };
+
+    const launchNextQueuedEvent = () => {
+        if (weeklyEventQueue.length > 0) {
+            launchQueuedEvent(0);
+        }
+    };
 
     // --- NEW STATE FOR SORT/FILTER ---
     const [memberSort, setMemberSort] = useState({ key: 'rank', asc: true });
@@ -2153,11 +2250,12 @@ const App = () => {
 
 
         // --- Basic Song State ---
-        const { targetGroupId, songs, sisterGroups } = modalData;
+        const { targetGroupId, songs, sisterGroups, initialSongName, initialTracks, initialStep, initialReleaseType, initialProductionChoices, initialGenre, initialTheme, initialFormat, targetGroupName } = modalData || {};
         const allGroups = [{ id: 'main', name: groupName, isSister: false }, ...(sisterGroups || []).filter(g => !g.isDisbanded).map(sg => ({ id: sg.id, name: sg.name, isSister: true }))];
-        const [targetGroup, setTargetGroup] = useState(targetGroupId || allGroups[0].name);
-        const [songName, setSongName] = useState('');
-        const [tracks, setTracks] = useState([
+        const defaultGroupName = targetGroupName || (targetGroupId ? (allGroups.find(g => String(g.id) === String(targetGroupId) || g.name === targetGroupId)?.name || targetGroupId) : allGroups[0].name);
+        const [targetGroup, setTargetGroup] = useState(defaultGroupName);
+        const [songName, setSongName] = useState(initialSongName || '');
+        const [tracks, setTracks] = useState(initialTracks || [
             { name: 'Title Track', unitName: 'Senbatsu', type: 'title', members: [], center: null, lineup: {} },
             { name: 'B-Side 1', unitName: 'Universe Girls', type: 'b-side', members: [], center: null, lineup: {}, cdType: 'common' }
         ]);
@@ -2168,25 +2266,25 @@ const App = () => {
         const [showOnlyUnchosen, setShowOnlyUnchosen] = useState(false);
         const [isSpecialCollabSingle, setIsSpecialCollabSingle] = useState(false);
         // --- Production and Scheduling State ---
-        const [step, setStep] = useState('type'); // 'type', 'selection', or 'production'
-        const [releaseType, setReleaseType] = useState(null); // 'single' or 'album'
+        const [step, setStep] = useState(initialStep || 'type'); // 'type', 'selection', or 'production'
+        const [releaseType, setReleaseType] = useState(initialReleaseType || null); // 'single' or 'album'
         const [albumName, setAlbumName] = useState('New Album');
         const [albumTracks, setAlbumTracks] = useState([]);
         const [selectedAlbumTrackIndex, setSelectedAlbumTrackIndex] = useState(0);
 
         const [releaseWeek, setReleaseWeek] = useState(week + 4);
-        const [productionChoices, setProductionChoices] = useState({
+        const [productionChoices, setProductionChoices] = useState(initialProductionChoices || {
             training: 'standard', song: 'inHouse', mv: 'none', outfits: 'existing', promo: 'none'
         });
 
-        const [releaseFormat, setReleaseFormat] = useState('digital');
+        const [releaseFormat, setReleaseFormat] = useState(initialFormat || 'digital');
         const [draggingMember, setDraggingMember] = useState(null);
         const [physicalVersions, setPhysicalVersions] = useState(1);
         const [isElectionSingle, setIsElectionSingle] = useState(false);
         const [includeHandshakeTickets, setIncludeHandshakeTickets] = useState(false);
         // --- New Genre & Theme State ---
-        const [songGenre, setSongGenre] = useState('Bubblegum Pop');
-        const [songTheme, setSongTheme] = useState('Sweet Hearts');
+        const [songGenre, setSongGenre] = useState(initialGenre || 'Bubblegum Pop');
+        const [songTheme, setSongTheme] = useState(initialTheme || 'Sweet Hearts');
         // --- New Single Formats State ---
         const [singleSubType, setSingleSubType] = useState('group'); // 'group', 'unit', 'solo', 'graduation'
         const [graduatingMemberIds, setGraduatingMemberIds] = useState([]);
@@ -5523,6 +5621,660 @@ const App = () => {
                     <button onClick={() => setShowModal(null)} className="p-2 bg-gray-300 rounded">Close</button>
                 </div>
             </ModalWrapper>
+        );
+    };
+
+    // --- SMART QUICK SINGLE PRODUCER MODAL FOR SISTER GROUPS ---
+    const QuickSisterSingleModal = () => {
+        const targetSg = modalData?.sisterGroup || sisterGroups.find(sg => String(sg.id) === String(modalData?.groupId) || sg.name === modalData?.groupName);
+        if (!targetSg) return null;
+
+        const allSongNames = [...songs, ...sisterGroups.flatMap(sg => sg.songs || [])].map(s => s.name);
+        const rawMembers = (targetSg.members || []).filter(m => !m.graduated);
+
+        const calculateSkillScore = (m) => {
+            if (!m) return 0;
+            const vocal = m.singing || 0;
+            const dance = m.dancing || 0;
+            const visual = m.visual || 0;
+            const variety = m.variety || 0;
+            const charisma = m.charisma || 0;
+            const intel = m.intelligence || 0;
+            return Math.round((vocal * 0.3) + (dance * 0.3) + (visual * 0.2) + (variety * 0.07) + (charisma * 0.07) + (intel * 0.06));
+        };
+
+        const sortedMembers = [...rawMembers].sort((a, b) => calculateSkillScore(b) - calculateSkillScore(a));
+
+        const [luckySeed, setLuckySeed] = useState(0);
+
+        // Smart Senbatsu Selection: 12 highest skill + 4 randomly selected wildcards
+        const { top12, lucky4, senbatsuList } = React.useMemo(() => {
+            if (sortedMembers.length <= 16) {
+                const t12 = sortedMembers.slice(0, Math.min(12, sortedMembers.length));
+                const l4 = sortedMembers.slice(12);
+                return { top12: t12, lucky4: l4, senbatsuList: sortedMembers };
+            }
+            const t12 = sortedMembers.slice(0, 12);
+            const remainingPool = sortedMembers.slice(12);
+            const shuffled = [...remainingPool].sort(() => 0.5 - Math.random());
+            const l4 = shuffled.slice(0, 4);
+            return { top12: t12, lucky4: l4, senbatsuList: [...t12, ...l4] };
+        }, [targetSg.id, sortedMembers.length, luckySeed]);
+
+        const [songName, setSongName] = useState(() => generateSongTitle(null, allSongNames) || `${targetSg.name} Miracle`);
+        const [songGenre, setSongGenre] = useState('Bubblegum Pop');
+        const [songTheme, setSongTheme] = useState('Sweet Hearts');
+        const [budgetTier, setBudgetTier] = useState('standard'); // 'economy', 'standard', 'blockbuster', 'custom'
+        const [releaseFormat, setReleaseFormat] = useState('physical');
+        const [showAdvancedTiers, setShowAdvancedTiers] = useState(false);
+        const [customChoices, setCustomChoices] = useState({
+            training: 'workshop', song: 'professional', mv: 'lowBudget', outfits: 'concept', promo: 'social'
+        });
+
+        const top12Ids = new Set(top12.map(m => m.rosterId || `sg-${targetSg.id}-${m.id}`));
+        const lucky4Ids = new Set(lucky4.map(m => m.rosterId || `sg-${targetSg.id}-${m.id}`));
+
+        // Default Center
+        const initialCenterRosterId = top12[0] ? (top12[0].rosterId || `sg-${targetSg.id}-${top12[0].id}`) : (senbatsuList[0]?.rosterId || `sg-${targetSg.id}-${senbatsuList[0]?.id}`);
+        const [selectedCenterId, setSelectedCenterId] = useState(initialCenterRosterId);
+
+        // Current Center Member Object
+        const currentCenterMember = senbatsuList.find(m => (m.rosterId || `sg-${targetSg.id}-${m.id}`) === selectedCenterId) || senbatsuList[0];
+
+        const getProductionChoices = (tier) => {
+            if (tier === 'economy') {
+                return { training: 'standard', song: 'inHouse', mv: 'none', outfits: 'existing', promo: 'none' };
+            }
+            if (tier === 'blockbuster') {
+                return { training: 'bootcamp', song: 'hitmaker', mv: 'cinematic', outfits: 'luxury', promo: 'tv' };
+            }
+            if (tier === 'custom') {
+                return customChoices;
+            }
+            return { training: 'workshop', song: 'professional', mv: 'lowBudget', outfits: 'concept', promo: 'social' };
+        };
+
+        const activeProductionChoices = getProductionChoices(budgetTier);
+
+        // Calculate Cost
+        const calculateTotalCost = () => {
+            const baseCostPerVersion = 400000;
+            const tierCost = Object.keys(activeProductionChoices).reduce((total, key) => {
+                const choice = activeProductionChoices[key];
+                return total + (productionTiers[key]?.[choice]?.cost || 0);
+            }, 50000);
+
+            const { globalInflation = 0, perMemberPenalty = 0.05 } = inflationConfig || {};
+            const inflatedBaseCost = tierCost * (1 + globalInflation);
+            const senbatsuCount = senbatsuList.length || 16;
+            let senbatsuMultiplier = 1.0;
+            if (senbatsuCount > 16) {
+                senbatsuMultiplier = 1 + (senbatsuCount - 16) * perMemberPenalty;
+            }
+            const scaledProductionCost = inflatedBaseCost * senbatsuMultiplier;
+            const physicalCost = releaseFormat === 'physical' ? baseCostPerVersion * (1 + globalInflation) : 0;
+            const handshakeTicketCost = releaseFormat === 'physical' ? 1500000 * (1 + globalInflation) : 0;
+            return Math.round(scaledProductionCost + physicalCost + handshakeTicketCost);
+        };
+
+        const totalCost = calculateTotalCost();
+
+        // Synergy Indicator
+        const getSynergyInfo = () => {
+            if (songGenre === "Bubblegum Pop" && songTheme === "Sweet Hearts") return { active: true, text: "⚡ Sweet Idol Synergy! (+15% Hype)" };
+            if (songGenre === "Electro-Dance" && songTheme === "Cyber Dream") return { active: true, text: "⚡ Cyber Techno Synergy! (+15% Hype)" };
+            if (songGenre === "Idol Rock" && songTheme === "Girl Hype") return { active: true, text: "⚡ Riot Grrrl Rock Synergy! (+15% Hype)" };
+            if (songGenre === "Soft Ballad" && songTheme === "School Days") return { active: true, text: "⚡ Nostalgic School Romance! (+12% Hype)" };
+            if (songGenre === "Cute Disco" && songTheme === "Summer Splash") return { active: true, text: "⚡ Summer Disco Fever! (+12% Hype)" };
+            if (songGenre === "City Pop" && songTheme === "Retro Nostalgia") return { active: true, text: "⚡ Retro Tokyo Synergy! (+15% Hype)" };
+            return { active: false, text: "Standard Sound Synergy" };
+        };
+
+        const synergy = getSynergyInfo();
+
+        const advanceQueue = () => {
+            // Just close the modal; the central queue processor will show the next event automatically
+            setShowModal(null);
+        };
+
+        const handleOneClickSchedule = () => {
+            if (money < totalCost) {
+                return setMessage(`Not enough funds! Need ¥${totalCost.toLocaleString()} but currently have ¥${money.toLocaleString()}.`);
+            }
+
+            const lineupMap = {};
+            senbatsuList.forEach((m, idx) => {
+                const rId = m.rosterId || `sg-${targetSg.id}-${m.id}`;
+                if (idx < 5) lineupMap[rId] = '1st Row';
+                else if (idx < 10) lineupMap[rId] = '2nd Row';
+                else lineupMap[rId] = '3rd Row';
+            });
+
+            const songData = {
+                name: songName.trim(),
+                targetGroup: targetSg.name,
+                releaseFormat: releaseFormat,
+                genre: songGenre,
+                theme: songTheme,
+                singleSubType: 'group',
+                tracks: [
+                    {
+                        name: songName.trim(),
+                        unitName: 'Senbatsu',
+                        type: 'title',
+                        members: senbatsuList.map(member => {
+                            const rId = member.rosterId || `sg-${targetSg.id}-${member.id}`;
+                            return {
+                                id: rId,
+                                rosterId: rId,
+                                name: member.name,
+                                teamName: member.teamName,
+                                displayGroupName: targetSg.name,
+                                isSisterMember: true,
+                                generation: member.generation,
+                                isKenkyuusei: !member.teamName,
+                                isKennin: member.isKennin || (member.kenninGroups && member.kenninGroups.length > 0),
+                                kenninGroups: member.kenninGroups || [],
+                                homeGroup: targetSg.name
+                            };
+                        }),
+                        center: [selectedCenterId],
+                        lineup: lineupMap,
+                        cdType: 'common'
+                    }
+                ],
+                isGraduationSingle: false,
+                graduatingMemberIds: [],
+                isElectionSingle: false,
+                isCollaboration: false
+            };
+
+            scheduleNewSingle({
+                songData,
+                productionData: activeProductionChoices,
+                releaseWeek: week + 4,
+                physicalVersions: releaseFormat === 'physical' ? 1 : 0,
+                includeHandshakeTickets: releaseFormat === 'physical'
+            });
+
+            addNotification({
+                type: 'Event',
+                message: `✨ [Smart Schedule] ${targetSg.name}'s new single "${songName}" has been scheduled for Week ${week + 4}! Cost: ¥${totalCost.toLocaleString()}.`
+            });
+            setMessage(`✨ Successfully scheduled ${targetSg.name}'s single "${songName}" for release in 4 weeks!`);
+
+            advanceQueue();
+        };
+
+        const handleCustomizeInFullStudio = () => {
+            const lineupMap = {};
+            senbatsuList.forEach((m, idx) => {
+                const rId = m.rosterId || `sg-${targetSg.id}-${m.id}`;
+                if (idx < 5) lineupMap[rId] = '1st Row';
+                else if (idx < 10) lineupMap[rId] = '2nd Row';
+                else lineupMap[rId] = '3rd Row';
+            });
+
+            const initialTracks = [
+                {
+                    name: songName.trim(),
+                    unitName: 'Senbatsu',
+                    type: 'title',
+                    members: senbatsuList.map(m => m.rosterId || `sg-${targetSg.id}-${m.id}`),
+                    center: [selectedCenterId],
+                    lineup: lineupMap,
+                    cdType: 'common'
+                },
+                {
+                    name: generateSongTitle(null, [...allSongNames, songName]) || 'B-Side 1',
+                    unitName: 'Under Girls',
+                    type: 'b-side',
+                    members: [],
+                    center: null,
+                    lineup: {},
+                    cdType: 'common'
+                }
+            ];
+
+            setModalData({
+                targetGroupId: targetSg.id,
+                targetGroupName: targetSg.name,
+                initialSongName: songName.trim(),
+                initialTracks: initialTracks,
+                initialStep: 'selection',
+                initialReleaseType: 'single',
+                initialProductionChoices: activeProductionChoices,
+                initialGenre: songGenre,
+                initialTheme: songTheme,
+                initialFormat: releaseFormat,
+                songs: songs,
+                sisterGroups: sisterGroups
+            });
+
+            setShowModal('createSong');
+        };
+
+        const handleSnooze = () => {
+            setSisterGroups(prev => prev.map(sg => String(sg.id) === String(targetSg.id) ? { ...sg, snoozedUntilWeek: week + 4 } : sg));
+            addNotification({ type: 'Event', message: `⏰ ${targetSg.name}'s single release alert postponed by 4 weeks.` });
+            advanceQueue();
+        };
+
+        const handleSkip = () => {
+            setSisterGroups(prev => prev.map(sg => String(sg.id) === String(targetSg.id) ? { ...sg, snoozedUntilWeek: week + 16 } : sg));
+            advanceQueue();
+        };
+
+        return (
+            <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
+                <div className="bg-gradient-to-b from-white via-pink-50/40 to-white dark:from-gray-900 dark:via-purple-950/20 dark:to-gray-900 text-gray-900 dark:text-gray-100 rounded-3xl p-5 sm:p-6 w-full max-w-3xl max-h-[92vh] overflow-y-auto shadow-2xl border-2 border-pink-300/60 dark:border-pink-500/30">
+                    
+                    {/* Header */}
+                    <div className="flex justify-between items-start pb-3 mb-4 border-b border-pink-100 dark:border-gray-800">
+                        <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-pink-500 via-rose-500 to-amber-400 p-0.5 shadow-md flex items-center justify-center text-white">
+                                <Sparkles size={26} className="animate-spin-slow" />
+                            </div>
+                            <div>
+                                <div className="flex items-center gap-2 flex-wrap">
+                                    <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white tracking-tight">
+                                        ⚡ Smart Quick Produce: <span className="text-pink-600 dark:text-pink-400">{targetSg.name}</span>
+                                    </h2>
+                                    <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-pink-100 text-pink-700 dark:bg-pink-900/60 dark:text-pink-300 border border-pink-300 dark:border-pink-700">
+                                        4-Month Window
+                                    </span>
+                                </div>
+                                <p className="text-xs text-gray-600 dark:text-gray-400 mt-0.5">
+                                    {targetSg.name} is due for their next single release! Quick produce with smart Senbatsu, customize center & title, or launch full studio.
+                                </p>
+
+                                {/* Date Timeline Banner */}
+                                {(() => {
+                                    const singleSongs = (targetSg.songs || []).filter(s => s.type === 'single');
+                                    const lastSingleWeek = singleSongs.length > 0
+                                        ? Math.max(...singleSongs.map(s => s.releaseWeek || 0))
+                                        : (targetSg.lastSingleWeek || targetSg.foundedWeek || targetSg.createdWeek || 1);
+                                    const cadence = targetSg.releaseCadence || 16;
+                                    const targetPromptWeek = targetSg.nextPromptWeek != null ? targetSg.nextPromptWeek : (lastSingleWeek + cadence);
+                                    const expectedReleaseWeek = week + 4;
+
+                                    return (
+                                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs bg-pink-50/70 dark:bg-pink-950/30 px-3 py-1.5 rounded-xl border border-pink-200/60 dark:border-pink-900/40 text-gray-600 dark:text-gray-300 mt-2">
+                                            <div className="flex items-center gap-1">
+                                                <Calendar size={13} className="text-pink-500" />
+                                                <span><strong>Last Single:</strong> {getFormattedDateForWeek(lastSingleWeek)} (Wk {lastSingleWeek})</span>
+                                            </div>
+                                            <span className="text-pink-300 hidden sm:inline">•</span>
+                                            <div className="flex items-center gap-1">
+                                                <Clock size={13} className="text-purple-500" />
+                                                <span><strong>Target Prompt:</strong> {getFormattedDateForWeek(targetPromptWeek)} (Wk {targetPromptWeek})</span>
+                                            </div>
+                                            <span className="text-pink-300 hidden sm:inline">•</span>
+                                            <div className="flex items-center gap-1">
+                                                <Sparkles size={13} className="text-amber-500" />
+                                                <span><strong>Release Date:</strong> {getFormattedDateForWeek(expectedReleaseWeek)} (Wk {expectedReleaseWeek})</span>
+                                            </div>
+                                        </div>
+                                    );
+                                })()}
+                            </div>
+                        </div>
+                        <button onClick={advanceQueue} className="p-1.5 rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+                            <X size={20} />
+                        </button>
+                    </div>
+
+                    <div className="space-y-4">
+                        {/* Section 1: Song Name, Genre & Theme */}
+                        <div className="bg-white/80 dark:bg-gray-800/80 p-4 rounded-2xl border border-pink-100 dark:border-gray-700/80 shadow-xs">
+                            <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+                                <div className="flex-1">
+                                    <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1 flex items-center gap-1">
+                                        <Music size={14} className="text-pink-500" /> Single Title Track Name
+                                    </label>
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            value={songName}
+                                            onChange={(e) => setSongName(e.target.value)}
+                                            placeholder="Enter song title..."
+                                            className="flex-1 px-3 py-2 text-sm font-semibold rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-pink-500 outline-none"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setSongName(generateSongTitle(null, allSongNames) || `${targetSg.name} Anthem`)}
+                                            className="px-3 py-2 text-xs font-bold bg-pink-100 hover:bg-pink-200 text-pink-700 dark:bg-pink-900/50 dark:hover:bg-pink-800/60 dark:text-pink-300 rounded-xl transition flex items-center gap-1 shrink-0"
+                                            title="Generate a random creative song title"
+                                        >
+                                            <Shuffle size={14} /> Roll Title
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-2 gap-2 sm:w-72">
+                                    <div>
+                                        <label className="block text-[11px] font-bold text-gray-600 dark:text-gray-400 mb-1">Genre</label>
+                                        <select
+                                            value={songGenre}
+                                            onChange={(e) => setSongGenre(e.target.value)}
+                                            className="w-full p-2 text-xs font-medium rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+                                        >
+                                            {['Bubblegum Pop', 'Electro-Dance', 'Idol Rock', 'Soft Ballad', 'Cute Disco', 'City Pop', 'Kawaii Future Bass', 'Traditional Enka-Pop'].map(g => (
+                                                <option key={g} value={g}>{g}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-[11px] font-bold text-gray-600 dark:text-gray-400 mb-1">Theme</label>
+                                        <select
+                                            value={songTheme}
+                                            onChange={(e) => setSongTheme(e.target.value)}
+                                            className="w-full p-2 text-xs font-medium rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+                                        >
+                                            {['Sweet Hearts', 'Cyber Dream', 'Girl Hype', 'School Days', 'Summer Splash', 'Retro Nostalgia', 'Sakura Blossom', 'Midnight Star'].map(t => (
+                                                <option key={t} value={t}>{t}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="mt-2.5 flex items-center justify-between text-xs pt-2 border-t border-gray-100 dark:border-gray-700/50">
+                                <span className={`font-bold flex items-center gap-1 ${synergy.active ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-500'}`}>
+                                    {synergy.text}
+                                </span>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-gray-500">Format:</span>
+                                    <button
+                                        type="button"
+                                        onClick={() => setReleaseFormat('physical')}
+                                        className={`px-2 py-0.5 text-xs font-bold rounded-md transition ${releaseFormat === 'physical' ? 'bg-pink-600 text-white shadow-xs' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}
+                                    >
+                                        Physical CD + Tickets
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setReleaseFormat('digital')}
+                                        className={`px-2 py-0.5 text-xs font-bold rounded-md transition ${releaseFormat === 'digital' ? 'bg-pink-600 text-white shadow-xs' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}
+                                    >
+                                        Digital Only
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Section 2: Center Spotlight Card */}
+                        <div className="bg-gradient-to-r from-amber-500/10 via-pink-500/10 to-purple-500/10 dark:from-amber-950/30 dark:via-pink-950/30 dark:to-purple-950/30 p-3.5 rounded-2xl border-2 border-amber-300/60 dark:border-amber-500/40 flex flex-col sm:flex-row items-center justify-between gap-3">
+                            <div className="flex items-center gap-3 w-full sm:w-auto">
+                                <div className="relative shrink-0">
+                                    <IdolAvatar member={currentCenterMember} size="sm" isCenter={true} rounded="rounded-2xl" glow={true} />
+                                    <div className="absolute -top-2 -right-2 bg-gradient-to-tr from-amber-500 to-yellow-300 text-white p-1 rounded-full shadow-md">
+                                        <Crown size={14} className="fill-amber-100" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="flex items-center gap-1.5">
+                                        <span className="text-[11px] font-black uppercase tracking-wider text-amber-700 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/60 px-2 py-0.5 rounded-md flex items-center gap-1">
+                                            <Crown size={12} /> Senbatsu Center
+                                        </span>
+                                        {top12Ids.has(currentCenterMember?.rosterId || `sg-${targetSg.id}-${currentCenterMember?.id}`) ? (
+                                            <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 px-1.5 py-0.5 rounded">Top Skill</span>
+                                        ) : (
+                                            <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-1.5 py-0.5 rounded">🍀 Wildcard</span>
+                                        )}
+                                    </div>
+                                    <h3 className="text-base font-extrabold text-gray-900 dark:text-white mt-0.5">
+                                        {currentCenterMember?.name}
+                                    </h3>
+                                    <p className="text-xs text-gray-600 dark:text-gray-300">
+                                        Skill Power: <strong>{calculateSkillScore(currentCenterMember)}</strong> | Vocal: {currentCenterMember?.singing || 0} • Dance: {currentCenterMember?.dancing || 0} • Visual: {currentCenterMember?.visual || 0}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="w-full sm:w-auto flex flex-col sm:items-end gap-1 shrink-0">
+                                <label className="text-[11px] font-bold text-gray-700 dark:text-gray-300 flex items-center gap-1">
+                                    👑 Change Center:
+                                </label>
+                                <select
+                                    value={selectedCenterId}
+                                    onChange={(e) => setSelectedCenterId(e.target.value)}
+                                    className="p-1.5 text-xs font-bold rounded-xl border border-amber-300 dark:border-amber-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-xs outline-none focus:ring-2 focus:ring-amber-500"
+                                >
+                                    {senbatsuList.map(m => {
+                                        const rId = m.rosterId || `sg-${targetSg.id}-${m.id}`;
+                                        const isWildcard = lucky4Ids.has(rId);
+                                        return (
+                                            <option key={rId} value={rId}>
+                                                {isWildcard ? '🍀 ' : '⭐ '}{m.name} ({calculateSkillScore(m)} pts)
+                                            </option>
+                                        );
+                                    })}
+                                </select>
+                            </div>
+                        </div>
+
+                        {/* Section 3: Smart Senbatsu Lineup Grid */}
+                        <div className="bg-white/80 dark:bg-gray-800/80 p-4 rounded-2xl border border-pink-100 dark:border-gray-700/80 shadow-xs">
+                            <div className="flex justify-between items-center mb-3">
+                                <div>
+                                    <h4 className="text-sm font-black text-gray-900 dark:text-white flex items-center gap-1.5">
+                                        <Users size={16} className="text-pink-500" /> Senbatsu Lineup ({senbatsuList.length} Idols)
+                                    </h4>
+                                    <p className="text-[11px] text-gray-500 dark:text-gray-400">
+                                        <strong>12 Highest Skill Aces</strong> + <strong>4 Random Lucky Wildcards</strong>. Click any idol to make her Center!
+                                    </p>
+                                </div>
+                                {sortedMembers.length > 16 && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setLuckySeed(prev => prev + 1)}
+                                        className="px-2.5 py-1 text-xs font-bold bg-emerald-100 hover:bg-emerald-200 text-emerald-800 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/80 dark:text-emerald-300 rounded-xl transition flex items-center gap-1"
+                                        title="Reroll the 4 random wildcard idols"
+                                    >
+                                        <Shuffle size={13} /> Reroll Lucky 4
+                                    </button>
+                                )}
+                            </div>
+
+                            {/* Lineup Grid */}
+                            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 gap-2 max-h-56 overflow-y-auto pr-1">
+                                {senbatsuList.map((m, index) => {
+                                    const rId = m.rosterId || `sg-${targetSg.id}-${m.id}`;
+                                    const isCenter = rId === selectedCenterId;
+                                    const isWildcard = lucky4Ids.has(rId);
+                                    const skill = calculateSkillScore(m);
+
+                                    return (
+                                        <div
+                                            key={rId}
+                                            onClick={() => setSelectedCenterId(rId)}
+                                            className={`p-2 rounded-xl border transition cursor-pointer flex items-center gap-2 group relative ${
+                                                isCenter
+                                                    ? 'bg-amber-100/90 dark:bg-amber-950/70 border-amber-400 dark:border-amber-500 shadow-md ring-2 ring-amber-400/50'
+                                                    : isWildcard
+                                                    ? 'bg-emerald-50/70 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800 hover:border-emerald-400'
+                                                    : 'bg-white dark:bg-gray-900/80 border-gray-200 dark:border-gray-700 hover:border-pink-300'
+                                            }`}
+                                        >
+                                            <div className="relative shrink-0">
+                                                <IdolAvatar member={m} size="xs" isCenter={isCenter} rounded="rounded-xl" glow={isCenter} />
+                                                {isCenter && (
+                                                    <div className="absolute -top-1.5 -left-1.5 bg-amber-500 text-white rounded-full p-0.5 shadow-xs">
+                                                        <Crown size={10} className="fill-white" />
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="min-w-0 flex-1">
+                                                <div className="flex items-center gap-1">
+                                                    <span className="text-xs font-bold text-gray-900 dark:text-gray-100 truncate block">
+                                                        {m.name}
+                                                    </span>
+                                                </div>
+                                                <div className="flex items-center gap-1 text-[10px] mt-0.5">
+                                                    {isWildcard ? (
+                                                        <span className="font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/50 px-1 rounded">
+                                                            🍀 Lucky
+                                                        </span>
+                                                    ) : (
+                                                        <span className="font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 px-1 rounded">
+                                                            #{index + 1}
+                                                        </span>
+                                                    )}
+                                                    <span className="text-gray-500 dark:text-gray-400">
+                                                        {skill} pts
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        {/* Section 4: Production Budget Tier Presets */}
+                        <div className="bg-white/80 dark:bg-gray-800/80 p-4 rounded-2xl border border-pink-100 dark:border-gray-700/80 shadow-xs">
+                            <div className="flex justify-between items-center mb-2">
+                                <label className="text-xs font-black text-gray-900 dark:text-white flex items-center gap-1.5">
+                                    <DollarSign size={14} className="text-emerald-500" /> Production Budget Tier
+                                </label>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowAdvancedTiers(prev => !prev)}
+                                    className="text-xs font-semibold text-pink-600 dark:text-pink-400 hover:underline"
+                                >
+                                    {showAdvancedTiers ? '▲ Hide Custom Options' : '▼ Custom Options'}
+                                </button>
+                            </div>
+
+                            <div className="grid grid-cols-3 gap-2">
+                                {[
+                                    { id: 'economy', label: '🥉 Economy', desc: 'In-House Studio • Standard', badge: 'Low Cost' },
+                                    { id: 'standard', label: '🥈 Standard', desc: 'Pro Song • Low MV • Social', badge: 'Recommended' },
+                                    { id: 'blockbuster', label: '🥇 Blockbuster', desc: 'Hitmaker • Cine MV • TV', badge: 'Max Hype' },
+                                ].map(tier => (
+                                    <button
+                                        key={tier.id}
+                                        type="button"
+                                        onClick={() => { setBudgetTier(tier.id); }}
+                                        className={`p-2.5 rounded-xl border-2 text-left transition flex flex-col justify-between ${
+                                            budgetTier === tier.id
+                                                ? 'bg-pink-50 dark:bg-pink-950/50 border-pink-500 text-pink-900 dark:text-pink-100 shadow-xs'
+                                                : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-pink-300'
+                                        }`}
+                                    >
+                                        <div className="flex items-center justify-between w-full">
+                                            <span className="font-bold text-xs">{tier.label}</span>
+                                            {tier.badge === 'Recommended' && (
+                                                <span className="text-[9px] font-black bg-pink-500 text-white px-1.5 py-0.2 rounded-full">Best</span>
+                                            )}
+                                        </div>
+                                        <span className="text-[10px] text-gray-500 dark:text-gray-400 mt-1 block">
+                                            {tier.desc}
+                                        </span>
+                                    </button>
+                                ))}
+                            </div>
+
+                            {/* Expandable Custom Tiers */}
+                            {showAdvancedTiers && (
+                                <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700 grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                    <div>
+                                        <label className="text-[10px] font-bold text-gray-600 dark:text-gray-400">Song Production</label>
+                                        <select
+                                            value={customChoices.song}
+                                            onChange={(e) => { setCustomChoices(p => ({ ...p, song: e.target.value })); setBudgetTier('custom'); }}
+                                            className="w-full p-1 text-xs border rounded-lg bg-white dark:bg-gray-900"
+                                        >
+                                            <option value="inHouse">In-House (¥0)</option>
+                                            <option value="professional">Professional (¥200k)</option>
+                                            <option value="hitmaker">Hit Producer (¥800k)</option>
+                                            <option value="legendary">Legendary (¥2.5M)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-bold text-gray-600 dark:text-gray-400">Music Video</label>
+                                        <select
+                                            value={customChoices.mv}
+                                            onChange={(e) => { setCustomChoices(p => ({ ...p, mv: e.target.value })); setBudgetTier('custom'); }}
+                                            className="w-full p-1 text-xs border rounded-lg bg-white dark:bg-gray-900"
+                                        >
+                                            <option value="none">No MV (¥0)</option>
+                                            <option value="lowBudget">Low-Budget (¥350k)</option>
+                                            <option value="concept">Story MV (¥1.2M)</option>
+                                            <option value="cinematic">Cinematic (¥3.5M)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-bold text-gray-600 dark:text-gray-400">Training Focus</label>
+                                        <select
+                                            value={customChoices.training}
+                                            onChange={(e) => { setCustomChoices(p => ({ ...p, training: e.target.value })); setBudgetTier('custom'); }}
+                                            className="w-full p-1 text-xs border rounded-lg bg-white dark:bg-gray-900"
+                                        >
+                                            <option value="standard">Standard (¥0)</option>
+                                            <option value="workshop">Workshop (¥150k)</option>
+                                            <option value="bootcamp">Bootcamp (¥600k)</option>
+                                            <option value="elite">Elite Masterclass (¥1.8M)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Cost Summary Bar */}
+                            <div className="mt-3 p-2.5 rounded-xl bg-gray-50 dark:bg-gray-900/60 flex items-center justify-between">
+                                <div>
+                                    <span className="text-xs text-gray-500 dark:text-gray-400">Total Production Cost:</span>
+                                    <span className="ml-2 font-black text-sm text-pink-600 dark:text-pink-400">
+                                        ¥{totalCost.toLocaleString()}
+                                    </span>
+                                </div>
+                                <div className="text-xs text-gray-600 dark:text-gray-300">
+                                    Current Balance: <strong className={money < totalCost ? 'text-red-500 font-bold' : 'text-emerald-600 dark:text-emerald-400'}>¥{money.toLocaleString()}</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="pt-2 flex flex-col sm:flex-row gap-2.5 items-stretch">
+                            <button
+                                type="button"
+                                onClick={handleOneClickSchedule}
+                                disabled={money < totalCost}
+                                className="flex-1 py-3 px-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-black text-sm sm:text-base shadow-lg shadow-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition transform active:scale-98 flex items-center justify-center gap-2"
+                            >
+                                <Sparkles size={18} /> 1-Click Schedule Single
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={handleCustomizeInFullStudio}
+                                className="py-3 px-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold text-sm shadow-md transition flex items-center justify-center gap-2"
+                                title="Open the full single creation studio with B-side assignments & full customization"
+                            >
+                                <Paintbrush size={16} /> Customize in Full Studio
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={handleSnooze}
+                                className="py-2.5 px-3 rounded-2xl bg-amber-100 hover:bg-amber-200 text-amber-800 dark:bg-amber-950/60 dark:hover:bg-amber-900/80 dark:text-amber-300 font-bold text-xs transition flex items-center justify-center gap-1.5"
+                                title="Remind again in 4 weeks"
+                            >
+                                <Clock size={15} /> Remind in 4 Wks
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={handleSkip}
+                                className="py-2.5 px-3 rounded-2xl bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-300 font-semibold text-xs transition"
+                                title="Skip reminder for this release cycle (16 weeks)"
+                            >
+                                Skip
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
         );
     };
 
@@ -9500,9 +10252,9 @@ const App = () => {
             <ModalWrapper title={`Team Details: ${team.name}`}>
                 <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
                     <div>
-                        <h4 className="font-semibold text-lg mb-2 border-b pb-1">Current Members ({team.members.length})</h4>
+                        <h4 className="font-semibold text-lg mb-2 border-b pb-1">Current Members ({(team.members || []).length})</h4>
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2">
-                            {team.members.map(memberId => {
+                            {(team.members || []).map(memberId => {
                                 const member = fullRoster.find(m => String(m.id) === String(memberId) || String(m.rosterId) === String(memberId));
                                 if (!member) return <p key={memberId} className="text-gray-400">Unknown Member</p>;
 
@@ -9531,7 +10283,7 @@ const App = () => {
                             className="w-full p-1.5 text-sm border rounded bg-white dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
                         >
                             <option value="">-- Appoint a Team Captain --</option>
-                            {team.members.map(memberId => {
+                            {(team.members || []).map(memberId => {
                                 const member = fullRoster.find(m => String(m.id) === String(memberId) || String(m.rosterId) === String(memberId));
                                 if (!member) return null;
                                 return (
@@ -17214,7 +17966,7 @@ const App = () => {
                                     </button>
                                     <h3 className="font-semibold text-sm text-gray-800 dark:text-gray-200 mt-1 mb-2">{groupName} Releases:</h3>
                                     <div className="space-y-2">
-                                        {mainGroupReleases.length > 0 ? mainGroupReleases.map(release => <ReleaseCard key={release.id} release={release} />) : <p className="text-xs text-gray-500">No releases yet for the main group.</p>}
+                                        {mainGroupReleases.length > 0 ? mainGroupReleases.map((release, idx) => <ReleaseCard key={`main-rel-${release.id || 'id'}-${idx}`} release={release} />) : <p className="text-xs text-gray-500">No releases yet for the main group.</p>}
                                     </div>
                                 </div>
 
@@ -17231,15 +17983,235 @@ const App = () => {
 
                                     return (
                                         <div key={sg.id} className="pt-2 border-t border-gray-300 dark:border-gray-700">
-                                            <h3 className="font-semibold text-sm text-gray-800 dark:text-gray-200 mt-1 mb-2">
-                                                {sg.name} Releases{sg.isDisbanded ? ' (Disbanded)' : ''}:
-                                            </h3>
+                                            <div className="flex justify-between items-center mt-1 mb-2">
+                                                <h3 className="font-semibold text-sm text-gray-800 dark:text-gray-200">
+                                                    {sg.name} Releases{sg.isDisbanded ? ' (Disbanded)' : ''}:
+                                                </h3>
+                                                {!sg.isDisbanded && (
+                                                    <button
+                                                        onClick={() => {
+                                                             setModalData({ sisterGroup: sg });
+                                                             setShowModal('quickSisterSingle');
+                                                        }}
+                                                        className="px-2.5 py-1 text-xs font-bold bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-lg shadow-xs flex items-center gap-1 transition"
+                                                        title={`Quick produce a new single for ${sg.name}`}
+                                                    >
+                                                        <Sparkles size={12} /> Quick Produce
+                                                    </button>
+                                                )}
+                                            </div>
                                             <div className="space-y-2">
-                                                {sgReleases.map(release => <ReleaseCard key={release.id} release={release} />)}
+                                                {sgReleases.map((release, idx) => <ReleaseCard key={`sg-${sg.id}-rel-${release.id || 'id'}-${idx}`} release={release} />)}
                                             </div>
                                         </div>
                                     );
                                 })}
+
+                                {/* ----- SISTER GROUP RELEASE SCHEDULE & CADENCE HUB ----- */}
+                                {(() => {
+                                    const activeSisterGroups = (sisterGroups || []).filter(sg => !sg.isDisbanded);
+                                    if (activeSisterGroups.length === 0) return null;
+
+                                    return (
+                                        <div className="pt-4 border-t-2 border-dashed border-gray-300 dark:border-gray-700 mt-6">
+                                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-3">
+                                                <div>
+                                                    <h3 className="text-base font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                                                        <Calendar className="text-pink-500" size={18} />
+                                                        Sister Group Release Pipeline & Cadence Manager
+                                                    </h3>
+                                                    <p className="text-xs text-gray-600 dark:text-gray-400">
+                                                        Manage automatic prompt schedules, release cadence (weeks between singles), and one-click quick single production.
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                                {activeSisterGroups.map(sg => {
+                                                    const singleSongs = (sg.songs || []).filter(s => s.type === 'single');
+                                                    const lastSingleWeek = singleSongs.length > 0
+                                                        ? Math.max(...singleSongs.map(s => s.releaseWeek || 0))
+                                                        : (sg.lastSingleWeek || sg.foundedWeek || sg.createdWeek || 1);
+                                                    const cadence = sg.releaseCadence || 16;
+                                                    const targetPromptWeek = sg.nextPromptWeek != null ? sg.nextPromptWeek : (lastSingleWeek + cadence);
+                                                    const isScheduled = (scheduledSingles || []).some(s => s.songData && (s.songData.targetGroup === sg.name || String(s.songData.targetGroup) === String(sg.id)));
+                                                    const isSnoozed = sg.snoozedUntilWeek && week < sg.snoozedUntilWeek;
+                                                    const isDue = !isScheduled && !isSnoozed && week >= targetPromptWeek;
+                                                    const weeksUntilNext = targetPromptWeek - week;
+                                                    const autoEnabled = sg.autoPromptEnabled !== false;
+
+                                                    return (
+                                                        <div
+                                                            key={sg.id}
+                                                            className={`p-4 rounded-xl border transition shadow-xs flex flex-col justify-between ${
+                                                                isDue
+                                                                    ? 'bg-rose-50/60 dark:bg-rose-950/20 border-rose-300 dark:border-rose-700 ring-1 ring-rose-400/40'
+                                                                    : isScheduled
+                                                                    ? 'bg-purple-50/60 dark:bg-purple-950/20 border-purple-300 dark:border-purple-700'
+                                                                    : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-pink-300 dark:hover:border-pink-600'
+                                                            }`}
+                                                        >
+                                                            {/* Card Header */}
+                                                            <div>
+                                                                <div className="flex justify-between items-start mb-2">
+                                                                    <div className="flex items-center gap-2">
+                                                                        <div className="w-8 h-8 rounded-lg bg-pink-100 dark:bg-pink-900/50 flex items-center justify-center text-pink-600 dark:text-pink-300 font-bold text-sm">
+                                                                            {sg.name.slice(0, 3).toUpperCase()}
+                                                                        </div>
+                                                                        <div>
+                                                                            <h4 className="font-bold text-sm text-gray-900 dark:text-white flex items-center gap-2">
+                                                                                {sg.name}
+                                                                                <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                                                                                    {sg.isInternational ? 'Overseas' : 'Domestic'}
+                                                                                </span>
+                                                                            </h4>
+                                                                            <p className="text-[11px] text-gray-500 dark:text-gray-400">
+                                                                                {(sg.members || []).filter(m => !m.graduated).length} Members &bull; {singleSongs.length} Singles Released
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    {/* Status Pill */}
+                                                                    {isScheduled ? (
+                                                                        <span className="px-2 py-0.5 text-[11px] font-semibold rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/60 dark:text-purple-300 flex items-center gap-1">
+                                                                            <Music size={11} /> In Production
+                                                                        </span>
+                                                                    ) : isDue ? (
+                                                                        <span className="px-2 py-0.5 text-[11px] font-bold rounded-full bg-rose-100 text-rose-700 dark:bg-rose-900/60 dark:text-rose-300 flex items-center gap-1 animate-pulse">
+                                                                            <AlertCircle size={11} /> Prompt Due!
+                                                                        </span>
+                                                                    ) : isSnoozed ? (
+                                                                        <span className="px-2 py-0.5 text-[11px] font-semibold rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-300 flex items-center gap-1">
+                                                                            <Clock size={11} /> Snoozed (Wk {sg.snoozedUntilWeek})
+                                                                        </span>
+                                                                    ) : (
+                                                                        <span className="px-2 py-0.5 text-[11px] font-semibold rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-300 flex items-center gap-1">
+                                                                            <CalendarCheck size={11} /> Due in {weeksUntilNext > 0 ? `${weeksUntilNext}w` : 'now'}
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+
+                                                                {/* Quick Timeline Stats */}
+                                                                <div className="grid grid-cols-2 gap-2 my-2.5 p-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg text-xs">
+                                                                    <div>
+                                                                        <span className="text-[10px] text-gray-500 dark:text-gray-400 block uppercase font-medium">Last Single</span>
+                                                                        <span className="font-bold text-gray-800 dark:text-gray-200 block truncate" title={singleSongs.length > 0 ? `${getFormattedDateForWeek(lastSingleWeek)} (Week ${lastSingleWeek})` : 'Debut Pending'}>
+                                                                            {singleSongs.length > 0 ? getFormattedDateForWeek(lastSingleWeek) : 'Debut Pending'}
+                                                                        </span>
+                                                                        {singleSongs.length > 0 && <span className="text-[10px] text-gray-500 dark:text-gray-400">Week {lastSingleWeek}</span>}
+                                                                    </div>
+                                                                    <div>
+                                                                        <span className="text-[10px] text-gray-500 dark:text-gray-400 block uppercase font-medium">Next Prompt</span>
+                                                                        <span className="font-bold text-pink-600 dark:text-pink-400 block truncate" title={`${getFormattedDateForWeek(targetPromptWeek)} (Week ${targetPromptWeek})`}>
+                                                                            {getFormattedDateForWeek(targetPromptWeek)}
+                                                                        </span>
+                                                                        <span className="text-[10px] text-gray-500 dark:text-gray-400">
+                                                                            Week {targetPromptWeek} {sg.nextPromptWeek != null && <span className="text-[10px] font-normal text-pink-400">(Manual)</span>}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+
+                                                                {/* Cadence Slider & Controls */}
+                                                                <div className="space-y-2 text-xs">
+                                                                    <div className="flex justify-between items-center">
+                                                                        <label className="font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1">
+                                                                            <Sliders size={12} className="text-gray-500" />
+                                                                            Release Cadence:
+                                                                        </label>
+                                                                        <span className="font-bold text-pink-600 dark:text-pink-400 bg-pink-50 dark:bg-pink-950/50 px-2 py-0.5 rounded">
+                                                                            Every {cadence} Weeks
+                                                                        </span>
+                                                                    </div>
+                                                                    <input
+                                                                        type="range"
+                                                                        min={8}
+                                                                        max={24}
+                                                                        step={1}
+                                                                        value={cadence}
+                                                                        onChange={(e) => {
+                                                                            const newCadence = parseInt(e.target.value, 10);
+                                                                            setSisterGroups(prev => prev.map(g => {
+                                                                                if (String(g.id) === String(sg.id)) {
+                                                                                    return {
+                                                                                        ...g,
+                                                                                        releaseCadence: newCadence,
+                                                                                        nextPromptWeek: g.nextPromptWeek != null ? g.nextPromptWeek : (lastSingleWeek + newCadence)
+                                                                                    };
+                                                                                }
+                                                                                return g;
+                                                                            }));
+                                                                        }}
+                                                                        className="w-full h-1.5 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-pink-500"
+                                                                    />
+                                                                    <div className="flex justify-between text-[10px] text-gray-400 px-0.5">
+                                                                        <span>8 wks (Fast)</span>
+                                                                        <span>16 wks (Standard)</span>
+                                                                        <span>24 wks (Relaxed)</span>
+                                                                    </div>
+
+                                                                    {/* Custom Prompt Week Override */}
+                                                                    <div className="flex items-center gap-2 pt-1">
+                                                                        <span className="text-[11px] text-gray-500 dark:text-gray-400 whitespace-nowrap">Target Week:</span>
+                                                                        <input
+                                                                            type="number"
+                                                                            min={1}
+                                                                            max={9999}
+                                                                            value={targetPromptWeek}
+                                                                            onChange={(e) => {
+                                                                                const val = parseInt(e.target.value, 10);
+                                                                                if (!isNaN(val) && val >= 1) {
+                                                                                    setSisterGroups(prev => prev.map(g => String(g.id) === String(sg.id) ? { ...g, nextPromptWeek: val } : g));
+                                                                                }
+                                                                            }}
+                                                                            className="w-20 px-2 py-0.5 text-xs bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded text-center font-semibold"
+                                                                        />
+                                                                        {sg.nextPromptWeek != null && (
+                                                                            <button
+                                                                                onClick={() => {
+                                                                                    setSisterGroups(prev => prev.map(g => String(g.id) === String(sg.id) ? { ...g, nextPromptWeek: null } : g));
+                                                                                }}
+                                                                                className="px-2 py-0.5 text-[10px] text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 border border-gray-300 dark:border-gray-600 rounded flex items-center gap-1 transition"
+                                                                                title="Reset prompt week to automatic cadence"
+                                                                            >
+                                                                                <RotateCcw size={10} /> Auto
+                                                                            </button>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            {/* Card Footer: Auto toggle & Action */}
+                                                            <div className="mt-3 pt-2.5 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between gap-2">
+                                                                <label className="flex items-center gap-1.5 cursor-pointer text-xs">
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        checked={autoEnabled}
+                                                                        onChange={(e) => {
+                                                                            const checked = e.target.checked;
+                                                                            setSisterGroups(prev => prev.map(g => String(g.id) === String(sg.id) ? { ...g, autoPromptEnabled: checked } : g));
+                                                                        }}
+                                                                        className="form-checkbox h-3.5 w-3.5 text-pink-600 rounded focus:ring-pink-500 dark:bg-gray-700 dark:border-gray-600"
+                                                                    />
+                                                                    <span className="text-gray-700 dark:text-gray-300 text-[11px] font-medium">Auto-Prompt</span>
+                                                                </label>
+
+                                                                <button
+                                                                    onClick={() => {
+                                                                        setModalData({ sisterGroup: sg });
+                                                                        setShowModal('quickSisterSingle');
+                                                                    }}
+                                                                    className="px-3 py-1.5 text-xs font-bold bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-lg shadow-xs flex items-center gap-1 transition"
+                                                                >
+                                                                    <Sparkles size={13} /> Quick Produce
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    );
+                                })()}
                             </div>
                         );
                     })()}
@@ -18094,6 +19066,450 @@ const App = () => {
                     {currentTab === 'buzz' &&
                         (
                             <div className="space-y-6">
+                                {/* ----- AGENCY RADAR & TURN PROMPT CONTROL HUB ----- */}
+                                <div className="p-5 bg-gradient-to-br from-pink-50 via-purple-50/40 to-indigo-50/40 dark:from-gray-800 dark:via-purple-950/20 dark:to-gray-850 rounded-2xl border-2 border-pink-200/80 dark:border-pink-900/40 shadow-xl">
+                                    <div className="flex flex-wrap justify-between items-center gap-2 mb-4 pb-3 border-b border-pink-200/60 dark:border-gray-700">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-pink-500 to-purple-600 flex items-center justify-center text-white shadow-md">
+                                                <Zap size={22} className="animate-pulse" />
+                                            </div>
+                                            <div>
+                                                <h2 className="text-xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 dark:from-pink-400 dark:to-purple-400 bg-clip-text text-transparent flex items-center gap-2">
+                                                    Agency Radar & Prompt Hub
+                                                </h2>
+                                                <p className="text-xs text-gray-500 dark:text-gray-400">
+                                                    Manage automatic turn popups, sister group release cadences, and idol graduation watchlist
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-xs px-2.5 py-1 rounded-full bg-pink-100 dark:bg-pink-950/60 text-pink-700 dark:text-pink-300 font-bold border border-pink-300/50">
+                                                Week {week}
+                                            </span>
+                                            {weeklyEventQueue.length > 0 ? (
+                                                <span className="text-xs px-2.5 py-1 rounded-full bg-rose-500 text-white font-bold animate-pulse flex items-center gap-1 shadow-xs">
+                                                    <AlertCircle size={12} /> {weeklyEventQueue.length} Queued Event{weeklyEventQueue.length > 1 ? 's' : ''}
+                                                </span>
+                                            ) : (
+                                                <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-300/50 flex items-center gap-1">
+                                                    <Check size={12} /> Queue Clear
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* ----- ACTIVE TURN EVENTS & POPUPS INBOX ----- */}
+                                    <div className="mb-6 p-4 bg-white/80 dark:bg-gray-800/80 rounded-2xl border border-pink-200 dark:border-gray-700 shadow-sm">
+                                        <div className="flex flex-wrap justify-between items-center gap-2 mb-3 pb-2 border-b border-gray-100 dark:border-gray-700">
+                                            <h3 className="font-bold text-sm text-gray-800 dark:text-gray-200 flex items-center gap-2">
+                                                <Bell size={16} className="text-purple-500" /> Active Turn Events & Popups Inbox
+                                                {weeklyEventQueue.length > 0 && (
+                                                    <span className="px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-300 text-xs font-extrabold">
+                                                        {weeklyEventQueue.length}
+                                                    </span>
+                                                )}
+                                            </h3>
+
+                                            {weeklyEventQueue.length > 0 && (
+                                                <div className="flex items-center gap-2">
+                                                    <button
+                                                        onClick={launchNextQueuedEvent}
+                                                        className="px-3 py-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold text-xs rounded-lg shadow-xs flex items-center gap-1.5 transition active:scale-95"
+                                                    >
+                                                        <Sparkles size={12} /> Open Next Popup
+                                                    </button>
+                                                    <button
+                                                        onClick={clearEventQueue}
+                                                        className="px-2.5 py-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 font-medium text-xs rounded-lg transition"
+                                                    >
+                                                        Clear All
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Standalone Active Drama or Scandal Banner */}
+                                        {activeScandal && (
+                                            <div className="mb-3 p-3 bg-red-50 dark:bg-red-950/40 border border-red-300 dark:border-red-800 rounded-xl flex justify-between items-center text-xs">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-lg">🚨</span>
+                                                    <div>
+                                                        <p className="font-bold text-red-900 dark:text-red-200">Scandal Decision Pending</p>
+                                                        <p className="text-red-700 dark:text-red-300 text-[11px]">{activeScandal.member?.name}: {activeScandal.scandal?.title || 'Controversy requires agency response'}</p>
+                                                    </div>
+                                                </div>
+                                                <button
+                                                    onClick={() => setShowModal('scandalDecision')}
+                                                    className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg shadow-xs"
+                                                >
+                                                    Address Scandal
+                                                </button>
+                                            </div>
+                                        )}
+
+                                        {activeDrama && (
+                                            <div className="mb-3 p-3 bg-purple-50 dark:bg-purple-950/40 border border-purple-300 dark:border-purple-800 rounded-xl flex justify-between items-center text-xs">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-lg">🎭</span>
+                                                    <div>
+                                                        <p className="font-bold text-purple-900 dark:text-purple-200">Inter-Member Drama</p>
+                                                        <p className="text-purple-700 dark:text-purple-300 text-[11px]">{activeDrama.title || 'Senior/Junior dynamic issue needs attention'}</p>
+                                                    </div>
+                                                </div>
+                                                <button
+                                                    onClick={() => setShowModal('senpaiKohaiDrama')}
+                                                    className="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg shadow-xs"
+                                                >
+                                                    View Drama
+                                                </button>
+                                            </div>
+                                        )}
+
+                                        {weeklyEventQueue.length === 0 && !activeScandal && !activeDrama ? (
+                                            <div className="p-4 bg-gray-50/60 dark:bg-gray-900/40 rounded-xl border border-dashed border-gray-200 dark:border-gray-700 text-center text-xs text-gray-500">
+                                                ✨ No pending turn popups in queue. All graduation announcements, dilemmas, and sister group prompts will appear here if you ever miss a modal!
+                                            </div>
+                                        ) : (
+                                            <div className="space-y-2.5 max-h-[50vh] overflow-y-auto pr-1">
+                                                {weeklyEventQueue.map((ev, idx) => {
+                                                    if (ev.type === 'graduation') {
+                                                        const member = ev.data;
+                                                        return (
+                                                            <div key={`ev-grad-${idx}`} className="p-3 bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 rounded-xl flex flex-wrap justify-between items-center gap-2 text-xs">
+                                                                <div className="flex items-center gap-2.5">
+                                                                    <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900 flex items-center justify-center text-amber-600 dark:text-amber-300 font-bold">
+                                                                        🎓
+                                                                    </div>
+                                                                    <div>
+                                                                        <p className="font-bold text-gray-900 dark:text-gray-100">{member?.name || 'Idol'} — Graduation Announcement</p>
+                                                                        <p className="text-gray-500 dark:text-gray-400 text-[11px]">Ready to announce graduation and plan farewell timeline</p>
+                                                                    </div>
+                                                                </div>
+                                                                <div className="flex items-center gap-1.5">
+                                                                    <button
+                                                                        onClick={() => launchQueuedEvent(idx)}
+                                                                        className="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-lg shadow-xs flex items-center gap-1"
+                                                                    >
+                                                                        <GraduationCap size={13} /> Open Announcement
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={() => removeQueuedEvent(idx)}
+                                                                        className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 rounded"
+                                                                        title="Dismiss"
+                                                                    >
+                                                                        <X size={14} />
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    }
+
+                                                    if (ev.type === 'sisterGroup') {
+                                                        const targetSg = sisterGroups.find(
+                                                            sg => String(sg.id) === String(ev.data) || sg.name === ev.data || String(sg.name).toLowerCase() === String(ev.data).toLowerCase()
+                                                        ) || { name: `Sister Group #${ev.data}`, id: ev.data };
+
+                                                        return (
+                                                            <div key={`ev-sg-${idx}`} className="p-3 bg-pink-50/80 dark:bg-pink-950/30 border border-pink-200 dark:border-pink-800/50 rounded-xl flex flex-wrap justify-between items-center gap-2 text-xs">
+                                                                <div className="flex items-center gap-2.5">
+                                                                    <div className="w-8 h-8 rounded-full bg-pink-100 dark:bg-pink-900 flex items-center justify-center text-pink-600 dark:text-pink-300 font-bold">
+                                                                        💿
+                                                                    </div>
+                                                                    <div>
+                                                                        <p className="font-bold text-gray-900 dark:text-gray-100">{targetSg.name} — Single Release Cadence Due</p>
+                                                                        <p className="text-gray-500 dark:text-gray-400 text-[11px]">Scheduled production window reached</p>
+                                                                    </div>
+                                                                </div>
+                                                                <div className="flex items-center gap-1.5">
+                                                                    <button
+                                                                        onClick={() => launchQueuedEvent(idx)}
+                                                                        className="px-3 py-1 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-xs flex items-center gap-1"
+                                                                    >
+                                                                        <Sparkles size={13} /> Quick Produce
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={() => {
+                                                                            setSisterGroups(prev => prev.map(sg => String(sg.id) === String(targetSg.id) ? { ...sg, snoozedUntilWeek: week + 4 } : sg));
+                                                                            removeQueuedEvent(idx);
+                                                                        }}
+                                                                        className="px-2 py-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 rounded text-[11px]"
+                                                                    >
+                                                                        Snooze 4w
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={() => removeQueuedEvent(idx)}
+                                                                        className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 rounded"
+                                                                        title="Dismiss"
+                                                                    >
+                                                                        <X size={14} />
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    }
+
+                                                    if (ev.type === 'dilemma') {
+                                                        const dilemma = ev.data;
+                                                        return (
+                                                            <div key={`ev-dil-${idx}`} className="p-3 bg-purple-50/80 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800/50 rounded-xl flex flex-wrap justify-between items-center gap-2 text-xs">
+                                                                <div className="flex items-center gap-2.5">
+                                                                    <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center text-purple-600 dark:text-purple-300 font-bold">
+                                                                        ⚖️
+                                                                    </div>
+                                                                    <div>
+                                                                        <p className="font-bold text-gray-900 dark:text-gray-100">Agency Dilemma: {dilemma?.title || 'Weekly Storyline Choice'}</p>
+                                                                        <p className="text-gray-500 dark:text-gray-400 text-[11px] line-clamp-1">{dilemma?.text || 'Management decision pending'}</p>
+                                                                    </div>
+                                                                </div>
+                                                                <div className="flex items-center gap-1.5">
+                                                                    <button
+                                                                        onClick={() => launchQueuedEvent(idx)}
+                                                                        className="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg shadow-xs flex items-center gap-1"
+                                                                    >
+                                                                        <Zap size={13} /> Make Decision
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={() => removeQueuedEvent(idx)}
+                                                                        className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 rounded"
+                                                                        title="Dismiss"
+                                                                    >
+                                                                        <X size={14} />
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    }
+
+                                                    return null;
+                                                })}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Sister Groups Release Schedule Section */}
+                                    <div className="mb-6">
+                                        <div className="flex justify-between items-center mb-3">
+                                            <h3 className="font-bold text-sm text-gray-800 dark:text-gray-200 flex items-center gap-2">
+                                                <Sparkles size={16} className="text-pink-500" /> Sister Group Release Schedule & Cadence
+                                            </h3>
+                                        </div>
+
+                                        {(() => {
+                                            const activeSgs = (sisterGroups || []).filter(sg => !sg.isDisbanded);
+                                            if (activeSgs.length === 0) {
+                                                return (
+                                                    <div className="p-4 bg-white/60 dark:bg-gray-800/60 rounded-xl border border-gray-200 dark:border-gray-700 text-center text-xs text-gray-500 italic">
+                                                        No sister groups established yet. Create sister groups or units in the Groups tab to automate their release schedule.
+                                                    </div>
+                                                );
+                                            }
+
+                                            return (
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                                    {activeSgs.map(sg => {
+                                                        const singleSongs = (sg.songs || []).filter(s => s.type === 'single');
+                                                        const lastSingleWeek = singleSongs.length > 0
+                                                            ? Math.max(...singleSongs.map(s => s.releaseWeek || 0))
+                                                            : (sg.lastSingleWeek || sg.foundedWeek || sg.createdWeek || 1);
+                                                        const cadence = sg.releaseCadence || 16;
+                                                        const targetPromptWeek = sg.nextPromptWeek != null ? sg.nextPromptWeek : (lastSingleWeek + cadence);
+                                                        const isScheduled = (scheduledSingles || []).some(s => s.releaseWeek > week && s.songData && (s.songData.targetGroup === sg.name || String(s.songData.targetGroup) === String(sg.id)));
+                                                        const isSnoozed = sg.snoozedUntilWeek && week < sg.snoozedUntilWeek;
+                                                        const isDue = !isScheduled && !isSnoozed && week >= targetPromptWeek;
+                                                        const weeksUntilDue = targetPromptWeek - week;
+
+                                                        return (
+                                                            <div
+                                                                key={`buzz-sg-${sg.id}`}
+                                                                className={`p-3.5 rounded-xl border transition shadow-xs ${
+                                                                    isDue
+                                                                        ? 'bg-rose-50/90 dark:bg-rose-950/30 border-rose-300 dark:border-rose-800/60'
+                                                                        : isScheduled
+                                                                            ? 'bg-purple-50/70 dark:bg-purple-950/20 border-purple-200 dark:border-purple-800/40'
+                                                                            : 'bg-white/80 dark:bg-gray-800/80 border-gray-200 dark:border-gray-700'
+                                                                }`}
+                                                            >
+                                                                <div className="flex justify-between items-start mb-2">
+                                                                    <div>
+                                                                        <div className="flex items-center gap-2">
+                                                                            <span className="font-bold text-sm text-gray-900 dark:text-white">{sg.name}</span>
+                                                                            <span className="text-[10px] uppercase font-extrabold px-1.5 py-0.5 rounded bg-pink-100 dark:bg-pink-900/50 text-pink-700 dark:text-pink-300">
+                                                                                {sg.type || 'Subgroup'}
+                                                                            </span>
+                                                                        </div>
+                                                                        <p className="text-[11px] text-gray-500 dark:text-gray-400">
+                                                                            {(sg.members || []).filter(m => !m.graduated).length} active members • {singleSongs.length} singles released
+                                                                        </p>
+                                                                    </div>
+                                                                    <div>
+                                                                        {isScheduled ? (
+                                                                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300 border border-purple-300">
+                                                                                💿 In Production
+                                                                            </span>
+                                                                        ) : isSnoozed ? (
+                                                                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300 border border-amber-300">
+                                                                                ⏰ Snoozed (Wk {sg.snoozedUntilWeek})
+                                                                            </span>
+                                                                        ) : isDue ? (
+                                                                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500 text-white animate-pulse shadow-xs">
+                                                                                🚨 Prompt Due!
+                                                                            </span>
+                                                                        ) : (
+                                                                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300">
+                                                                                Due in {weeksUntilDue} wk{weeksUntilDue === 1 ? '' : 's'}
+                                                                            </span>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+
+                                                                {/* Stats Overview */}
+                                                                <div className="grid grid-cols-2 gap-2 text-xs bg-gray-50/80 dark:bg-gray-900/50 p-2 rounded-lg mb-2.5">
+                                                                    <div>
+                                                                        <span className="text-gray-400 text-[10px] block">Last Single</span>
+                                                                        <span className="font-semibold text-gray-700 dark:text-gray-200 block truncate" title={`${getFormattedDateForWeek(lastSingleWeek)} (Week ${lastSingleWeek})`}>
+                                                                            {getFormattedDateForWeek(lastSingleWeek)}
+                                                                        </span>
+                                                                        <span className="text-gray-400 text-[10px]">Week {lastSingleWeek}</span>
+                                                                    </div>
+                                                                    <div>
+                                                                        <span className="text-gray-400 text-[10px] block">Target Prompt</span>
+                                                                        <span className="font-semibold text-pink-600 dark:text-pink-400 block truncate" title={`${getFormattedDateForWeek(targetPromptWeek)} (Week ${targetPromptWeek})`}>
+                                                                            {getFormattedDateForWeek(targetPromptWeek)}
+                                                                        </span>
+                                                                        <span className="text-gray-400 text-[10px]">Week {targetPromptWeek}</span>
+                                                                    </div>
+                                                                </div>
+
+                                                                {/* Controls: Cadence Slider & Auto Toggle */}
+                                                                <div className="space-y-2 mb-3">
+                                                                    <div className="flex items-center justify-between text-xs">
+                                                                        <span className="text-gray-600 dark:text-gray-400 flex items-center gap-1">
+                                                                            <Sliders size={12} /> Cadence:
+                                                                        </span>
+                                                                        <span className="font-bold text-gray-800 dark:text-gray-200">
+                                                                            Every {cadence} weeks
+                                                                        </span>
+                                                                    </div>
+                                                                    <input
+                                                                        type="range"
+                                                                        min="8"
+                                                                        max="24"
+                                                                        step="2"
+                                                                        value={cadence}
+                                                                        onChange={(e) => {
+                                                                            const val = parseInt(e.target.value, 10);
+                                                                            setSisterGroups(prev => prev.map(item => item.id === sg.id ? { ...item, releaseCadence: val } : item));
+                                                                        }}
+                                                                        className="w-full accent-pink-500 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-lg cursor-pointer"
+                                                                    />
+
+                                                                    <div className="flex items-center justify-between pt-1 border-t border-gray-100 dark:border-gray-700/60">
+                                                                        <label className="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-300 cursor-pointer">
+                                                                            <input
+                                                                                type="checkbox"
+                                                                                checked={sg.autoPromptEnabled !== false}
+                                                                                onChange={(e) => {
+                                                                                    const checked = e.target.checked;
+                                                                                    setSisterGroups(prev => prev.map(item => item.id === sg.id ? { ...item, autoPromptEnabled: checked } : item));
+                                                                                }}
+                                                                                className="rounded text-pink-500 focus:ring-pink-400"
+                                                                            />
+                                                                            <span>Auto-prompt on due week</span>
+                                                                        </label>
+
+                                                                        <div className="flex items-center gap-1">
+                                                                            <button
+                                                                                onClick={() => {
+                                                                                    const input = window.prompt(`Set next prompt week for ${sg.name}:`, String(targetPromptWeek));
+                                                                                    if (input != null && !isNaN(parseInt(input, 10))) {
+                                                                                        const parsed = parseInt(input, 10);
+                                                                                        setSisterGroups(prev => prev.map(item => item.id === sg.id ? { ...item, nextPromptWeek: parsed } : item));
+                                                                                    }
+                                                                                }}
+                                                                                className="text-[10px] text-pink-600 hover:text-pink-700 dark:text-pink-400 font-semibold underline"
+                                                                            >
+                                                                                Set Wk
+                                                                            </button>
+                                                                            {sg.nextPromptWeek != null && (
+                                                                                <button
+                                                                                    onClick={() => {
+                                                                                        setSisterGroups(prev => prev.map(item => item.id === sg.id ? { ...item, nextPromptWeek: null } : item));
+                                                                                    }}
+                                                                                    className="text-[10px] text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                                                                                    title="Reset to automatic cadence"
+                                                                                >
+                                                                                    <RotateCcw size={10} />
+                                                                                </button>
+                                                                            )}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                {/* Produce Single Action */}
+                                                                <button
+                                                                    onClick={() => {
+                                                                        setModalData({ sisterGroup: sg });
+                                                                        setShowModal('quickSisterSingle');
+                                                                    }}
+                                                                    className="w-full py-1.5 px-3 bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold text-xs rounded-lg shadow-sm flex items-center justify-center gap-1.5 transition active:scale-98"
+                                                                >
+                                                                    <Sparkles size={13} /> Quick Produce Single
+                                                                </button>
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+                                            );
+                                        })()}
+                                    </div>
+
+                                    {/* Idol Graduation Watchlist */}
+                                    {(() => {
+                                        const highUrgencyMembers = members.filter(m => !m.graduated && (m.graduationUrgency || 0) >= 50);
+                                        if (highUrgencyMembers.length === 0) return null;
+
+                                        return (
+                                            <div className="pt-4 border-t border-pink-200/60 dark:border-gray-700">
+                                                <h3 className="font-bold text-sm text-gray-800 dark:text-gray-200 flex items-center gap-2 mb-2">
+                                                    <GraduationCap size={16} className="text-amber-500" /> Idol Graduation Watchlist
+                                                </h3>
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                                                    {highUrgencyMembers.map(m => {
+                                                        const urgency = m.graduationUrgency || 0;
+                                                        return (
+                                                            <div key={m.id} className="p-2.5 bg-white/70 dark:bg-gray-800/70 rounded-xl border border-gray-200 dark:border-gray-700 text-xs flex justify-between items-center">
+                                                                <div>
+                                                                    <p className="font-bold text-gray-900 dark:text-gray-100">{m.name}</p>
+                                                                    <div className="flex items-center gap-1 text-[11px] text-gray-500">
+                                                                        <span>Urgency: {urgency}%</span>
+                                                                        <div className="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                                                            <div className={`h-full ${urgency >= 85 ? 'bg-red-500' : 'bg-amber-500'}`} style={{ width: `${Math.min(100, urgency)}%` }} />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div className="flex items-center gap-1">
+                                                                    <button
+                                                                        onClick={() => askAboutGraduation(m.id)}
+                                                                        className="px-2 py-1 bg-amber-100 hover:bg-amber-200 text-amber-800 dark:bg-amber-950 dark:text-amber-300 rounded text-[10px] font-bold"
+                                                                    >
+                                                                        Talk
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={() => { setModalData(m); setShowModal('graduationAnnouncement'); }}
+                                                                        className="px-2 py-1 bg-pink-500 hover:bg-pink-600 text-white rounded text-[10px] font-bold"
+                                                                    >
+                                                                        Plan
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+                                        );
+                                    })()}
+                                </div>
+
                                 {/* On Air This Week */}
                                 <div>
                                     <div className="flex justify-between items-center mb-4">
@@ -19044,6 +20460,7 @@ const App = () => {
             {showModal === 'loadGame' && <LoadGameModal />}
             {showModal === 'handshakeSelection' && <HandshakeSelectionModal />}
             {showModal === 'handshakeResult' && <HandshakeEventResultModal />}
+            {showModal === 'quickSisterSingle' && <QuickSisterSingleModal />}
             {showModal === 'mediaJob' && <MediaJobModal />}
             {showModal === 'groupMediaJob' && <GroupMediaModal />}
             {showModal === 'trainingCamp' && <TrainingCampModal />}

@@ -3055,6 +3055,7 @@ export const useIdolManager = () => {
     const [viewedFilm, setViewedFilm] = useState(null);
     const [buildings, setBuildings] = useState({ practiceRooms: { vocal: 0, dance: 0, variety: 0, visual: 0, charisma: 0, intelligence: 0 } });
     const [sisterGroups, setSisterGroups] = useState([]);
+    const [pendingSisterGroupPrompts, setPendingSisterGroupPrompts] = useState([]);
     const [rivalGroups, setRivalGroups] = useState([]);
     const [fanPosts, setFanPosts] = useState([]);
     const [collaborations, setCollaborations] = useState([]);
@@ -7295,8 +7296,7 @@ export const useIdolManager = () => {
             const willAnnounce = (member.graduationUrgency > 70) && (member.stress > 85 || member.morale < 15) && Math.random() < 0.02;
             if (willAnnounce) {
                 addNotification({ type: 'Shock', message: `Wait... ${member.name} has something to say... She's announcing her graduation on stage!` });
-                setModalData(member);
-                setShowModal('graduationAnnouncement');
+                setPendingGraduationAnnouncement(member);
                 return;
             }
         }
@@ -8683,6 +8683,21 @@ export const useIdolManager = () => {
             timeline,
         };
         setScheduledSingles(prev => [...prev, newScheduledRelease]);
+        // Update sister group target prompt week if scheduled
+        if (songData.targetGroup && songData.targetGroup !== 'main' && songData.targetGroup !== groupName) {
+            setSisterGroups(prev => prev.map(sg => {
+                if (sg.name === songData.targetGroup || String(sg.id) === String(songData.targetGroup)) {
+                    const cadence = sg.releaseCadence || 16;
+                    return {
+                        ...sg,
+                        lastSingleWeek: releaseWeek,
+                        nextPromptWeek: releaseWeek + cadence,
+                        snoozedUntilWeek: null
+                    };
+                }
+                return sg;
+            }));
+        }
         // ---- END: Existing Timeline & Object Creation ----
 
         // --- START: Honorary Graduation Single Logic ---
@@ -14453,6 +14468,18 @@ export const useIdolManager = () => {
                     if (result.newSong) {
                         if (result.newSong.targetGroup === 'main' || result.newSong.targetGroup === groupName) {
                             songsForUpdate.push(result.newSong);
+                        } else {
+                            const sgIndex = sisterGroupsForUpdate.findIndex(sg => sg.name === result.newSong.targetGroup || String(sg.id) === String(result.newSong.targetGroup));
+                            if (sgIndex > -1) {
+                                if (!sisterGroupsForUpdate[sgIndex].songs) {
+                                    sisterGroupsForUpdate[sgIndex].songs = [];
+                                }
+                                sisterGroupsForUpdate[sgIndex].songs.push(result.newSong);
+                                const cadence = sisterGroupsForUpdate[sgIndex].releaseCadence || 16;
+                                sisterGroupsForUpdate[sgIndex].lastSingleWeek = newWeek;
+                                sisterGroupsForUpdate[sgIndex].nextPromptWeek = newWeek + cadence;
+                                sisterGroupsForUpdate[sgIndex].snoozedUntilWeek = null;
+                            }
                         }
                     }
 
@@ -16555,6 +16582,36 @@ export const useIdolManager = () => {
         setElectionVotePool(tempElectionVotePool);
         setVotingTickets(tempVotingTickets);
         setExchangeStudents(exchangeStudentsForUpdate);
+
+        // --- SISTER GROUP SINGLE CADENCE & SCHEDULE CHECK ---
+        const dueSisterGroupIds = (sisterGroupsForUpdate || []).filter(sg => {
+            if (sg.isDisbanded) return false;
+            if (sg.autoPromptEnabled === false) return false;
+            const activeMembers = (sg.members || []).filter(m => {
+                if (typeof m === 'object' && m !== null) {
+                    return !graduatingIdsThisWeek.includes(`sg-${sg.id}-${m.id}`) && !m.graduated;
+                }
+                return true;
+            });
+            if (activeMembers.length < 1) return false;
+            // Check if already has a FUTURE scheduled single in progress
+            const hasScheduled = (scheduledSingles || []).some(s => s.releaseWeek > newWeek && s.songData && (s.songData.targetGroup === sg.name || String(s.songData.targetGroup) === String(sg.id)));
+            if (hasScheduled) return false;
+            // Check if snoozed
+            if (sg.snoozedUntilWeek && newWeek < sg.snoozedUntilWeek) return false;
+            // Calculate time since last single or custom nextPromptWeek
+            const singleSongs = (sg.songs || []).filter(s => s.type === 'single');
+            const lastSingleWeek = singleSongs.length > 0
+                ? Math.max(...singleSongs.map(s => s.releaseWeek || 0))
+                : (sg.lastSingleWeek || sg.foundedWeek || sg.createdWeek || 1);
+            const cadence = sg.releaseCadence || 16;
+            const targetPromptWeek = sg.nextPromptWeek != null ? sg.nextPromptWeek : (lastSingleWeek + cadence);
+            return newWeek >= targetPromptWeek;
+        }).map(sg => sg.id);
+
+        if (dueSisterGroupIds.length > 0) {
+            setPendingSisterGroupPrompts(dueSisterGroupIds);
+        }
     };
 
     const startRequestHour = (scope = 'domestic', size = 100) => {
@@ -21137,7 +21194,7 @@ export const useIdolManager = () => {
 
     return {
         // State
-        inflationConfig, setInflationConfig, outstandingLoan, setOutstandingLoan, takeLoan, repayLoanIfPossible, activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm, setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, activeBlockbuster, blockbusterHistory, startBlockbusterProduction, blockbusterThemes, blockbusterScales, blockbusterDirectors, boxOfficeMilestones, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, setGroupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, theaterSchedule, setTheaterSchedule, setWeek, setMoney, activeDrama, setActiveDrama, dramaHistory, setDramaHistory, resolveDramaChoice, sisterGroups, setScheduledSingles, setSisterGroups, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, activeUnderTour, setActiveUnderTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
+        inflationConfig, setInflationConfig, outstandingLoan, setOutstandingLoan, takeLoan, repayLoanIfPossible, activeStream, acceptSponsorship, declineSponsorship, fanPosts, varietyProducerTiers, varietyWriterTiers, viewedFilm, setViewedFilm, startFilmPromotion, setPromotingFilm, promotingFilm, getChemistry, filmPromotionTypes, filmAwardsHistory, filmStudio, filmProjects, buildFilmStudio, upgradeFilmStudio, startFilmProject, activeBlockbuster, blockbusterHistory, startBlockbusterProduction, blockbusterThemes, blockbusterScales, blockbusterDirectors, boxOfficeMilestones, varietyShows, createVarietyShow, renewVarietyShow, cancelVarietyShow, recastVarietyShow, varietyStudio, upgradeVarietyStudio, buildVarietyStudio, missionResult, setMissionResult, closeMissionModal, transferExchangeMember, renewExchangeContract, startInternalSurvivalShow, createUnitFromSurvival, eliminationData, finalizeSurvivalElimination, castSurvivalShowVote, proceedAfterVoting, survivalShowVote, startSurvivalShow, simulateSurvivalShowWeek, finishSurvivalShow, survivalShow, survivalShowHistory, generateUnitCandidates, exchangeStudents, activeChart, gameHistory, draftKaigi, draftProspects, liveSportsFestival, simulateSportsFestivalEvent, finishSportsFestival, startSportsFestival, sportsFestivalHistory, lastRequestHourResult, startRequestHour, castPlayerVotes, requestHourStatus, votingTickets, requestHourHistory, groupReputation, setGroupReputation, confirmKouhakuParticipation, declineKouhakuInvitation, kouhakuHistory, kouhakuInvitationOffered, acceptKouhakuInvitation, simulateJankenRound, electionHistory, jankenHistory, setLastJankenResult, lastJankenResult, startJankenTournament, advanceJankenRound, jankenTournament, setJankenTournament, gameStarted, setGameStarted, groupName, money, week, formattedDate, members, electionVotePool, setElectionVotePool, isElectionSingleFinished, lastElectionResult, isCampaignActive, setIsCampaignActive, campaignEndWeek, setCampaignEndWeek, setMembers, handleTogglePushMember, pushedMembers, setPushedMembers, selectedMember, scheduledEvents, setScheduledEvents, setSelectedMember, message, setMessage, totalFans, setTotalFans, currentTab, setCurrentTab, showNotifications, setShowNotifications, notifications, setNotifications, pastReleases, songs, setSongs, teams, setTeams, allSetlists, setAllSetlists, theaterSongs, setTheaterSongs, buildings, setBuildings, theaters, setTheaters, theaterSchedule, setTheaterSchedule, setWeek, setMoney, activeDrama, setActiveDrama, dramaHistory, setDramaHistory, resolveDramaChoice, sisterGroups, scheduledSingles, setScheduledSingles, setSisterGroups, pendingSisterGroupPrompts, setPendingSisterGroupPrompts, rivalGroups, setRivalGroups, achievements, hallOfFame, events, sponsorships, showModal, setShowModal, modalData, setModalData, activeScandal, setActiveScandal, selectedSisterGroup, setSelectedSisterGroup, selectedTheaterTeam, setSelectedTheaterTeam, username, setUsername, memberView, setMemberView, merchInventory, setMerchInventory, merchDesignBonus, beginActivity, merchTiers, idolMerchTiers, eventMerchTiers, produceEventMerch, eventMerchInventory, idolMerchInventory, produceIdolMerch, activeTour, setActiveTour, activeUnderTour, setActiveUnderTour, venues, setVenues, performanceHistory, setPerformanceHistory, performanceTypes, auditionCandidates, setAuditionCandidates, mediaJobDoneThisWeek, setMediaJobDoneThisWeek, groupMediaJobDoneThisWeek, setGroupMediaJobDoneThisWeek,
         // K-Pop State
         kpopTrainees, setKpopTrainees, kpopComebacks, setKpopComebacks, melonChart, setMelonChart, pendingContractRenewal, setPendingContractRenewal, kpopAuditionCandidates, setKpopAuditionCandidates,
         // World Tour & Lightstick State

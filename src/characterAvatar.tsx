@@ -374,7 +374,7 @@ export const IdolAvatar = ({
                 <img
                     src={frontHairSrc}
                     alt="Front Hair"
-                    className="absolute inset-0 w-full h-full object-contain pointer-events-none z-40 drop-shadow-md"
+                    className="absolute inset-0 w-full h-full object-contain pointer-events-none z-40"
                     loading="lazy"
                 />
             )}
