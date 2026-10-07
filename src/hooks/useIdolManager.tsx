@@ -3021,7 +3021,8 @@ export const useIdolManager = () => {
     }, [week]);
 
     const [songs, setSongs] = useState([]);
-    const [hasPerformedThisWeek, setHasPerformedThisWeek] = useState(false);
+    // Per-group performance tracking: keyed by 'main' or sister group id string
+    const [groupsPerformedThisWeek, setGroupsPerformedThisWeek] = useState<Record<string, boolean>>({});
     const [teams, setTeams] = useState([]);
     const [allSetlists, setAllSetlists] = useState([
         // --- AKB48 Team A ---
@@ -7039,7 +7040,8 @@ export const useIdolManager = () => {
         const venue = theaters.find(t => String(t.owner) === String(venueOwnerId));
 
         if (!venue) return setMessage("Error: Selected theater not found.");
-        if (hasPerformedThisWeek) return setMessage("You can only hold one performance activity per week.");
+        // Theater shows always belong to the main group
+        if (groupsPerformedThisWeek['main']) return setMessage("The main group has already performed this week.");
 
         let performingMembers = [];
         let understudies = [];
@@ -7289,7 +7291,7 @@ export const useIdolManager = () => {
 
         setMoney(prev => (prev || 0) + agencyProfit - totalCosts);
         setStatistics(prev => ({ ...prev, totalRevenue: (prev.totalRevenue || 0) + totalRevenue, totalConcerts: (prev.totalConcerts || 0) + 1 }));
-        setHasPerformedThisWeek(true);
+        setGroupsPerformedThisWeek(prev => ({ ...prev, 'main': true }));
         addNotification({ type: 'Performance', message: `${performanceName} earned ¥${agencyProfit.toLocaleString()} and gained ${newFans.toLocaleString()} fans.` });
 
         for (const member of performingMembers) {
@@ -10504,6 +10506,12 @@ export const useIdolManager = () => {
         const baseCost = venue.cost + venue.maintenance;
         if (money < baseCost) return setMessage(`Insufficient funds! Concert costs ¥${baseCost.toLocaleString()}.`);
 
+        // Per-group limit: each group gets one performance per week
+        const perfGroupKey = targetGroup && targetGroup !== 'main' ? String(targetGroup) : 'main';
+        if (groupsPerformedThisWeek[perfGroupKey]) {
+            return setMessage(`${perfGroupKey === 'main' ? 'The main group' : targetGroup} has already performed this week.`);
+        }
+
         // --- UPDATED: Calculate Individual Averages for Modal ---
         const memberCount = performingMembers.length || 1;
         const avgSinging = performingMembers.reduce((s, m) => s + (m.singing || 0), 0) / memberCount;
@@ -10677,7 +10685,7 @@ export const useIdolManager = () => {
 
         const summaryMessage = `Concert "${newEntry.name}": +${fanGain.toLocaleString()} fans, Agency Profit: ¥${agencyProfit.toLocaleString()}. (External Costs: ¥${idolShare.toLocaleString()})`;
 
-        setHasPerformedThisWeek(true);
+        setGroupsPerformedThisWeek(prev => ({ ...prev, [perfGroupKey]: true }));
         setMessage(summaryMessage);
         addNotification({ type: 'Performance', message: summaryMessage });
         // --- ADD THIS BLOCK ---
@@ -10705,8 +10713,9 @@ export const useIdolManager = () => {
 
     const recordPerformance = (typeData, setlist, selectedMemberIds, performanceName) => {
 
-        if (hasPerformedThisWeek) {
-            setMessage("You can only hold one performance activity per week.");
+        // recordPerformance is always a main-group rehearsal/live performance
+        if (groupsPerformedThisWeek['main']) {
+            setMessage("The main group has already performed this week.");
             return;
         }
 
@@ -10770,7 +10779,7 @@ export const useIdolManager = () => {
         setPerformanceHistory(prev => [newEntry, ...prev]);
         const summaryMessage = `Performance \"${newEntry.name}\": +${fanGain.toLocaleString()} fans, Agency Profit: ¥${agencyProfit.toLocaleString()}. (External Costs: ¥${idolShare.toLocaleString()})`;
 
-        setHasPerformedThisWeek(true);
+        setGroupsPerformedThisWeek(prev => ({ ...prev, 'main': true }));
         setMessage(summaryMessage);
         addNotification({ type: 'Performance', message: summaryMessage });
 
@@ -12905,8 +12914,9 @@ export const useIdolManager = () => {
         const typeData = performanceTypes.find(p => p.label === 'Unit Stage');
         if (!typeData) return setMessage("Performance type 'Unit Stage' not found.");
 
-        if (hasPerformedThisWeek) {
-            return setMessage("You can only hold one performance activity per week.");
+        const unitGroupKey = single.targetGroup && single.targetGroup !== 'main' ? String(single.targetGroup) : 'main';
+        if (groupsPerformedThisWeek[unitGroupKey]) {
+            return setMessage(`${unitGroupKey === 'main' ? 'The main group' : single.targetGroup} has already performed this week.`);
         }
 
         const performingMembers = unitMemberIds.map(id => getMemberById(id)).filter(m => m && m.isAvailable);
@@ -12979,7 +12989,7 @@ export const useIdolManager = () => {
         setPerformanceHistory(prev => [newEntry, ...prev]);
         const summaryMessage = `Performance "${newEntry.name}": +${totalFanGain.toLocaleString()} fans, Agency Profit: ¥${agencyProfit.toLocaleString()}.`;
 
-        setHasPerformedThisWeek(true);
+        setGroupsPerformedThisWeek(prev => ({ ...prev, [unitGroupKey]: true }));
         setMessage(summaryMessage);
         addNotification({ type: 'Performance', message: summaryMessage });
 
@@ -13006,8 +13016,9 @@ export const useIdolManager = () => {
         const typeData = performanceTypes.find(p => p.label === 'Music Show Performance');
         if (!typeData) return setMessage("Performance type 'Music Show Performance' not found.");
 
-        if (hasPerformedThisWeek) {
-            return setMessage("You can only hold one performance activity per week.");
+        const titleGroupKey = single.targetGroup && single.targetGroup !== 'main' ? String(single.targetGroup) : 'main';
+        if (groupsPerformedThisWeek[titleGroupKey]) {
+            return setMessage(`${titleGroupKey === 'main' ? 'The main group' : single.targetGroup} has already performed this week.`);
         }
 
         const performingMembers = memberIds.map(id => getMemberById(id)).filter(m => m && m.isAvailable);
@@ -13077,7 +13088,7 @@ export const useIdolManager = () => {
         setPerformanceHistory(prev => [newEntry, ...prev]);
         const summaryMessage = `Performance "${newEntry.name}": +${totalFanGain.toLocaleString()} fans, Agency Profit: ¥${agencyProfit.toLocaleString()}.`;
 
-        setHasPerformedThisWeek(true);
+        setGroupsPerformedThisWeek(prev => ({ ...prev, [titleGroupKey]: true }));
         setMessage(summaryMessage);
         addNotification({ type: 'Performance', message: summaryMessage });
 
@@ -13858,7 +13869,7 @@ export const useIdolManager = () => {
         // Reset simple weekly flags. This is safe to do directly.
         setMediaJobDoneThisWeek(false);
         setGroupMediaJobDoneThisWeek(false);
-        setHasPerformedThisWeek(false);
+        setGroupsPerformedThisWeek({});
         generateSponsorships();
         simulateLivestream();
 
@@ -21185,7 +21196,7 @@ export const useIdolManager = () => {
             tracks: setlist
         };
         setPerformanceHistory(prev => [newEntry, ...prev]);
-        setHasPerformedThisWeek(true);
+        setGroupsPerformedThisWeek(prev => ({ ...prev, 'main': true }));
 
         setAvailableFestivals(prev => prev.filter(f => f.id !== festival.id));
         setModalData({ festival, result });

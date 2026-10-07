@@ -2252,8 +2252,12 @@ const App = () => {
         // --- Basic Song State ---
         const { targetGroupId, songs, sisterGroups, initialSongName, initialTracks, initialStep, initialReleaseType, initialProductionChoices, initialGenre, initialTheme, initialFormat, targetGroupName } = modalData || {};
         const allGroups = [{ id: 'main', name: groupName, isSister: false }, ...(sisterGroups || []).filter(g => !g.isDisbanded).map(sg => ({ id: sg.id, name: sg.name, isSister: true }))];
-        const defaultGroupName = targetGroupName || (targetGroupId ? (allGroups.find(g => String(g.id) === String(targetGroupId) || g.name === targetGroupId)?.name || targetGroupId) : allGroups[0].name);
+        const isInitialMainTarget = !targetGroupId || targetGroupId === 'main' || targetGroupName === 'main' || targetGroupName === groupName || targetGroupId === groupName;
+        const defaultGroupName = isInitialMainTarget
+            ? 'main'
+            : (targetGroupName || (sisterGroups || []).find(sg => String(sg.id) === String(targetGroupId) || sg.name === targetGroupId)?.name || 'main');
         const [targetGroup, setTargetGroup] = useState(defaultGroupName);
+        const isMainGroup = targetGroup === 'main' || targetGroup === groupName || !targetGroup;
         const [songName, setSongName] = useState(initialSongName || '');
         const [tracks, setTracks] = useState(initialTracks || [
             { name: 'Title Track', unitName: 'Senbatsu', type: 'title', members: [], center: null, lineup: {} },
@@ -2742,10 +2746,10 @@ const App = () => {
 
 
 
-        const historicalTracks = [
+        const rawHistoricalTracks = [
 
             ...(songs || []).flatMap(release => {
-                let artistName = release.targetGroup === 'main' ? groupName : release.targetGroup;
+                let artistName = release.targetGroup === 'main' || release.targetGroup === groupName ? groupName : release.targetGroup;
                 if (release.singleSubType === 'solo') {
                     const titleTrack = (release.tracks || []).find(t => t.type === 'title');
                     artistName = `${titleTrack?.members?.[0]?.name || "Soloist"} (Solo)`;
@@ -2781,7 +2785,14 @@ const App = () => {
                     }));
                 })
             )
-        ].sort((a, b) => {
+        ];
+
+        const seenTrackIds = new Set();
+        const historicalTracks = rawHistoricalTracks.filter(track => {
+            if (seenTrackIds.has(track.id)) return false;
+            seenTrackIds.add(track.id);
+            return true;
+        }).sort((a, b) => {
             const idA = parseInt(a.id.split('-')[0], 10);
             const idB = parseInt(b.id.split('-')[0], 10);
             if (idB !== idA) return idB - idA;
@@ -3295,11 +3306,11 @@ const App = () => {
         // First, get the single source of truth for all members, which now includes exchange students.
         const allAvailableForSong = getAllAvailableMembers(true);
 
-        if (targetGroup === 'main' || isSpecialCollabSingle) {
+        if (isMainGroup || isSpecialCollabSingle) {
             // For a main group song OR a special collab single, ALL available members from ALL groups/franchises are selectable.
             selectableMembers = allAvailableForSong;
         } else {
-            const sg = sisterGroups.find(s => s.name === targetGroup);
+            const sg = sisterGroups.find(s => s.name === targetGroup || String(s.id) === String(targetGroup));
             if (sg) {
                 if (sg.type === 'unit') {
                     // It's a unit. sg.members is a list of roster IDs.
@@ -3325,6 +3336,8 @@ const App = () => {
                         childSubgroupIds.includes(String(m.groupId))
                     );
                 }
+            } else {
+                selectableMembers = allAvailableForSong;
             }
         }
 
@@ -3470,7 +3483,7 @@ const App = () => {
 
             const songData = {
                 name: songName.trim(),
-                targetGroup: targetGroup,
+                targetGroup: isMainGroup ? 'main' : targetGroup,
                 releaseFormat: releaseFormat,
                 tracks: tracks.map(t => {
                     const trackMembers = (t.members || []).map(String).map(id => getMemberById(id) || rivalMembers.find(r => r.id === id)).filter(Boolean);
@@ -3521,11 +3534,12 @@ const App = () => {
             if (money < totalProductionCost) return setMessage("Not enough money for this album!");
 
             // If targetGroup is 'main', use the main group's name. Otherwise, use targetGroup (which will be the sister group's name).
-            const artistName = targetGroup === 'main' ? groupName : targetGroup;
+            const artistName = isMainGroup ? groupName : targetGroup;
 
             const albumDataObject = {
                 name: albumName.trim(),
                 artist: artistName,
+                targetGroup: isMainGroup ? 'main' : targetGroup,
                 releaseFormat: releaseFormat,
                 tracks: albumTracks.map(t => {
                     const trackMembers = (t.members || []).map(String).map(id => getMemberById(id)).filter(Boolean);
@@ -3730,10 +3744,10 @@ const App = () => {
 
         const getSelectableMembersPool = () => {
             const allAvailableForSong = getAllAvailableMembers(true);
-            if (targetGroup === 'main' || isSpecialCollabSingle) {
+            if (isMainGroup || isSpecialCollabSingle) {
                 return allAvailableForSong;
             } else {
-                const sg = sisterGroups.find(s => s.name === targetGroup);
+                const sg = sisterGroups.find(s => s.name === targetGroup || String(s.id) === String(targetGroup));
                 if (sg) {
                     if (sg.type === 'unit') {
                         const unitMemberIds = (sg.members || []).map(member => {
@@ -3757,7 +3771,7 @@ const App = () => {
                     }
                 }
             }
-            return [];
+            return allAvailableForSong;
         };
         const handleSoloistConfirm = (member) => {
             setSelectedSoloist(member);
@@ -4385,7 +4399,7 @@ const App = () => {
                             )}
                             <div>
                                 <h4 className="font-semibold mb-1 dark:text-gray-200">Target Group</h4>
-                                <select value={targetGroup} onChange={(e) => { setTargetGroup(e.target.value); setFilterKey('All'); setTracks([{ name: 'Title Track', unitName: 'Senbatsu', type: 'title', members: [], center: null, lineup: {} }, { name: 'B-Side 1', unitName: 'Universe Girls', type: 'b-side', members: [], center: null, lineup: {}, cdType: 'common' }]); }} className="w-full p-2 border rounded bg-white dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">
+                                <select value={isMainGroup ? 'main' : targetGroup} onChange={(e) => { setTargetGroup(e.target.value); setFilterKey('All'); setTracks([{ name: 'Title Track', unitName: 'Senbatsu', type: 'title', members: [], center: null, lineup: {} }, { name: 'B-Side 1', unitName: 'Universe Girls', type: 'b-side', members: [], center: null, lineup: {}, cdType: 'common' }]); }} className="w-full p-2 border rounded bg-white dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">
                                     <option key="main" value="main">{groupName} (Main)</option>
                                     {(sisterGroups || []).filter(g => !g.isDisbanded).map(sg => <option key={sg.id} value={sg.name}>{sg.name}</option>)}
                                 </select>
@@ -4711,8 +4725,8 @@ const App = () => {
                                                 className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600"
                                             >
                                                 <option value="">-- Select a past track --</option>
-                                                {historicalTracks.map(track => (
-                                                    <option key={track.id} value={track.id}>
+                                                {historicalTracks.map((track, idx) => (
+                                                    <option key={`${track.id}-${idx}`} value={track.id}>
                                                         {track.name}
                                                     </option>
                                                 ))}
@@ -4917,8 +4931,9 @@ const App = () => {
                         <div className="lg:col-span-3 space-y-4">
                             <div>
                                 <h4 className="font-semibold mb-1 dark:text-gray-200">Target Group</h4>
-                                <select value={targetGroup} onChange={(e) => setTargetGroup(e.target.value)} className="w-full p-2 border rounded bg-white dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">
-                                    {allGroups.map(g => <option key={g.id} value={g.name}>{g.name} ({g.isSister ? 'Sister' : 'Main'})</option>)}
+                                <select value={isMainGroup ? 'main' : targetGroup} onChange={(e) => setTargetGroup(e.target.value)} className="w-full p-2 border rounded bg-white dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">
+                                    <option key="main" value="main">{groupName} (Main)</option>
+                                    {(sisterGroups || []).filter(g => !g.isDisbanded).map(sg => <option key={sg.id} value={sg.name}>{sg.name} (Sister)</option>)}
                                 </select>
                             </div>
                             <div>
@@ -4966,8 +4981,8 @@ const App = () => {
                                         className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600"
                                     >
                                         <option value="">-- Select a past track --</option>
-                                        {historicalTracks.map(track => (
-                                            <option key={track.id} value={track.id}>
+                                        {historicalTracks.map((track, idx) => (
+                                            <option key={`${track.id}-${idx}`} value={track.id}>
                                                 {track.name}
                                             </option>
                                         ))}
