@@ -27,7 +27,7 @@ import {
 import { MerchTab } from './MerchTab';
 import { KpopLabelTab } from './KpopLabelTab';
 import { WorldTourTab } from './WorldTourTab';
-import { IdolAvatar, CharacterCreatorModal, GroupOutfitModal, getMemberAppearance, HAIR_STYLES, HAIR_COLORS } from './characterAvatar';
+import { IdolAvatar, CharacterCreatorModal, GroupOutfitModal, getMemberAppearance, HAIR_STYLES, HAIR_BACK_STYLES, HAIR_COLORS } from './characterAvatar';
 
 // Helper to check if a group name or object is a trainee group / subgroup
 const isTraineeGroupNameOrGroup = (groupNameOrId, sisterGroups = []) => {
@@ -184,23 +184,26 @@ const App = () => {
                 const isKenninFromSister = m.isSisterMember && (m.kenninGroups || []).includes('main');
                 if (isHome && !isKenninFromSister && !m.isKennin && !m.isExchangeStudent) {
                     affectedCount++;
-                    const currApp = getMemberAppearance(m);
+                    const currApp = m.appearance || getMemberAppearance(m);
                     return { ...m, appearance: { ...currApp, outfitId } };
                 }
                 return m;
             }));
         } else {
+            const targetSg = sisterGroups ? sisterGroups.find(sg => String(sg.id) === String(targetGroupId) || sg.name === targetGroupId) : null;
+            const targetName = targetSg?.name || targetGroupId;
+
             setSisterGroups(prev => prev.map(sg => {
-                if (String(sg.id) === String(targetGroupId)) {
+                if (String(sg.id) === String(targetGroupId) || sg.name === targetGroupId) {
                     return {
                         ...sg,
                         members: (sg.members || []).map(m => {
-                            const isHome = String(m.groupId) === String(targetGroupId) || (sg.name && m.homeGroup === sg.name);
-                            const isVisitingKennin = (m.kennin && String(m.kennin.groupId) === String(targetGroupId) && m.homeGroup !== sg.name) ||
-                                (m.kenninGroups && m.kenninGroups.includes(String(targetGroupId)) && m.homeGroup !== sg.name);
-                            if (isHome && !isVisitingKennin && !m.isExchangeStudent) {
+                            const isVisitingKennin = m.isKennin ||
+                                (m.kennin && String(m.kennin.groupId) === String(targetGroupId) && m.homeGroup && m.homeGroup !== sg.name) ||
+                                (m.kenninGroups && m.kenninGroups.includes(String(targetGroupId)) && m.homeGroup && m.homeGroup !== sg.name);
+                            if (!isVisitingKennin && !m.isExchangeStudent) {
                                 affectedCount++;
-                                const currApp = getMemberAppearance(m);
+                                const currApp = m.appearance || getMemberAppearance(m);
                                 return { ...m, appearance: { ...currApp, outfitId } };
                             }
                             return m;
@@ -209,26 +212,36 @@ const App = () => {
                 }
                 return sg;
             }));
+
+            // Also update members array in case any sister group member is stored/mirrored in members
+            setMembers(prev => prev.map(m => {
+                const isMatch = (String(m.groupId) === String(targetGroupId) || m.homeGroup === targetName) && !m.isKennin && !m.isExchangeStudent;
+                if (isMatch) {
+                    const currApp = m.appearance || getMemberAppearance(m);
+                    return { ...m, appearance: { ...currApp, outfitId } };
+                }
+                return m;
+            }));
         }
 
         if (selectedMember) {
             setSelectedMember(prev => {
                 if (!prev) return null;
-                const targetName = isMain ? 'main' : sisterGroups.find(sg => String(sg.id) === String(targetGroupId))?.name;
+                const targetName = isMain ? 'main' : sisterGroups.find(sg => String(sg.id) === String(targetGroupId) || sg.name === targetGroupId)?.name;
                 const isTargetHome = isMain
                     ? (!prev.isSisterMember || prev.homeGroup === 'main' || String(prev.groupId) === 'main' || !prev.groupId) && !prev.isKennin
                     : (String(prev.groupId) === String(targetGroupId) || prev.homeGroup === targetName) && !prev.isKennin;
                 if (isTargetHome) {
-                    return { ...prev, appearance: { ...getMemberAppearance(prev), outfitId } };
+                    return { ...prev, appearance: { ...(prev.appearance || getMemberAppearance(prev)), outfitId } };
                 }
                 return prev;
             });
         }
 
-        const groupLabel = isMain ? groupName : (sisterGroups.find(sg => String(sg.id) === String(targetGroupId))?.name || 'Group');
+        const groupLabel = isMain ? groupName : (sisterGroups.find(sg => String(sg.id) === String(targetGroupId) || sg.name === targetGroupId)?.name || 'Group');
         addNotification({
             type: 'success',
-            message: `Updated uniform outfit to all home members in ${groupLabel}!`
+            message: `Updated stage outfit to ${affectedCount} official home members in ${groupLabel}!`
         });
     };
     const resolveToCurrentRosterId = (item, availableList = null) => {
@@ -5892,6 +5905,99 @@ const App = () => {
             );
         };
 
+        const ReleaseTrackFormationRows = ({ track }) => {
+            const rows = { '1st Row': [], '2nd Row': [], '3rd Row': [], '4th Row': [], '5th Row': [] };
+            const unassigned = [];
+            const centerList = Array.isArray(track.center) ? track.center.map(String) : (track.center ? [String(track.center)] : []);
+
+            if (track.lineup && track.members) {
+                track.members.forEach(memberItem => {
+                    const mId = typeof memberItem === 'object' ? (memberItem.rosterId || memberItem.id) : memberItem;
+                    const resolvedMember = typeof memberItem === 'object' && memberItem.name ? memberItem : (memberMap[getRosterIdForTrackMember(mId, release)] || null);
+                    const row = track.lineup[String(mId)] || (resolvedMember ? (track.lineup[String(resolvedMember.rosterId)] || track.lineup[String(resolvedMember.id)]) : null);
+                    if (row && rows[row] && resolvedMember) {
+                        rows[row].push(resolvedMember);
+                    } else if (resolvedMember) {
+                        unassigned.push(resolvedMember);
+                    }
+                });
+            } else if (track.members) {
+                track.members.forEach(memberId => {
+                    const resolvedMember = memberMap[getRosterIdForTrackMember(memberId, release)];
+                    if (resolvedMember) unassigned.push(resolvedMember);
+                });
+            }
+
+            const hasAnyRows = Object.values(rows).some(r => r.length > 0) || unassigned.length > 0;
+            if (!hasAnyRows) return null;
+
+            return (
+                <div className="mt-3 pt-3 border-t border-pink-100 dark:border-pink-900/40 space-y-2.5">
+                    <h5 className="text-xs font-black text-pink-600 dark:text-pink-400 uppercase tracking-wider flex items-center gap-1.5">
+                        <Sparkles size={14} className="text-amber-400" /> Stage Formation Lineup
+                    </h5>
+                    <div className="space-y-2">
+                        {Object.entries(rows).map(([rowName, membersInRow]) => {
+                            if (membersInRow.length === 0) return null;
+                            const isCenterRow = rowName === '1st Row';
+                            return (
+                                <div key={rowName} className={`p-2.5 rounded-2xl border ${isCenterRow ? 'bg-amber-50/70 dark:bg-amber-950/20 border-amber-300 dark:border-amber-800/50 shadow-xs' : 'bg-gray-50/70 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700'}`}>
+                                    <div className="flex items-center justify-between mb-1.5 px-1">
+                                        <span className={`text-[11px] font-black uppercase tracking-wider ${isCenterRow ? 'text-amber-700 dark:text-amber-300' : 'text-gray-700 dark:text-gray-300'}`}>
+                                            {isCenterRow ? '👑 1st Row (Center Spotlight)' : `🎀 ${rowName}`}
+                                        </span>
+                                        <span className="text-[10px] text-gray-500 dark:text-gray-400 font-bold">{membersInRow.length} Members</span>
+                                    </div>
+                                    <div className="flex flex-wrap items-center justify-center gap-2">
+                                        {membersInRow.map((memberObj, mIdx) => {
+                                            const isCenter = centerList.includes(String(memberObj.rosterId || memberObj.id)) || centerList.includes(String(memberObj.id));
+                                            return (
+                                                <div
+                                                    key={memberObj.rosterId || memberObj.id || mIdx}
+                                                    onClick={() => { setSelectedMember(memberObj); setShowModal('memberDetails'); }}
+                                                    className={`flex flex-col items-center p-1.5 rounded-xl transition cursor-pointer hover:scale-105 shadow-sm ${
+                                                        isCenter ? 'bg-amber-100 dark:bg-amber-900/50 border-2 border-amber-400 ring-2 ring-amber-300/40' : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700'
+                                                    }`}
+                                                    title={`${memberObj.name} (Click to view profile & stylist)`}
+                                                >
+                                                    <IdolAvatar member={memberObj} size="sm" isCenter={isCenter} rounded="rounded-lg" />
+                                                    <span className={`text-[10px] font-extrabold mt-1 max-w-[68px] truncate text-center ${isCenter ? 'text-amber-800 dark:text-amber-300' : 'text-gray-800 dark:text-gray-200'}`}>
+                                                        {memberObj.nickname || memberObj.name.split(' ')[0]}
+                                                    </span>
+                                                    {isCenter && (
+                                                        <span className="text-[8px] font-black text-amber-700 dark:text-amber-400 -mt-0.5 tracking-tighter uppercase flex items-center gap-0.5">
+                                                            👑 Center
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                        {unassigned.length > 0 && (
+                            <div className="p-2 rounded-xl bg-gray-50 dark:bg-gray-800/40 border border-gray-200 dark:border-gray-700">
+                                <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400 block mb-1">Other Members ({unassigned.length})</span>
+                                <div className="flex flex-wrap items-center gap-1.5">
+                                    {unassigned.map((m, idx) => (
+                                        <div
+                                            key={m.rosterId || m.id || idx}
+                                            onClick={() => { setSelectedMember(m); setShowModal('memberDetails'); }}
+                                            className="flex items-center gap-1.5 p-1 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer hover:border-pink-400"
+                                        >
+                                            <IdolAvatar member={m} size="xs" rounded="rounded-md" />
+                                            <span className="text-xs font-bold text-gray-800 dark:text-gray-200 pr-1">{m.name}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
         return (
             <ModalWrapper title={`${release.name} ${singleNumberStr ? `(${singleNumberStr})` : ''} - ${release.type === 'album' ? 'Album' : 'Single'} Details`} maxWidth="max-w-4xl">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 text-sm">
@@ -5977,99 +6083,6 @@ const App = () => {
                                         }
                                         return acc;
                                     }, {});
-
-                                    const ReleaseTrackFormationRows = ({ track }) => {
-                                        const rows = { '1st Row': [], '2nd Row': [], '3rd Row': [], '4th Row': [], '5th Row': [] };
-                                        const unassigned = [];
-                                        const centerList = Array.isArray(track.center) ? track.center.map(String) : (track.center ? [String(track.center)] : []);
-
-                                        if (track.lineup && track.members) {
-                                            track.members.forEach(memberItem => {
-                                                const mId = typeof memberItem === 'object' ? (memberItem.rosterId || memberItem.id) : memberItem;
-                                                const resolvedMember = typeof memberItem === 'object' && memberItem.name ? memberItem : (memberMap[getRosterIdForTrackMember(mId, release)] || null);
-                                                const row = track.lineup[String(mId)] || (resolvedMember ? (track.lineup[String(resolvedMember.rosterId)] || track.lineup[String(resolvedMember.id)]) : null);
-                                                if (row && rows[row] && resolvedMember) {
-                                                    rows[row].push(resolvedMember);
-                                                } else if (resolvedMember) {
-                                                    unassigned.push(resolvedMember);
-                                                }
-                                            });
-                                        } else if (track.members) {
-                                            track.members.forEach(memberId => {
-                                                const resolvedMember = memberMap[getRosterIdForTrackMember(memberId, release)];
-                                                if (resolvedMember) unassigned.push(resolvedMember);
-                                            });
-                                        }
-
-                                        const hasAnyRows = Object.values(rows).some(r => r.length > 0) || unassigned.length > 0;
-                                        if (!hasAnyRows) return null;
-
-                                        return (
-                                            <div className="mt-3 pt-3 border-t border-pink-100 dark:border-pink-900/40 space-y-2.5">
-                                                <h5 className="text-xs font-black text-pink-600 dark:text-pink-400 uppercase tracking-wider flex items-center gap-1.5">
-                                                    <Sparkles size={14} className="text-amber-400" /> Stage Formation Lineup
-                                                </h5>
-                                                <div className="space-y-2">
-                                                    {Object.entries(rows).map(([rowName, membersInRow]) => {
-                                                        if (membersInRow.length === 0) return null;
-                                                        const isCenterRow = rowName === '1st Row';
-                                                        return (
-                                                            <div key={rowName} className={`p-2.5 rounded-2xl border ${isCenterRow ? 'bg-amber-50/70 dark:bg-amber-950/20 border-amber-300 dark:border-amber-800/50 shadow-xs' : 'bg-gray-50/70 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700'}`}>
-                                                                <div className="flex items-center justify-between mb-1.5 px-1">
-                                                                    <span className={`text-[11px] font-black uppercase tracking-wider ${isCenterRow ? 'text-amber-700 dark:text-amber-300' : 'text-gray-700 dark:text-gray-300'}`}>
-                                                                        {isCenterRow ? '👑 1st Row (Center Spotlight)' : `🎀 ${rowName}`}
-                                                                    </span>
-                                                                    <span className="text-[10px] text-gray-500 dark:text-gray-400 font-bold">{membersInRow.length} Members</span>
-                                                                </div>
-                                                                <div className="flex flex-wrap items-center justify-center gap-2">
-                                                                    {membersInRow.map((memberObj, mIdx) => {
-                                                                        const isCenter = centerList.includes(String(memberObj.rosterId || memberObj.id)) || centerList.includes(String(memberObj.id));
-                                                                        return (
-                                                                            <div
-                                                                                key={memberObj.rosterId || memberObj.id || mIdx}
-                                                                                onClick={() => { setSelectedMember(memberObj); setShowModal('memberDetails'); }}
-                                                                                className={`flex flex-col items-center p-1.5 rounded-xl transition cursor-pointer hover:scale-105 shadow-sm ${
-                                                                                    isCenter ? 'bg-amber-100 dark:bg-amber-900/50 border-2 border-amber-400 ring-2 ring-amber-300/40' : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700'
-                                                                                }`}
-                                                                                title={`${memberObj.name} (Click to view profile & stylist)`}
-                                                                            >
-                                                                                <IdolAvatar member={memberObj} size="sm" isCenter={isCenter} rounded="rounded-lg" />
-                                                                                <span className={`text-[10px] font-extrabold mt-1 max-w-[68px] truncate text-center ${isCenter ? 'text-amber-800 dark:text-amber-300' : 'text-gray-800 dark:text-gray-200'}`}>
-                                                                                    {memberObj.nickname || memberObj.name.split(' ')[0]}
-                                                                                </span>
-                                                                                {isCenter && (
-                                                                                    <span className="text-[8px] font-black text-amber-700 dark:text-amber-400 -mt-0.5 tracking-tighter uppercase flex items-center gap-0.5">
-                                                                                        👑 Center
-                                                                                    </span>
-                                                                                )}
-                                                                            </div>
-                                                                        );
-                                                                    })}
-                                                                </div>
-                                                            </div>
-                                                        );
-                                                    })}
-                                                    {unassigned.length > 0 && (
-                                                        <div className="p-2 rounded-xl bg-gray-50 dark:bg-gray-800/40 border border-gray-200 dark:border-gray-700">
-                                                            <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400 block mb-1">Other Members ({unassigned.length})</span>
-                                                            <div className="flex flex-wrap items-center gap-1.5">
-                                                                {unassigned.map((m, idx) => (
-                                                                    <div
-                                                                        key={m.rosterId || m.id || idx}
-                                                                        onClick={() => { setSelectedMember(m); setShowModal('memberDetails'); }}
-                                                                        className="flex items-center gap-1.5 p-1 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer hover:border-pink-400"
-                                                                    >
-                                                                        <IdolAvatar member={m} size="xs" rounded="rounded-md" />
-                                                                        <span className="text-xs font-bold text-gray-800 dark:text-gray-200 pr-1">{m.name}</span>
-                                                                    </div>
-                                                                ))}
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        );
-                                    };
 
                                     const TrackCard = ({ track, exclusiveType }) => {
                                         const centerNames = Array.isArray(track.center)
@@ -15824,7 +15837,7 @@ const App = () => {
                                                         count++;
                                                         const currentApp = m.appearance || getMemberAppearance(m);
                                                         const randomFront = HAIR_STYLES[Math.floor(Math.random() * HAIR_STYLES.length)];
-                                                        const randomBack = HAIR_STYLES[Math.floor(Math.random() * HAIR_STYLES.length)];
+                                                        const randomBack = HAIR_BACK_STYLES[Math.floor(Math.random() * HAIR_BACK_STYLES.length)];
                                                         const randomColor = HAIR_COLORS[Math.floor(Math.random() * HAIR_COLORS.length)];
 
                                                         return {
@@ -15840,7 +15853,7 @@ const App = () => {
 
                                                     if (selectedMember) {
                                                         const randomFront = HAIR_STYLES[Math.floor(Math.random() * HAIR_STYLES.length)];
-                                                        const randomBack = HAIR_STYLES[Math.floor(Math.random() * HAIR_STYLES.length)];
+                                                        const randomBack = HAIR_BACK_STYLES[Math.floor(Math.random() * HAIR_BACK_STYLES.length)];
                                                         const randomColor = HAIR_COLORS[Math.floor(Math.random() * HAIR_COLORS.length)];
                                                         setSelectedMember(prev => ({
                                                             ...prev,
@@ -19218,62 +19231,7 @@ const App = () => {
                     selectedGroupId={groupOutfitTargetId}
                     members={members}
                     sisterGroups={sisterGroups}
-                    onApplyGroupOutfit={(groupId, outfitId) => {
-                        const targetSg = sisterGroups ? sisterGroups.find(g => String(g.id) === String(groupId)) : null;
-                        const targetGroupName = groupId === 'main' ? 'main' : (targetSg ? targetSg.name : groupId);
-
-                        // Find all true home members of this group, STRICTLY excluding kennin / concurrent members
-                        let updatedCount = 0;
-                        setMembers(prevMembers => prevMembers.map(m => {
-                            let isTrueHomeMember = false;
-                            if (groupId === 'main') {
-                                isTrueHomeMember = (!m.isSisterMember || m.homeGroup === 'main' || String(m.groupId) === 'main' || !m.groupId) &&
-                                    !m.isKennin &&
-                                    !m.isExchangeStudent &&
-                                    !(m.isSisterMember && (m.kenninGroups || []).includes('main'));
-                            } else {
-                                isTrueHomeMember = (String(m.groupId) === String(groupId) || m.homeGroup === targetGroupName) &&
-                                    !m.isKennin &&
-                                    !m.isExchangeStudent &&
-                                    !(m.kenninGroups && m.kenninGroups.includes(String(groupId)) && m.homeGroup !== targetGroupName);
-                            }
-
-                            if (isTrueHomeMember) {
-                                updatedCount++;
-                                const currentApp = m.appearance || getMemberAppearance(m);
-                                return {
-                                    ...m,
-                                    appearance: {
-                                        ...currentApp,
-                                        outfitId: outfitId
-                                    }
-                                };
-                            }
-                            return m;
-                        }));
-
-                        // Also update selectedMember in view if they belong to this group as a home member
-                        if (selectedMember) {
-                            const isSelectedTarget = groupId === 'main'
-                                ? (!selectedMember.isSisterMember || selectedMember.homeGroup === 'main' || String(selectedMember.groupId) === 'main' || !selectedMember.groupId) && !selectedMember.isKennin && !selectedMember.isExchangeStudent
-                                : (String(selectedMember.groupId) === String(groupId) || selectedMember.homeGroup === targetGroupName) && !selectedMember.isKennin && !selectedMember.isExchangeStudent;
-                            if (isSelectedTarget) {
-                                setSelectedMember(prev => ({
-                                    ...prev,
-                                    appearance: {
-                                        ...(prev.appearance || getMemberAppearance(prev)),
-                                        outfitId
-                                    }
-                                }));
-                            }
-                        }
-
-                        setIsGroupOutfitModalOpen(false);
-                        addNotification({
-                            type: 'success',
-                            message: `Updated stage outfit for ${updatedCount} official home members of ${groupId === 'main' ? groupName : (targetSg?.name || 'group')}! (Kennin excluded)`
-                        });
-                    }}
+                    onApplyGroupOutfit={handleApplyGroupOutfit}
                 />
             )}
 

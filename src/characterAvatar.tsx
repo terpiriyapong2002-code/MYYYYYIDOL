@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Sparkles, Shuffle, Check, X, Palette, User, RefreshCw, Shirt, Smile, Scissors, Layers, Link as LinkIcon } from 'lucide-react';
 
 // ==========================================
@@ -57,7 +57,8 @@ export const HAIR_COLORS = [
     { id: '_softgreen', name: 'Mint Green', hex: '#86EFAC' },
 ];
 
-export const HAIR_STYLES = Array.from({ length: 12 }, (_, i) => {
+// 11 selectable front styles (hair_012 has no front piece; its back is aliased to hair_001)
+export const HAIR_STYLES = Array.from({ length: 11 }, (_, i) => {
     const numStr = String(i + 1).padStart(3, '0');
     return {
         id: `hair_${numStr}`,
@@ -65,13 +66,25 @@ export const HAIR_STYLES = Array.from({ length: 12 }, (_, i) => {
     };
 });
 
+// All 12 back-piece styles (hair_012 back syncs to hair_001 back)
+export const HAIR_BACK_STYLES = [
+    ...HAIR_STYLES,
+    { id: 'hair_012', name: 'Style #12' },
+];
+
 /**
  * Resolves front and back hair assets with independent mix-and-match front & back styles
  * sharing the exact same unified color.
  */
 export const getHairAssets = (frontStyleId?: string, backStyleId?: string, colorId?: string) => {
-    const safeFrontStyle = frontStyleId || 'hair_001';
-    const safeBackStyle = backStyleId || frontStyleId || 'hair_001';
+    // hair_012 has no front piece — fall back to hair_001 front
+    const rawFront = frontStyleId || 'hair_001';
+    const safeFrontStyle = rawFront === 'hair_012' ? 'hair_001' : rawFront;
+
+    // hair_012 back piece is aliased to hair_001 back
+    const rawBack = backStyleId || frontStyleId || 'hair_001';
+    const safeBackStyle = rawBack === 'hair_012' ? 'hair_001' : rawBack;
+
     const safeColor = colorId || '_black';
 
     // Vite glob paths: ./assets/Idol character/hair/hair_001/_black/front.webp
@@ -185,7 +198,7 @@ export const getMemberAppearance = (member: any): IdolAppearance => {
     const outfit = AVATAR_OUTFITS[seed % AVATAR_OUTFITS.length];
     const face = AVATAR_FACES[(seed * 3) % AVATAR_FACES.length];
     const frontStyle = HAIR_STYLES[(seed * 7) % HAIR_STYLES.length];
-    const backStyle = HAIR_STYLES[(seed * 13) % HAIR_STYLES.length];
+    const backStyle = HAIR_BACK_STYLES[(seed * 13) % HAIR_BACK_STYLES.length];
     const color = HAIR_COLORS[(seed * 11) % HAIR_COLORS.length];
 
     return {
@@ -420,7 +433,7 @@ export const CharacterCreatorModal = ({
         const randomOutfit = AVATAR_OUTFITS[Math.floor(Math.random() * AVATAR_OUTFITS.length)];
         const randomFace = AVATAR_FACES[Math.floor(Math.random() * AVATAR_FACES.length)];
         const randomFront = HAIR_STYLES[Math.floor(Math.random() * HAIR_STYLES.length)];
-        const randomBack = HAIR_STYLES[Math.floor(Math.random() * HAIR_STYLES.length)];
+        const randomBack = HAIR_BACK_STYLES[Math.floor(Math.random() * HAIR_BACK_STYLES.length)];
         const randomColor = HAIR_COLORS[Math.floor(Math.random() * HAIR_COLORS.length)];
 
         setAppearance({
@@ -606,7 +619,7 @@ export const CharacterCreatorModal = ({
 
                                         {/* Hairstyle Grid for the Selected Sub-Piece */}
                                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-                                            {HAIR_STYLES.map(style => {
+                                            {(hairSubTab === 'front' ? HAIR_STYLES : HAIR_BACK_STYLES).map(style => {
                                                 const isFront = hairSubTab === 'front';
                                                 const currentPieceStyleId = isFront
                                                     ? (appearance.hairFrontStyleId || 'hair_001')
@@ -637,7 +650,10 @@ export const CharacterCreatorModal = ({
                                                             )}
                                                         </div>
                                                         <div className="flex-1 min-w-0">
-                                                            <p className="font-bold text-xs text-gray-900 dark:text-gray-100 truncate">{style.name}</p>
+                                                            <p className="font-bold text-xs text-gray-900 dark:text-gray-100 truncate">
+                                                                {style.name}
+                                                                {!isFront && style.id === 'hair_012' && <span className="ml-1 text-[9px] text-gray-400">(↔ Style #1)</span>}
+                                                            </p>
                                                             <span className="text-[10px] text-pink-600 dark:text-pink-400 font-semibold">
                                                                 {isFront ? 'Front Bangs' : 'Back Hair'}
                                                             </span>
@@ -769,9 +785,15 @@ export const GroupOutfitModal = ({
     const [currentGroup, setCurrentGroup] = useState<string | number>(selectedGroupId || 'main');
     const [selectedOutfitId, setSelectedOutfitId] = useState<string>(AVATAR_OUTFITS[0].id);
 
+    useEffect(() => {
+        if (selectedGroupId) {
+            setCurrentGroup(selectedGroupId);
+        }
+    }, [selectedGroupId, isOpen]);
+
     // Determine target group info
     const isMain = String(currentGroup) === 'main';
-    const activeSisterGroup = isMain ? null : sisterGroups.find(sg => String(sg.id) === String(currentGroup));
+    const activeSisterGroup = isMain ? null : (sisterGroups || []).find(sg => String(sg.id) === String(currentGroup) || sg.name === currentGroup);
     const targetGroupName = isMain ? (groups.find(g => String(g.id) === 'main')?.name || 'Main Group') : (activeSisterGroup?.name || 'Sister Group');
 
     // Get strictly home/official members of this group (excluding Kennin)
@@ -783,10 +805,11 @@ export const GroupOutfitModal = ({
             const isKenninFromSister = m.isSisterMember && (m.kenninGroups || []).includes('main');
             return isHome && !isKenninFromSister && !m.isKennin && !m.isExchangeStudent;
         } else {
-            // Sister group home members only:
-            const isHome = String(m.groupId) === String(currentGroup) || (activeSisterGroup?.name && m.homeGroup === activeSisterGroup.name);
-            const isVisitingKennin = (m.kennin && String(m.kennin.groupId) === String(currentGroup) && m.homeGroup !== activeSisterGroup?.name) || (m.kenninGroups && m.kenninGroups.includes(String(currentGroup)) && m.homeGroup !== activeSisterGroup?.name);
-            return isHome && !isVisitingKennin && !m.isExchangeStudent;
+            // Sister group home members: exclude foreign kennin visitors and exchange students
+            const isVisitingKennin = m.isKennin || 
+                (m.kennin && String(m.kennin.groupId) === String(currentGroup) && m.homeGroup && m.homeGroup !== activeSisterGroup?.name) || 
+                (m.kenninGroups && m.kenninGroups.includes(String(currentGroup)) && m.homeGroup && m.homeGroup !== activeSisterGroup?.name);
+            return !isVisitingKennin && !m.isExchangeStudent;
         }
     });
 
