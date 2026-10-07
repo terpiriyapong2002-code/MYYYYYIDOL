@@ -3848,12 +3848,20 @@ export const useIdolManager = () => {
             setCampaignEndWeek(data.campaignEndWeek || 0);
             setLastElectionResult(data.lastElectionResult || null);
 
-            const loadedSongs = (data.songs || []).map(song => ({
-                ...song,
-                baseSalesPotential: song.baseSalesPotential || 0,
-                weeklySales: song.weeklySales || [],
-                chartWeeksLeft: song.chartWeeksLeft ?? 0,
-            }));
+            const seenMainSongKeys = new Set();
+            const loadedSongs = (data.songs || [])
+                .filter(song => {
+                    const key = song.id || `${song.name}-${song.releaseWeek}`;
+                    if (seenMainSongKeys.has(key)) return false;
+                    seenMainSongKeys.add(key);
+                    return true;
+                })
+                .map(song => ({
+                    ...song,
+                    baseSalesPotential: song.baseSalesPotential || 0,
+                    weeklySales: song.weeklySales || [],
+                    chartWeeksLeft: song.chartWeeksLeft ?? 0,
+                }));
             setSongs(loadedSongs);
             setTheaters(data.theaters || []);
             setTheaterSchedule(data.theaterSchedule || {
@@ -3919,12 +3927,20 @@ export const useIdolManager = () => {
                 let migratedSongs = [];
                 if (sg.songs) {
                     const songsToParse = typeof sg.songs === 'string' ? JSON.parse(sg.songs) : (sg.songs || []);
-                    migratedSongs = songsToParse.map(song => ({
-                        ...song,
-                        baseSalesPotential: song.baseSalesPotential || 0,
-                        weeklySales: song.weeklySales || [],
-                        chartWeeksLeft: song.chartWeeksLeft ?? 0,
-                    }));
+                    const seenSgSongKeys = new Set();
+                    migratedSongs = songsToParse
+                        .filter(song => {
+                            const key = song.id || `${song.name}-${song.releaseWeek}`;
+                            if (seenSgSongKeys.has(key)) return false;
+                            seenSgSongKeys.add(key);
+                            return true;
+                        })
+                        .map(song => ({
+                            ...song,
+                            baseSalesPotential: song.baseSalesPotential || 0,
+                            weeklySales: song.weeklySales || [],
+                            chartWeeksLeft: song.chartWeeksLeft ?? 0,
+                        }));
                 }
 
                 return { ...sg, members: migratedMembers, songs: migratedSongs };
@@ -4031,8 +4047,18 @@ export const useIdolManager = () => {
             setSisterGroups(reconciledSisterGroups);
             setTeams(healedTeams);
 
-            setRivalGroups(data.rivalGroups || []);
-            setActiveChart(data.activeChart || null);
+            if (data.activeChart && data.activeChart.entries) {
+                const seenChartIds = new Set();
+                const dedupedEntries = (data.activeChart.entries || []).filter(e => {
+                    const key = e.id || `${e.artist}-${e.songName}`;
+                    if (seenChartIds.has(key)) return false;
+                    seenChartIds.add(key);
+                    return true;
+                });
+                setActiveChart({ ...data.activeChart, entries: dedupedEntries });
+            } else {
+                setActiveChart(data.activeChart || null);
+            }
             setExchangeStudents(data.exchangeStudents || []);
             setAchievements(data.achievements || []);
             setHallOfFame(data.hallOfFame || []);
@@ -8786,6 +8812,7 @@ export const useIdolManager = () => {
 
         // --- Final UI Updates ---
         setShowModal(null);
+        setModalData(null);
         setMessage(`Production for "${songData.name}" scheduled for Week ${releaseWeek}! Cost: ¥${totalCost.toLocaleString()}`);
     };
 
@@ -9025,21 +9052,27 @@ export const useIdolManager = () => {
 
         setScheduledSingles(prev => [...prev, newScheduledRelease]);
         setShowModal(null);
+        setModalData(null);
         setMessage(`Production for album "${albumData.name}" scheduled for Week ${releaseWeek}! Cost: ¥${totalCost.toLocaleString()}`);
     };
 
     const generateNewChart = (playerSongsToAdd = []) => {
         let chartEntries = [];
 
-        // 1. Add Player's Songs
-        playerSongsToAdd.forEach(song => {
+        // 1. Add Player's Songs (Deduplicated)
+        const seenPlayerSongKeys = new Set();
+        (playerSongsToAdd || []).forEach(song => {
+            const key = song.id || `${song.targetGroup || song.artist}-${song.name}`;
+            if (seenPlayerSongKeys.has(key)) return;
+            seenPlayerSongKeys.add(key);
+
             chartEntries.push({
                 id: song.id,
                 isPlayer: true,
-                artist: song.targetGroup === 'main' ? groupName : song.targetGroup,
+                artist: song.targetGroup === 'main' ? groupName : (song.targetGroup || song.artist || groupName),
                 songName: song.name,
-                baseSalesPotential: song.baseSalesPotential,
-                totalSales: 0,
+                baseSalesPotential: song.baseSalesPotential || 0,
+                totalSales: song.totalSales || 0,
                 lastRank: 0,
                 currentRank: 0,
             });
@@ -10456,10 +10489,7 @@ export const useIdolManager = () => {
             });
         });
 
-        const sgIndex = updatedSisterGroups.findIndex(sg => sg.name === newSong.targetGroup);
-        if (sgIndex > -1) {
-            updatedSisterGroups[sgIndex].songs = [...(updatedSisterGroups[sgIndex].songs || []), newSong];
-        }
+        // Note: newSong is added to songs array by the caller in nextWeek (with cadence / lastSingleWeek tracking)
         if (isCollaboration) {
             newCollaboration = {
                 id: newSongId,
@@ -10487,9 +10517,38 @@ export const useIdolManager = () => {
         const releaseMessage = `RELEASED: \"${songData.name}\"! It will begin charting next week. Initial Hype: +${newFansTotal.toLocaleString()} fans.`;
         addNotification({ type: 'success', message: releaseMessage });
 
-        // --- NEW: Daily Chart Generation ---
-        generateNewChart([newSong]);
-        // --- END: Daily Chart Generation ---
+        // --- Daily / Weekly Chart Synchronization ---
+        if (activeChart) {
+            setActiveChart(prevChart => {
+                if (!prevChart) return prevChart;
+                const releasingArtist = newSong.targetGroup === 'main' ? groupName : newSong.targetGroup;
+                if (prevChart.entries.some(e => e.id === newSong.id || (e.songName === newSong.name && e.artist === releasingArtist))) {
+                    return prevChart;
+                }
+                const newEntry = {
+                    id: newSong.id,
+                    isPlayer: true,
+                    artist: releasingArtist,
+                    songName: newSong.name,
+                    baseSalesPotential: newSong.baseSalesPotential,
+                    totalSales: 0,
+                    lastRank: 0,
+                    currentRank: prevChart.entries.length + 1,
+                };
+                return {
+                    ...prevChart,
+                    entries: [...prevChart.entries, newEntry]
+                };
+            });
+        } else {
+            const allActiveCharting = [
+                ...(initialSongs || []).filter(s => s.chartWeeksLeft > 0),
+                ...(initialSisterGroups || []).flatMap(sg => (sg.songs || []).filter(s => s.chartWeeksLeft > 0)),
+                newSong
+            ];
+            generateNewChart(allActiveCharting);
+        }
+        // --- END: Daily / Weekly Chart Synchronization ---
 
         return { updatedMembers, updatedSisterGroups, updatedExchangeStudents, releaseMessage, newSong, updatedRivalGroups, newCollaboration, newPosts: allNewPosts };
     };
@@ -13711,12 +13770,22 @@ export const useIdolManager = () => {
 
         // The chart runs for 8 weeks (0-7). If it's over, generate a new one.
         if (activeChart.week >= 7) {
-            const playerSongsStillCharting = songs.filter(s => s.chartWeeksLeft > 0);
+            const playerSongsStillCharting = [
+                ...(songs || []).filter(s => s.chartWeeksLeft > 0),
+                ...(sisterGroups || []).flatMap(sg => (sg.songs || []).filter(s => s.chartWeeksLeft > 0))
+            ];
             generateNewChart(playerSongsStillCharting);
             return;
         }
 
         let currentChart = { ...activeChart };
+        const seenChartKeys = new Set();
+        currentChart.entries = (currentChart.entries || []).filter(entry => {
+            const key = entry.id || `${entry.artist}-${entry.songName}`;
+            if (seenChartKeys.has(key)) return false;
+            seenChartKeys.add(key);
+            return true;
+        });
         const chartWeekIndex = currentChart.week;
 
         // Update lastRank for all entries before calculating new sales for this week
@@ -14454,6 +14523,9 @@ export const useIdolManager = () => {
         }
 
         // --- SINGLE & ALBUM RELEASES ---
+        // Track IDs of songs released THIS week so processSongSales skips them.
+        // executeSongRelease already adds them to activeChart; charting begins next week.
+        const newlyReleasedSongIds = new Set();
         const releasesForThisWeek = scheduledSingles.filter(r => r.releaseWeek === newWeek);
         if (releasesForThisWeek.length > 0) {
             releasesForThisWeek.forEach(release => {
@@ -14477,15 +14549,21 @@ export const useIdolManager = () => {
                     }
 
                     if (result.newSong) {
+                        // Mark as newly released — skip its chart sales processing this same week
+                        newlyReleasedSongIds.add(result.newSong.id);
                         if (result.newSong.targetGroup === 'main' || result.newSong.targetGroup === groupName) {
-                            songsForUpdate.push(result.newSong);
+                            if (!songsForUpdate.some(s => s.id === result.newSong.id)) {
+                                songsForUpdate.push(result.newSong);
+                            }
                         } else {
                             const sgIndex = sisterGroupsForUpdate.findIndex(sg => sg.name === result.newSong.targetGroup || String(sg.id) === String(result.newSong.targetGroup));
                             if (sgIndex > -1) {
                                 if (!sisterGroupsForUpdate[sgIndex].songs) {
                                     sisterGroupsForUpdate[sgIndex].songs = [];
                                 }
-                                sisterGroupsForUpdate[sgIndex].songs.push(result.newSong);
+                                if (!sisterGroupsForUpdate[sgIndex].songs.some(s => s.id === result.newSong.id)) {
+                                    sisterGroupsForUpdate[sgIndex].songs.push(result.newSong);
+                                }
                                 const cadence = sisterGroupsForUpdate[sgIndex].releaseCadence || 16;
                                 sisterGroupsForUpdate[sgIndex].lastSingleWeek = newWeek;
                                 sisterGroupsForUpdate[sgIndex].nextPromptWeek = newWeek + cadence;
@@ -14495,15 +14573,21 @@ export const useIdolManager = () => {
                     }
 
                     if (result.newAlbum) {
+                        // Mark as newly released — skip its chart sales processing this same week
+                        newlyReleasedSongIds.add(result.newAlbum.id);
                         if (result.newAlbum.artist === groupName) {
-                            songsForUpdate.push(result.newAlbum);
+                            if (!songsForUpdate.some(s => s.id === result.newAlbum.id)) {
+                                songsForUpdate.push(result.newAlbum);
+                            }
                         } else {
                             const sgIndex = sisterGroupsForUpdate.findIndex(sg => sg.name === result.newAlbum.artist);
                             if (sgIndex > -1) {
                                 if (!sisterGroupsForUpdate[sgIndex].songs) {
                                     sisterGroupsForUpdate[sgIndex].songs = [];
                                 }
-                                sisterGroupsForUpdate[sgIndex].songs.push(result.newAlbum);
+                                if (!sisterGroupsForUpdate[sgIndex].songs.some(s => s.id === result.newAlbum.id)) {
+                                    sisterGroupsForUpdate[sgIndex].songs.push(result.newAlbum);
+                                }
                             }
                         }
                     }
@@ -14639,6 +14723,8 @@ export const useIdolManager = () => {
 
         // This is a single, unified function to process any song's sales for the week.
         const processSongSales = (song, groupNameForLog = groupName) => {
+            // Skip songs that were just released this week — they will begin charting next week.
+            if (newlyReleasedSongIds.has(song.id)) return song;
             if (song.chartWeeksLeft > 0) {
                 const chartWeekIndex = 8 - song.chartWeeksLeft;
 
@@ -14759,12 +14845,26 @@ export const useIdolManager = () => {
             return song;
         };
 
-        // Now, apply this safe function to our draft arrays.
+        // Now, apply this safe function to our draft arrays, deduplicating any prior identical entries.
+        const seenMainSongKeys = new Set();
+        songsForUpdate = songsForUpdate.filter(song => {
+            const key = song.id || `${song.name}-${song.releaseWeek}`;
+            if (seenMainSongKeys.has(key)) return false;
+            seenMainSongKeys.add(key);
+            return true;
+        });
         songsForUpdate = songsForUpdate.map(song => processSongSales(song, groupName));
 
         sisterGroupsForUpdate = sisterGroupsForUpdate.map(sg => {
             if (!sg.songs || sg.songs.length === 0) return sg;
-            const newSgSongs = sg.songs.map(song => processSongSales(song, sg.name));
+            const seenSgSongKeys = new Set();
+            const dedupedSongs = (sg.songs || []).filter(song => {
+                const key = song.id || `${song.name}-${song.releaseWeek}`;
+                if (seenSgSongKeys.has(key)) return false;
+                seenSgSongKeys.add(key);
+                return true;
+            });
+            const newSgSongs = dedupedSongs.map(song => processSongSales(song, sg.name));
             return { ...sg, songs: newSgSongs };
         });
 

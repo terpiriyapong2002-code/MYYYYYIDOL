@@ -2754,8 +2754,8 @@ const App = () => {
                     const titleTrack = (release.tracks || []).find(t => t.type === 'title');
                     artistName = `${titleTrack?.members?.[0]?.name || "Soloist"} (Solo)`;
                 }
-                return (release.tracks || []).map(track => ({
-                    id: `${release.id}-${track.name}-${release.targetGroup}`,
+                return (release.tracks || []).map((track, tIdx) => ({
+                    id: `${release.id}-${track.name}-${release.targetGroup || 'main'}-${tIdx}`,
                     name: `${track.name} (from ${artistName}'s ${release.name})`,
                     data: {
                         members: (track.members || []).map(m => typeof m === 'object' ? String(m.rosterId || m.id || m.memberId) : String(m)),
@@ -2766,16 +2766,14 @@ const App = () => {
             }),
 
             ...(sisterGroups || []).flatMap(sg =>
-
                 (sg.songs || []).flatMap(release => {
                     let artistName = sg.name;
                     if (release.singleSubType === 'solo') {
                         const titleTrack = (release.tracks || []).find(t => t.type === 'title');
                         artistName = `${titleTrack?.members?.[0]?.name || "Soloist"} (Solo)`;
                     }
-                    return (release.tracks || []).map(track => ({
-
-                        id: `${release.id}-${track.name}-${sg.id}`,
+                    return (release.tracks || []).map((track, tIdx) => ({
+                        id: `${release.id}-${track.name}-${sg.id}-${tIdx}`,
                         name: `${track.name} (from ${artistName}'s ${release.name})`,
                         data: {
                             members: (track.members || []).map(m => typeof m === 'object' ? String(m.rosterId || m.id || m.memberId) : String(m)),
@@ -2787,14 +2785,15 @@ const App = () => {
             )
         ];
 
-        const seenTrackIds = new Set();
+        const seenTrackKeys = new Set();
         const historicalTracks = rawHistoricalTracks.filter(track => {
-            if (seenTrackIds.has(track.id)) return false;
-            seenTrackIds.add(track.id);
+            const key = `${track.name}-${track.id}`;
+            if (seenTrackKeys.has(key)) return false;
+            seenTrackKeys.add(key);
             return true;
         }).sort((a, b) => {
-            const idA = parseInt(a.id.split('-')[0], 10);
-            const idB = parseInt(b.id.split('-')[0], 10);
+            const idA = parseInt(String(a.id).split('-')[0], 10) || 0;
+            const idB = parseInt(String(b.id).split('-')[0], 10) || 0;
             if (idB !== idA) return idB - idA;
             return a.name.localeCompare(b.name);
         }).slice(0, 10);
@@ -7191,8 +7190,8 @@ const App = () => {
                                             <option value="janken-senbatsu">Janken Senbatsu (Top 16)</option>
                                         </optgroup>
                                     )}
-                                    {historicalTracks.map(track => (
-                                        <option key={track.id} value={track.id}>
+                                    {historicalTracks.map((track, idx) => (
+                                        <option key={`hist-concert-${track.id}-${idx}`} value={track.id}>
                                             {track.name}
                                         </option>
                                     ))}
@@ -7696,8 +7695,8 @@ const App = () => {
                                                     <option value="janken-senbatsu">Janken Senbatsu (Top 16)</option>
                                                 </optgroup>
                                             )}
-                                            {historicalTracks.map(track => (
-                                                <option key={track.id} value={track.id}>
+                                            {historicalTracks.map((track, idx) => (
+                                                <option key={`hist-fest-${track.id}-${idx}`} value={track.id}>
                                                     {track.name}
                                                 </option>
                                             ))}
@@ -14043,7 +14042,7 @@ const App = () => {
                                     </optgroup>
                                 )}
                                 {lastJankenResult && <optgroup label="Last Janken"><option value="janken-senbatsu">Janken Senbatsu</option></optgroup>}
-                                {historicalTracks.map(track => (<option key={track.id} value={track.id}>{track.name}</option>))}
+                                {historicalTracks.map((track, idx) => (<option key={`hist-custom-${track.id}-${idx}`} value={track.id}>{track.name}</option>))}
                             </select>
                         </div>
                         <div className="space-y-1 max-h-[400px] overflow-y-auto border dark:border-gray-700 p-1 rounded">
