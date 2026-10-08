@@ -27,7 +27,7 @@ import {
 import { MerchTab } from './MerchTab';
 import { KpopLabelTab } from './KpopLabelTab';
 import { WorldTourTab } from './WorldTourTab';
-import { IdolAvatar, CharacterCreatorModal, GroupOutfitModal, getMemberAppearance, HAIR_STYLES, HAIR_BACK_STYLES, HAIR_COLORS } from './characterAvatar';
+import { IdolAvatar, CharacterCreatorModal, GroupOutfitModal, getMemberAppearance, HAIR_STYLES, HAIR_BACK_STYLES, HAIR_SIDE_STYLES, HAIR_COLORS } from './characterAvatar';
 
 // Helper to check if a group name or object is a trainee group / subgroup
 const isTraineeGroupNameOrGroup = (groupNameOrId, sisterGroups = []) => {
@@ -247,6 +247,35 @@ const App = () => {
             message: `Updated stage outfit to ${affectedCount} official home members in ${groupLabel}!`
         });
     };
+
+    const isMemberTitleTrackCenter = (memberId: any) => {
+        if (!memberId) return false;
+        const memberIdStr = String(memberId);
+        if (songs) {
+            for (const s of songs) {
+                for (const t of (s.tracks || [])) {
+                    if (t.type === 'title') {
+                        const centers = Array.isArray(t.center) ? t.center : (t.center ? [t.center] : []);
+                        if (centers.map(String).includes(memberIdStr)) return true;
+                    }
+                }
+            }
+        }
+        if (sisterGroups) {
+            for (const sg of sisterGroups) {
+                for (const s of (sg.songs || [])) {
+                    for (const t of (s.tracks || [])) {
+                        if (t.type === 'title') {
+                            const centers = Array.isArray(t.center) ? t.center : (t.center ? [t.center] : []);
+                            if (centers.map(String).includes(memberIdStr)) return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    };
+
     const resolveToCurrentRosterId = (item, availableList = null) => {
         if (!item) return null;
         const targetId = typeof item === 'object' ? String(item.rosterId || item.id || item.memberId || '') : String(item);
@@ -2036,7 +2065,14 @@ const App = () => {
                                 {revealedRanks.slice().map(member => (
                                     <div key={`${member.rosterId || member.id}-${member.rank}`} className={`p-1.5 bg-white/80 dark:bg-slate-700/50 shadow-sm flex justify-between items-center border-l-4 rounded-md gap-2 ${member.rank === 1 ? 'border-yellow-400 bg-amber-50/60 dark:bg-amber-950/30' : member.rank <= 7 ? 'border-pink-400 bg-pink-50/40 dark:bg-pink-950/20' : 'border-blue-400'}`}>
                                         <div className="flex items-center gap-2 min-w-0">
-                                            <IdolAvatar member={member} size="xs" isElectionMode={true} electionRank={member.rank} rounded="rounded-md" />
+                                            <IdolAvatar
+                                                member={member}
+                                                size="xs"
+                                                isElectionMode={true}
+                                                electionRank={member.rank}
+                                                isTitleTrackCenter={isMemberTitleTrackCenter(member.rosterId || member.id)}
+                                                rounded="rounded-md"
+                                            />
                                             <div className="min-w-0">
                                                 <p className="font-black text-pink-500 dark:text-pink-400 text-xs flex items-center gap-1">
                                                     #{member.rank}
@@ -2080,6 +2116,7 @@ const App = () => {
                                                 size="xl"
                                                 isElectionMode={true}
                                                 electionRank={currentMember.rank}
+                                                isTitleTrackCenter={isMemberTitleTrackCenter(currentMember.rosterId || currentMember.id)}
                                                 glow={currentMember.rank <= 7}
                                                 rounded="rounded-2xl"
                                                 className={`border-4 shadow-2xl ${currentMember.rank === 1 ? 'border-yellow-400 ring-4 ring-yellow-300/50 shadow-yellow-500/40' : currentMember.rank <= 7 ? 'border-pink-400 ring-4 ring-pink-300/40 shadow-pink-500/30' : 'border-white dark:border-gray-700'}`}
@@ -12106,6 +12143,7 @@ const App = () => {
                                             size="xs"
                                             isElectionMode={true}
                                             electionRank={member.rank}
+                                            isTitleTrackCenter={isMemberTitleTrackCenter(member.rosterId || member.id)}
                                             rounded="rounded-md"
                                         />
                                         <div className="min-w-0">

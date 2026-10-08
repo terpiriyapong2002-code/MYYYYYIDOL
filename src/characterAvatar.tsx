@@ -6,7 +6,7 @@ import { Sparkles, Shuffle, Check, X, Palette, User, RefreshCw, Shirt, Smile, Sc
 // 1. ASSET IMPORTS
 // ==========================================
 
-// --- Body + Outfits ---
+// // --- Body + Outfits ---
 import outfitBaseElection from './assets/Idol character/Body+outfit/General Election outfit base.webp';
 import outfitCenterElection from './assets/Idol character/Body+outfit/General Election outfit center.webp';
 import outfit1 from './assets/Idol character/Body+outfit/Outfit 1.webp';
@@ -24,6 +24,26 @@ import outfit13 from './assets/Idol character/Body+outfit/outfit 13.webp';
 import outfit14 from './assets/Idol character/Body+outfit/outfit 14.webp';
 import outfit15 from './assets/Idol character/Body+outfit/outfit 15.webp';
 import outfit16 from './assets/Idol character/Body+outfit/outfit 16.webp';
+import outfit17 from './assets/Idol character/Body+outfit/outfit 17.webp';
+import outfit18 from './assets/Idol character/Body+outfit/outfit 18.webp';
+import outfit19 from './assets/Idol character/Body+outfit/outfit 19.webp';
+import outfit20 from './assets/Idol character/Body+outfit/outfit 20.webp';
+import outfit21 from './assets/Idol character/Body+outfit/outfit 21.webp';
+import outfit23 from './assets/Idol character/Body+outfit/outfit 23.webp';
+import outfit24 from './assets/Idol character/Body+outfit/outfit 24.webp';
+import outfit25 from './assets/Idol character/Body+outfit/outfit 25.webp';
+import outfit26 from './assets/Idol character/Body+outfit/outfit 26.webp';
+import outfit27 from './assets/Idol character/Body+outfit/outfit 27.webp';
+import outfit28 from './assets/Idol character/Body+outfit/outfit 28.webp';
+import outfit29 from './assets/Idol character/Body+outfit/outfit 29.webp';
+import outfit30 from './assets/Idol character/Body+outfit/outfit 30.webp';
+import outfit31 from './assets/Idol character/Body+outfit/outfit 31.webp';
+import outfit32 from './assets/Idol character/Body+outfit/outfit 32.webp';
+import outfit33 from './assets/Idol character/Body+outfit/outfit 33.webp';
+import outfit34 from './assets/Idol character/Body+outfit/outfit 34.webp';
+import outfit35 from './assets/Idol character/Body+outfit/outfit 35.webp';
+import outfitTitleTrackCenter1 from './assets/Idol character/Body+outfit/titletrack center general election outfit 1.webp';
+import outfitTitleTrackCenter2 from './assets/Idol character/Body+outfit/titletrack center general election outfit 2.webp';
 
 // --- Faces ---
 import face1 from './assets/Idol character/Face/Face 1.webp';
@@ -33,6 +53,17 @@ import face4 from './assets/Idol character/Face/face 4.webp';
 import face5 from './assets/Idol character/Face/face 5.webp';
 import face6 from './assets/Idol character/Face/face 6.webp';
 import face7 from './assets/Idol character/Face/face 7.webp';
+import face8 from './assets/Idol character/Face/face 8.webp';
+import face9 from './assets/Idol character/Face/face 9.webp';
+import face10 from './assets/Idol character/Face/face 10.webp';
+import face11 from './assets/Idol character/Face/face 11.webp';
+import face12 from './assets/Idol character/Face/face 12.webp';
+import face13 from './assets/Idol character/Face/face 13.webp';
+import face14 from './assets/Idol character/Face/face 14.webp';
+import face15 from './assets/Idol character/Face/face 15.webp';
+import face16 from './assets/Idol character/Face/face 16.webp';
+import face17 from './assets/Idol character/Face/face 17.webp';
+import face18 from './assets/Idol character/Face/face 18.webp';
 
 // --- Hats / Head Accessories ---
 import electionWinnerHat from './assets/Idol character/Hat/Election winner Hat.webp';
@@ -41,10 +72,11 @@ import kami7Hat2 from './assets/Idol character/Hat/kami 7 hat 2.webp';
 import kami7Hat3 from './assets/Idol character/Hat/kami 7 hat 3.webp';
 
 // ==========================================
-// 2. HAIR GLOB IMPORTS (12 STYLES x 8 COLORS)
+// 2. HAIR GLOB IMPORTS (38 FRONT / 33 BACK / 12 SIDE x 8 COLORS)
 // ==========================================
 const hairFrontGlob = import.meta.glob('./assets/Idol character/hair/*/*/front.webp', { eager: true, import: 'default' });
 const hairBackGlob = import.meta.glob('./assets/Idol character/hair/*/*/back.webp', { eager: true, import: 'default' });
+const hairSideGlob = import.meta.glob('./assets/Idol character/hair/*/*/side.webp', { eager: true, import: 'default' });
 
 export const HAIR_COLORS = [
     { id: '_black', name: 'Jet Black', hex: '#27272A' },
@@ -57,44 +89,63 @@ export const HAIR_COLORS = [
     { id: '_softgreen', name: 'Mint Green', hex: '#86EFAC' },
 ];
 
-// 11 selectable front styles (hair_012 has no front piece; its back is aliased to hair_001)
-export const HAIR_STYLES = Array.from({ length: 11 }, (_, i) => {
+// 38 selectable front styles (hair_001 to hair_038)
+export const HAIR_STYLES = Array.from({ length: 38 }, (_, i) => {
     const numStr = String(i + 1).padStart(3, '0');
     return {
         id: `hair_${numStr}`,
-        name: `Style #${i + 1}`,
+        name: `hair_${numStr}`,
     };
 });
 
-// All 12 back-piece styles (hair_012 back syncs to hair_001 back)
-export const HAIR_BACK_STYLES = [
-    ...HAIR_STYLES,
-    { id: 'hair_012', name: 'Style #12' },
+// 33 back-piece styles (hair_001 to hair_033)
+export const HAIR_BACK_STYLES = Array.from({ length: 33 }, (_, i) => {
+    const numStr = String(i + 1).padStart(3, '0');
+    return {
+        id: `hair_${numStr}`,
+        name: `hair_${numStr}`,
+    };
+});
+
+// 12 side-piece styles (hair_001 to hair_012) + None (only selectable in stylist, excluded from random)
+export const HAIR_SIDE_STYLES = [
+    { id: 'none', name: 'none' },
+    ...Array.from({ length: 12 }, (_, i) => {
+        const numStr = String(i + 1).padStart(3, '0');
+        return {
+            id: `hair_${numStr}`,
+            name: `hair_${numStr}`,
+        };
+    }),
 ];
 
 /**
- * Resolves front and back hair assets with independent mix-and-match front & back styles
+ * Resolves front, back, and optional side hair assets with independent mix-and-match pieces
  * sharing the exact same unified color.
  */
-export const getHairAssets = (frontStyleId?: string, backStyleId?: string, colorId?: string) => {
-    // hair_012 has no front piece — fall back to hair_001 front
-    const rawFront = frontStyleId || 'hair_001';
-    const safeFrontStyle = rawFront === 'hair_012' ? 'hair_001' : rawFront;
-
-    // hair_012 back piece is aliased to hair_001 back
-    const rawBack = backStyleId || frontStyleId || 'hair_001';
-    const safeBackStyle = rawBack === 'hair_012' ? 'hair_001' : rawBack;
-
+export const getHairAssets = (
+    frontStyleId?: string,
+    backStyleId?: string,
+    colorId?: string,
+    sideStyleId?: string
+) => {
+    const safeFrontStyle = frontStyleId || 'hair_001';
+    const safeBackStyle = backStyleId || frontStyleId || 'hair_001';
     const safeColor = colorId || '_black';
 
-    // Vite glob paths: ./assets/Idol character/hair/hair_001/_black/front.webp
     const frontPath = `./assets/Idol character/hair/${safeFrontStyle}/${safeColor}/front.webp`;
     const backPath = `./assets/Idol character/hair/${safeBackStyle}/${safeColor}/back.webp`;
 
     const front = hairFrontGlob[frontPath] || Object.values(hairFrontGlob)[0];
     const back = hairBackGlob[backPath] || Object.values(hairBackGlob)[0];
 
-    return { front, back };
+    let side = null;
+    if (sideStyleId && sideStyleId !== 'none') {
+        const sidePath = `./assets/Idol character/hair/${sideStyleId}/${safeColor}/side.webp`;
+        side = hairSideGlob[sidePath] || null;
+    }
+
+    return { front, back, side };
 };
 
 // ==========================================
@@ -117,11 +168,33 @@ export const AVATAR_OUTFITS = [
     { id: 'outfit_14', name: 'Diamond Mirage', tag: 'Luxe', src: outfit14 },
     { id: 'outfit_15', name: 'Sunflower Sunshine', tag: 'Summer', src: outfit15 },
     { id: 'outfit_16', name: 'Aurora Fantasy', tag: 'Fantasy', src: outfit16 },
+    { id: 'outfit_17', name: 'outfit_17', tag: 'general', src: outfit17 },
+    { id: 'outfit_18', name: 'outfit_18', tag: 'general', src: outfit18 },
+    { id: 'outfit_19', name: 'outfit_19', tag: 'general', src: outfit19 },
+    { id: 'outfit_20', name: 'outfit_20', tag: 'general', src: outfit20 },
+    { id: 'outfit_21', name: 'outfit_21', tag: 'general', src: outfit21 },
+    { id: 'outfit_23', name: 'outfit_23', tag: 'general', src: outfit23 },
+    { id: 'outfit_24', name: 'outfit_24', tag: 'general', src: outfit24 },
+    { id: 'outfit_25', name: 'outfit_25', tag: 'general', src: outfit25 },
+    { id: 'outfit_26', name: 'outfit_26', tag: 'general', src: outfit26 },
+    { id: 'outfit_27', name: 'outfit_27', tag: 'general', src: outfit27 },
+    { id: 'outfit_28', name: 'outfit_28', tag: 'general', src: outfit28 },
+    { id: 'outfit_29', name: 'outfit_29', tag: 'general', src: outfit29 },
+    { id: 'outfit_30', name: 'outfit_30', tag: 'general', src: outfit30 },
+    { id: 'outfit_31', name: 'outfit_31', tag: 'general', src: outfit31 },
+    { id: 'outfit_32', name: 'outfit_32', tag: 'general', src: outfit32 },
+    { id: 'outfit_33', name: 'outfit_33', tag: 'general', src: outfit33 },
+    { id: 'outfit_34', name: 'outfit_34', tag: 'general', src: outfit34 },
+    { id: 'outfit_35', name: 'outfit_35', tag: 'general', src: outfit35 },
+    { id: 'titletrack_center_general_election_outfit_1', name: 'titletrack center general election outfit 1', tag: 'general', src: outfitTitleTrackCenter1 },
+    { id: 'titletrack_center_general_election_outfit_2', name: 'titletrack center general election outfit 2', tag: 'general', src: outfitTitleTrackCenter2 },
 ];
 
 export const ELECTION_OUTFITS = {
     base: { id: 'election_base', name: 'General Election Base Uniform', tag: 'Election', src: outfitBaseElection },
     center: { id: 'election_center', name: 'General Election Kami 7 / Center Dress', tag: 'Election Special', src: outfitCenterElection },
+    titleTrackCenter1: { id: 'titletrack_center_general_election_outfit_1', name: 'Titletrack Center General Election Outfit 1', tag: 'general', src: outfitTitleTrackCenter1 },
+    titleTrackCenter2: { id: 'titletrack_center_general_election_outfit_2', name: 'Titletrack Center General Election Outfit 2', tag: 'general', src: outfitTitleTrackCenter2 },
 };
 
 export const AVATAR_FACES = [
@@ -132,6 +205,17 @@ export const AVATAR_FACES = [
     { id: 'face_5', name: 'Cool Gaze', tag: 'Charismatic', src: face5 },
     { id: 'face_6', name: 'Joyful Laugh', tag: 'Radiant', src: face6 },
     { id: 'face_7', name: 'Serene Beauty', tag: 'Elegant', src: face7 },
+    { id: 'face_8', name: 'face_8', tag: 'general', src: face8 },
+    { id: 'face_9', name: 'face_9', tag: 'general', src: face9 },
+    { id: 'face_10', name: 'face_10', tag: 'general', src: face10 },
+    { id: 'face_11', name: 'face_11', tag: 'general', src: face11 },
+    { id: 'face_12', name: 'face_12', tag: 'general', src: face12 },
+    { id: 'face_13', name: 'face_13', tag: 'general', src: face13 },
+    { id: 'face_14', name: 'face_14', tag: 'general', src: face14 },
+    { id: 'face_15', name: 'face_15', tag: 'general', src: face15 },
+    { id: 'face_16', name: 'face_16', tag: 'general', src: face16 },
+    { id: 'face_17', name: 'face_17', tag: 'general', src: face17 },
+    { id: 'face_18', name: 'face_18', tag: 'general', src: face18 },
 ];
 
 export const AVATAR_HATS = [
@@ -147,6 +231,7 @@ export interface IdolAppearance {
     faceId: string;
     hairFrontStyleId: string;
     hairBackStyleId: string;
+    hairSideStyleId?: string;
     hairColorId: string;
     hairStyleId?: string; // legacy fallback
     hatId?: string;
@@ -154,7 +239,8 @@ export interface IdolAppearance {
 
 /**
  * Deterministic or assigned character appearance resolver.
- * Supports independent front & back hairstyles combined with a unified shared color.
+ * Supports independent front, back & side hairstyles combined with a unified shared color.
+ * Note: Side hair is NOT chosen by random; only available through stylist.
  */
 export const getMemberAppearance = (member: any): IdolAppearance => {
     if (member?.appearance?.outfitId && member?.appearance?.faceId && member?.appearance?.hairColorId) {
@@ -163,6 +249,7 @@ export const getMemberAppearance = (member: any): IdolAppearance => {
             faceId: member.appearance.faceId,
             hairFrontStyleId: member.appearance.hairFrontStyleId || member.appearance.hairStyleId || 'hair_001',
             hairBackStyleId: member.appearance.hairBackStyleId || member.appearance.hairStyleId || 'hair_001',
+            hairSideStyleId: member.appearance.hairSideStyleId || 'none',
             hairColorId: member.appearance.hairColorId,
             hatId: member.appearance.hatId || 'none',
         };
@@ -182,6 +269,7 @@ export const getMemberAppearance = (member: any): IdolAppearance => {
             faceId: member.appearance.faceId || AVATAR_FACES[0].id,
             hairFrontStyleId: style,
             hairBackStyleId: style,
+            hairSideStyleId: 'none',
             hairColorId: color,
             hatId: member.appearance.hatId || 'none',
         };
@@ -206,6 +294,7 @@ export const getMemberAppearance = (member: any): IdolAppearance => {
         faceId: face.id,
         hairFrontStyleId: frontStyle.id,
         hairBackStyleId: backStyle.id,
+        hairSideStyleId: 'none', // Side piece is not randomly selected
         hairColorId: color.id,
         hatId: 'none',
     };
@@ -214,10 +303,14 @@ export const getMemberAppearance = (member: any): IdolAppearance => {
 /**
  * Helper to resolve election accessory and outfit strictly based on election ranking:
  * - Rank 1: Winner Crown + Center/Kami7 Election Dress
- * - Rank 2-7: Kami 7 Hat (Style 1/2/3) + Center/Kami7 Election Dress
- * - Rank 8+: No Hat + Base Election Dress
+ * - Rank 2-7: Kami 7 Hat (Style 1/2/3) + Center/Kami7 Election Dress (Kami 7 always wear Kami 7 outfit)
+ * - Rank 8+: If title track center, forced to wear between the 2 titletrack center variants; otherwise Base Election Dress
  */
-export const getElectionExclusiveLook = (rank?: number, seedKey?: string | number) => {
+export const getElectionExclusiveLook = (
+    rank?: number,
+    seedKey?: string | number,
+    isTitleTrackCenter?: boolean
+) => {
     if (!rank || rank <= 0) return null;
 
     if (rank === 1) {
@@ -240,6 +333,24 @@ export const getElectionExclusiveLook = (rank?: number, seedKey?: string | numbe
         };
     }
 
+    // Rank 8+ (Non-Kami 7)
+    // If member has been title track center from any group, force them into variant 1 or 2
+    if (isTitleTrackCenter) {
+        const key = String(seedKey || '1');
+        let hash = 0;
+        for (let i = 0; i < key.length; i++) {
+            hash = (hash << 5) - hash + key.charCodeAt(i);
+            hash |= 0;
+        }
+        const variantOutfit = Math.abs(hash) % 2 === 0 ? outfitTitleTrackCenter1 : outfitTitleTrackCenter2;
+        return {
+            hatSrc: null,
+            outfitSrc: variantOutfit,
+            isKami7: false,
+            isWinner: false,
+        };
+    }
+
     return {
         hatSrc: null,
         outfitSrc: outfitBaseElection,
@@ -250,9 +361,10 @@ export const getElectionExclusiveLook = (rank?: number, seedKey?: string | numbe
 
 /**
  * IdolAvatar Component
- * 5-Layer Stacking:
+ * 6-Layer Stacking:
  * Layer 1 (Top / Front - Z:50): Hat / Head Accessory
  * Layer 2 (Z:40): Front Hair (Front style + Shared color)
+ * Layer 2.5 (Z:35): Side Hair (Optional side pieces + Shared color)
  * Layer 3 (Z:30): Face
  * Layer 4 (Z:20): Body + Outfit (or exclusive General Election outfit)
  * Layer 5 (Bottom / Back - Z:10): Back Hair (Back style + Shared color)
@@ -270,6 +382,7 @@ export const IdolAvatar = ({
     onClick = null,
     isElectionMode = false,
     electionRank = null,
+    isTitleTrackCenter = false,
 }: {
     member?: any;
     appearance?: IdolAppearance;
@@ -283,21 +396,32 @@ export const IdolAvatar = ({
     onClick?: () => void;
     isElectionMode?: boolean;
     electionRank?: number | null;
+    isTitleTrackCenter?: boolean;
 }) => {
     const appearance = customAppearance || getMemberAppearance(member);
 
-    // 1. Resolve Front & Back Hair with Shared Color
+    // 1. Resolve Front, Back & Side Hair with Shared Color
     const frontStyle = appearance.hairFrontStyleId || appearance.hairStyleId || 'hair_001';
     const backStyle = appearance.hairBackStyleId || appearance.hairStyleId || frontStyle;
-    const { front: frontHairSrc, back: backHairSrc } = getHairAssets(
+    const sideStyle = appearance.hairSideStyleId || 'none';
+    const { front: frontHairSrc, back: backHairSrc, side: sideHairSrc } = getHairAssets(
         frontStyle,
         backStyle,
-        appearance.hairColorId
+        appearance.hairColorId,
+        sideStyle
     );
 
     // 2. Resolve Face
     const faceObj = AVATAR_FACES.find(f => f.id === appearance.faceId) || AVATAR_FACES[0];
     const faceSrc = faceObj?.src;
+
+    // Check title track center status
+    const isTTCenter = Boolean(
+        isTitleTrackCenter ||
+        member?.isTitleTrackCenter ||
+        member?.hasBeenTitleTrackCenter ||
+        member?.isCenterOfAnyTitleTrack
+    );
 
     // 3. Resolve Outfit & Hat (with Election Overrides)
     let outfitSrc = (AVATAR_OUTFITS.find(o => o.id === appearance.outfitId) || AVATAR_OUTFITS[0])?.src;
@@ -306,7 +430,8 @@ export const IdolAvatar = ({
     if (isElectionMode || (electionRank !== null && electionRank !== undefined)) {
         const electionLook = getElectionExclusiveLook(
             electionRank || (member?.rank) || (isCenter ? 1 : 999),
-            member?.rosterId || member?.id
+            member?.rosterId || member?.id,
+            isTTCenter
         );
         if (electionLook) {
             outfitSrc = electionLook.outfitSrc;
@@ -369,6 +494,17 @@ export const IdolAvatar = ({
                 />
             )}
 
+            {/* Layer 2.5 (Z-Index 35): Side Hair */}
+            {sideHairSrc && (
+                <img
+                    src={sideHairSrc}
+                    alt="Side Hair"
+                    className="absolute inset-0 w-full h-full object-contain pointer-events-none drop-shadow-sm"
+                    style={{ zIndex: 35 }}
+                    loading="lazy"
+                />
+            )}
+
             {/* Layer 2 (Z-Index 40): Front Hair */}
             {frontHairSrc && (
                 <img
@@ -408,7 +544,7 @@ export const IdolAvatar = ({
 
 /**
  * Character Creation & Customization Modal
- * Lets the player mix and match Front Hair (Bangs) and Back Hair (Extensions/Bobs/Ponytails)
+ * Lets the player mix and match Front Hair (Bangs), Back Hair, and Side Pieces
  * in exact matching colors, along with Face expressions and Stage Outfits.
  */
 export const CharacterCreatorModal = ({
@@ -427,7 +563,7 @@ export const CharacterCreatorModal = ({
     const initialAppearance = getMemberAppearance(member);
     const [appearance, setAppearance] = useState<IdolAppearance>(initialAppearance);
     const [activeTab, setActiveTab] = useState<'hair' | 'face' | 'outfit'>('hair');
-    const [hairSubTab, setHairSubTab] = useState<'front' | 'back'>('front');
+    const [hairSubTab, setHairSubTab] = useState<'front' | 'back' | 'side'>('front');
 
     const handleRandomize = () => {
         const randomOutfit = AVATAR_OUTFITS[Math.floor(Math.random() * AVATAR_OUTFITS.length)];
@@ -441,16 +577,21 @@ export const CharacterCreatorModal = ({
             faceId: randomFace.id,
             hairFrontStyleId: randomFront.id,
             hairBackStyleId: randomBack.id,
+            hairSideStyleId: 'none', // Side piece excluded from random
             hairColorId: randomColor.id,
             hatId: 'none',
         });
     };
 
     const handleMatchFrontAndBack = () => {
-        setAppearance(prev => ({
-            ...prev,
-            hairBackStyleId: prev.hairFrontStyleId || 'hair_001',
-        }));
+        setAppearance(prev => {
+            const front = prev.hairFrontStyleId || 'hair_001';
+            const hasBack = HAIR_BACK_STYLES.some(b => b.id === front);
+            return {
+                ...prev,
+                hairBackStyleId: hasBack ? front : prev.hairBackStyleId || 'hair_001',
+            };
+        });
     };
 
     const handleSave = () => {
@@ -552,7 +693,7 @@ export const CharacterCreatorModal = ({
                             {/* HAIR TAB */}
                             {activeTab === 'hair' && (
                                 <div className="space-y-4">
-                                    {/* Color Palette (Shared Single Color for Front & Back) */}
+                                    {/* Color Palette (Shared Single Color for Front, Back & Side) */}
                                     <div>
                                         <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                                             <Palette size={14} className="text-pink-500" /> 1. Select Shared Hair Color:
@@ -587,7 +728,7 @@ export const CharacterCreatorModal = ({
                                         </div>
                                     </div>
 
-                                    {/* Front Piece vs Back Piece Sub-Selector */}
+                                    {/* Front Piece vs Back Piece vs Side Piece Sub-Selector */}
                                     <div>
                                         <div className="flex items-center justify-between mb-2">
                                             <label className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
@@ -595,49 +736,50 @@ export const CharacterCreatorModal = ({
                                             </label>
                                             <div className="flex gap-1 bg-gray-100 dark:bg-gray-800 p-0.5 rounded-lg border border-gray-200 dark:border-gray-700">
                                                 <button
+                                                    type="button"
                                                     onClick={() => setHairSubTab('front')}
-                                                    className={`px-3 py-1 rounded-md text-xs font-bold transition ${
+                                                    className={`px-2.5 py-1 rounded-md text-xs font-bold transition ${
                                                         hairSubTab === 'front'
                                                             ? 'bg-pink-500 text-white shadow-xs'
                                                             : 'text-gray-600 dark:text-gray-300 hover:text-gray-900'
                                                     }`}
                                                 >
-                                                    Front Hair Piece ({appearance.hairFrontStyleId || 'hair_001'})
+                                                    Front ({appearance.hairFrontStyleId || 'hair_001'})
                                                 </button>
                                                 <button
+                                                    type="button"
                                                     onClick={() => setHairSubTab('back')}
-                                                    className={`px-3 py-1 rounded-md text-xs font-bold transition ${
+                                                    className={`px-2.5 py-1 rounded-md text-xs font-bold transition ${
                                                         hairSubTab === 'back'
                                                             ? 'bg-pink-500 text-white shadow-xs'
                                                             : 'text-gray-600 dark:text-gray-300 hover:text-gray-900'
                                                     }`}
                                                 >
-                                                    Back Hair Piece ({appearance.hairBackStyleId || 'hair_001'})
+                                                    Back ({appearance.hairBackStyleId || 'hair_001'})
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setHairSubTab('side')}
+                                                    className={`px-2.5 py-1 rounded-md text-xs font-bold transition ${
+                                                        hairSubTab === 'side'
+                                                            ? 'bg-pink-500 text-white shadow-xs'
+                                                            : 'text-gray-600 dark:text-gray-300 hover:text-gray-900'
+                                                    }`}
+                                                >
+                                                    Side ({appearance.hairSideStyleId && appearance.hairSideStyleId !== 'none' ? appearance.hairSideStyleId : 'none'})
                                                 </button>
                                             </div>
                                         </div>
 
                                         {/* Hairstyle Grid for the Selected Sub-Piece */}
                                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-                                            {(hairSubTab === 'front' ? HAIR_STYLES : HAIR_BACK_STYLES).map(style => {
-                                                const isFront = hairSubTab === 'front';
-                                                const currentPieceStyleId = isFront
-                                                    ? (appearance.hairFrontStyleId || 'hair_001')
-                                                    : (appearance.hairBackStyleId || 'hair_001');
-                                                const isSelected = currentPieceStyleId === style.id;
-                                                const { front: previewFront, back: previewBack } = getHairAssets(style.id, style.id, appearance.hairColorId);
-                                                const previewImg = isFront ? previewFront : previewBack;
-
+                                            {hairSubTab === 'front' && HAIR_STYLES.map(style => {
+                                                const isSelected = (appearance.hairFrontStyleId || 'hair_001') === style.id;
+                                                const { front: previewFront } = getHairAssets(style.id, style.id, appearance.hairColorId);
                                                 return (
                                                     <div
                                                         key={style.id}
-                                                        onClick={() => {
-                                                            if (isFront) {
-                                                                setAppearance(prev => ({ ...prev, hairFrontStyleId: style.id }));
-                                                            } else {
-                                                                setAppearance(prev => ({ ...prev, hairBackStyleId: style.id }));
-                                                            }
-                                                        }}
+                                                        onClick={() => setAppearance(prev => ({ ...prev, hairFrontStyleId: style.id }))}
                                                         className={`p-2 rounded-2xl border-2 cursor-pointer transition flex items-center gap-2.5 ${
                                                             isSelected
                                                                 ? 'border-pink-500 bg-pink-50 dark:bg-pink-950/40 ring-2 ring-pink-400/50 shadow-md'
@@ -645,17 +787,71 @@ export const CharacterCreatorModal = ({
                                                         }`}
                                                     >
                                                         <div className="w-10 h-14 rounded-lg bg-gray-100 dark:bg-gray-900 overflow-hidden relative border border-gray-200 flex-shrink-0 flex items-center justify-center">
-                                                            {previewImg && (
-                                                                <img src={previewImg} alt={style.name} className="w-full h-full object-contain" />
+                                                            {previewFront && (
+                                                                <img src={previewFront} alt={style.name} className="w-full h-full object-contain" />
                                                             )}
                                                         </div>
                                                         <div className="flex-1 min-w-0">
-                                                            <p className="font-bold text-xs text-gray-900 dark:text-gray-100 truncate">
-                                                                {style.name}
-                                                                {!isFront && style.id === 'hair_012' && <span className="ml-1 text-[9px] text-gray-400">(↔ Style #1)</span>}
-                                                            </p>
+                                                            <p className="font-bold text-xs text-gray-900 dark:text-gray-100 truncate">{style.name}</p>
+                                                            <span className="text-[10px] text-pink-600 dark:text-pink-400 font-semibold">Front Bangs</span>
+                                                        </div>
+                                                        {isSelected && <Check size={16} className="text-pink-600 dark:text-pink-400 flex-shrink-0 font-bold" />}
+                                                    </div>
+                                                );
+                                            })}
+
+                                            {hairSubTab === 'back' && HAIR_BACK_STYLES.map(style => {
+                                                const isSelected = (appearance.hairBackStyleId || 'hair_001') === style.id;
+                                                const { back: previewBack } = getHairAssets(style.id, style.id, appearance.hairColorId);
+                                                return (
+                                                    <div
+                                                        key={style.id}
+                                                        onClick={() => setAppearance(prev => ({ ...prev, hairBackStyleId: style.id }))}
+                                                        className={`p-2 rounded-2xl border-2 cursor-pointer transition flex items-center gap-2.5 ${
+                                                            isSelected
+                                                                ? 'border-pink-500 bg-pink-50 dark:bg-pink-950/40 ring-2 ring-pink-400/50 shadow-md'
+                                                                : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-pink-300'
+                                                        }`}
+                                                    >
+                                                        <div className="w-10 h-14 rounded-lg bg-gray-100 dark:bg-gray-900 overflow-hidden relative border border-gray-200 flex-shrink-0 flex items-center justify-center">
+                                                            {previewBack && (
+                                                                <img src={previewBack} alt={style.name} className="w-full h-full object-contain" />
+                                                            )}
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className="font-bold text-xs text-gray-900 dark:text-gray-100 truncate">{style.name}</p>
+                                                            <span className="text-[10px] text-pink-600 dark:text-pink-400 font-semibold">Back Hair</span>
+                                                        </div>
+                                                        {isSelected && <Check size={16} className="text-pink-600 dark:text-pink-400 flex-shrink-0 font-bold" />}
+                                                    </div>
+                                                );
+                                            })}
+
+                                            {hairSubTab === 'side' && HAIR_SIDE_STYLES.map(style => {
+                                                const currentSide = appearance.hairSideStyleId || 'none';
+                                                const isSelected = currentSide === style.id;
+                                                const { side: previewSide } = getHairAssets(undefined, undefined, appearance.hairColorId, style.id);
+                                                return (
+                                                    <div
+                                                        key={style.id}
+                                                        onClick={() => setAppearance(prev => ({ ...prev, hairSideStyleId: style.id }))}
+                                                        className={`p-2 rounded-2xl border-2 cursor-pointer transition flex items-center gap-2.5 ${
+                                                            isSelected
+                                                                ? 'border-pink-500 bg-pink-50 dark:bg-pink-950/40 ring-2 ring-pink-400/50 shadow-md'
+                                                                : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-pink-300'
+                                                        }`}
+                                                    >
+                                                        <div className="w-10 h-14 rounded-lg bg-gray-100 dark:bg-gray-900 overflow-hidden relative border border-gray-200 flex-shrink-0 flex items-center justify-center">
+                                                            {style.id === 'none' ? (
+                                                                <span className="text-gray-400 text-[10px] font-bold">None</span>
+                                                            ) : (
+                                                                previewSide && <img src={previewSide} alt={style.name} className="w-full h-full object-contain" />
+                                                            )}
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className="font-bold text-xs text-gray-900 dark:text-gray-100 truncate">{style.name}</p>
                                                             <span className="text-[10px] text-pink-600 dark:text-pink-400 font-semibold">
-                                                                {isFront ? 'Front Bangs' : 'Back Hair'}
+                                                                {style.id === 'none' ? 'No Side Piece' : 'Side Piece'}
                                                             </span>
                                                         </div>
                                                         {isSelected && <Check size={16} className="text-pink-600 dark:text-pink-400 flex-shrink-0 font-bold" />}
@@ -733,7 +929,7 @@ export const CharacterCreatorModal = ({
                         {/* Layer Explanatory Note */}
                         <div className="p-3 bg-pink-50 dark:bg-pink-950/30 rounded-xl border border-pink-200 dark:border-pink-900/40 text-[11px] text-pink-700 dark:text-pink-300 flex items-center gap-2">
                             <Sparkles size={16} className="flex-shrink-0 text-amber-500" />
-                            <span>Front & Back pieces share your chosen color and can be freely mixed & matched across all 12 styles!</span>
+                            <span>Front, Back & Side hair pieces share your chosen color and can be freely mixed & matched!</span>
                         </div>
                     </div>
                 </div>
